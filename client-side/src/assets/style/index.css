@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* guest start */
+.rounded-border-bottom {
+  position: relative;
+  display: inline-block;
+}
+
+.rounded-border-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20%;
+  height: 4px;
+  background-color: #4b241a;
+  border-radius: 10px;
+}
+/* guest end */
