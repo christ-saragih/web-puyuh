@@ -1,26 +1,25 @@
-import React from "react";
 import Logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-gray-200">
+    <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b-2 border-[#4B241A] rounded-b-2xl">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-2">
         <a href="" className="flex items-center space-x-3">
           <img src={Logo} className="h-16" alt="Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="hidden lg:block self-center text-2xl font-semibold whitespace-nowrap">
             CV Slamet Quail Farm
           </span>
         </a>
         <div className="flex md:order-2 gap-2 space-x-3 md:space-x-0">
           <button
             type="button"
-            className="text-[#4B241A] bg-white border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center"
+            className="text-[#4B241A] bg-white border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300"
           >
             Masuk
           </button>
           <button
             type="button"
-            className="text-white bg-[#4B241A] font-medium rounded-xl w-24 py-2 text-center"
+            className="text-white bg-[#4B241A] border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300"
           >
             Daftar
           </button>
@@ -41,9 +40,9 @@ const Navbar = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
@@ -57,7 +56,7 @@ const Navbar = () => {
             <li>
               <a
                 href="#"
-                className="block py-2 px-3 font-semibold text-[#4B241A] rounded-border-bottom rounded-xl md:py-2 md:px-5"
+                className="block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
                 aria-current="page"
               >
                 Beranda
@@ -66,7 +65,7 @@ const Navbar = () => {
             <li>
               <a
                 href="#"
-                className="block py-2 px-3 font-semibold text-[#81655e] rounded-xl md:py-2 md:px-5"
+                className="block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
               >
                 Investasi
               </a>
@@ -74,7 +73,7 @@ const Navbar = () => {
             <li>
               <a
                 href="#"
-                className="block py-2 px-3 font-semibold text-[#81655e] rounded-xl md:py-2 md:px-5"
+                className="block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
               >
                 Artikel
               </a>
@@ -82,7 +81,7 @@ const Navbar = () => {
             <li>
               <a
                 href="#"
-                className="block py-2 px-3 font-semibold text-[#81655e] rounded-xl md:py-2 md:px-5"
+                className="block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
               >
                 Tentang Kami
               </a>
