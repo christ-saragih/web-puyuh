@@ -1,4 +1,4 @@
-const { BerandaFrontpage } = require("../models");
+const { DokumentasiFrontpage } = require("../models");
 const fs = require("fs");
 const path = require("path");
 
@@ -11,32 +11,28 @@ const ensureDir = (dir) => {
 // Create
 exports.create = async (req, res) => {
     try {
-        const { nama_header, nama_subheader } = req.body;
-        // console.log(req.body);
+        const { nama } = req.body;
+        const image = req.file ? req.file.buffer : null;
+        let image_path = null;
 
-        // If validation passes, proceed to save the file
-        const image_header = req.file ? req.file.buffer : null;
-        let image_headerPath = null;
-
-        if (image_header) {
-            const dir = "public/images/berandaFrontpage";
+        if (image) {
+            const dir = "public/images/dokumentasi";
             ensureDir(dir);
-            image_headerPath = path.join(
+            image_path = path.join(
                 dir,
                 `${Date.now()}-${req.file.originalname}`
             );
-            fs.writeFileSync(image_headerPath, image_header);
+            fs.writeFileSync(image_path, image);
         }
 
-        const beranda = await BerandaFrontpage.create({
-            nama_header,
-            nama_subheader,
-            image_header: image_headerPath,
+        const dokumentasi = await DokumentasiFrontpage.create({
+            nama,
+            image: image_path,
         });
 
         res.status(201).json({
-            message: "Beranda Berhasil Ditambahkan!",
-            data: beranda,
+            message: "Dokumentasi Berhasil ditambahkan!",
+            data: dokumentasi,
         });
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
@@ -57,10 +53,10 @@ exports.create = async (req, res) => {
 // Read All
 exports.findAll = async (req, res) => {
     try {
-        const berandas = await BerandaFrontpage.findAll();
+        const dokumentasi = await DokumentasiFrontpage.findAll();
         res.status(200).json({
-            message: "BerandaFrontpage retrieved successfully",
-            data: berandas,
+            message: "Dokumentasi berhasil diambil!",
+            data: dokumentasi,
         });
     } catch (error) {
         res.status(500).json({
@@ -73,13 +69,13 @@ exports.findAll = async (req, res) => {
 // Read One
 exports.findOne = async (req, res) => {
     try {
-        const beranda = await BerandaFrontpage.findByPk(req.params.id);
-        if (!beranda) {
-            return res.status(404).json({ message: "Beranda tidak ada!" });
+        const dokumentasi = await DokumentasiFrontpage.findByPk(req.params.id);
+        if (!dokumentasi) {
+            return res.status(404).json({ message: "Dokumentasi tidak ada!" });
         }
         res.status(200).json({
-            message: "BerandaFrontpage retrieved successfully",
-            data: beranda,
+            message: "Dokumentasi berhasil diambil",
+            data: dokumentasi,
         });
     } catch (error) {
         res.status(500).json({
@@ -92,41 +88,37 @@ exports.findOne = async (req, res) => {
 // Update
 exports.update = async (req, res) => {
     try {
-        const { nama_header, nama_subheader } = req.body;
-        const image_header = req.file ? req.file.path : null;
+        const { nama } = req.body;
+        const image = req.file ? req.file.buffer : null;
 
-        const beranda = await BerandaFrontpage.findByPk(req.params.id);
-        if (!beranda) {
-            return res.status(404).json({ message: "Beranda tidak ada!" });
+        const dokumentasi = await DokumentasiFrontpage.findByPk(req.params.id);
+        if (!dokumentasi) {
+            return res.status(404).json({ message: "Dokumentasi tidak ada" });
         }
 
-        // Handle icon update
-        let image_headerPath = beranda.image_header; // Default to current icon path
+        let image_path = dokumentasi.image;
         if (req.file) {
-            // If a new icon is uploaded, update it
-            const dir = "public/images/berandaFrontpage";
+            const dir = "public/images/dokumentasi";
             ensureDir(dir);
-            image_headerPath = path.join(
+            image_path = path.join(
                 dir,
                 `${Date.now()}-${req.file.originalname}`
             );
-            fs.writeFileSync(image_headerPath, req.file.buffer);
+            fs.writeFileSync(image_path, image);
 
-            // Delete old icon if exists
-            if (beranda.image_header) {
-                fs.unlinkSync(beranda.image_header);
+            if (dokumentasi.image) {
+                fs.unlinkSync(dokumentasi.image);
             }
         }
 
-        await beranda.update({
-            nama_header,
-            nama_subheader,
-            image_header: image_headerPath,
+        await dokumentasi.update({
+            nama,
+            image: image_path,
         });
 
         res.status(200).json({
-            message: "BerandaFrontpage updated successfully",
-            data: beranda,
+            message: "Dokumentasi berhasil diperbaharui!",
+            data: dokumentasi,
         });
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
@@ -147,21 +139,21 @@ exports.update = async (req, res) => {
 // Delete
 exports.delete = async (req, res) => {
     try {
-        const beranda = await BerandaFrontpage.findByPk(req.params.id);
-        if (!beranda) {
-            return res.status(404).json({ message: "Beranda tidak ada!" });
+        const dokumentasi = await DokumentasiFrontpage.findByPk(req.params.id);
+        if (!dokumentasi) {
+            return res.status(404).json({ message: "Dokumentasi tidak ada!" });
         }
 
         // Delete image file
-        if (beranda.image_header) {
-            fs.unlink(path.resolve(beranda.image_header), (err) => {
+        if (dokumentasi.image) {
+            fs.unlink(path.resolve(dokumentasi.image), (err) => {
                 if (err) console.error(err);
             });
         }
 
-        await beranda.destroy();
+        await dokumentasi.destroy();
         res.status(200).json({
-            message: "BerandaFrontpage deleted successfully",
+            message: "Dokumentasi berhasil dihapus",
         });
     } catch (error) {
         res.status(500).json({

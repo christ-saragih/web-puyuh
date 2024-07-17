@@ -1,6 +1,6 @@
 const path = require("path");
 
-exports.validateImage = (options) => {
+exports.validateUploadFile = (options) => {
     return (req, res, next) => {
         const {
             fieldName = "image",

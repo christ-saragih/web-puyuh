@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const berandaController = require("../controllers/berandaFrontpageController");
-const upload = require("../middleware/uploadImageMiddleware");
-const { validateImage } = require("../middleware/validationImageMiddleware");
+const upload = require("../middleware/uploadFileMiddleware");
+const {
+    validateUploadFile,
+} = require("../middleware/validationUploadFileMiddleware");
 router.post(
     "/",
     upload.single("image_header"),
-    validateImage({
+    validateUploadFile({
         fieldName: "image_header",
         allowedFileTypes: /jpeg|jpg|png/,
         maxFileSize: 1024 * 1024 * 5, // 5MB
@@ -17,7 +19,7 @@ router.post(
 router.put(
     "/:id",
     upload.single("image_header"),
-    validateImage({
+    validateUploadFile({
         fieldName: "image_header",
         required: false,
     }),
