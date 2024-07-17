@@ -12,7 +12,7 @@ const ensureDir = (dir) => {
 exports.create = async (req, res) => {
     try {
         const { nama_header, nama_subheader } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
 
         // If validation passes, proceed to save the file
         const image_header = req.file ? req.file.buffer : null;

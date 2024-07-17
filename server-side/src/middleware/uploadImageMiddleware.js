@@ -15,14 +15,15 @@ const fileFilter = (req, file, cb) => {
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb("Kesalahan: Hanya gambar yang diizinkan!");
+        cb(null, false);
+        // cb("Kesalahan: Hanya gambar yang diizinkan!");
     }
 };
 
 // Inisialisasi multer dengan penyimpanan dan filter
 const upload = multer({
     storage: storage,
-    fileFilter: fileFilter,
+    // fileFilter: fileFilter,
     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
 });
 

@@ -17,21 +17,21 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: true,
+                    notEmpty: { msg: "Nama Header tidak boleh kosong!" },
                 },
             },
             nama_subheader: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: true,
+                    notEmpty: { msg: "Nama sub header tidak boleh kosong!" },
                 },
             },
             image_header: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: true,
+                    notNull: { msg: "Gambar tidak boleh kosong!" },
                 },
             },
         },
