@@ -1,15 +1,16 @@
+import { NavLink } from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
   return (
     <nav className="bg-white fixed w-full z-20 top-0 start-0 shadow-md shadow-[#4B241A] rounded-b-2xl">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-2">
-        <a href="" className="flex items-center space-x-3">
+        <NavLink to="/" className="flex items-center space-x-3">
           <img src={Logo} className="h-16" alt="Logo" />
           <span className="hidden lg:block self-center text-2xl font-semibold whitespace-nowrap">
             CV Slamet Quail Farm
           </span>
-        </a>
+        </NavLink>
         <div className="flex md:order-2 gap-2 space-x-3 md:space-x-0">
           <button
             type="button"
@@ -54,37 +55,52 @@ const Navbar = () => {
         >
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 md:flex-row md:mt-0 md:border-0 md:bg-white">
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
-                aria-current="page"
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
+                    : "block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+                }
               >
                 Beranda
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+              <NavLink
+                to="/investasi"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
+                    : "block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+                }
               >
                 Investasi
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+              <NavLink
+                to="/artikel"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
+                    : "block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+                }
               >
                 Artikel
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+              <NavLink
+                to="/tentang-kami"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
+                    : "block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+                }
               >
                 Tentang Kami
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>
