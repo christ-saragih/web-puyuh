@@ -22,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             icon: {
                 type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Icon tidak boleh kosong!" },
-                },
+                // allowNull: false,
+                // validate: {
+                //     notNull: { msg: "Icon tidak boleh kosong!" },
+                // },
             },
             url: {
                 type: DataTypes.STRING,

@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
         const icon = req.file ? req.file.buffer : null;
         let icon_path = null;
 
-        if (icon) {
+        if ((icon, nama, url)) {
             const dir = "public/images/sosial-media/icon";
             ensureDir(dir);
             icon_path = path.join(

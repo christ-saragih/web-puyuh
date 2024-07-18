@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             image: {
                 type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Gambar tidak boleh null!" },
-                },
+                // allowNull: false,
+                // validate: {
+                //     notNull: { msg: "Gambar tidak boleh null!" },
+                // },
             },
         },
         {

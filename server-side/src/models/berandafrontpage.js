@@ -29,10 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             image_header: {
                 type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Gambar tidak boleh kosong!" },
-                },
+                // allowNull: false,
+                // validate: {
+                //     notNull: { msg: "Gambar tidak boleh!" },
+                // },
             },
         },
         {

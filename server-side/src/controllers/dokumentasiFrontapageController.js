@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
         const image = req.file ? req.file.buffer : null;
         let image_path = null;
 
-        if (image) {
+        if (image && nama) {
             const dir = "public/images/dokumentasi";
             ensureDir(dir);
             image_path = path.join(

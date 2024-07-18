@@ -12,13 +12,11 @@ const ensureDir = (dir) => {
 exports.create = async (req, res) => {
     try {
         const { nama_header, nama_subheader } = req.body;
-        // console.log(req.body);
-
         // If validation passes, proceed to save the file
         const image_header = req.file ? req.file.buffer : null;
         let image_headerPath = null;
 
-        if (image_header) {
+        if (image_header && nama_header && nama_subheader) {
             const dir = "public/images/berandaFrontpage";
             ensureDir(dir);
             image_headerPath = path.join(
@@ -59,7 +57,7 @@ exports.findAll = async (req, res) => {
     try {
         const berandas = await BerandaFrontpage.findAll();
         res.status(200).json({
-            message: "BerandaFrontpage retrieved successfully",
+            message: "Beranda berhasi diambil",
             data: berandas,
         });
     } catch (error) {
@@ -78,7 +76,7 @@ exports.findOne = async (req, res) => {
             return res.status(404).json({ message: "Beranda tidak ada!" });
         }
         res.status(200).json({
-            message: "BerandaFrontpage retrieved successfully",
+            message: "Beranda berhasi diambil",
             data: beranda,
         });
     } catch (error) {
@@ -125,7 +123,7 @@ exports.update = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "BerandaFrontpage updated successfully",
+            message: "Beranda berhasil diperbaharui!",
             data: beranda,
         });
     } catch (error) {
@@ -161,7 +159,7 @@ exports.delete = async (req, res) => {
 
         await beranda.destroy();
         res.status(200).json({
-            message: "BerandaFrontpage deleted successfully",
+            message: "Beranda Berhasil Dihapus!",
         });
     } catch (error) {
         res.status(500).json({
