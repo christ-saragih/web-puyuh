@@ -7,6 +7,9 @@ export default {
         quicksand: ["Quicksand", "sans-serif"],
         inter: ["Inter", "sans-serif"]
       },
+      backgroundImage: {
+        jumbotron_aboutus: "url('/src/assets/images/jumbotron-aboutus.png')",
+      }
     },
   },
   plugins: [],

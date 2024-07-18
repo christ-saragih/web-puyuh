@@ -27,7 +27,6 @@
   position: relative;
 }
 
-
 .swiper-slide {
   width: 337px;
   height: 332px;
@@ -37,7 +36,6 @@
 .swiper-slide.swiper-slide-next.swiper-slide-visible {
   background-color: red !important;
 }
-
 
 /* .swiper-slide-shadow-left {
   border-radius: 4rem;
@@ -61,7 +59,6 @@
   }
 }
 
-
 .slider-controler {
   position: relative;
   bottom: 15rem;
@@ -73,7 +70,6 @@
 .swiper-pagination .swiper-pagination-bullet-active {
   background: #4b241a;
 }
-
 
 .jumbotron-image {
   width: 100%;
@@ -91,7 +87,6 @@
   height: 4px;
   background-color: #4b241a;
   border-radius: 10px;
-
   transition: opacity 0.4s ease, width 0.4s ease;
   opacity: 0;
 }
@@ -115,4 +110,5 @@
     height: 600px; /* Atur tinggi untuk tampilan desktop */
   }
 }
+
 /* guest end */

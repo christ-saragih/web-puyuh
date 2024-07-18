@@ -24,10 +24,10 @@ const router = createBrowserRouter([
     path: "/artikel",
     element: <Artikel />,
   },
-  {
-    path: "/tentang-kami",
-    element: <TentangKami />,
-  },
+  // {
+  //   path: "/tentang-kami",
+  //   element: <TentangKami />,
+  // },
   {
     path: "/tentang-kami",
     element: <About />
