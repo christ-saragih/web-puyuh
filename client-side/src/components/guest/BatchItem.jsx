@@ -7,7 +7,7 @@ const BatchItem = () => {
   const targetAmount = 5000000000; // contoh target dana proyek
 
   return (
-    <div className="max-w-md bg-white border border-gray-200 rounded-2xl shadow overflow-hidden">
+    <div className="w-full md:w-[47%] xl:w-1/3 bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden">
       <BatchItemImage imageUrl={BatchInvestasi} alt={"Batch Investasi"} />
 
       <BatchItemBody>

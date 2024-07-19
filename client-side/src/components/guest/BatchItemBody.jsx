@@ -7,7 +7,7 @@ import {
 
 const BatchItemBody = (props) => {
   const { children } = props;
-  return <div className="p-5">{children}</div>;
+  return <div className="p-3 lg:p-5">{children}</div>;
 };
 
 const BatchItemTitle = (props) => {
@@ -19,7 +19,7 @@ const BatchItemTitle = (props) => {
 
   return (
     <div className="relative">
-      <h5 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 ">
+      <h5 className="mb-1 text-xl xl:text-2xl font-bold tracking-tight text-gray-900 ">
         {title}
       </h5>
       <p className="mb-3 font-normal text-gray-700">{location}</p>
@@ -69,13 +69,13 @@ const StatisticItem = (props) => {
   const { Icon, title, value } = props;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col items-start gap-1 xl:flex-row xl:items-center xl:gap-2">
       <div className="flex justify-center items-center w-10 h-10 rounded-full">
         <Icon className="w-full h-full text-[#4B241A]" />
       </div>
       <div>
         <p className="text-sm">{title}</p>
-        <p className="font-semibold ">{value}</p>
+        <p className="text-sm xl:text-base font-semibold">{value}</p>
       </div>
     </div>
   );

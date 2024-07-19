@@ -2,12 +2,11 @@ import BatchItem from "./BatchItem";
 
 const BatchList = () => {
   return (
-    <div className="grid grid-cols-3 gap-x-14 gap-y-8">
+    <div className="flex justify-center flex-wrap gap-x-10 gap-y-6 xl:gap-x-14 xl:gap-y-8 xl:flex-nowrap">
       <BatchItem />
       <BatchItem />
-      <BatchItem />
+      <BatchItem className={"col-span-2 text-center"}/>
       {/* <BatchItem />
-      <BatchItem />
       <BatchItem /> */}
     </div>
   );

@@ -4,22 +4,20 @@ import { LiaUserEditSolid } from "react-icons/lia";
 
 const ArticleItem = () => {
   return (
-    <div className="grid grid-cols-2 gap-x-14 gap-y-8">
-      <div className="flex gap-3 p-2 rounded-2xl shadow-lg">
-        <div className="w-[30%] rounded-xl overflow-hidden">
-          <img src={Artikel} alt="Artikel" className="h-full object-cover" />
+    <div className="grid sm:grid-cols-2 gap-x-10 gap-y-6 xl:gap-x-14 xl:gap-y-8">
+      <div className="flex gap-3 p-2 rounded-2xl shadow-lg flex-wrap xl:flex-nowrap">
+        <div className="w-full xl:w-[30%] h-44 xl:h-auto rounded-xl overflow-hidden">
+          <img src={Artikel} alt="Artikel" className="w-full h-full object-cover" />
         </div>
 
-        <div className="flex flex-col w-[70%]">
+        <div className="flex flex-col w-full xl:w-[70%]">
           <div className="px-3 flex-grow">
             <h3 className="mb-1 text-2xl font-bold tracking-tight text-gray-900">
-              Lorem ipsum dolor sit.
+              Judul ipsum dolor sit.
             </h3>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Repudiandae nihil dolor necessitatibus error distinctio aliquid
-              animi quia sapiente illum asperiores voluptas exercitationem,
-              eveniet maxime! In, saepe impedit.
+              Repudiandae nihil dolor necessitatibus error
             </p>
           </div>
 
@@ -39,20 +37,19 @@ const ArticleItem = () => {
         </div>
       </div>
 
-      <div className="flex gap-3 p-2 rounded-2xl shadow-lg">
-        <div className="w-[30%] rounded-xl overflow-hidden">
-          <img src={Artikel} alt="Artikel" className="h-full object-cover" />
+      <div className="flex gap-3 p-2 rounded-2xl shadow-lg flex-wrap xl:flex-nowrap">
+        <div className="w-full xl:w-[30%] h-44 xl:h-auto rounded-xl overflow-hidden">
+          <img src={Artikel} alt="Artikel" className="w-full h-full object-cover" />
         </div>
 
-        <div className="flex flex-col w-[70%]">
+        <div className="flex flex-col w-full xl:w-[70%]">
           <div className="px-3 flex-grow">
             <h3 className="mb-1 text-2xl font-bold tracking-tight text-gray-900">
-              Lorem ipsum dolor sit amet.
+              Judul ipsum dolor sit amet.
             </h3>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Reprehenderit quia minima totam qui. Ut nemo itaque delectus
-              dolore? Non doloremque nam voluptates
+              Repudiandae nihil dolor necessitatibus error
             </p>
           </div>
 
@@ -71,21 +68,19 @@ const ArticleItem = () => {
           </div>
         </div>
       </div>
-      <div className="flex gap-3 p-2 rounded-2xl shadow-lg">
-        <div className="w-[30%] rounded-xl overflow-hidden">
-          <img src={Artikel} alt="Artikel" className="h-full object-cover" />
+      <div className="flex gap-3 p-2 rounded-2xl shadow-lg flex-wrap xl:flex-nowrap">
+        <div className="w-full xl:w-[30%] h-44 xl:h-auto rounded-xl overflow-hidden">
+          <img src={Artikel} alt="Artikel" className="w-full h-full object-cover" />
         </div>
 
-        <div className="flex flex-col w-[70%]">
+        <div className="flex flex-col w-full xl:w-[70%]">
           <div className="px-3 flex-grow">
             <h3 className="mb-1 text-2xl font-bold tracking-tight text-gray-900">
-              Lorem ipsum dolor sit amet.
+              Judul ipsum dolor sit amet.
             </h3>
             <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Temporibus enim numquam distinctio voluptatibus magnam, vel
-              consectetur iusto unde asperiores eos sint architecto nulla
-              perferendis.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Repudiandae nihil dolor necessitatibus error
             </p>
           </div>
 
@@ -104,15 +99,15 @@ const ArticleItem = () => {
           </div>
         </div>
       </div>
-      <div className="flex gap-3 p-2 rounded-2xl shadow-lg">
-        <div className="w-[30%] rounded-xl overflow-hidden">
-          <img src={Artikel} alt="Artikel" className="h-full object-cover" />
+      <div className="flex gap-3 p-2 rounded-2xl shadow-lg flex-wrap xl:flex-nowrap">
+        <div className="w-full xl:w-[30%] h-44 xl:h-auto rounded-xl overflow-hidden">
+          <img src={Artikel} alt="Artikel" className="w-full h-full object-cover" />
         </div>
 
-        <div className="flex flex-col w-[70%]">
+        <div className="flex flex-col w-full xl:w-[70%]">
           <div className="px-3 flex-grow">
             <h3 className="mb-1 text-2xl font-bold tracking-tight text-gray-900">
-              Lorem ipsum dolor consectetur.
+              Judul ipsum dolor consectetur.
             </h3>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
