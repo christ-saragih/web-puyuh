@@ -9,6 +9,9 @@ import Investasi from "./pages/guest/Investasi";
 import Artikel from "./pages/guest/Artikel";
 import TentangKami from "./pages/guest/TentangKami";
 import About from "./pages/guest/About";
+import Masuk from "./pages/investor/Masuk";
+import Daftar from "./pages/investor/Daftar";
+import LupaPassword from "./pages/investor/LupaPassword";
 
 const router = createBrowserRouter([
   //guess
@@ -31,6 +34,20 @@ const router = createBrowserRouter([
   {
     path: "/tentang-kami",
     element: <About />
+  },
+
+  // investor
+  {
+    path: "/masuk",
+    element: <Masuk />
+  },
+  {
+    path: "/daftar",
+    element: <Daftar />
+  },
+  {
+    path: "/lupa-password",
+    element: <LupaPassword />
   },
   //admin
   {
