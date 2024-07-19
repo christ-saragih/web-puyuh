@@ -9,6 +9,7 @@ import Investasi from "./pages/guest/Investasi";
 import Artikel from "./pages/guest/Artikel";
 import TentangKami from "./pages/guest/TentangKami";
 import About from "./pages/guest/About";
+import DetailInvestasi from "./pages/guest/DetailInvestasi";
 
 const router = createBrowserRouter([
   //guess
@@ -21,24 +22,26 @@ const router = createBrowserRouter([
     element: <Investasi />,
   },
   {
+    path: "/investasi/detail",
+    element: <DetailInvestasi />,
+  },
+  {
     path: "/artikel",
     element: <Artikel />,
   },
-  // {
-  //   path: "/tentang-kami",
-  //   element: <TentangKami />,
-  // },
   {
     path: "/tentang-kami",
-    element: <About />
+    element: <About />,
   },
   //admin
   {
     path: "/admin/login",
     element: (
-      <div className="font-semibold text-3xl text-red-600">Halaman Login Admin</div>
+      <div className="font-semibold text-3xl text-red-600">
+        Halaman Login Admin
+      </div>
     ),
-  }
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

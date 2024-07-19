@@ -1,4 +1,4 @@
-import '../../assets/style/index.css';
+import "../../assets/style/index.css";
 
 const JumbotronAbout = () => {
   return (
@@ -7,6 +7,6 @@ const JumbotronAbout = () => {
       <h1 className='kami-h1 font-inter font-bold text-[8rem] ml-2 md:text-[12.8rem] md:-mb-28 text-[#A6513C]'>KAMI</h1>
     </div>
   );
-}
+};
 
 export default JumbotronAbout;
