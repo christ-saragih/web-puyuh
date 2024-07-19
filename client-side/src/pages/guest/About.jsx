@@ -88,18 +88,18 @@ const About = () => {
         <GuestLayout>
           <div className="flex flex-col justify-center mb-4 mt-24">
             <div>
-              <h1 className="text-[35px] font-bold text-[#4B241A] ml-0 md:ml-[23rem] lg:ml-[35rem]">
+              <h1 className="text-[35px] font-bold text-[#4B241A] ml-0 md:ml-[23rem] lg:ml-[37rem]">
                 FOUNDER
               </h1>
             </div>
           </div>
-          <div className="border-[3px] border-[#4B241A] mx-4 md:mx-24 rounded-[2rem] bg-white">
+          <div className="mx-4 md:mx-24 rounded-[2rem] bg-white">
             <div className="flex flex-col items-center mt-20">
               <div className="flex flex-col md:flex-row justify-center items-center">
                 <div className="flex flex-col items-center md:mr-16 md:ml-28 w-[20%]">
                   <img src="https://via.placeholder.com/150" alt="Avatar" className="w-[150px] h-[150px] rounded-full" />
                 </div>
-                <div className="flex flex-col md:mr-14 w-[80%] mt-4 md:mt-0">
+                <div className="flex flex-col md:mr-14 w-[80%] mt-4 md:mt-4">
                   <h3 className="text-xl font-bold text-[#4B241A]">John Doe</h3>
                   <h4 className="mt-1 text-lg font-quicksand font-medium md:text-[24px]">Founder</h4>
                   <p className="font-quicksand font-medium text-[20px] mr-0 md:mr-10 text-justify mb-10">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
