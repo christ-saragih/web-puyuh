@@ -7,6 +7,9 @@ import "./assets/style/index.css";
 import Dashboard from "./pages/guest/Dashboard";
 import Investasi from "./pages/guest/Investasi";
 import About from "./pages/guest/About";
+import Masuk from "./pages/investor/Masuk";
+import Daftar from "./pages/investor/Daftar";
+import LupaPassword from "./pages/investor/LupaPassword";
 import DetailInvestasi from "./pages/guest/DetailInvestasi";
 import Article from "./pages/guest/Article";
 import ArticleDetail from "./pages/guest/ArticleDetail";
@@ -35,7 +38,21 @@ const router = createBrowserRouter([
   },
   {
     path: "/tentang-kami",
-    element: <About />,
+    element: <About />
+  },
+
+  // investor
+  {
+    path: "/masuk",
+    element: <Masuk />
+  },
+  {
+    path: "/daftar",
+    element: <Daftar />
+  },
+  {
+    path: "/lupa-password",
+    element: <LupaPassword />
   },
   //admin
   {

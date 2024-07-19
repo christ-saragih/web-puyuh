@@ -12,18 +12,22 @@ const Navbar = () => {
           </span>
         </NavLink>
         <div className="flex md:order-2 gap-2 space-x-3 md:space-x-0">
-          <button
-            type="button"
-            className="text-[#4B241A] bg-white border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300"
-          >
-            Masuk
-          </button>
-          <button
-            type="button"
-            className="text-white bg-[#4B241A] border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300"
-          >
-            Daftar
-          </button>
+          <a href="/masuk">
+            <button
+              type="button"
+              className="text-[#4B241A] bg-white border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300"
+            >
+              Masuk
+            </button>
+          </a>
+          <a href="/daftar">
+            <button
+              type="button"
+              className="text-white bg-[#4B241A] border-2 border-[#4B241A] font-medium rounded-xl w-24 py-2 text-center hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300"
+            >
+              Daftar
+            </button>
+          </a>
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
