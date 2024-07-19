@@ -23,7 +23,7 @@
 
 .swiper_container {
   height: 30rem;
-  padding: 1rem ;
+  padding: 1rem;
   position: relative;
 }
 
@@ -74,7 +74,7 @@
 .jumbotron-image {
   width: 100%;
   margin-top: 60px;
-  border-bottom-right-radius: 250px ;
+  border-bottom-right-radius: 250px;
 }
 
 .menu-item::after {
@@ -110,5 +110,4 @@
     height: 600px; /* Atur tinggi untuk tampilan desktop */
   }
 }
-
 /* guest end */
