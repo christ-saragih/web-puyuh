@@ -76,8 +76,9 @@ const DetailInvestasi = () => {
           <div className="mb-32">
             <div className={tab === 1 ? "block" : "hidden"}>
               <p>
-                <b>Investasi Saham Bisnis Emado's Shawarma Cibubur</b> <br />{" "}
-                <br />
+                <h3 className="text-2xl mb-4 font-semibold">
+                  Investasi Saham Bisnis Emado's Shawarma Cibubur
+                </h3>{" "}
                 Berinvestasi melalui saham bisnis Emado's Shawarma Cibubur
                 merupakan salah satu cara untuk mendapatkan potensi keuntungan
                 dan dividen yang menarik. Emado's Shawarma merupakan sebuah
@@ -97,22 +98,20 @@ const DetailInvestasi = () => {
                 m2. Total seat capacity di outlet ini mencapai 70 seat yang
                 terbagi menjadi 44 seat di lantai satu dan 26 seat di lantai
                 dua. <br /> <br />
-                <b>
+                <h3 className="text-2xl mb-4 font-semibold">
                   Simulasi keuntungan berinvestasi Emado's Shawarma Cibubur
                   melalui Bizhare
-                </b>{" "}
-                <br /> <br />
+                </h3>{" "}
                 Investasi saham bisnis Emado's Shawarma Cibubur melalui Bizhare
                 bisa dimulai dengan nominal Rp 50.000 per lembar
                 sahamnya. Keuntungan Anda akan berfluktuasi tergantung dari
                 kinerja saham tersebut. Tentunya keuntungan tersebut akan
                 bertambah besar ketika Anda nominal investasi Anda lebih besar.{" "}
                 <br /> <br />
-                <b>
+                <h3 className="text-2xl mb-4 font-semibold">
                   Dapatkan Poin dan XP dengan Investasi di Emado's Shawarma
                   Cibubur melalui Bizhare
-                </b>{" "}
-                <br /> <br />
+                </h3>
                 Investasi saham bisnis Emado's Shawarma Cibubur melalui Bizhare
                 akan memberi Anda keuntungan bukan hanya dari dividen, namun
                 Anda juga bisa mendapatkan Poin dan XP. Semakin besar jumlah
