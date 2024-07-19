@@ -13,7 +13,7 @@ const About = () =>{
         {/* jumbotron */}
         <section className="jumbotron-about">
             <JumbotronAbout />
-        </section>
+        </section>  
         {/* row 1 */}
         <section className="visi-misi-row">
                 <div className="container mx-auto p-8">

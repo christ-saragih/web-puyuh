@@ -1,4 +1,5 @@
 import BatchList from "../../components/guest/BatchList";
+import Footer from "../../components/guest/Footer";
 import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
 
@@ -77,6 +78,8 @@ const Investasi = () => {
 
         <BatchList />
       </GuestLayout>
+
+      <Footer />
     </>
   );
 };

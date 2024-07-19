@@ -20,13 +20,13 @@ const Dashboard = () => {
       <GuestLayout className="mt-28 lg:mt-32 -mb-0">
         <div className="w-full lg:w-[80%] mb-10">
           {/* <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
-            Wujudkan Ekosistem Pendanaan & Ivestasi yang Inklusif &
+            Wujudkan Ekosistem Pendanaan & Investasi yang Inklusif &
             Berdampak Nyata
           </h1> */}
 
           <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
             Wujudkan Ekosistem Pendanaan &{" "}
-            <span className="text-[#B87817]"> Ivestasi</span> yang Inklusif &
+            <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
             Berdampak
             <span className="text-[#B87817]"> Nyata</span>
           </h1>
