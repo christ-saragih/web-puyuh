@@ -20,13 +20,13 @@ const Dashboard = () => {
       <GuestLayout className="mt-28 lg:mt-32 -mb-0">
         <div className="w-full lg:w-[80%] mb-10">
           {/* <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
-            Wujudkan Ekosistem Pendanaan & Ivestasi yang Inklusif &
+            Wujudkan Ekosistem Pendanaan & Investasi yang Inklusif &
             Berdampak Nyata
           </h1> */}
 
           <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
             Wujudkan Ekosistem Pendanaan &{" "}
-            <span className="text-[#B87817]"> Ivestasi</span> yang Inklusif &
+            <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
             Berdampak
             <span className="text-[#B87817]"> Nyata</span>
           </h1>
@@ -69,7 +69,7 @@ const Dashboard = () => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"
-          className="w-full h-[148px]"
+          className="w-full h-124 md:h-[148px]"
         >
           <path
             fill="#FAEFE4"
@@ -83,8 +83,8 @@ const Dashboard = () => {
             <h1 className="font-bold text-center text-4xl mb-16">
               <span className="text-[#B87817]">Nilai </span> Lorem
             </h1>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col items-center px-14">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-4">
+              <div className="flex flex-col items-center xl:px-14">
                 <div className="bg-[#4B241A] rounded-full w-28 h-28 p-6 mb-4">
                   <img
                     src={InklusiKeuangan}
@@ -95,11 +95,11 @@ const Dashboard = () => {
                 <h3 className="flex-grow font-semibold text-2xl mb-2">
                   Inklusi Keuangan
                 </h3>
-                <p className="font-medium text-lg text-center">
+                <p className="px-8 sm:px-0 font-medium text-lg text-center">
                   Akses investasi yang mudah dijangkau bagi siapa saja
                 </p>
               </div>
-              <div className="flex flex-col items-center px-14">
+              <div className="flex flex-col items-center xl:px-14">
                 <div className="bg-[#4B241A] rounded-full w-28 h-w-28 p-6 mb-4">
                   <img
                     src={PertumbuhanEksponensial}
@@ -110,11 +110,11 @@ const Dashboard = () => {
                 <h3 className="flex-grow font-semibold text-center text-2xl mb-2">
                   Pertumbuhan Eksponensial
                 </h3>
-                <p className="font-medium text-lg text-center">
+                <p className="px-8 sm:px-0 font-medium text-lg text-center">
                   Investasi yang tumbuh dengan cepat dan signifikan
                 </p>
               </div>
-              <div className="flex flex-col items-center px-14">
+              <div className="flex flex-col items-center xl:px-14">
                 <div className="bg-[#4B241A] rounded-full w-28 h-w-28 p-6 mb-4">
                   <img
                     src={BerdampakSosial}
@@ -125,7 +125,7 @@ const Dashboard = () => {
                 <h3 className="flex-grow font-semibold text-2xl mb-2">
                   Berdampak Sosial
                 </h3>
-                <p className="font-medium text-lg text-center">
+                <p className="px-8 sm:px-0 font-medium text-lg text-center">
                   Investasi yang memberikan dampak positif bagi masyarakat
                 </p>
               </div>
@@ -146,18 +146,18 @@ const Dashboard = () => {
         <BatchList />
 
         <div className="flex justify-center mt-10 mb-3">
-          <button className="bg-[#4B241A] w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
+          <button className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
             Lihat Semua
           </button>
         </div>
       </GuestLayout>
 
-      <GuestLayout className=" w-full -mb-0">
+      <GuestLayout className="w-full -mb-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"
-          className="w-full h-[148px]"
+          className="w-full h-124 md:h-[148px]"
         >
           <path
             fill="#FAEFE4"
@@ -176,11 +176,11 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="grid grid-row-4 w-7/12 mx-auto gap-6">
-            <div className="flex flex-row-reverse justify-center items-center gap-14 ">
-              <img src={TemukanStartup} alt="" className="w-56 h-56" />
+          <div className="grid mx-auto gap-10 grid-row-4 w-full md:w-8/12 md:gap-6 xl:w-7/12">
+            <div className="flex flex-col gap-6 md:flex-row-reverse justify-center items-center md:gap-14 ">
+              <img src={TemukanStartup} alt="" className="w-40 h-40 md:w-56 md:h-56" />
 
-              <div className="flex flex-col gap-3">
+              <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-3xl">
                   Temukan Startup{" "}
                   <span className="text-[#B87817]">Menarik</span>
@@ -192,10 +192,10 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-14 ">
-              <img src={BeliSaham} alt="" className="w-56 h-56" />
+            <div className="flex flex-col gap-6  justify-center items-center md:flex-row md:gap-14 ">
+              <img src={BeliSaham} alt="" className="w-40 h-40 md:w-56 md:h-56" />
 
-              <div className="flex flex-col gap-3">
+              <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-3xl">
                   Beli Saham <span className="text-[#B87817]">Startup</span>
                 </h3>
@@ -206,10 +206,10 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="flex flex-row-reverse justify-center items-center gap-14 ">
-              <img src={JualSaham} alt="" className="w-56 h-56" />
+            <div className="flex flex-col gap-6 md:flex-row-reverse justify-center items-center md:gap-14 ">
+              <img src={JualSaham} alt="" className="w-40 h-40 md:w-56 md:h-56" />
 
-              <div className=" flex flex-col gap-3">
+              <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-3xl">
                   Jual di <span className="text-[#B87817]">Pasar Sekunder</span>
                 </h3>
@@ -237,7 +237,7 @@ const Dashboard = () => {
           </div>
 
           <div className="flex justify-center mt-10">
-            <button className="bg-[#4B241A] w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
+            <button className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
               Mulai Investasi
             </button>
           </div>
@@ -247,7 +247,7 @@ const Dashboard = () => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"
-          className="w-full h-[148px]"
+          className="w-full h-124 md:h-[148px]"
         >
           <path
             fill="#FAEFE4"
@@ -270,7 +270,7 @@ const Dashboard = () => {
         <ArticleItem />
 
         <div className="flex justify-center mt-10">
-          <button className="bg-[#4B241A] w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
+          <button className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
             Lihat Semua
           </button>
         </div>

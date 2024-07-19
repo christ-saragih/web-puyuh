@@ -1,15 +1,16 @@
+import ArticleItem from "../../components/guest/ArticleItem";
 import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
 
-const TentangKami = () => {
+const Article = () => {
   return (
     <>
       <Navbar />
       <GuestLayout className="mt-28 lg:mt-32">
-        <p>Halaman Tentang Kami!</p>
+        <ArticleItem />
       </GuestLayout>
     </>
   );
 };
 
-export default TentangKami;
+export default Article;

@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-2">
         <NavLink to="/" className="flex items-center space-x-3">
           <img src={Logo} className="h-16" alt="Logo" />
-          <span className="hidden lg:block self-center text-2xl font-semibold whitespace-nowrap">
+          <span className="hidden xl:block self-center text-2xl font-semibold whitespace-nowrap">
             CV Slamet Quail Farm
           </span>
         </NavLink>
