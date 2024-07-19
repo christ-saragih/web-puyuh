@@ -6,10 +6,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./assets/style/index.css";
 import Dashboard from "./pages/guest/Dashboard";
 import Investasi from "./pages/guest/Investasi";
-import Artikel from "./pages/guest/Artikel";
-import TentangKami from "./pages/guest/TentangKami";
 import About from "./pages/guest/About";
 import DetailInvestasi from "./pages/guest/DetailInvestasi";
+import Article from "./pages/guest/Article";
+import ArticleDetail from "./pages/guest/ArticleDetail";
 
 const router = createBrowserRouter([
   //guess
@@ -27,7 +27,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/artikel",
-    element: <Artikel />,
+    element: <Article />,
+  },
+  {
+    path: "/artikel/detail",
+    element: <ArticleDetail />,
   },
   {
     path: "/tentang-kami",
