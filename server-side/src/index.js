@@ -27,6 +27,7 @@ const artikelRoutes = require("./routes/artikelRoutes");
 const faqRoutes = require("./routes/faqRoutes");
 const tentangKamiRoutes = require("./routes/tentangKamiRoutes");
 const sejarahRoutes = require("./routes/sejarahRoutes");
+const dokumenFrontpageRoutes = require("./routes/dokumenFrontpageRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -37,6 +38,7 @@ app.use("/api/artikel", artikelRoutes);
 app.use("/api/faq", faqRoutes);
 app.use("/api/tentang-kami", tentangKamiRoutes);
 app.use("/api/sejarah", sejarahRoutes);
+app.use("/api/dokumen-frontpage", dokumenFrontpageRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
