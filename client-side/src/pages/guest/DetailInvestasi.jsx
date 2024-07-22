@@ -11,16 +11,18 @@ import {
   PiTimerDuotone,
   PiUserBold,
   PiUsersThreeBold,
-  PiUsersThreeDuotone,
 } from "react-icons/pi";
+import { useParams } from "react-router-dom";
 
 const DetailInvestasi = () => {
+  const { id } = useParams();
   const [tab, setTab] = useState(1);
 
   return (
     <>
       <Navbar />
       <GuestLayout className="mt-28 lg:mt-32">
+        <p>detail: {id}</p>
         <div className="max-w-3xl mx-auto">
           <div className="h-96 mb-4 rounded-xl overflow-hidden">
             <img
