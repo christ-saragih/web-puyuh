@@ -12,7 +12,7 @@ const FaqItem = ({ id, question, answer, isOpen, onToggle }) => {
         aria-controls={`basic-collapse-${id}`}
         onClick={onToggle}
       >
-        <h5 className="font-semibold">{question}</h5>
+        <h5 className="text-start font-semibold">{question}</h5>
         <svg
           className={`text-gray-900 ease-in-out duration-300 group-hover:text-[#4B241A] accordion-active:text-indigo-600 ${
             isOpen ? "rotate-180" : ""

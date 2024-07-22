@@ -1,10 +1,19 @@
+import { useEffect, useState } from "react";
 import FaqList from "../../components/guest/FaqList";
 import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
-import { getFaqData } from "../../utils/faqData";
+import { getFaqs } from "../../services/faq.service";
+import Footer from "../../components/guest/Footer";
 
 const Faq = () => {
-  const faqs = getFaqData();
+  const [faqs, setFaqs] = useState([]);
+
+  useEffect(() => {
+    getFaqs((data) => {
+      setFaqs(data);
+    });
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -28,11 +37,14 @@ const Faq = () => {
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 </h6>
               </div>
+              
               <FaqList faqs={faqs} />
             </div>
           </div>
         </div>
       </GuestLayout>
+
+      <Footer />
     </>
   );
 };
