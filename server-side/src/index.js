@@ -5,11 +5,12 @@ const { sequelize } = require("./models");
 const cors = require("cors");
 
 const app = express();
-var corsOptions = {
-    origin: "http://localhost:3000",
-};
+// var corsOptions = {
+//     origin: "http://localhost:3000",
+// };
 
-app.use(cors(corsOptions));
+app.use(cors());
+// app.use(cors(corsOptions));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
