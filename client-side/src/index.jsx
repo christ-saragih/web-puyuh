@@ -13,6 +13,9 @@ import LupaPassword from "./pages/investor/LupaPassword";
 import DetailInvestasi from "./pages/guest/DetailInvestasi";
 import Article from "./pages/guest/Article";
 import ArticleDetail from "./pages/guest/ArticleDetail";
+
+import AdminMasuk from "./pages/admin/AdminMasuk";
+import AdminLupaPassword from "./pages/admin/AdminLupaPassword";
 import ErrorPage from "./pages/ErrorPage";
 import Faq from "./pages/guest/Faq";
 
@@ -66,12 +69,12 @@ const router = createBrowserRouter([
 
   // admin start
   {
-    path: "/admin/login",
-    element: (
-      <div className="font-semibold text-3xl text-red-600">
-        Halaman Login Admin
-      </div>
-    ),
+    path: "/admin/masuk",
+    element: <AdminMasuk />
+  },
+  {
+    path: "/admin/lupa-password",
+    element: <AdminLupaPassword />
   },
   // admin end
 ]);
