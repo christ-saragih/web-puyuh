@@ -13,6 +13,8 @@ import LupaPassword from "./pages/investor/LupaPassword";
 import DetailInvestasi from "./pages/guest/DetailInvestasi";
 import Article from "./pages/guest/Article";
 import ArticleDetail from "./pages/guest/ArticleDetail";
+import AdminMasuk from "./pages/admin/AdminMasuk";
+import AdminLupaPassword from "./pages/admin/AdminLupaPassword";
 
 const router = createBrowserRouter([
   //guess
@@ -56,12 +58,12 @@ const router = createBrowserRouter([
   },
   //admin
   {
-    path: "/admin/login",
-    element: (
-      <div className="font-semibold text-3xl text-red-600">
-        Halaman Login Admin
-      </div>
-    ),
+    path: "/admin/masuk",
+    element: <AdminMasuk />
+  },
+  {
+    path: "/admin/lupa-password",
+    element: <AdminLupaPassword />
   },
 ]);
 
