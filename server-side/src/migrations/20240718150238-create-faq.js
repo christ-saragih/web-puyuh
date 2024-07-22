@@ -9,11 +9,11 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            judul: {
+            pertanyaan: {
                 type: Sequelize.STRING,
             },
-            deskripsi: {
-                type: Sequelize.STRING,
+            jawaban: {
+                type: Sequelize.TEXT,
             },
             status: {
                 type: Sequelize.ENUM("aktif", "tidak-aktif"),

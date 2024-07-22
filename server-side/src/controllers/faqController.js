@@ -4,7 +4,7 @@ const { Faq } = require("../models");
 // Create Faq
 exports.create = async (req, res) => {
     try {
-        const { judul, deskripsi, status } = req.body;
+        const { pertanyaan, jawaban, status } = req.body;
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -12,8 +12,8 @@ exports.create = async (req, res) => {
         }
 
         const faq = await Faq.create({
-            judul,
-            deskripsi,
+            pertanyaan,
+            jawaban,
             status,
         });
 
@@ -69,7 +69,7 @@ exports.getOne = async (req, res) => {
 // Update Faq
 exports.update = async (req, res) => {
     try {
-        const { judul, deskripsi, status } = req.body;
+        const { pertanyaan, jawaban, status } = req.body;
 
         const faq = await Faq.findByPk(req.params.id);
         if (!faq) {
@@ -81,7 +81,7 @@ exports.update = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        await faq.update({ judul, deskripsi, status });
+        await faq.update({ pertanyaan, jawaban, status });
 
         res.status(200).json({
             message: "FAQ berhasil diupdate!",

@@ -13,20 +13,20 @@ module.exports = (sequelize, DataTypes) => {
     }
     Faq.init(
         {
-            judul: {
+            pertanyaan: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notNull: { msg: "Judul tidak boleh null!" },
-                    notEmpty: { msg: "Judul tidak boleh kosong!" },
+                    notNull: { msg: "Pertanyaan tidak boleh null!" },
+                    notEmpty: { msg: "Pertanyaan tidak boleh kosong!" },
                 },
             },
-            deskripsi: {
+            jawaban: {
                 type: DataTypes.TEXT,
                 allowNull: false,
                 validate: {
-                    notNull: { msg: "Deskripsi tidak boleh null!" },
-                    notEmpty: { msg: "Deskripsi tidak boleh kosong!" },
+                    notNull: { msg: "Jawaban tidak boleh null!" },
+                    notEmpty: { msg: "Jawaban tidak boleh kosong!" },
                 },
             },
             status: {

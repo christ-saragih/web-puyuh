@@ -1,16 +1,16 @@
 const { check } = require("express-validator");
 
 const createFaqSchema = [
-    check("judul")
+    check("pertanyaan")
         .notEmpty()
-        .withMessage("Judul tidak boleh kosong!")
+        .withMessage("Pertanyaan tidak boleh kosong!")
         .isString()
-        .withMessage("Judul harus berupa string!"),
-    check("deskripsi")
+        .withMessage("Pertanyaan harus berupa string!"),
+    check("jawaban")
         .notEmpty()
-        .withMessage("Deskripsi tidak boleh kosong!")
+        .withMessage("Jawaban tidak boleh kosong!")
         .isString()
-        .withMessage("Deskripsi harus berupa string!"),
+        .withMessage("Jawaban harus berupa string!"),
     check("status")
         .notEmpty()
         .withMessage("Status tidak boleh kosong!")
@@ -19,14 +19,14 @@ const createFaqSchema = [
 ];
 
 const updateFaqSchema = [
-    check("judul")
+    check("pertanyaan")
         .optional()
         .isString()
-        .withMessage("Judul harus berupa string!"),
-    check("deskripsi")
+        .withMessage("Pertanyaan harus berupa string!"),
+    check("Jawaban")
         .optional()
         .isString()
-        .withMessage("Deskripsi harus berupa string!"),
+        .withMessage("Jawaban harus berupa string!"),
     check("status")
         .optional()
         .isIn(["aktif", "tidak-aktif"])
