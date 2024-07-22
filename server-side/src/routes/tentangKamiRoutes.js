@@ -15,20 +15,20 @@ const {
 
 router.post(
     "/",
-    validate(createSchema),
     upload.single("image_background"),
     validateUploadFile({
         fieldName: "image_background",
     }),
+    validate(createSchema),
     tentangKamiContoller.create
 );
 router.put(
     "/:id",
-    validate(updateSchema),
     upload.single("image_background"),
     validateUploadFile({
         fieldName: "image_background",
     }),
+    validate(updateSchema),
     tentangKamiContoller.update
 );
 router.get("/", tentangKamiContoller.findAll);
