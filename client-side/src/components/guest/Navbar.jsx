@@ -57,7 +57,7 @@ const Navbar = () => {
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
           id="navbar-sticky"
         >
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 md:flex-row md:mt-0 md:border-0 md:bg-white">
+          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-2 md:flex-row md:mt-0 md:border-0 md:bg-white">
             <li>
               <NavLink
                 to="/"
@@ -104,6 +104,18 @@ const Navbar = () => {
                 }
               >
                 Tentang Kami
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/faq"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 px-3 font-semibold text-[#4B241A] menu-item-active rounded-xl md:py-2 md:px-5"
+                    : "block py-2 px-3 font-medium text-[#81655e] rounded-xl md:py-2 md:px-5 menu-item"
+                }
+              >
+                FAQ
               </NavLink>
             </li>
           </ul>

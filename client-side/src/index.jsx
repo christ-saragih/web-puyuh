@@ -13,21 +13,25 @@ import LupaPassword from "./pages/investor/LupaPassword";
 import DetailInvestasi from "./pages/guest/DetailInvestasi";
 import Article from "./pages/guest/Article";
 import ArticleDetail from "./pages/guest/ArticleDetail";
+
 import AdminMasuk from "./pages/admin/AdminMasuk";
 import AdminLupaPassword from "./pages/admin/AdminLupaPassword";
+import ErrorPage from "./pages/ErrorPage";
+import Faq from "./pages/guest/Faq";
 
 const router = createBrowserRouter([
-  //guess
+  //guess start
   {
     path: "/",
     element: <Dashboard />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/investasi",
     element: <Investasi />,
   },
   {
-    path: "/investasi/detail",
+    path: "/investasi/:id",
     element: <DetailInvestasi />,
   },
   {
@@ -40,23 +44,30 @@ const router = createBrowserRouter([
   },
   {
     path: "/tentang-kami",
-    element: <About />
+    element: <About />,
   },
+  {
+    path: "/faq",
+    element: <Faq />,
+  },
+  // guest end
 
-  // investor
+  // investor start
   {
     path: "/masuk",
-    element: <Masuk />
+    element: <Masuk />,
   },
   {
     path: "/daftar",
-    element: <Daftar />
+    element: <Daftar />,
   },
   {
     path: "/lupa-password",
-    element: <LupaPassword />
+    element: <LupaPassword />,
   },
-  //admin
+  // investor end
+
+  // admin start
   {
     path: "/admin/masuk",
     element: <AdminMasuk />
@@ -65,6 +76,7 @@ const router = createBrowserRouter([
     path: "/admin/lupa-password",
     element: <AdminLupaPassword />
   },
+  // admin end
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

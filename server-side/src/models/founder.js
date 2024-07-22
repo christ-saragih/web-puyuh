@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class BerandaFrontpage extends Model {
+    class Founder extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -11,34 +11,38 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
         }
     }
-    BerandaFrontpage.init(
+    Founder.init(
         {
-            nama_header: {
+            nama: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Nama Header tidak boleh kosong!" },
+                    notNull: { msg: "Nama tidak boleh null!" },
+                    notEmpty: { msg: "Nama tidak boleh kosong!" },
                 },
             },
-            nama_subheader: {
+            jabatan: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Nama sub header tidak boleh kosong!" },
+                    notNull: { msg: "Jabatan tidak boleh null!" },
+                    notEmpty: { msg: "Jabatan tidak boleh kosong!" },
                 },
             },
-            image_header: {
-                type: DataTypes.STRING,
-                // allowNull: false,
-                // validate: {
-                //     notNull: { msg: "Gambar tidak boleh!" },
-                // },
+            deskripsi: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Deskripsi tidak boleh null!" },
+                    notEmpty: { msg: "Deskripsi tidak boleh kosong!" },
+                },
             },
+            gambar: DataTypes.STRING,
         },
         {
             sequelize,
-            modelName: "BerandaFrontpage",
+            modelName: "Founder",
         }
     );
-    return BerandaFrontpage;
+    return Founder;
 };

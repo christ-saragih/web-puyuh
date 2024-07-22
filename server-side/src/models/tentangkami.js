@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class BerandaFrontpage extends Model {
+    class TentangKami extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -11,34 +11,30 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
         }
     }
-    BerandaFrontpage.init(
+    TentangKami.init(
         {
-            nama_header: {
+            judul: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Nama Header tidak boleh kosong!" },
+                    notNull: { msg: "Judul tidak boleh null!" },
+                    notEmpty: { msg: "Judul tidak boleh kosong!" },
                 },
             },
-            nama_subheader: {
-                type: DataTypes.STRING,
+            image_background: DataTypes.STRING,
+            deskripsi: {
+                type: DataTypes.TEXT,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Nama sub header tidak boleh kosong!" },
+                    notNull: { msg: "Deskripsi tidak boleh null!" },
+                    notEmpty: { msg: "Deskripsi tidak boleh kosong!" },
                 },
-            },
-            image_header: {
-                type: DataTypes.STRING,
-                // allowNull: false,
-                // validate: {
-                //     notNull: { msg: "Gambar tidak boleh!" },
-                // },
             },
         },
         {
             sequelize,
-            modelName: "BerandaFrontpage",
+            modelName: "TentangKami",
         }
     );
-    return BerandaFrontpage;
+    return TentangKami;
 };
