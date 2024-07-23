@@ -7,12 +7,19 @@ const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
 
+const validate = require("../middleware/validationMiddleware");
+const {
+    createSchema,
+    updateSchema,
+} = require("../validators/artikelValidation");
+
 router.post(
     "/",
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
     }),
+    validate(createSchema),
     artikelController.create
 );
 router.put(
@@ -21,6 +28,7 @@ router.put(
     validateUploadFile({
         fieldName: "gambar",
     }),
+    validate(updateSchema),
     artikelController.update
 );
 router.get("/", artikelController.findAll);
