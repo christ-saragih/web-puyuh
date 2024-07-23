@@ -21,6 +21,7 @@ const createSchema = [
         .withMessage("Tanggal tidak boleh kosong!")
         .isDate()
         .withMessage("Tanggal harus berupa tanggal!"),
+    check("tags").notEmpty().withMessage("Tag tidak boleh kosong!"),
 ];
 
 const updateSchema = [
@@ -40,6 +41,7 @@ const updateSchema = [
         .optional()
         .isDate()
         .withMessage("Tanggal harus berupa string!"),
+    check("tags").optional(),
 ];
 
 module.exports = {
