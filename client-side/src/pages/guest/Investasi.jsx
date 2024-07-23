@@ -8,7 +8,7 @@ const Investasi = () => {
     <>
       <Navbar />
       <GuestLayout className="mt-28 lg:mt-32">
-        <h2 className="font-bold text-3xl mb-6">
+        <h2 className="font-bold text-4xl mb-6">
           Ayo berinvestasi sekarang di CV Slamet!
         </h2>
 

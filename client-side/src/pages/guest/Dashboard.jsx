@@ -9,7 +9,6 @@ import TemukanStartup from "../../assets/images/temukan-startup.svg";
 import BeliSaham from "../../assets/images/beli-saham.svg";
 import JualSaham from "../../assets/images/jual-dipasar.svg";
 import BagiHasil from "../../assets/images/bagi-hasil.svg";
-import BatchItem from "../../components/guest/BatchItem";
 import BatchList from "../../components/guest/BatchList";
 import ArticleItem from "../../components/guest/ArticleItem";
 
@@ -178,7 +177,11 @@ const Dashboard = () => {
 
           <div className="grid mx-auto gap-10 grid-row-4 w-full md:w-8/12 md:gap-6 xl:w-7/12">
             <div className="flex flex-col gap-6 md:flex-row-reverse justify-center items-center md:gap-14 ">
-              <img src={TemukanStartup} alt="" className="w-40 h-40 md:w-56 md:h-56" />
+              <img
+                src={TemukanStartup}
+                alt=""
+                className="w-40 h-40 md:w-56 md:h-56"
+              />
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-3xl">
@@ -193,7 +196,11 @@ const Dashboard = () => {
             </div>
 
             <div className="flex flex-col gap-6  justify-center items-center md:flex-row md:gap-14 ">
-              <img src={BeliSaham} alt="" className="w-40 h-40 md:w-56 md:h-56" />
+              <img
+                src={BeliSaham}
+                alt=""
+                className="w-40 h-40 md:w-56 md:h-56"
+              />
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-3xl">
@@ -207,7 +214,11 @@ const Dashboard = () => {
             </div>
 
             <div className="flex flex-col gap-6 md:flex-row-reverse justify-center items-center md:gap-14 ">
-              <img src={JualSaham} alt="" className="w-40 h-40 md:w-56 md:h-56" />
+              <img
+                src={JualSaham}
+                alt=""
+                className="w-40 h-40 md:w-56 md:h-56"
+              />
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-3xl">
