@@ -23,6 +23,7 @@ exports.create = async (req, res) => {
                 dir,
                 `${Date.now()}-${req.file.originalname}`
             );
+            gambar_name = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(gambar_path, gambar);
         }
 
@@ -32,7 +33,7 @@ exports.create = async (req, res) => {
             slug: slugify(judul, { replacement: "-", lower: true }),
             deskripsi,
             tanggal,
-            gambar: gambar_path,
+            gambar: gambar_name,
         });
 
         if (tags) {
@@ -124,10 +125,11 @@ exports.update = async (req, res) => {
                 dir,
                 `${Date.now()}-${req.file.originalname}`
             );
+            gambar_name = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(gambar_path, req.file.buffer);
 
             if (artikel.gambar) {
-                fs.unlinkSync(artikel.gambar);
+                fs.unlinkSync(path.join(dir, `${artikel.gambar}`));
             }
         }
 
@@ -137,7 +139,7 @@ exports.update = async (req, res) => {
             slug: slugify(judul, { replacement: "-", lower: true }),
             deskripsi,
             tanggal,
-            gambar: gambar_path,
+            gambar: gambar_name,
         });
 
         if (tags) {
@@ -192,9 +194,12 @@ exports.delete = async (req, res) => {
 
         // Delete image file
         if (artikel.gambar) {
-            fs.unlink(path.resolve(artikel.gambar), (err) => {
-                if (err) console.error(err);
-            });
+            fs.unlink(
+                path.resolve(`public/images/artikel/${artikel.gambar}`),
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
         }
 
         await ArtikelTag.destroy({ where: { artikelId: artikel.id } });
