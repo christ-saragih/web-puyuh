@@ -28,13 +28,14 @@ exports.create = async (req, res) => {
                 dir,
                 `${Date.now()}-${req.file.originalname}`
             );
+            name_image_background = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(image_background_path, image_background);
         }
 
         const tentangkami = await TentangKami.create({
             judul,
             deskripsi,
-            image_background: image_background_path,
+            image_background: name_image_background,
         });
 
         res.status(201).json({
@@ -108,17 +109,20 @@ exports.update = async (req, res) => {
                 dir,
                 `${Date.now()}-${req.file.originalname}`
             );
+            name_image_background = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(image_background_path, req.file.buffer);
 
             if (tentangkami.image_background) {
-                fs.unlinkSync(tentangkami.image_background);
+                fs.unlinkSync(
+                    path.join(dir, `${tentangkami.image_background}`)
+                );
             }
         }
 
         await tentangkami.update({
             judul,
             deskripsi,
-            image_background: image_background_path,
+            image_background: name_image_background,
         });
 
         res.status(200).json({
@@ -151,9 +155,14 @@ exports.delete = async (req, res) => {
 
         // Delete image file
         if (tentangkami.image_background) {
-            fs.unlink(path.resolve(tentangkami.image_background), (err) => {
-                if (err) console.error(err);
-            });
+            fs.unlink(
+                path.resolve(
+                    `public/images/tentang-kami/${tentangkami.image_background}`
+                ),
+                (err) => {
+                    if (err) console.error(err);
+                }
+            );
         }
 
         await tentangkami.destroy();
@@ -166,6 +175,21 @@ exports.delete = async (req, res) => {
         res.status(500).json({
             message: "Internal server error",
             error: error.message,
+        });
+    }
+};
+
+// New Function to Get Image by Name
+exports.getImageByName = (req, res) => {
+    const { gambar } = req.params;
+    const dir = "public/images/tentang-kami";
+    const imagePath = path.join(dir, gambar);
+
+    if (fs.existsSync(imagePath)) {
+        res.sendFile(path.resolve(imagePath));
+    } else {
+        res.status(404).json({
+            message: "Gambar tidak ditemukan",
         });
     }
 };
