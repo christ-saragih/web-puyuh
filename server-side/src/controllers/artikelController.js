@@ -1,6 +1,7 @@
 const { Artikel, Tag, ArtikelTag } = require("../models");
 const fs = require("fs");
 const path = require("path");
+const { where } = require("sequelize");
 const slugify = require("slugify");
 
 const ensureDir = (dir) => {
@@ -213,6 +214,20 @@ exports.delete = async (req, res) => {
         res.status(500).json({
             message: "Internal server error",
             error: error.message,
+        });
+    }
+};
+// New Function to Get Image by Name
+exports.getImageByName = (req, res) => {
+    const { gambar } = req.params;
+    const dir = "public/images/artikel";
+    const imagePath = path.join(dir, gambar);
+
+    if (fs.existsSync(imagePath)) {
+        res.sendFile(path.resolve(imagePath));
+    } else {
+        res.status(404).json({
+            message: "Gambar tidak ditemukan",
         });
     }
 };
