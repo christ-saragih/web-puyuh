@@ -1,10 +1,17 @@
+import { useEffect, useState } from "react";
 import ArticleList from "../../components/guest/ArticleList";
 import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
-import { getArticleData } from "../../utils/articleData";
+import { getArticles } from "../../services/article.service";
 
 const Article = () => {
-  const articles = getArticleData();
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    getArticles((data) => {
+      setArticles(data);
+    });
+  }, []);
 
   return (
     <>

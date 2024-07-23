@@ -4,7 +4,7 @@ import FaqItem from "./FaqItem";
 const FaqList = (props) => {
   const { faqs } = props;
 
-  const [openQuestionId, setOpenQuestionId] = useState(1); // Default open question is the first one
+  const [openQuestionId, setOpenQuestionId] = useState(1);
 
   const handleToggle = (id) => {
     setOpenQuestionId(openQuestionId === id ? null : id);
