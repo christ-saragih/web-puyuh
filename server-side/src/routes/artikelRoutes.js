@@ -34,5 +34,6 @@ router.put(
 router.get("/", artikelController.findAll);
 router.get("/:id", artikelController.findOne);
 router.delete("/:id", artikelController.delete);
+router.get("/images/:gambar", artikelController.getImageByName);
 
 module.exports = router;
