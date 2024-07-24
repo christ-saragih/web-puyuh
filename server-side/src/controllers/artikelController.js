@@ -102,6 +102,25 @@ exports.findOne = async (req, res) => {
     }
 };
 
+// Read one By Slug
+exports.findDataBySlug = async (req, res) => {
+    try {
+        const artikel = await Artikel.findOne({
+            where: { slug: req.params.slug },
+            include: Tag,
+        });
+        if (!artikel) {
+            return res.status(404).json({ message: "Artikel tidak !" });
+        }
+        res.status(200).json(artikel);
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
 // Update
 exports.update = async (req, res) => {
     try {

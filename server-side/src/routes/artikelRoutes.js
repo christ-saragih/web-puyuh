@@ -32,7 +32,8 @@ router.put(
     artikelController.update
 );
 router.get("/", artikelController.findAll);
-router.get("/:id", artikelController.findOne);
+// router.get("/:id", artikelController.findOne);
+router.get("/:slug", artikelController.findDataBySlug);
 router.delete("/:id", artikelController.delete);
 router.get("/image/:gambar", artikelController.getImageByName);
 
