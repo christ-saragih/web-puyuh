@@ -15,17 +15,12 @@ exports.create = async (req, res) => {
     try {
         const { penulis, judul, deskripsi, tanggal, tags } = req.body;
         const gambar = req.file ? req.file.buffer : null;
-        let gambar_path = null;
 
         if (gambar && penulis && judul && deskripsi && tanggal && tags) {
             const dir = "public/images/artikel";
             ensureDir(dir);
-            gambar_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
-            );
             gambar_name = `${Date.now()}-${req.file.originalname}`;
-            fs.writeFileSync(gambar_path, gambar);
+            fs.writeFileSync(path.join(dir, gambar_name), gambar);
         }
 
         const artikel = await Artikel.create({
@@ -118,19 +113,18 @@ exports.update = async (req, res) => {
             return res.status(404).json({ message: "Artikel tidak ada!" });
         }
 
-        let gambar_path = artikel.gambar;
+        let gambar_name = artikel.gambar;
         if (req.file) {
             const dir = "public/images/artikel";
             ensureDir(dir);
-            gambar_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
-            );
             gambar_name = `${Date.now()}-${req.file.originalname}`;
-            fs.writeFileSync(gambar_path, req.file.buffer);
+            fs.writeFileSync(path.join(dir, gambar_name), req.file.buffer);
 
             if (artikel.gambar) {
-                fs.unlinkSync(path.join(dir, `${artikel.gambar}`));
+                const oldImagePath = path.join(dir, artikel.gambar);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
             }
         }
 
@@ -195,12 +189,16 @@ exports.delete = async (req, res) => {
 
         // Delete image file
         if (artikel.gambar) {
-            fs.unlink(
-                path.resolve(`public/images/artikel/${artikel.gambar}`),
-                (err) => {
-                    if (err) console.error(err);
-                }
+            const imagePath = path.resolve(
+                `public/images/artikel/${artikel.gambar}`
             );
+            if (fs.existsSync(imagePath)) {
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
         }
 
         await ArtikelTag.destroy({ where: { artikelId: artikel.id } });
@@ -217,7 +215,7 @@ exports.delete = async (req, res) => {
         });
     }
 };
-// New Function to Get Image by Name
+// Get Image by Name
 exports.getImageByName = (req, res) => {
     const { gambar } = req.params;
     const dir = "public/images/artikel";
