@@ -14,22 +14,18 @@ exports.create = async (req, res) => {
         const { nama, status } = req.body;
         // If validation passes, proceed to save the file
         const file = req.file ? req.file.buffer : null;
-        let file_path = null;
 
         if (file && nama && status) {
             const dir = "public/file/dokumenFrontpage";
             ensureDir(dir);
-            file_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
-            );
-            fs.writeFileSync(file_path, file);
+            nama_file = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(path.join(dir, nama_file), file);
         }
 
         const dokumen = await DokumenFrontpage.create({
             nama,
             status,
-            file: file_path,
+            file: nama_file,
         });
 
         res.status(201).json({
@@ -98,28 +94,26 @@ exports.update = async (req, res) => {
             return res.status(404).json({ message: "Dokumen tidak ada!" });
         }
 
-        // Handle icon update
-        let file_path = dokumen.file; // Default to current icon path
+        let nama_file = dokumen.file;
         if (req.file) {
-            // If a new icon is uploaded, update it
             const dir = "public/file/dokumenFrontpage";
             ensureDir(dir);
-            file_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
-            );
-            fs.writeFileSync(file_path, req.file.buffer);
 
-            // Delete old icon if exists
+            nama_file = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(path.join(dir, nama_file), req.file.buffer);
+
             if (dokumen.file) {
-                fs.unlinkSync(dokumen.file);
+                const oldFilePath = path.join(dir, dokumen.file);
+                if (fs.existsSync(oldFilePath)) {
+                    fs.unlinkSync(oldFilePath);
+                }
             }
         }
 
         await dokumen.update({
             nama,
             status,
-            file: file_path,
+            file: nama_file,
         });
 
         res.status(200).json({
@@ -152,9 +146,14 @@ exports.delete = async (req, res) => {
 
         // Delete image file
         if (dokumen.file) {
-            fs.unlink(path.resolve(dokumen.file), (err) => {
-                if (err) console.error(err);
-            });
+            const filePath = path.resolve(
+                `public/file/dokumenFrontpage/${dokumen.file}`
+            );
+            if (fs.existsSync(filePath)) {
+                fs.unlink(filePath, (err) => {
+                    if (err) console.error(err);
+                });
+            }
         }
 
         await dokumen.destroy();
@@ -165,6 +164,21 @@ exports.delete = async (req, res) => {
         res.status(500).json({
             message: "Internal server error",
             error: error.message,
+        });
+    }
+};
+
+// Get File by Name
+exports.getFileByName = (req, res) => {
+    const { file } = req.params;
+    const dir = "public/file/dokumenFrontpage";
+    const filePath = path.join(dir, file);
+
+    if (fs.existsSync(filePath)) {
+        res.sendFile(path.resolve(filePath));
+    } else {
+        res.status(404).json({
+            message: "Gambar tidak ditemukan",
         });
     }
 };
