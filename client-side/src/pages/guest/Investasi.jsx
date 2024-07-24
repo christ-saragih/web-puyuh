@@ -41,7 +41,7 @@ const Investasi = () => {
               <input
                 type="search"
                 id="search-investment"
-                className="block w-full px-4 py-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-2xl bg-gray-50"
+                className="block w-full px-4 py-2 ps-10 text-sm text-gray-900 bg-gray-50 border-gray-300 border-2 rounded-2xl focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
                 placeholder="Masukkan pencarian.."
                 required
               />

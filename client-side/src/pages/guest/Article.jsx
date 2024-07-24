@@ -3,6 +3,7 @@ import ArticleList from "../../components/guest/ArticleList";
 import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
 import { getArticles } from "../../services/article.service";
+import Footer from "../../components/guest/Footer";
 
 const Article = () => {
   const [articles, setArticles] = useState([]);
@@ -19,6 +20,8 @@ const Article = () => {
       <GuestLayout className="mt-28 lg:mt-32">
         <ArticleList articles={articles} />
       </GuestLayout>
+
+      <Footer />
     </>
   );
 };

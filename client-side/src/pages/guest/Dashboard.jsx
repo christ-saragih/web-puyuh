@@ -10,19 +10,27 @@ import BeliSaham from "../../assets/images/beli-saham.svg";
 import JualSaham from "../../assets/images/jual-dipasar.svg";
 import BagiHasil from "../../assets/images/bagi-hasil.svg";
 import BatchList from "../../components/guest/BatchList";
-import ArticleItem from "../../components/guest/ArticleItem";
+import ArticleList from "../../components/guest/ArticleList";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getArticles } from "../../services/article.service";
 
 const Dashboard = () => {
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    getArticles((data) => {
+      // mengambil 4 artikel terbaru
+      const latestArticles = data.slice(-4).reverse();
+      setArticles(latestArticles);
+    });
+  }, []);
+
   return (
     <>
       <Navbar />
       <GuestLayout className="mt-28 lg:mt-32 -mb-0">
         <div className="w-full lg:w-[80%] mb-10">
-          {/* <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
-            Wujudkan Ekosistem Pendanaan & Investasi yang Inklusif &
-            Berdampak Nyata
-          </h1> */}
-
           <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
             Wujudkan Ekosistem Pendanaan &{" "}
             <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
@@ -145,9 +153,12 @@ const Dashboard = () => {
         <BatchList />
 
         <div className="flex justify-center mt-10 mb-3">
-          <button className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
+          <Link
+            to={"/investasi"}
+            className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl text-center"
+          >
             Lihat Semua
-          </button>
+          </Link>
         </div>
       </GuestLayout>
 
@@ -278,12 +289,15 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <ArticleItem />
+        <ArticleList articles={articles} />
 
         <div className="flex justify-center mt-10">
-          <button className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
+          <Link
+            to={"/artikel"}
+            className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl text-center"
+          >
             Lihat Semua
-          </button>
+          </Link>
         </div>
       </GuestLayout>
 
