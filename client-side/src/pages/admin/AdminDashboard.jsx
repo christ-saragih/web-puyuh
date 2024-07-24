@@ -1,11 +1,11 @@
 import Sidebar from "../../components/common/Sidebar";
 
+// TODO: Kirim useState isHovered melalui file ini
+
 const AdminDashboard = () => {
   return (
-    <div className="bg-white w-dvw h-dvh overflow-y-auto">
+    <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
       <Sidebar />
-
-      <div className="px-4 p-4 py-5 md:ml-32">{/* konten */}</div>
     </div>
   );
 };
