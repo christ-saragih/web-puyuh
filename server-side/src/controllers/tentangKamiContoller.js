@@ -2,6 +2,7 @@ const { TentangKami } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { validationResult } = require("express-validator");
+const { exit } = require("process");
 
 const ensureDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -14,28 +15,21 @@ exports.create = async (req, res) => {
     try {
         const { judul, deskripsi } = req.body;
         const image_background = req.file ? req.file.buffer : null;
-        let image_background_path = null;
-
-        // const errors = validationResult(req.body);
-        // if (!errors.isEmpty()) {
-        //     return res.status(400).json({ errors: errors.array() });
-        // }
 
         if (image_background && judul && deskripsi) {
             const dir = "public/images/tentang-kami";
             ensureDir(dir);
-            image_background_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
+            image_background_name = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(
+                path.join(dir, image_background_name),
+                image_background
             );
-            name_image_background = `${Date.now()}-${req.file.originalname}`;
-            fs.writeFileSync(image_background_path, image_background);
         }
 
         const tentangkami = await TentangKami.create({
             judul,
             deskripsi,
-            image_background: name_image_background,
+            image_background: image_background_name,
         });
 
         res.status(201).json({
@@ -91,6 +85,7 @@ exports.findOne = async (req, res) => {
 };
 
 // Update
+// Update
 exports.update = async (req, res) => {
     try {
         const { judul, deskripsi } = req.body;
@@ -101,28 +96,31 @@ exports.update = async (req, res) => {
             return res.status(404).json({ message: "Tentang Kami Tidak Ada!" });
         }
 
-        let image_background_path = tentangkami.image_background;
+        let image_background_name = tentangkami.image_background;
         if (req.file) {
             const dir = "public/images/tentang-kami";
             ensureDir(dir);
-            image_background_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
+            image_background_name = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(
+                path.join(dir, image_background_name),
+                req.file.buffer
             );
-            name_image_background = `${Date.now()}-${req.file.originalname}`;
-            fs.writeFileSync(image_background_path, req.file.buffer);
 
             if (tentangkami.image_background) {
-                fs.unlinkSync(
-                    path.join(dir, `${tentangkami.image_background}`)
+                const oldImagePath = path.join(
+                    dir,
+                    tentangkami.image_background
                 );
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
             }
         }
 
         await tentangkami.update({
             judul,
             deskripsi,
-            image_background: name_image_background,
+            image_background: image_background_name,
         });
 
         res.status(200).json({
@@ -155,14 +153,14 @@ exports.delete = async (req, res) => {
 
         // Delete image file
         if (tentangkami.image_background) {
-            fs.unlink(
-                path.resolve(
-                    `public/images/tentang-kami/${tentangkami.image_background}`
-                ),
-                (err) => {
-                    if (err) console.error(err);
-                }
+            const imagePath = path.resolve(
+                `public/images/tentang-kami/${tentangkami.image_background}`
             );
+            if (fs.existsSync(imagePath)) {
+                fs.unlink(imagePath, (err) => {
+                    if (err) console.error(err);
+                });
+            }
         }
 
         await tentangkami.destroy();

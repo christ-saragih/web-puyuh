@@ -3,6 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { sequelize } = require("./models");
 const cors = require("cors");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const sessionMiddleware = require("./middleware/sessionMiddleware");
 
 const app = express();
 
@@ -12,6 +15,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(
+    session({
+        secret: process.env.ACCESS_SECRET_KEY,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
+    })
+);
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,6 +38,9 @@ const tentangKamiRoutes = require("./routes/tentangKamiRoutes");
 const sejarahRoutes = require("./routes/sejarahRoutes");
 const dokumenFrontpageRoutes = require("./routes/dokumenFrontpageRoutes");
 const founderRoutes = require("./routes/founderRoutes");
+const authInvestorRoutes = require("./routes/authInvestorRoutes");
+const authAdminRoutes = require("./routes/authAdminRoutes");
+const roleRoutes = require("./routes/roleRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -38,6 +53,9 @@ app.use("/api/tentang-kami", tentangKamiRoutes);
 app.use("/api/sejarah", sejarahRoutes);
 app.use("/api/dokumen-frontpage", dokumenFrontpageRoutes);
 app.use("/api/founder", founderRoutes);
+app.use("/api/investor", authInvestorRoutes);
+app.use("/api/admin", authAdminRoutes);
+app.use("/api/role", roleRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
