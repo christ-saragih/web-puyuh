@@ -5,7 +5,6 @@ const { sequelize } = require("./models");
 const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const sessionMiddleware = require("./middleware/sessionMiddleware");
 
 const app = express();
 

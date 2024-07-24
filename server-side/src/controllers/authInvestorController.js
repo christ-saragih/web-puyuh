@@ -85,13 +85,21 @@ exports.login = async (req, res) => {
         }
 
         const accessToken = jwt.sign(
-            { username: investor.username, email: investor.email },
+            {
+                id: investor.id,
+                username: investor.username,
+                email: investor.email,
+            },
             process.env.ACCESS_SECRET_KEY,
             { expiresIn: "15m" } // Access token valid for 15 minutes
         );
 
         const refreshToken = jwt.sign(
-            { username: investor.username, email: investor.email },
+            {
+                id: investor.id,
+                username: investor.username,
+                email: investor.email,
+            },
             process.env.REFRESH_SECRET_KEY,
             { expiresIn: "7d" } // Refresh token valid for 7 days
         );
