@@ -18,7 +18,7 @@ const ArticleDetail = () => {
   }, [id]);
 
   if (!article) {
-    return <div>Loading...</div>;
+    return <div>Data artikel tidak ditemukan!</div>;
   }
   console.log(article);
   const formattedDate = formatDate(article.tanggal);
@@ -58,7 +58,7 @@ const ArticleDetail = () => {
 
         <div className="px-16 h-[30rem] mt-16 mb-8">
           <img
-            src={article.gambar}
+            src={`http://localhost:3000/api/artikel/images/${article.gambar}`}
             alt="Artikel"
             className="rounded-3xl w-full h-full object-cover"
           />

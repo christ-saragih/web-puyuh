@@ -3,7 +3,11 @@ const ArticleItemImage = (props) => {
 
   return (
     <div className="w-full xl:w-[30%] h-44 xl:h-auto rounded-xl overflow-hidden">
-      <img src={gambar} alt="Artikel" className="w-full h-full object-cover" />
+      <img
+        src={`http://localhost:3000/api/artikel/images/${gambar}`}
+        alt="Artikel"
+        className="w-full h-full object-cover"
+      />
     </div>
   );
 };
