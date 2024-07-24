@@ -18,6 +18,7 @@ import AdminMasuk from "./pages/admin/AdminMasuk";
 import AdminLupaPassword from "./pages/admin/AdminLupaPassword";
 import ErrorPage from "./pages/ErrorPage";
 import Faq from "./pages/guest/Faq";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const router = createBrowserRouter([
   //guess start
@@ -70,11 +71,15 @@ const router = createBrowserRouter([
   // admin start
   {
     path: "/admin/masuk",
-    element: <AdminMasuk />
+    element: <AdminMasuk />,
   },
   {
     path: "/admin/lupa-password",
-    element: <AdminLupaPassword />
+    element: <AdminLupaPassword />,
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
   },
   // admin end
 ]);
