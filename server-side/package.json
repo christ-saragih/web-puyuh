@@ -26,5 +26,8 @@
         "sequelize": "^6.37.3",
         "sequelize-cli": "^6.6.2",
         "slugify": "^1.6.6"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^8.4.1"
     }
 }
