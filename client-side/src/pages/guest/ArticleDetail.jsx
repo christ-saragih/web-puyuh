@@ -8,14 +8,14 @@ import { getArticleById } from "../../services/article.service";
 import { formatDate } from "../../utils/formatDate";
 
 const ArticleDetail = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
-    getArticleById(id, (data) => {
+    getArticleById(slug, (data) => {
       setArticle(data);
     });
-  }, [id]);
+  }, [slug]);
 
   if (!article) {
     return <div>Data artikel tidak ditemukan!</div>;
@@ -58,7 +58,7 @@ const ArticleDetail = () => {
 
         <div className="px-16 h-[30rem] mt-16 mb-8">
           <img
-            src={`http://localhost:3000/api/artikel/images/${article.gambar}`}
+            src={`http://localhost:3000/api/artikel/image/${article.gambar}`}
             alt="Artikel"
             className="rounded-3xl w-full h-full object-cover"
           />
