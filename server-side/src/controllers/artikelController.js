@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
         const gambar = req.file ? req.file.buffer : null;
 
         if (gambar && penulis && judul && deskripsi && tanggal && tags) {
-            const dir = "public/images/artikel";
+            const dir = "public/images/artikels";
             ensureDir(dir);
             gambar_name = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(path.join(dir, gambar_name), gambar);
@@ -134,7 +134,7 @@ exports.update = async (req, res) => {
 
         let gambar_name = artikel.gambar;
         if (req.file) {
-            const dir = "public/images/artikel";
+            const dir = "public/images/artikels";
             ensureDir(dir);
             gambar_name = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(path.join(dir, gambar_name), req.file.buffer);
@@ -209,7 +209,7 @@ exports.delete = async (req, res) => {
         // Delete image file
         if (artikel.gambar) {
             const imagePath = path.resolve(
-                `public/images/artikel/${artikel.gambar}`
+                `public/images/artikels/${artikel.gambar}`
             );
             if (fs.existsSync(imagePath)) {
                 fs.unlink(imagePath, (err) => {
@@ -237,7 +237,7 @@ exports.delete = async (req, res) => {
 // Get Image by Name
 exports.getImageByName = (req, res) => {
     const { gambar } = req.params;
-    const dir = "public/images/artikel";
+    const dir = "public/images/artikels";
     const imagePath = path.join(dir, gambar);
 
     if (fs.existsSync(imagePath)) {
