@@ -8,18 +8,18 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         const artikels = [];
         const artikelTags = [];
-        const imageDirectory = path.join(
-            __dirname,
-            "..",
-            "..",
-            "public",
-            "images",
-            "artikels"
-        );
+        // const imageDirectory = path.join(
+        //     __dirname,
+        //     "..",
+        //     "..",
+        //     "public",
+        //     "images",
+        //     "artikels"
+        // );
 
-        if (!fs.existsSync(imageDirectory)) {
-            fs.mkdirSync(imageDirectory, { recursive: true });
-        }
+        // if (!fs.existsSync(imageDirectory)) {
+        //     fs.mkdirSync(imageDirectory, { recursive: true });
+        // }
 
         // Fetch all tags
         const tags = await queryInterface.sequelize.query(
@@ -29,18 +29,19 @@ module.exports = {
 
         for (let i = 0; i < 10; i++) {
             const judul = faker.lorem.sentence();
-            const imageFileName = `${faker.string.uuid()}.jpg`;
-            const imagePath = path.join(imageDirectory, imageFileName);
+            // const imageFileName = `${faker.string.uuid()}.jpg`;
+            // const imagePath = path.join(imageDirectory, imageFileName);
 
-            // Generate an image and save it to the specified directory
-            fs.writeFileSync(imagePath, faker.image.dataUri(640, 480));
+            // // Generate an image and save it to the specified directory
+            // fs.writeFileSync(imagePath, faker.image.url(640, 480));
 
             const artikel = {
                 penulis: faker.person.fullName(),
                 jumlah_penglihat: faker.number.int({ min: 1, max: 100 }),
                 judul: judul,
                 slug: faker.helpers.slugify(judul).toLowerCase(),
-                gambar: `images/artikels/${imageFileName}`,
+                // gambar: `${imageFileName}`,
+                gambar: faker.image.url(),
                 deskripsi: faker.lorem.paragraphs(),
                 tanggal: faker.date.past(),
                 createdAt: new Date(),
