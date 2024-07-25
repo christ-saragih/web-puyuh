@@ -8,11 +8,20 @@ import {
   PiUsersBold,
 } from "react-icons/pi";
 import Logo from "../../assets/images/logo.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // membuat button dropdown pada menu konten menjadi aktif
+  const location = useLocation();
+  const isSubMenuActive = (path) => location.pathname.startsWith(path);
+  const isActive =
+    isSubMenuActive("/admin/beranda") ||
+    isSubMenuActive("/admin/artikel") ||
+    isSubMenuActive("/admin/tentang-kami") ||
+    isSubMenuActive("/admin/faq");
 
   return (
     <>
@@ -45,9 +54,14 @@ const Sidebar = () => {
 
           <ul className="mx-[5.5px] space-y-2 font-medium">
             <li>
-              <a
-                href="#"
-                className="flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a] hover:bg-[#ffffff1a]"
+              <NavLink
+                to="/admin"
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
+                    : "flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+                }
               >
                 <LuLayoutDashboard className="flex-shrink-0 w-7 h-7 text-white " />
 
@@ -60,13 +74,17 @@ const Sidebar = () => {
                 >
                   Dashboard
                 </span>
-              </a>
+              </NavLink>
             </li>
 
             <li>
               <button
                 type="button"
-                className="flex p-2 w-full items-center rounded-lg hover:bg-[#ffffff1a] focus:outline-none"
+                className={`flex p-2 w-full items-center rounded-lg focus:outline-none ${
+                  isActive
+                    ? "text-gray-900 bg-[#ffffff1a]"
+                    : "text-gray-900 hover:bg-[#ffffff1a]"
+                }`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 aria-controls="dropdown-example"
                 data-collapse-toggle="dropdown-example"
@@ -110,89 +128,123 @@ const Sidebar = () => {
                 } py-2 space-y-2`}
               >
                 <li>
-                  <a
-                    href="#"
+                  <NavLink
+                    to={"/admin/beranda"}
                     className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                   >
-                    {/* kalo dropdown item active */}
-                    <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
-                    {/* <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" /> */}
+                    {({ isActive }) => (
+                      <>
+                        {isActive ? (
+                          <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        ) : (
+                          <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        )}
 
-                    <span
-                      className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
-                        isHovered
-                          ? "translate-x-0 opacity-100"
-                          : "-translate-x-10 opacity-0"
-                      }`}
-                    >
-                      Beranda
-                    </span>
-                  </a>
+                        <span
+                          className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                            isHovered
+                              ? "translate-x-0 opacity-100"
+                              : "-translate-x-10 opacity-0"
+                          }`}
+                        >
+                          Beranda
+                        </span>
+                      </>
+                    )}
+                  </NavLink>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <NavLink
+                    to={"/admin/artikel"}
                     className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                   >
-                    <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white " />
+                    {({ isActive }) => (
+                      <>
+                        {isActive ? (
+                          <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        ) : (
+                          <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        )}
 
-                    <span
-                      className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
-                        isHovered
-                          ? "translate-x-0 opacity-100"
-                          : "-translate-x-10 opacity-0"
-                      }`}
-                    >
-                      Artikel
-                    </span>
-                  </a>
+                        <span
+                          className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                            isHovered
+                              ? "translate-x-0 opacity-100"
+                              : "-translate-x-10 opacity-0"
+                          }`}
+                        >
+                          Artikel
+                        </span>
+                      </>
+                    )}
+                  </NavLink>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <NavLink
+                    to={"/admin/tentang-kami"}
                     className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                   >
-                    <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white " />
+                    {({ isActive }) => (
+                      <>
+                        {isActive ? (
+                          <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        ) : (
+                          <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        )}
 
-                    <span
-                      className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
-                        isHovered
-                          ? "translate-x-0 opacity-100"
-                          : "-translate-x-10 opacity-0"
-                      }`}
-                    >
-                      Tentang Kami
-                    </span>
-                  </a>
+                        <span
+                          className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                            isHovered
+                              ? "translate-x-0 opacity-100"
+                              : "-translate-x-10 opacity-0"
+                          }`}
+                        >
+                          Tentang Kami
+                        </span>
+                      </>
+                    )}
+                  </NavLink>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <NavLink
+                    to={"/admin/faq"}
                     className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                   >
-                    <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white " />
+                    {({ isActive }) => (
+                      <>
+                        {isActive ? (
+                          <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        ) : (
+                          <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                        )}
 
-                    <span
-                      className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
-                        isHovered
-                          ? "translate-x-0 opacity-100"
-                          : "-translate-x-10 opacity-0"
-                      }`}
-                    >
-                      FAQ
-                    </span>
-                  </a>
+                        <span
+                          className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                            isHovered
+                              ? "translate-x-0 opacity-100"
+                              : "-translate-x-10 opacity-0"
+                          }`}
+                        >
+                          FAQ
+                        </span>
+                      </>
+                    )}
+                  </NavLink>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="#"
-                className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+              <NavLink
+                to="/admin/investasi"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
+                    : "flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+                }
               >
                 <PiChartLineUpBold className="flex-shrink-0 w-7 h-7 text-white " />
 
@@ -205,13 +257,17 @@ const Sidebar = () => {
                 >
                   Investasi
                 </span>
-              </a>
+              </NavLink>
             </li>
 
             <li>
-              <a
-                href="#"
-                className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+              <NavLink
+                to="/admin/pengguna"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
+                    : "flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+                }
               >
                 <PiUsersBold className="flex-shrink-0 w-7 h-7 text-white" />
 
@@ -224,7 +280,7 @@ const Sidebar = () => {
                 >
                   Pengguna
                 </span>
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>

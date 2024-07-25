@@ -81,6 +81,11 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminDashboard />,
   },
+
+  {
+    path: "/admin/beranda",
+    element: <AdminDashboard />,
+  },
   // admin end
 ]);
 
