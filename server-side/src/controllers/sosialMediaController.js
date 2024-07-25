@@ -13,21 +13,17 @@ exports.create = async (req, res) => {
     try {
         const { nama, url } = req.body;
         const icon = req.file ? req.file.buffer : null;
-        let icon_path = null;
 
-        if ((icon, nama, url)) {
+        if (icon && nama && url) {
             const dir = "public/images/sosial-media/icon";
             ensureDir(dir);
-            icon_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
-            );
-            fs.writeFileSync(icon_path, icon);
+            nama_icon = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(path.join(dir, nama_icon), icon);
         }
 
         const sosialMedia = await SosialMedia.create({
             nama,
-            icon: icon_path,
+            icon: nama_icon,
             url,
         });
 
@@ -90,31 +86,32 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { nama, url } = req.body;
-        const icon = req.file ? req.file.buffer : null;
+        const icon = req.file ? req.file.path : null;
 
         const sosialMedia = await SosialMedia.findByPk(req.params.id);
         if (!sosialMedia) {
-            return res.status(404).json({ message: "Sosial Media tidak ada" });
+            return res.status(404).json({ message: "Sosial Media tidak ada!" });
         }
 
-        let icon_path = sosialMedia.icon;
+        let nama_icon = sosialMedia.icon;
         if (req.file) {
             const dir = "public/images/sosial-media/icon";
             ensureDir(dir);
-            icon_path = path.join(
-                dir,
-                `${Date.now()}-${req.file.originalname}`
-            );
-            fs.writeFileSync(icon_path, icon);
+            nama_icon = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(path.join(dir, nama_icon), req.file.buffer);
 
             if (sosialMedia.icon) {
-                fs.unlinkSync(sosialMedia.icon);
+                const oldImagePath = path.join(dir, sosialMedia.icon);
+
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
             }
         }
 
         await sosialMedia.update({
             nama,
-            icon: icon_path,
+            icon: nama_icon,
             url,
         });
 
@@ -148,9 +145,14 @@ exports.delete = async (req, res) => {
 
         // Delete image file
         if (sosialMedia.icon) {
-            fs.unlink(path.resolve(sosialMedia.icon), (err) => {
-                if (err) console.error(err);
-            });
+            const imagePath = path.resolve(
+                `public/images/sosial-media/icon/${sosialMedia.icon}`
+            );
+            if (fs.existsSync(imagePath)) {
+                fs.unlink(imagePath, (err) => {
+                    if (err) console.error(err);
+                });
+            }
         }
 
         await sosialMedia.destroy();
@@ -161,6 +163,21 @@ exports.delete = async (req, res) => {
         res.status(500).json({
             message: "Internal server error",
             error: error.message,
+        });
+    }
+};
+
+// Get Image by Name
+exports.getImageByName = (req, res) => {
+    const { gambar } = req.params;
+    const dir = "public/images/sosial-media/icon";
+    const imagePath = path.join(dir, gambar);
+
+    if (fs.existsSync(imagePath)) {
+        res.sendFile(path.resolve(imagePath));
+    } else {
+        res.status(404).json({
+            message: "Gambar tidak ditemukan",
         });
     }
 };

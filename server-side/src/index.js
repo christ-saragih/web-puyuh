@@ -5,7 +5,6 @@ const { sequelize } = require("./models");
 const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const sessionMiddleware = require("./middleware/sessionMiddleware");
 
 const app = express();
 
@@ -18,7 +17,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
     session({
-        secret: process.env.ACCESS_SECRET_KEY,
+        secret: process.env.ACCESS_SECRET_KEY || "ACCESS_SECRET_KEY",
         resave: false,
         saveUninitialized: true,
         cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
@@ -41,6 +40,7 @@ const founderRoutes = require("./routes/founderRoutes");
 const authInvestorRoutes = require("./routes/authInvestorRoutes");
 const authAdminRoutes = require("./routes/authAdminRoutes");
 const roleRoutes = require("./routes/roleRoutes");
+const investorBiodataRoutes = require("./routes/investorBiodataRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -56,6 +56,7 @@ app.use("/api/founder", founderRoutes);
 app.use("/api/investor", authInvestorRoutes);
 app.use("/api/admin", authAdminRoutes);
 app.use("/api/role", roleRoutes);
+app.use("/api/biodata-investor", investorBiodataRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);

@@ -6,12 +6,19 @@ const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
 
+const validate = require("../middleware/validationMiddleware");
+const {
+    createSchema,
+    updateSchema,
+} = require("../validators/sosialMediaValidation");
+
 router.post(
     "/",
     upload.single("icon"),
     validateUploadFile({
         fieldName: "icon",
     }),
+    validate(createSchema),
     sosialMediaController.create
 );
 router.put(
@@ -21,10 +28,12 @@ router.put(
         fieldName: "icon",
         required: false,
     }),
+    validate(updateSchema),
     sosialMediaController.update
 );
 router.get("/", sosialMediaController.findAll);
 router.get("/:id", sosialMediaController.findOne);
 router.delete("/:id", sosialMediaController.delete);
+router.get("/image/:gambar", sosialMediaController.getImageByName);
 
 module.exports = router;

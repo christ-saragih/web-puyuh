@@ -1,7 +1,6 @@
 const { TentangKami } = require("../models");
 const fs = require("fs");
 const path = require("path");
-const { validationResult } = require("express-validator");
 const { exit } = require("process");
 
 const ensureDir = (dir) => {
@@ -84,7 +83,6 @@ exports.findOne = async (req, res) => {
     }
 };
 
-// Update
 // Update
 exports.update = async (req, res) => {
     try {
@@ -177,7 +175,7 @@ exports.delete = async (req, res) => {
     }
 };
 
-// New Function to Get Image by Name
+// Get Image by Name
 exports.getImageByName = (req, res) => {
     const { gambar } = req.params;
     const dir = "public/images/tentang-kami";

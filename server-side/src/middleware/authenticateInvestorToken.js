@@ -1,34 +1,9 @@
-// const jwt = require("jsonwebtoken");
-
-// const authenticateToken = (req, res, next) => {
-//     const token = req.header("Authorization");
-
-//     if (!token) {
-//         return res
-//             .status(401)
-//             .json({ message: "Access denied. No token provided." });
-//     }
-
-//     const cleanToken = token.replace("Bearer ", "");
-
-//     jwt.verify(cleanToken, process.env.ACCESS_SECRET_KEY, (err, admin) => {
-//         if (err) {
-//             console.error(err);
-//             return res.status(403).json({ message: "Invalid token." });
-//         }
-
-//         req.admin = admin;
-//         next();
-//     });
-// };
-
-// module.exports = authenticateToken;
 const jwt = require("jsonwebtoken");
 const blacklist = new Set();
 
-const authenticateToken = (req, res, next) => {
-    // const token = req.cookies.token || req.header("Authorization");
+const authenticateInvestorToken = (req, res, next) => {
     const token = req.header("Authorization");
+    // const token = req.cookies.token || req.header("Authorization");
 
     if (!token) {
         return res
@@ -42,18 +17,18 @@ const authenticateToken = (req, res, next) => {
         return res.status(403).json({ message: "Token has been blacklisted." });
     }
 
-    jwt.verify(cleanToken, process.env.ACCESS_SECRET_KEY, (err, user) => {
+    jwt.verify(cleanToken, process.env.ACCESS_SECRET_KEY, (err, investor) => {
         if (err) {
             console.error(err);
             return res.status(403).json({ message: "Invalid token." });
         }
 
-        req.user = user;
+        req.investor = investor;
         next();
     });
 };
 
-const logout = (req, res) => {
+const logoutInvestor = (req, res) => {
     const token = req.cookies.token || req.header("Authorization");
     if (token) {
         const cleanToken = token.replace("Bearer ", "");
@@ -68,4 +43,4 @@ const logout = (req, res) => {
     });
 };
 
-module.exports = { authenticateToken, logout };
+module.exports = { authenticateInvestorToken, logoutInvestor };

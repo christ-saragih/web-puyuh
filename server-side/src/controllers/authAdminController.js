@@ -77,13 +77,13 @@ exports.login = async (req, res) => {
         }
 
         const accessToken = jwt.sign(
-            { username: admin.username, email: admin.email },
+            { id: admin.id, username: admin.username, email: admin.email },
             process.env.ACCESS_SECRET_KEY,
             { expiresIn: "15m" } // Access token valid for 15 minutes
         );
 
         const refreshToken = jwt.sign(
-            { username: admin.username, email: admin.email },
+            { id: admin.id, username: admin.username, email: admin.email },
             process.env.REFRESH_SECRET_KEY,
             { expiresIn: "7d" } // Refresh token valid for 7 days
         );
@@ -114,10 +114,14 @@ exports.login = async (req, res) => {
 // Logout
 exports.logout = (req, res) => {
     res.clearCookie("token");
-    req.session.destroy();
-    res.json({ message: "Logout successful" });
+    res.clearCookie("refreshToken");
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ message: "Failed to logout." });
+        }
+        res.json({ message: "Logout successful" });
+    });
 };
-
 // Protected route example
 exports.protected = (req, res) => {
     res.json({ message: "This is a protected route", username: req.username });
