@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* guest start */
+/* COMMON: Start */
+
+/* input start */
+/* INPUT: Start */
+/* .input-primary {
+} */
+
+.input-primary-outline {
+  @apply text-gray-900 bg-gray-50 border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+}
+
+/* .input-error {
+} */
+/* input end */
+
+/* COMMON: End */
+
+/* GUEST: Start */
 .menu-item-active,
 .menu-item {
   position: relative;
@@ -110,8 +127,8 @@
     height: 600px; /* Atur tinggi untuk tampilan desktop */
   }
 }
-/* guest end */
+/* GUEST: End */
 
-/* admin start */
+/* ADMIN: Start */
 
-/* admin end */
+/* ADMIN: End */

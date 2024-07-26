@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ArticleList from "../../components/guest/ArticleList";
 import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
 import { getArticles } from "../../services/article.service";
 import Footer from "../../components/guest/Footer";
+import ArticleList from "../../components/common/ArticleList";
 
 const Article = () => {
   const [articles, setArticles] = useState([]);
@@ -20,7 +20,7 @@ const Article = () => {
     <>
       <Navbar />
       <GuestLayout className="mt-28 lg:mt-32">
-        <ArticleList articles={articles} />
+        <ArticleList articles={articles} role="guest" />
       </GuestLayout>
 
       <Footer />

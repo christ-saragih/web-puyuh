@@ -58,7 +58,8 @@ const ArticleDetail = () => {
 
         <div className="px-16 h-[30rem] mt-16 mb-8">
           <img
-            src={`http://localhost:3000/api/artikel/image/${article.gambar}`}
+            // src={`http://localhost:3000/api/artikel/image/${article.gambar}`}
+            src={article.gambar}
             alt="Artikel"
             className="rounded-3xl w-full h-full object-cover"
           />

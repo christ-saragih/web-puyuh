@@ -19,6 +19,13 @@ import AdminLupaPassword from "./pages/admin/AdminLupaPassword";
 import ErrorPage from "./pages/ErrorPage";
 import Faq from "./pages/guest/Faq";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminArticle from "./pages/admin/AdminKontenArtikel";
+import AdminKontenTentangKami from "./pages/admin/AdminKontenTentangKami";
+import AdminKontenArtikel from "./pages/admin/AdminKontenArtikel";
+import AdminKontenBeranda from "./pages/admin/AdminKontenBeranda";
+import AdminKontenFaq from "./pages/admin/AdminKontenFaq";
+import AdminInvestasi from "./pages/admin/AdminInvestasi";
+import AdminPengguna from "./pages/admin/AdminPengguna";
 
 const router = createBrowserRouter([
   //guess start
@@ -81,10 +88,29 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminDashboard />,
   },
-
   {
     path: "/admin/beranda",
-    element: <AdminDashboard />,
+    element: <AdminKontenBeranda />,
+  },
+  {
+    path: "/admin/artikel",
+    element: <AdminKontenArtikel />,
+  },
+  {
+    path: "/admin/tentang-kami",
+    element: <AdminKontenTentangKami />,
+  },
+  {
+    path: "/admin/faq",
+    element: <AdminKontenFaq />,
+  },
+  {
+    path: "/admin/investasi",
+    element: <AdminInvestasi />,
+  },
+  {
+    path: "/admin/pengguna",
+    element: <AdminPengguna />,
   },
   // admin end
 ]);
