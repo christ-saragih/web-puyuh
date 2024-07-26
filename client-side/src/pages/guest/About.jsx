@@ -14,13 +14,13 @@ const About = () => {
 
   useEffect(() => {
     getAbouts((data) => {
-      console.log(data);
+      // console.log(data);
       setAbouts(data);
     });
   }, []);
 
   if (!abouts) {
-    return <div>Loading...</div>; // Loading state
+    return <div>Server rusak</div>;
   }
 
   return (
@@ -32,12 +32,11 @@ const About = () => {
       </section>
       {/* row 1 */}
       <section className="visi-misi-row">
-        <div className="container mx-auto p-8">
+        <div className="container mx-auto p-8 lg:-mt-32">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* <!-- Column 1: Text --> */}
             <div className="flex flex-col justify-center">
               <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-950 mb-4 -ml-5 md:text-[36px]">
-                {/* {abouts.judul} */}
                 <span className="block text-amber-950 md:text-[35px] mt-5">SUKAHARJA SMART QUAIL FARM</span>
               </h2>
               <p className="font-quicksand font-medium text-[#000000] md:text-[20px] md:mr-44 -ml-5">
