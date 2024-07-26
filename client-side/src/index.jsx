@@ -44,7 +44,7 @@ const router = createBrowserRouter([
     element: <Article />,
   },
   {
-    path: "/artikel/:id",
+    path: "/artikel/:slug",
     element: <ArticleDetail />,
   },
   {
@@ -87,6 +87,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
+    element: <AdminDashboard />,
+  },
+
+  {
+    path: "/admin/beranda",
     element: <AdminDashboard />,
   },
   // admin end

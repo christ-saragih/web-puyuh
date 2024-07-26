@@ -10,7 +10,9 @@ const Article = () => {
 
   useEffect(() => {
     getArticles((data) => {
-      setArticles(data);
+      // menampilkan urutan artikel yang terbaru -> terlama
+      const latestArticles = data.reverse();
+      setArticles(latestArticles);
     });
   }, []);
 
