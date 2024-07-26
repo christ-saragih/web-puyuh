@@ -23,6 +23,8 @@ module.exports = {
                 nama: faker.lorem.word(),
                 file: faker.image.url(),
                 status: status[Math.floor(Math.random() * status.length)],
+                createdAt: new Date(),
+                updatedAt: new Date(),
             };
             dokumen.push(data);
         }
