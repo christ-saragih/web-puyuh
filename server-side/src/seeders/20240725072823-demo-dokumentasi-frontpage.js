@@ -21,6 +21,8 @@ module.exports = {
             const data = {
                 nama: faker.lorem.word(),
                 image: faker.image.url(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
             };
             dokumentasi.push(data);
         }
