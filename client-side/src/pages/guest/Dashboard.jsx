@@ -10,10 +10,10 @@ import BeliSaham from "../../assets/images/beli-saham.svg";
 import JualSaham from "../../assets/images/jual-dipasar.svg";
 import BagiHasil from "../../assets/images/bagi-hasil.svg";
 import BatchList from "../../components/guest/BatchList";
-import ArticleList from "../../components/guest/ArticleList";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getArticles } from "../../services/article.service";
+import ArticleList from "../../components/common/ArticleList";
 
 const Dashboard = () => {
   const [articles, setArticles] = useState([]);
