@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("InvestorBiodata", {
+        await queryInterface.createTable("InvestorAlamat", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -11,28 +11,24 @@ module.exports = {
             },
             investorId: {
                 type: Sequelize.INTEGER,
-                references: {
-                    model: "Investors",
-                    key: "id",
-                },
             },
-            nama_lengkap: {
+            alamat: {
+                type: Sequelize.TEXT,
+            },
+            provinsi: {
                 type: Sequelize.STRING,
             },
-            jk: {
-                type: Sequelize.ENUM("pria", "wanita"),
-            },
-            tempat_lahir: {
+            kota: {
                 type: Sequelize.STRING,
             },
-            tanggal_lahir: {
-                type: Sequelize.DATE,
-            },
-            no_hp: {
+            kecamatan: {
                 type: Sequelize.STRING,
             },
-            kategori_investor: {
-                type: Sequelize.ENUM("individu", "organisasi"),
+            kelurahan: {
+                type: Sequelize.STRING,
+            },
+            kode_pos: {
+                type: Sequelize.STRING,
             },
             createdAt: {
                 allowNull: false,
@@ -45,6 +41,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("InvestorBiodata");
+        await queryInterface.dropTable("InvestorAlamat");
     },
 };

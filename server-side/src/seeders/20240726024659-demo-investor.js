@@ -19,7 +19,7 @@ module.exports = {
         const password = await bcrypt.hash("password", 10);
 
         for (let i = 0; i < 3; i++) {
-            data = {
+            const data = {
                 username: faker.internet.userName(),
                 email: faker.internet.email(),
                 password: password,

@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            InvestorBiodata.belongsTo(models.Investor, {
+                foreignKey: "investorId",
+            });
         }
     }
     InvestorBiodata.init(
@@ -38,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
                     },
                 },
             },
-            tampat_lahir: {
+            tempat_lahir: {
                 type: DataTypes.STRING,
                 validate: {
                     notEmpty: { msg: "Tempat lahir tidak boleh kosong!" },

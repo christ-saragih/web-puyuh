@@ -6,6 +6,7 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
+dotenv.config();
 const app = express();
 
 app.use(cors());
@@ -17,7 +18,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
     session({
-        secret: process.env.ACCESS_SECRET_KEY || "ACCESS_SECRET_KEY",
+        secret: process.env.ACCESS_SECRET_KEY,
         resave: false,
         saveUninitialized: true,
         cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
@@ -41,6 +42,7 @@ const authInvestorRoutes = require("./routes/authInvestorRoutes");
 const authAdminRoutes = require("./routes/authAdminRoutes");
 const roleRoutes = require("./routes/roleRoutes");
 const investorBiodataRoutes = require("./routes/investorBiodataRoutes");
+const investorAlamatRoutes = require("./routes/investorAlamatRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -57,6 +59,7 @@ app.use("/api/investor", authInvestorRoutes);
 app.use("/api/admin", authAdminRoutes);
 app.use("/api/role", roleRoutes);
 app.use("/api/biodata-investor", investorBiodataRoutes);
+app.use("/api/alamat-investor", investorAlamatRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
