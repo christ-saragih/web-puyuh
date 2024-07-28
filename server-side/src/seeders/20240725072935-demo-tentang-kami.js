@@ -18,7 +18,7 @@ module.exports = {
             "TentangKamis",
             [
                 {
-                    judul: faker.lorem.sentence(),
+                    judul: "TENTANG KAMI",
                     deskripsi: faker.lorem.paragraphs(),
                     image_background: faker.image.url(),
                     createdAt: new Date(),
