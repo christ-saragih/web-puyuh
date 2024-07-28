@@ -55,3 +55,60 @@ exports.validateUploadFile = (options) => {
         next();
     };
 };
+
+// const path = require("path");
+
+// exports.validateUploadFile = (options) => {
+//     return (req, res, next) => {
+//         const {
+//             fieldName = "image",
+//             allowedFileTypes = /jpeg|jpg|png/,
+//             maxFileSize = 1024 * 1024 * 5, // Default to 5MB
+//             required = true,
+//         } = options;
+
+//         const files = req.files[fieldName];
+
+//         if (required && (!files || files.length === 0)) {
+//             return res.status(400).json({
+//                 message: "Validation error",
+//                 errors: [{ msg: `${fieldName} harus diupload` }],
+//             });
+//         }
+
+//         if (files) {
+//             for (const file of files) {
+//                 const mimetype = allowedFileTypes.test(file.mimetype);
+//                 const extname = allowedFileTypes.test(
+//                     path.extname(file.originalname).toLowerCase()
+//                 );
+
+//                 if (!mimetype || !extname) {
+//                     return res.status(400).json({
+//                         message: "Validation error",
+//                         errors: [
+//                             {
+//                                 msg: `Kesalahan: Hanya file dengan tipe ${allowedFileTypes.toString()} yang diizinkan!`,
+//                             },
+//                         ],
+//                     });
+//                 }
+
+//                 if (file.size > maxFileSize) {
+//                     return res.status(400).json({
+//                         message: "Validation error",
+//                         errors: [
+//                             {
+//                                 msg: `Kesalahan: Ukuran file maksimal ${
+//                                     maxFileSize / (1024 * 1024)
+//                                 }MB!`,
+//                             },
+//                         ],
+//                     });
+//                 }
+//             }
+//         }
+
+//         next();
+//     };
+// };

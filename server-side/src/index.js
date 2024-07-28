@@ -43,6 +43,7 @@ const authAdminRoutes = require("./routes/authAdminRoutes");
 const roleRoutes = require("./routes/roleRoutes");
 const investorBiodataRoutes = require("./routes/investorBiodataRoutes");
 const investorAlamatRoutes = require("./routes/investorAlamatRoutes");
+const investorIdentitasRoutes = require("./routes/investorIdentitasRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -60,6 +61,7 @@ app.use("/api/admin", authAdminRoutes);
 app.use("/api/role", roleRoutes);
 app.use("/api/biodata-investor", investorBiodataRoutes);
 app.use("/api/alamat-investor", investorAlamatRoutes);
+app.use("/api/identitas-investor", investorIdentitasRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
