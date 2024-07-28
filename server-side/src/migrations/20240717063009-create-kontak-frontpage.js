@@ -10,10 +10,10 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             url_map: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             alamat: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             email: {
                 type: Sequelize.STRING,
