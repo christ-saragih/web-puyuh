@@ -5,13 +5,18 @@ import AdminContentLayout from "../../layouts/AdminContentLayout";
 import Input from "../../components/common/Input";
 import InputSearch from "../../components/common/InputSearch";
 import Dropdown from "../../components/common/Dropdown";
-import { PiPlusBold, PiPlusCircle, PiPlusCircleBold } from "react-icons/pi";
+import { PiPlusCircle } from "react-icons/pi";
 import { getArticles } from "../../services/article.service";
 import ArticleList from "../../components/common/ArticleList";
+import Modal from "../../components/common/Modal";
+import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+import Label from "../../components/common/Label";
 
 const AdminKontenArtikel = () => {
   const [isHovered, setIsHovered] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [articleContent, setArticleContent] = useState("");
   const options = ["10", "20", "30", "40", "Semua"];
   const [selectedValue, setSelectedValue] = useState("10");
 
@@ -68,10 +73,134 @@ const AdminKontenArtikel = () => {
                 <InputSearch />
               </form>
 
-              <button className="flex items-center py-2 px-6 bg-blue-800 text-white font-medium rounded-2xl">
+              <button
+                className="flex items-center py-2 px-6 bg-blue-800 text-white font-medium rounded-2xl"
+                onClick={() => setIsModalOpen(true)}
+              >
                 <PiPlusCircle className="w-6 h-6 me-1" />
                 <p>Tambah</p>
               </button>
+
+              <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                {/* Modal header  */}
+                <Modal.Header
+                  title={"Tambah Artikel"}
+                  onClose={() => setIsModalOpen(false)}
+                />
+
+                {/* Modal body  */}
+                <Modal.Body>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label
+                        htmlFor={"article_title"}
+                        value={"Judul Artikel"}
+                      />
+                      <Input
+                        type={"text"}
+                        name={"article_title"}
+                        placeholder={"Masukkan judul artikel.."}
+                        variant={"primary-outline"}
+                        className={"mt-1 mb-4"}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor={"author"} value={"Nama Penulis"} />
+                      <Input
+                        type={"text"}
+                        name={"author"}
+                        placeholder={"Masukkan nama penulis.."}
+                        variant={"primary-outline"}
+                        className={"mt-1"}
+                      />
+                    </div>
+                  </div>
+
+                  <Label
+                    htmlFor={"article_description"}
+                    value={"Isi Artikel"}
+                  />
+                  <ReactQuill
+                    value={articleContent}
+                    onChange={setArticleContent}
+                    modules={{
+                      toolbar: [
+                        [{ header: "1" }, { header: "2" }, { font: [] }],
+                        [{ size: [] }],
+                        ["bold", "italic", "underline", "strike", "blockquote"],
+                        [
+                          { list: "ordered" },
+                          { list: "bullet" },
+                          { indent: "-1" },
+                          { indent: "+1" },
+                        ],
+                        ["link", "image", "video"],
+                        ["clean"],
+                      ],
+                    }}
+                    formats={[
+                      "header",
+                      "font",
+                      "size",
+                      "bold",
+                      "italic",
+                      "underline",
+                      "strike",
+                      "blockquote",
+                      "list",
+                      "bullet",
+                      "indent",
+                      "link",
+                      "image",
+                      "video",
+                    ]}
+                    className="mt-1 mb-4"
+                  />
+
+                  <Label htmlFor={"article_image"} value={"Gambar Artikel"} />
+
+                  <div className="flex items-center justify-center w-full mt-1">
+                    <label
+                      htmlFor="dropzone-file"
+                      className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-50 hover:bg-gray-100"
+                    >
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">Click to upload</span>{" "}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                      </div>
+                      <input
+                        id="dropzone-file"
+                        type="file"
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </Modal.Body>
+
+                {/* Modal footer  */}
+                <Modal.Footer action={"Tambah"} onClose={() => setIsModalOpen(false)} />
+              </Modal>
             </div>
 
             <ArticleList articles={articles} role="admin" />

@@ -32,7 +32,7 @@ const Input = (props) => {
       id={name}
       value={value}
       defaultValue={defaultValue}
-      className={`block max-w-sm w-full px-4 py-2 ps-10 text-sm border-2 rounded-2xl ${
+      className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl ${
         isError && "input-error"
       } input-${variant} ${className}`}
       ref={input}
