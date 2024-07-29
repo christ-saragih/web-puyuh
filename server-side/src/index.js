@@ -17,12 +17,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
-    session({
-        secret: process.env.ACCESS_SECRET_KEY,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
-    })
+  session({
+    secret: process.env.ACCESS_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
+  })
 );
 
 const PORT = process.env.PORT || 3000;
@@ -66,11 +66,11 @@ app.use("/api/identitas-investor", investorIdentitasRoutes);
 app.use("/api/data-pendukung-investor", investorDataPendukungRoutes);
 
 app.listen(PORT, async () => {
-    console.log(`Server is running on port ${PORT}`);
-    try {
-        await sequelize.authenticate();
-        console.log("Database Connected!");
-    } catch (error) {
-        console.error("Database Connection Failed:", error);
-    }
+  console.log(`Server is running on port ${PORT}`);
+  try {
+    await sequelize.authenticate();
+    console.log("Database Connected!");
+  } catch (error) {
+    console.error("Database Connection Failed:", error);
+  }
 });

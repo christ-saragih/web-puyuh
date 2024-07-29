@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const ActionButton = (props) => {
-  const { icon: Icon, className, variant = "bg-white", tooltip } = props;
+  const { icon: Icon, className, variant = "bg-white", tooltip, onClick } = props;
   const [visible, setVisible] = useState(false);
 
   return (
@@ -12,6 +12,7 @@ const ActionButton = (props) => {
         className={`w-10 h-10 shadow-md rounded-full p-2 ${variant} ${className}`}
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
+        onClick={onClick}
       >
         {Icon && <Icon className="w-full h-full" />}
       </button>
