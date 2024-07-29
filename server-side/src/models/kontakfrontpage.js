@@ -14,16 +14,16 @@ module.exports = (sequelize, DataTypes) => {
     KontakFrontpage.init(
         {
             url_map: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: false,
                 validate: {
                     notEmpty: { msg: "Url map tidak boleh kosong!" },
-                    // isUrl: { msg: "Url map harus berupa link url!" },
+                    isUrl: { msg: "Url map harus berupa link url!" },
                     notNull: { msg: "Url map tidak boleh null" },
                 },
             },
             alamat: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: false,
                 validate: {
                     notEmpty: { msg: "Alamat tidak boleh kosong" },

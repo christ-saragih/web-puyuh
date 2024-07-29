@@ -27,6 +27,10 @@ import AdminKontenFaq from "./pages/admin/AdminKontenFaq";
 import AdminInvestasi from "./pages/admin/AdminInvestasi";
 import AdminPengguna from "./pages/admin/AdminPengguna";
 
+import InvestorDashboard from "./pages/investor/InvestorDashboard";
+
+
+
 const router = createBrowserRouter([
   //guess start
   {
@@ -72,6 +76,10 @@ const router = createBrowserRouter([
   {
     path: "/lupa-password",
     element: <LupaPassword />,
+  },
+  {
+    path: "/investor/",
+    element: <InvestorDashboard />,
   },
   // investor end
 

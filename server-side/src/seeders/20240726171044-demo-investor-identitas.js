@@ -14,17 +14,23 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
          */
+        const investors = await queryInterface.sequelize.query(
+            "SELECT id from Investors;"
+        );
+        const investorIdentitas = investors[0].map((investor) => ({
+            investorId: investor.id,
+            no_ktp: faker.number.int(),
+            foto_ktp: faker.image.url(),
+            no_npwp: faker.number.int(),
+            foto_npwp: faker.image.url(),
+            selfie_ktp: faker.image.url(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        }));
+
         await queryInterface.bulkInsert(
-            "TentangKamis",
-            [
-                {
-                    judul: "TENTANG KAMI",
-                    deskripsi: faker.lorem.paragraphs(),
-                    image_background: faker.image.url(),
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-            ],
+            "InvestorIdentitas",
+            investorIdentitas,
             {}
         );
     },
@@ -36,6 +42,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete("TentangKamis", null, {});
+        await queryInterface.bulkDelete("InvestorIdentitas", null, {});
     },
 };

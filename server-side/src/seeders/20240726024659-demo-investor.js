@@ -1,6 +1,7 @@
 "use strict";
 
-const { faker, da } = require("@faker-js/faker");
+const { faker } = require("@faker-js/faker");
+const bcrypt = require("bcrypt");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -14,21 +15,22 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
          */
-
-        const sosialMedia = [];
+        const investors = [];
+        const password = await bcrypt.hash("password", 10);
 
         for (let i = 0; i < 3; i++) {
             const data = {
-                nama: faker.lorem.word(),
-                icon: faker.image.avatar(),
-                url: faker.internet.url({ appendSlash: true }),
+                username: faker.internet.userName(),
+                email: faker.internet.email(),
+                password: password,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
-            sosialMedia.push(data);
+
+            investors.push(data);
         }
 
-        await queryInterface.bulkInsert("SosialMedia", sosialMedia, {});
+        await queryInterface.bulkInsert("Investors", investors, {});
     },
 
     async down(queryInterface, Sequelize) {
@@ -38,6 +40,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete("SosialMedia", null, {});
+        await queryInterface.bulkDelete("Investors", null, {});
     },
 };
