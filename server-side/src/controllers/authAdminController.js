@@ -77,13 +77,23 @@ exports.login = async (req, res) => {
         }
 
         const accessToken = jwt.sign(
-            { id: admin.id, username: admin.username, email: admin.email },
+            {
+                id: admin.id,
+                username: admin.username,
+                email: admin.email,
+                role: "admin",
+            },
             process.env.ACCESS_SECRET_KEY,
             { expiresIn: "15m" } // Access token valid for 15 minutes
         );
 
         const refreshToken = jwt.sign(
-            { id: admin.id, username: admin.username, email: admin.email },
+            {
+                id: admin.id,
+                username: admin.username,
+                email: admin.email,
+                role: "admin",
+            },
             process.env.REFRESH_SECRET_KEY,
             { expiresIn: "7d" } // Refresh token valid for 7 days
         );
@@ -150,7 +160,7 @@ exports.refreshToken = async (req, res) => {
         }
 
         const newAccessToken = jwt.sign(
-            { username: admin.username, email: admin.email },
+            { username: admin.username, email: admin.email, role: "admin" },
             process.env.ACCESS_SECRET_KEY,
             { expiresIn: "15m" }
         );
