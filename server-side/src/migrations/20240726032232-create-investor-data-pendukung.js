@@ -2,24 +2,36 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("KontakFrontpages", {
+        await queryInterface.createTable("InvestorDataPendukung", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            url_map: {
-                type: Sequelize.TEXT,
+            investorId: {
+                type: Sequelize.INTEGER,
             },
-            alamat: {
-                type: Sequelize.TEXT,
-            },
-            email: {
+            latar_pendidikan: {
                 type: Sequelize.STRING,
             },
-            no_phone: {
+            sumber_penghasilan: {
                 type: Sequelize.STRING,
+            },
+            jumlah_penghasilan: {
+                type: Sequelize.STRING,
+            },
+            bidang_usaha: {
+                type: Sequelize.STRING,
+            },
+            tujuan_investasi: {
+                type: Sequelize.STRING,
+            },
+            no_sid: {
+                type: Sequelize.STRING,
+            },
+            tanggal_pembuatan_sid: {
+                type: Sequelize.DATE,
             },
             createdAt: {
                 allowNull: false,
@@ -32,6 +44,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("KontakFrontpages");
+        await queryInterface.dropTable("InvestorDataPendukung");
     },
 };

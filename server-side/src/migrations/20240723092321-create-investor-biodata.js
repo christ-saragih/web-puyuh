@@ -22,7 +22,7 @@ module.exports = {
             jk: {
                 type: Sequelize.ENUM("pria", "wanita"),
             },
-            tampat_lahir: {
+            tempat_lahir: {
                 type: Sequelize.STRING,
             },
             tanggal_lahir: {

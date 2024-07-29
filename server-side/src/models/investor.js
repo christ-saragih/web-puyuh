@@ -12,6 +12,15 @@ module.exports = (sequelize, DataTypes) => {
             Investor.hasOne(models.InvestorBiodata, {
                 foreignKey: "investorId",
             });
+            Investor.hasOne(models.InvestorAlamat, {
+                foreignKey: "investorId",
+            });
+            Investor.hasOne(models.InvestorIdentitas, {
+                foreignKey: "investorId",
+            });
+            Investor.hasOne(models.InvestorDataPendukung, {
+                foreignKey: "investorId",
+            });
         }
     }
     Investor.init(

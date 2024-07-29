@@ -2,23 +2,29 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("KontakFrontpages", {
+        await queryInterface.createTable("InvestorIdentitas", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            url_map: {
-                type: Sequelize.TEXT,
+            investorId: {
+                type: Sequelize.INTEGER,
             },
-            alamat: {
-                type: Sequelize.TEXT,
-            },
-            email: {
+            no_ktp: {
                 type: Sequelize.STRING,
             },
-            no_phone: {
+            foto_ktp: {
+                type: Sequelize.STRING,
+            },
+            no_npwp: {
+                type: Sequelize.STRING,
+            },
+            foto_npwp: {
+                type: Sequelize.STRING,
+            },
+            selfie_ktp: {
                 type: Sequelize.STRING,
             },
             createdAt: {
@@ -32,6 +38,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("KontakFrontpages");
+        await queryInterface.dropTable("InvestorIdentitas");
     },
 };
