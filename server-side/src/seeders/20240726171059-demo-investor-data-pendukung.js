@@ -17,19 +17,24 @@ module.exports = {
         const investors = await queryInterface.sequelize.query(
             "SELECT id from Investors;"
         );
-        const investorAlamat = investors[0].map((investor) => ({
+        const investorDataPendukung = investors[0].map((investor) => ({
             investorId: investor.id,
-            alamat: faker.location.streetAddress({ useFullAddress: true }),
-            provinsi: faker.location.country(),
-            kota: faker.location.city(),
-            kecamatan: faker.location.city(),
-            kelurahan: faker.location.city(),
-            kode_pos: faker.location.countryCode("numeric"),
+            latar_pendidikan: faker.lorem.word(),
+            sumber_penghasilan: faker.lorem.word(),
+            jumlah_penghasilan: faker.number.int(),
+            bidang_usaha: faker.lorem.word(),
+            tujuan_investasi: faker.lorem.sentence(),
+            no_sid: faker.number.int(),
+            tanggal_pembuatan_sid: faker.date.past(),
             createdAt: new Date(),
             updatedAt: new Date(),
         }));
 
-        await queryInterface.bulkInsert("InvestorAlamat", investorAlamat, {});
+        await queryInterface.bulkInsert(
+            "InvestorDataPendukung",
+            investorDataPendukung,
+            {}
+        );
     },
 
     async down(queryInterface, Sequelize) {
@@ -39,6 +44,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete("InvestorAlamat", null, {});
+        await queryInterface.bulkDelete("InvestorDataPendukung", null, {});
     },
 };
