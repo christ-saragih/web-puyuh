@@ -13,7 +13,7 @@ const InvestorProfil = () => {
                 isHovered ? "md:ml-60" : "md:ml-28"
                 }`}>
                     <div className="flex flex-col">
-                        <h1>Profil Investor</h1>
+                        <h1 className="font-quicksand text-2xl font-bold mb-5">Profil Investor</h1>
                         <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center mb-10">
                             <img className="w-20 h-20 rounded m-10" src={profilePicture} alt="Default avatar"/>
                             <div className="flex flex-col items-center ml-10">
