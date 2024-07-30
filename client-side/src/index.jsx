@@ -28,6 +28,7 @@ import AdminInvestasi from "./pages/admin/AdminInvestasi";
 import AdminPengguna from "./pages/admin/AdminPengguna";
 
 import InvestorDashboard from "./pages/investor/InvestorDashboard";
+import InvestorProfil from "./pages/investor/InvestorProfil";
 
 
 
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
   {
     path: "/investor/",
     element: <InvestorDashboard />,
+  },
+  {
+    path: "/investor/profil",
+    element: <InvestorProfil />,
   },
   // investor end
 
