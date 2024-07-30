@@ -65,14 +65,13 @@ const Dropdown = ({ options, label, onOptionSelect }) => {
             aria-labelledby="dropdownDelayButton"
           >
             {options.map((option, index) => (
-              <li key={index}>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100"
+              <li key={index} className="hover:bg-gray-100 rounded-md">
+                <button
+                  className="block px-4 py-2"
                   onClick={() => handleOptionClick(option)}
                 >
                   {option}
-                </a>
+                </button>
               </li>
             ))}
           </ul>

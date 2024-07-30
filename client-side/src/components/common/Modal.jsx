@@ -1,9 +1,9 @@
 import Button from "./Button";
-import Input from "./Input";
-import Label from "./Label";
 
 const Modal = (props) => {
-  const { open, onClose, children, className } = props;
+  const { open, onClose, children, className, size } = props;
+
+  const sizeClass = size === "small" ? "w-[29rem]" : "w-[52rem]";
 
   return (
     <div
@@ -17,8 +17,8 @@ const Modal = (props) => {
         // kalo klik modalnya tidak ke close
         onClick={(e) => e.stopPropagation()}
         className={`relative p-4 w-[52rem] max-w-4xl max-h-full transition-all ease-in-out duration-300 ${
-          open ? "scale-100 opacity-100" : "scale-110 opacity-0"
-        } ${className}`}
+          open ? "scale-100 opacity-100" : "scale-125 opacity-0"
+        } ${sizeClass} ${className}`}
       >
         <div className="relative bg-white rounded-2xl shadow-lg font-poppins">
           {children}
@@ -60,15 +60,20 @@ const Header = (props) => {
 };
 
 const Body = (props) => {
-  const { children } = props;
-  return <div className="p-4 md:px-5 md:pb-2">{children}</div>;
+  const { children, className } = props;
+  return <div className={`p-4 md:px-5 md:pb-2 ${className}`}>{children}</div>;
 };
 
 const Footer = (props) => {
   const { action, onClose } = props;
   return (
     <div className="flex items-center p-4 md:px-5 md:pb-5 mt-5 justify-end">
-      <Button variant={"primary-outline"} value={"Batal"} onClick={onClose} className={"me-3"} />
+      <Button
+        variant={"primary-outline"}
+        value={"Batal"}
+        onClick={onClose}
+        className={"me-3"}
+      />
       <Button value={action} />
     </div>
   );

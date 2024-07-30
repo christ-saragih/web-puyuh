@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import ActionButton from "./ActionButton";
 
 const ArticleItemBody = (props) => {
-  const { slug, judul, deskripsi, penulis, tanggal, role } = props;
+  const { slug, judul, deskripsi, penulis, tanggal, role, openModal } = props;
   const formattedDate = formatDate(tanggal);
 
   return (
@@ -39,14 +39,20 @@ const ArticleItemBody = (props) => {
                 icon={PiEyeBold}
                 className={"text-blue-600"}
                 tooltip={"Detail"}
+                onClick={() => openModal("detail")}
               />
               <ActionButton
                 icon={PiNotePencilBold}
                 className={"text-yellow-600"}
-                tooltip={"Edit"}
-                
+                tooltip={"Ubah"}
+                onClick={() => openModal("update")}
               />
-              <ActionButton icon={PiTrashBold} className={"text-red-600"} tooltip={"Hapus"} />
+              <ActionButton
+                icon={PiTrashBold}
+                className={"text-red-600"}
+                tooltip={"Hapus"}
+                onClick={() => openModal("delete")}
+              />
             </>
           ) : (
             <Link to={`/artikel/${slug}`}>
