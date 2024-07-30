@@ -12,36 +12,21 @@ import Modal from "../../components/common/Modal";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import Label from "../../components/common/Label";
+import Pagination from "../../components/common/Pagination";
 
 const AdminKontenArtikel = () => {
+  const [articles, setArticles] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
   const [articleContent, setArticleContent] = useState("");
-  const options = ["10", "20", "30", "40", "Semua"];
-  const [selectedValue, setSelectedValue] = useState("10");
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const options = ["4", "8", "16", "32", "Semua"];
+  const [selectedValue, setSelectedValue] = useState("4");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const openModal = (type) => {
-    setModalType(type);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalType("");
-    setIsModalOpen(false);
-  };
-
-  // buat size modal delete menjadi lebih kecil
-  const modalSize = modalType === "delete" ? "small" : "large";
-
-  const handleOptionSelect = (option) => {
-    setSelectedValue(option);
-    // Lakukan sesuatu dengan nilai yang dipilih, seperti filtering data
-    console.log(`Jumlah data yang dipilih: ${option}`);
-  };
-
-  const [articles, setArticles] = useState([]);
-
+  // get data artikel
   useEffect(() => {
     getArticles((data) => {
       // menampilkan urutan artikel yang terbaru -> terlama
@@ -49,6 +34,48 @@ const AdminKontenArtikel = () => {
       setArticles(latestArticles);
     });
   }, []);
+
+  // modal logic
+  const openModal = (type) => {
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalType("");
+    setIsModalOpen(false);
+  };
+  // buat size modal delete menjadi lebih kecil
+  const modalSize = modalType === "delete" ? "small" : "large";
+
+  // search artikel
+  useEffect(() => {
+    if (search !== "") {
+      const result = articles.filter((article) => {
+        return article.judul.toLowerCase().includes(search.toLowerCase());
+      });
+      setSearchResult(result);
+    } else {
+      setSearchResult(articles);
+    }
+    setCurrentPage(1); // malakukan reset ke halaman pertama setiap kali pencarian berubah
+  }, [articles, search]);
+
+  // filtering & pagination logic
+  const articlesPerPage =
+    selectedValue === "Semua" ? articles.length : parseInt(selectedValue);
+  const handleOptionSelect = (option) => {
+    setSelectedValue(option);
+    setCurrentPage(1);
+  };
+
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+  const currentArticles = searchResult.slice(
+    indexOfFirstArticle,
+    indexOfLastArticle
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <AdminContentContainerLayout>
@@ -76,16 +103,8 @@ const AdminKontenArtikel = () => {
                 onOptionSelect={handleOptionSelect}
               />
 
-              <form className="grow">
-                <label
-                  htmlFor="search-investment"
-                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                >
-                  Search
-                </label>
-
-                <InputSearch />
-              </form>
+              {/* FITUR SEARCHING */}
+              <InputSearch handleChange={(e) => setSearch(e.target.value)} />
 
               <button
                 className="flex items-center py-2 px-6 bg-green-800 text-white font-medium rounded-2xl"
@@ -398,9 +417,16 @@ const AdminKontenArtikel = () => {
             </div>
 
             <ArticleList
-              articles={articles}
+              articles={currentArticles}
               role="admin"
               openModal={openModal}
+            />
+
+            <Pagination
+              articlesPerPage={articlesPerPage}
+              totalArticles={searchResult.length}
+              paginate={paginate}
+              currentPage={currentPage}
             />
           </div>
         </div>

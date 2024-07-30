@@ -1,11 +1,9 @@
 import Button from "./Button";
-import Input from "./Input";
-import Label from "./Label";
 
 const Modal = (props) => {
   const { open, onClose, children, className, size } = props;
 
-  const sizeClass = size === "small" ? "w-[30rem]" : "w-[52rem]";
+  const sizeClass = size === "small" ? "w-[29rem]" : "w-[52rem]";
 
   return (
     <div
@@ -19,7 +17,7 @@ const Modal = (props) => {
         // kalo klik modalnya tidak ke close
         onClick={(e) => e.stopPropagation()}
         className={`relative p-4 w-[52rem] max-w-4xl max-h-full transition-all ease-in-out duration-300 ${
-          open ? "scale-100 opacity-100" : "scale-110 opacity-0"
+          open ? "scale-100 opacity-100" : "scale-125 opacity-0"
         } ${sizeClass} ${className}`}
       >
         <div className="relative bg-white rounded-2xl shadow-lg font-poppins">

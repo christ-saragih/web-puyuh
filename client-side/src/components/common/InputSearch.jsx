@@ -1,8 +1,9 @@
 import Input from "./Input";
 
-const InputSearch = () => {
+const InputSearch = (props) => {
+  const { handleChange } = props;
   return (
-    <div className="relative">
+    <div className="relative grow">
       <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
         <svg
           className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -22,10 +23,11 @@ const InputSearch = () => {
       </div>
 
       <Input
-        type={"search"}
+        type={"text"}
         placeholder={"Masukkan pencarian.."}
         variant={"primary-outline"}
         className={"ps-10 max-w-sm"}
+        handleChange={handleChange}
       />
     </div>
   );
