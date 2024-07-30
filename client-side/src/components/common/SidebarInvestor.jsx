@@ -40,7 +40,7 @@ const SidebarInvestor = ({ isHovered, setIsHovered }) => {
         <ul className="mx-[6px] space-y-2 font-medium">
           <li>
             <a
-              href="#"
+              href="/investor/"
               className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
             >
               <LuLayoutDashboard className="flex-shrink-0 w-7 h-7 text-white " />
@@ -91,7 +91,7 @@ const SidebarInvestor = ({ isHovered, setIsHovered }) => {
 
           <li>
             <a
-              href="#"
+              href="/investor/profil"
               className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
             >
               <CgProfile className="flex-shrink-0 w-7 h-7 text-white" />
