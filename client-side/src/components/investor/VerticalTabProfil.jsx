@@ -1,18 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const VerticalTabProfil = () => {
-    // State untuk melacak tab yang aktif
     const [activeTab, setActiveTab] = useState('Biodata');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [selectedGender, setSelectedGender] = useState('Pilih Kelamin'); // Inisialisasi dengan "Pilih Kelamin"
+    const dropdownRef = useRef(null);
 
-    // Konten yang sesuai dengan tab yang aktif
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'Biodata':
                 return (
                     <div>
                         <h3 className="text-lg font-bold text-gray-900 mb-2">Biodata</h3>
-                        <p className="mb-2">This is some placeholder content for the Biodata tab's associated content. Clicking another tab will toggle the visibility of this one for the next.</p>
-                        <p>The tab JavaScript swaps classes to control the content visibility and styling.</p>
+                        <div className="mb-5">
+                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nama Lengkap</label>
+                            <input type="text" id="base-input" className="bg-[#F5F5F7]  text-gray-900 text-sm rounded-lg w-full p-2.5"></input>
+                        </div>
+                        <div className="mb-5">
+                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Jenis Kelamin</label>
+                            <button
+                                id="dropdownDefaultButton"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${isDropdownOpen ? 'border-black' : ''}`}
+                                type="button"
+                            >
+                                <span className="flex-1">{selectedGender}</span> {/* Tampilkan teks yang dipilih atau "Pilih Kelamin" */}
+                                <svg className="w-2.5 h-2.5 ml-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                                </svg>
+                            </button>
+                            {isDropdownOpen && (
+                                <div ref={dropdownRef} className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                        <li>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedGender('Laki-laki'); // Set gender yang dipilih
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                                className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            >
+                                                Laki-laki
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedGender('Perempuan'); // Set gender yang dipilih
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                                className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            >
+                                                Perempuan
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 );
             case 'Alamat':
@@ -89,7 +147,7 @@ const VerticalTabProfil = () => {
                     </button>
                 </li>
             </ul>
-            <div className="p-6 bg-white text-gray-900 rounded-lg w-full">
+            <div className="p-8 bg-white text-gray-900 rounded-lg w-full">
                 {renderTabContent()}
             </div>
         </div>
