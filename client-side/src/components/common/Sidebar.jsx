@@ -261,7 +261,7 @@ const Sidebar = (props) => {
 
           <li>
             <NavLink
-              to="/admin/pengguna"
+              to="/admin/investor"
               className={({ isActive }) =>
                 isActive
                   ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
@@ -277,7 +277,7 @@ const Sidebar = (props) => {
                     : "-translate-x-10 opacity-0"
                 }`}
               >
-                Pengguna
+                Investor
               </span>
             </NavLink>
           </li>

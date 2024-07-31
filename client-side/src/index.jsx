@@ -19,15 +19,14 @@ import AdminLupaPassword from "./pages/admin/AdminLupaPassword";
 import ErrorPage from "./pages/ErrorPage";
 import Faq from "./pages/guest/Faq";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminArticle from "./pages/admin/AdminKontenArtikel";
 import AdminKontenTentangKami from "./pages/admin/AdminKontenTentangKami";
 import AdminKontenArtikel from "./pages/admin/AdminKontenArtikel";
 import AdminKontenBeranda from "./pages/admin/AdminKontenBeranda";
 import AdminKontenFaq from "./pages/admin/AdminKontenFaq";
 import AdminInvestasi from "./pages/admin/AdminInvestasi";
-import AdminPengguna from "./pages/admin/AdminPengguna";
 
 import InvestorDashboard from "./pages/investor/InvestorDashboard";
+import AdminInvestor from "./pages/admin/AdminInvestor";
 
 
 
@@ -117,8 +116,8 @@ const router = createBrowserRouter([
     element: <AdminInvestasi />,
   },
   {
-    path: "/admin/pengguna",
-    element: <AdminPengguna />,
+    path: "/admin/investor",
+    element: <AdminInvestor />,
   },
   // admin end
 ]);
