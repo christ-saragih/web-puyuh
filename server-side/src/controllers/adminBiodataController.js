@@ -163,14 +163,28 @@ exports.update = async (req, res) => {
 // Delete
 exports.delete = async (req, res) => {
     try {
-        const AdminBiodata = await AdminBiodata.findByPk(req.params.id);
-        if (!AdminBiodata) {
+        const adminBiodata = await AdminBiodata.findByPk(req.params.id);
+        if (!adminBiodata) {
             return res
                 .status(404)
                 .json({ message: "Biodata Admin tidak ada!" });
         }
 
-        await AdminBiodata.destroy();
+        // Delete image file
+        if (adminBiodata.foto_profil) {
+            const imagePath = path.resolve(
+                `public/images/admin/profile/${adminBiodata.foto_profil}`
+            );
+            if (fs.existsSync(imagePath)) {
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
+        }
+
+        await adminBiodata.destroy();
         res.status(200).json({
             message: "Biodata Admin berhasil dihapus!",
         });
@@ -178,6 +192,21 @@ exports.delete = async (req, res) => {
         res.status(500).json({
             message: "Internal server error",
             error: error.message,
+        });
+    }
+};
+
+// Get Image by Name
+exports.getImageByName = (req, res) => {
+    const { gambar } = req.params;
+    const dir = "public/images/admin/profile";
+    const imagePath = path.join(dir, gambar);
+
+    if (fs.existsSync(imagePath)) {
+        res.sendFile(path.resolve(imagePath));
+    } else {
+        res.status(404).json({
+            message: "Gambar tidak ditemukan",
         });
     }
 };

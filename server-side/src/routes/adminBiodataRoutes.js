@@ -42,5 +42,6 @@ router.put(
 router.get("/", adminBiodataController.findAll);
 router.get("/:id", adminBiodataController.findOne);
 router.delete("/:id", adminBiodataController.delete);
+router.get("/images/:gambar", adminBiodataController.getImageByName);
 
 module.exports = router;
