@@ -1,18 +1,35 @@
 const { AdminBiodata } = require("../models");
 const fs = require("fs");
 const path = require("path");
+const { exit } = require("process");
+
+const ensureDir = (dir) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+};
 
 // Create
 exports.create = async (req, res) => {
     try {
-        const {
-            nama_lengkap,
-            jk,
-            tempat_lahir,
-            tanggal_lahir,
-            no_hp,
-            kategori_investor,
-        } = req.body;
+        const { nama_lengkap, jk, tempat_lahir, tanggal_lahir, no_hp } =
+            req.body;
+
+        const foto_profil = req.file ? req.file.buffer : null;
+
+        if (
+            foto_profil &&
+            nama_lengkap &&
+            jk &&
+            tempat_lahir &&
+            tanggal_lahir &&
+            no_hp
+        ) {
+            const dir = "public/images/admin/profile";
+            ensureDir(dir);
+            nama_foto = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
+        }
 
         const adminId = req.admin.id;
         const adminBiodata = await AdminBiodata.create({
@@ -22,7 +39,7 @@ exports.create = async (req, res) => {
             tempat_lahir,
             tanggal_lahir,
             no_hp,
-            kategori_investor,
+            foto_profil: nama_foto,
         });
 
         res.status(201).json({
@@ -50,7 +67,7 @@ exports.findAll = async (req, res) => {
     try {
         const AdminBiodata = await AdminBiodata.findAll();
         res.status(200).json({
-            message: "Biodata Investor berhasil diambil!",
+            message: "Biodata Admin berhasil diambil!",
             data: AdminBiodata,
         });
     } catch (error) {
@@ -68,10 +85,10 @@ exports.findOne = async (req, res) => {
         if (!AdminBiodata) {
             return res
                 .status(404)
-                .json({ message: "Biodata Investor tidak ada!" });
+                .json({ message: "Biodata Admin tidak ada!" });
         }
         res.status(200).json({
-            message: "Biodata Investor berhasil diambil",
+            message: "Biodata Admin berhasil diambil",
             data: AdminBiodata,
         });
     } catch (error) {
@@ -85,34 +102,47 @@ exports.findOne = async (req, res) => {
 // Update
 exports.update = async (req, res) => {
     try {
-        const {
-            nama_lengkap,
-            jk,
-            tempat_lahir,
-            tanggal_lahir,
-            no_hp,
-            kategori_investor,
-        } = req.body;
+        const { nama_lengkap, jk, tempat_lahir, tanggal_lahir, no_hp } =
+            req.body;
 
-        const AdminBiodata = await AdminBiodata.findByPk(req.params.id);
-        if (!AdminBiodata) {
+        const foto_profil = req.file ? req.file.buffer : null;
+
+        const adminBiodata = await AdminBiodata.findByPk(req.params.id);
+        // console.log(adminBiodata.nama_lengkap);
+        // exit();
+        if (!adminBiodata) {
             return res
                 .status(404)
-                .json({ message: "Biodata Investor tidak ada!" });
+                .json({ message: "Biodata Admin tidak ada!" });
         }
 
-        await AdminBiodata.update(
+        let nama_foto = adminBiodata.foto_profil;
+        if (foto_profil) {
+            const dir = "public/images/admin/profile";
+            ensureDir(dir);
+            nama_foto = `${Date.now()}-${req.file.originalname}`;
+            fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
+
+            if (adminBiodata.foto_profil) {
+                const oldImagePath = path.join(dir, adminBiodata.foto_profil);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+        }
+
+        await adminBiodata.update({
             nama_lengkap,
             jk,
             tempat_lahir,
             tanggal_lahir,
             no_hp,
-            kategori_investor
-        );
+            foto_profil: nama_foto,
+        });
 
         res.status(200).json({
-            message: "Biodata Investor berhasil diperbaharui",
-            data: AdminBiodata,
+            message: "Biodata Admin berhasil diperbaharui",
+            data: adminBiodata,
         });
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
@@ -137,12 +167,12 @@ exports.delete = async (req, res) => {
         if (!AdminBiodata) {
             return res
                 .status(404)
-                .json({ message: "Biodata Investor tidak ada!" });
+                .json({ message: "Biodata Admin tidak ada!" });
         }
 
         await AdminBiodata.destroy();
         res.status(200).json({
-            message: "Biodata Investor berhasil dihapus!",
+            message: "Biodata Admin berhasil dihapus!",
         });
     } catch (error) {
         res.status(500).json({

@@ -12,6 +12,9 @@ module.exports = {
             adminId: {
                 type: Sequelize.INTEGER,
             },
+            foto_profil: {
+                type: Sequelize.STRING,
+            },
             nama_lengkap: {
                 type: Sequelize.STRING,
             },
