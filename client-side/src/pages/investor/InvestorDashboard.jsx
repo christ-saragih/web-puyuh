@@ -3,6 +3,8 @@ import SidebarInvestor from "../../components/common/SidebarInvestor";
 import CalendarInvestor from "../../components/common/CalendarInvestor"
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
 import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
+import WavingIllustration from "../../assets/images/Illustration waving.svg";
+import GrowingMoney from "../../assets/images/Growing Money.svg";
 import { MdNotificationsActive } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 
@@ -24,13 +26,13 @@ const InvestorDashboard = () => {
                 <h1 className="text-[2.5rem] font-bold mb-3 text-[#000]">Hello, Investor!</h1>
                 <p className="text-[#000]">Senang Bertemu Anda</p>
               </div>
-              <img src="src/assets/images/Illustration waving.svg" alt="Waving Illustration" className="w-[15rem] h-[15rem] mt-4 ml-56 -mb-[1.6rem]" />
+              <img src={WavingIllustration} alt="Waving Illustration" className="w-[15rem] h-[15rem] mt-4 ml-56 -mb-[1.6rem]" />
             </div>
             <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center p-4">
               <div className="flex flex-col">
                 <h1 className="text-xl font-bold mb-3 text-[#000]">Total Investasi</h1>
                 <div className="flex items-center ml-48">
-                  <img src="src/assets/images/Growing Money.svg" alt="Growing Money" className="w-36 h-36" />
+                  <img src={GrowingMoney} alt="Growing Money" className="w-36 h-36" />
                   <h1 className="text-3xl font-bold ml-4 text-[#000]">Rp. 1.000.000</h1>
                 </div>
               </div>

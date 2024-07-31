@@ -24,9 +24,9 @@ import AdminKontenArtikel from "./pages/admin/AdminKontenArtikel";
 import AdminKontenBeranda from "./pages/admin/AdminKontenBeranda";
 import AdminKontenFaq from "./pages/admin/AdminKontenFaq";
 import AdminInvestasi from "./pages/admin/AdminInvestasi";
-
-import InvestorDashboard from "./pages/investor/InvestorDashboard";
 import AdminInvestor from "./pages/admin/AdminInvestor";
+import InvestorDashboard from "./pages/investor/InvestorDashboard";
+import InvestorProfil from "./pages/investor/InvestorProfil";
 
 
 
@@ -79,6 +79,10 @@ const router = createBrowserRouter([
   {
     path: "/investor/",
     element: <InvestorDashboard />,
+  },
+  {
+    path: "/investor/profil",
+    element: <InvestorProfil />,
   },
   // investor end
 
