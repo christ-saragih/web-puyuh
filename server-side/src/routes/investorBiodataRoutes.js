@@ -8,8 +8,19 @@ const {
     updateSchema,
 } = require("../validators/investorBiodataValidation");
 
+const {
+    authenticateInvestorToken,
+} = require("../middleware/authenticateInvestorToken");
+const authorizeRole = require("../middleware/authorizeRole");
+
 // router.post("/", investorBiodataController.create);
-router.put("/:id", investorBiodataController.update);
+router.put(
+    "/:id",
+    authenticateInvestorToken,
+    authorizeRole("investor"),
+    validate(updateSchema),
+    investorBiodataController.update
+);
 router.get("/", investorBiodataController.findAll);
 router.get("/:id", investorBiodataController.findOne);
 router.delete("/:id", investorBiodataController.delete);
