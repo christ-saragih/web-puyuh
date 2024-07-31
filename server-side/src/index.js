@@ -46,6 +46,7 @@ const investorAlamatRoutes = require("./routes/investorAlamatRoutes");
 const investorIdentitasRoutes = require("./routes/investorIdentitasRoutes");
 const investorDataPendukungRoutes = require("./routes/investorDataPendukungRoutes");
 const adminBiodataRoutes = require("./routes/adminBiodataRoutes");
+const investasiRoutes = require("./routes/investasiRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -66,6 +67,7 @@ app.use("/api/alamat-investor", investorAlamatRoutes);
 app.use("/api/identitas-investor", investorIdentitasRoutes);
 app.use("/api/data-pendukung-investor", investorDataPendukungRoutes);
 app.use("/api/biodata-admin", adminBiodataRoutes);
+app.use("/api/investasi", investasiRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
