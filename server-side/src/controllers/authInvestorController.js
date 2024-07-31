@@ -165,7 +165,7 @@ exports.refreshToken = async (req, res) => {
                 role: "investor",
             },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "1d" }
         );
 
         res.cookie("token", newAccessToken, { httpOnly: true });

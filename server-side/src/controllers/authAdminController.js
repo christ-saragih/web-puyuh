@@ -84,7 +84,7 @@ exports.login = async (req, res) => {
                 role: "admin",
             },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" } // Access token valid for 15 minutes
+            { expiresIn: "1d" } // Access token valid for 15 minutes
         );
 
         const refreshToken = jwt.sign(
