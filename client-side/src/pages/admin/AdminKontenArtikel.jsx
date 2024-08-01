@@ -22,7 +22,7 @@ import Label from "../../components/common/Label";
 import Pagination from "../../components/common/Pagination";
 import { Tabs } from "flowbite-react";
 import ActionButton from "../../components/common/ActionButton";
-import { getArticleTags } from "../../services/article-tag.service";
+import { getArticleTags, addArticleTag  } from "../../services/article-tag.service";
 
 const AdminKontenArtikel = () => {
   const [articles, setArticles] = useState([]);
@@ -36,6 +36,7 @@ const AdminKontenArtikel = () => {
   const [selectedValue, setSelectedValue] = useState("4");
   const [currentPage, setCurrentPage] = useState(1);
   const [articleTags, setArticleTags] = useState([]);
+  const [newTag, setNewTag] = useState("");
 
   // get data tag artikel
   useEffect(() => {
@@ -43,6 +44,18 @@ const AdminKontenArtikel = () => {
       setArticleTags(data);
     });
   }, []);
+
+  // tambah data tag artikel
+  const handleAddTag = () => {
+    addArticleTag({ nama: newTag }, (data) => {
+      setArticleTags([...articleTags, data]);
+      closeModal();
+    });
+  };
+
+  const handleChange = (e) => {
+    setNewTag(e.target.value);
+  };
 
   // get data artikel
   useEffect(() => {
@@ -61,6 +74,7 @@ const AdminKontenArtikel = () => {
   const closeModal = () => {
     setModalType("");
     setIsModalOpen(false);
+    setNewTag("");
   };
   // buat size modal delete menjadi lebih kecil
   const modalSize = modalType === "delete" ? "small" : "large";
@@ -156,9 +170,11 @@ const AdminKontenArtikel = () => {
                             placeholder={"Masukkan nama tag artikel.."}
                             variant={"primary-outline"}
                             className={"mt-1 mb-4"}
+                            value={newTag}
+                            handleChange={handleChange}
                           />
                         </Modal.Body>
-                        <Modal.Footer action={"Tambah"} onClose={closeModal} />
+                        <Modal.Footer action={"Tambah"} onAction={handleAddTag} onClose={closeModal} />
                       </>
                     )}
 

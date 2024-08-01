@@ -65,7 +65,7 @@ const Body = (props) => {
 };
 
 const Footer = (props) => {
-  const { action, onClose } = props;
+  const { action, onClose, onAction } = props;
   return (
     <div className="flex items-center p-4 md:px-5 md:pb-5 mt-5 justify-end">
       <Button
@@ -74,7 +74,7 @@ const Footer = (props) => {
         onClick={onClose}
         className={"me-3"}
       />
-      {action && <Button value={action} />}
+      {action && <Button onClick={onAction} value={action} />}
     </div>
   );
 };
