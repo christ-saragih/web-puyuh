@@ -57,7 +57,7 @@ const SidebarInvestor = ({ isHovered, setIsHovered }) => {
 
           <li>
             <a
-              href="#"
+              href="/investor/investasi"
               className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
             >
               <PiChartLineUpBold className="flex-shrink-0 w-7 h-7 text-white " />
