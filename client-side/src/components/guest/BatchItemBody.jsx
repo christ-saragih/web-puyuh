@@ -100,7 +100,7 @@ const BatchItemStatistics = (props) => {
 const BatchItemButton = () => (
   <div className="flex justify-center">
     <a
-      href="#"
+      href="/investor/investasi/detail/1"
       className="flex justify-center items-center w-11/12 py-2 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
     >
       Investasi Sekarang
