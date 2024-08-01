@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
             tanggal_lahir &&
             no_hp
         ) {
-            const dir = "public/images/admin/profile";
+            const dir = "public/images/admins/profile";
             ensureDir(dir);
             nama_foto = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
@@ -118,7 +118,7 @@ exports.update = async (req, res) => {
 
         let nama_foto = adminBiodata.foto_profil;
         if (foto_profil) {
-            const dir = "public/images/admin/profile";
+            const dir = "public/images/admins/profile";
             ensureDir(dir);
             nama_foto = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
@@ -173,7 +173,7 @@ exports.delete = async (req, res) => {
         // Delete image file
         if (adminBiodata.foto_profil) {
             const imagePath = path.resolve(
-                `public/images/admin/profile/${adminBiodata.foto_profil}`
+                `public/images/admins/profile/${adminBiodata.foto_profil}`
             );
             if (fs.existsSync(imagePath)) {
                 fs.unlink(imagePath, (err) => {
@@ -199,7 +199,7 @@ exports.delete = async (req, res) => {
 // Get Image by Name
 exports.getImageByName = (req, res) => {
     const { gambar } = req.params;
-    const dir = "public/images/admin/profile";
+    const dir = "public/images/admins/profile";
     const imagePath = path.join(dir, gambar);
 
     if (fs.existsSync(imagePath)) {
