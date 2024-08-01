@@ -16,6 +16,9 @@ module.exports = {
                     key: "id",
                 },
             },
+            foto_profil: {
+                type: Sequelize.STRING,
+            },
             nama_lengkap: {
                 type: Sequelize.STRING,
             },
@@ -30,9 +33,6 @@ module.exports = {
             },
             no_hp: {
                 type: Sequelize.STRING,
-            },
-            kategori_investor: {
-                type: Sequelize.ENUM("individu", "organisasi"),
             },
             createdAt: {
                 allowNull: false,
