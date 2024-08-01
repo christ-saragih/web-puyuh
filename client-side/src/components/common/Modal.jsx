@@ -74,7 +74,7 @@ const Footer = (props) => {
         onClick={onClose}
         className={"me-3"}
       />
-      <Button value={action} />
+      {action && <Button value={action} />}
     </div>
   );
 };
