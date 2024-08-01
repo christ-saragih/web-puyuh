@@ -29,15 +29,15 @@ const Modal = (props) => {
 };
 
 const Header = (props) => {
-  const { title, onClose } = props;
+  const { title, onClose, children } = props;
   return (
-    <div className="flex items-center justify-between p-4 md:px-5 md:pb-2 mt-5">
+    <div className="flex items-center p-4 md:px-5 md:pb-2 mt-5">
       <h3 className="text-2xl font-semibold text-[#572618]">{title}</h3>
-
+      {children}
       <button
         onClick={onClose}
         type="button"
-        className="text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+        className="absolute top-3 right-3 text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
       >
         <svg
           className="w-3 h-3"

@@ -129,19 +129,21 @@ const AdminInvestor = () => {
             {/* START: Modal detail profil investor */}
             <Modal open={isModalOpen} onClose={closeModal} size={modalSize}>
               <>
-                <div className="flex items-center justify-center gap-4 p-4 md:px-5 md:pb-2 mt-5">
-                  <img
-                    src={Investor1}
-                    alt="..."
-                    className="w-24 h-24 rounded-full"
-                  />
-                  <div>
-                    <h3 className="text-2xl font-semibold text-[#572618]">
-                      Bennefit Christy Saragih
-                    </h3>
-                    <p>Individu</p>
+                <Modal.Header onClose={closeModal}>
+                  <div className="flex items-center mx-auto mt-2 gap-4">
+                    <img
+                      src={Investor1}
+                      alt="..."
+                      className="w-24 h-24 rounded-full"
+                    />
+                    <div>
+                      <h3 className="text-2xl font-semibold text-[#572618]">
+                        Bennefit Christy Saragih
+                      </h3>
+                      <p>Individu</p>
+                    </div>
                   </div>
-                </div>
+                </Modal.Header>
 
                 <Modal.Body className="md:pb-5">
                   <Tabs aria-label="Pills" variant="pills">
