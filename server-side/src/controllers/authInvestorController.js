@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
 
         if (existingUser) {
             return res.status(400).json({
-                message: "Username or email already in use",
+                message: "Username atau Email Sudah Digunakan!",
             });
         }
 
@@ -29,15 +29,15 @@ exports.register = async (req, res) => {
             username,
             email,
             password: hashedPassword,
+            kategori_investor,
         });
 
         // Tambah biodata investor
-        await InvestorBiodata.create({
-            investorId: investor.id,
-            nama_lengkap: investor.username,
-            kategori_investor,
-            // other fields
-        });
+        // await InvestorBiodata.create({
+        //     investorId: investor.id,
+        //     nama_lengkap: investor.username,
+        //     kategori_investor,
+        // });
 
         res.status(201).json({
             message: "Registration successful",
@@ -46,7 +46,7 @@ exports.register = async (req, res) => {
     } catch (error) {
         if (error.name === "SequelizeUniqueConstraintError") {
             return res.status(400).json({
-                message: "Username or email already in use",
+                message: "Username atau Email Sudah Digunakan!",
                 error: error.errors.map((e) => e.message),
             });
         }
@@ -74,14 +74,14 @@ exports.login = async (req, res) => {
         if (!investor) {
             return res
                 .status(400)
-                .json({ message: "Invalid username/email or password" });
+                .json({ message: "username/email atau password salah!" });
         }
 
         const validPassword = await bcrypt.compare(password, investor.password);
         if (!validPassword) {
             return res
                 .status(400)
-                .json({ message: "Invalid username/email or password" });
+                .json({ message: "username/email atau password salah!" });
         }
 
         const accessToken = jwt.sign(
@@ -92,7 +92,7 @@ exports.login = async (req, res) => {
                 role: "investor",
             },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" } // Access token valid for 15 minutes
+            { expiresIn: "1d" } // Access token valid for 15 minutes
         );
 
         const refreshToken = jwt.sign(
