@@ -4,7 +4,6 @@ export const getArticleTags = (callback) => {
   axios
     .get("http://localhost:3000/api/tag-artikel")
     .then((res) => {
-      // Check if the data is as expected
       if (res.data && Array.isArray(res.data.data)) {
         callback(res.data.data);
       } else {
@@ -15,5 +14,16 @@ export const getArticleTags = (callback) => {
     .catch((err) => {
       console.log(err);
       callback([]);
+    });
+};
+
+export const addArticleTag = (tag, callback) => {
+  axios
+    .post("http://localhost:3000/api/tag-artikel", tag)
+    .then((res) => {
+      callback(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
