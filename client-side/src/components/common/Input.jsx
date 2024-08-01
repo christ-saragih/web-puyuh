@@ -15,6 +15,7 @@ const Input = (props) => {
     handleChange,
     placeholder,
     isError,
+    isDisabled,
   } = props;
 
   const input = useRef();
@@ -40,6 +41,7 @@ const Input = (props) => {
       required={required}
       onChange={(e) => handleChange(e)}
       placeholder={placeholder}
+      disabled={isDisabled}
     />
   );
 };
@@ -58,13 +60,14 @@ Input.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-  variant: PropTypes.oneOf(["primary", "primary-outline", "error"]),
+  variant: PropTypes.oneOf(["primary", "primary-outline", "error", "disabled"]),
   autoComplete: PropTypes.string,
   required: PropTypes.bool,
   isFocused: PropTypes.bool,
   handleChange: PropTypes.func,
   placeholder: PropTypes.string,
   isError: PropTypes.bool,
+  isDisabled: PropTypes.bool,
 };
 
 export default Input;
