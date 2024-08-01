@@ -58,6 +58,17 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: { msg: "Password tidak boleh kosong!" },
                 },
             },
+            kategori_investor: {
+                type: DataTypes.ENUM("individu", "organisasi"),
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Kategori tidak boleh null!" },
+                    isIn: {
+                        args: [["individu", "organisasi"]],
+                        msg: "Status harus salah satu dari 'individu' atau 'organisasi'",
+                    },
+                },
+            },
             refresh_token: {
                 type: DataTypes.STRING,
             },
