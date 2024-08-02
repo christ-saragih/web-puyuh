@@ -4,7 +4,7 @@ const investorBiodataController = require("../controllers/investorBiodataControl
 const validate = require("../middleware/validationMiddleware");
 
 const {
-    // createFaqSchema,
+    createSchema,
     updateSchema,
 } = require("../validators/investorBiodataValidation");
 
@@ -13,16 +13,36 @@ const {
 } = require("../middleware/authenticateInvestorToken");
 const authorizeRole = require("../middleware/authorizeRole");
 
-// router.post("/", investorBiodataController.create);
+const upload = require("../middleware/uploadFileMiddleware");
+const {
+    validateUploadFile,
+} = require("../middleware/validationUploadFileMiddleware");
+
+router.post(
+    "/",
+    authenticateInvestorToken,
+    authorizeRole("investor"),
+    upload.single("foto_profil"),
+    validateUploadFile({
+        fieldName: "foto_profil",
+    }),
+    validate(createSchema),
+    investorBiodataController.create
+);
 router.put(
     "/:id",
     authenticateInvestorToken,
     authorizeRole("investor"),
     validate(updateSchema),
+    upload.single("foto_profil"),
+    validateUploadFile({
+        fieldName: "foto_profil",
+    }),
     investorBiodataController.update
 );
 router.get("/", investorBiodataController.findAll);
 router.get("/:id", investorBiodataController.findOne);
 router.delete("/:id", investorBiodataController.delete);
+router.get("/images/:gambar", investorBiodataController.getImageByName);
 
 module.exports = router;

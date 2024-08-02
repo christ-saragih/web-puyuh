@@ -19,15 +19,12 @@ module.exports = {
         );
         const investorBiodata = investors[0].map((investor) => ({
             investorId: investor.id,
+            foto_profil: faker.image.avatar(),
             nama_lengkap: faker.person.fullName(),
             jk: faker.helpers.arrayElement(["pria", "wanita"]),
             tempat_lahir: faker.location.city(),
             tanggal_lahir: faker.date.past(),
             no_hp: faker.phone.number(),
-            kategori_investor: faker.helpers.arrayElement([
-                "individu",
-                "organisasi",
-            ]),
             createdAt: new Date(),
             updatedAt: new Date(),
         }));
