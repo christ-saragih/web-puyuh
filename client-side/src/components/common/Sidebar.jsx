@@ -5,6 +5,10 @@ import {
   PiChartLineUpBold,
   PiCircleDuotone,
   PiCircleThin,
+  PiNotebook,
+  PiNotebookBold,
+  PiNotebookFill,
+  PiNotebookLight,
   PiUsersBold,
 } from "react-icons/pi";
 import Logo from "../../assets/images/logo.png";
@@ -12,29 +16,41 @@ import { NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = (props) => {
   const { isHovered, setIsHovered } = props;
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState({
+    halaman_depan: false,
+    // tambahkan menu dropdown lainnnya jika ada
+  });
+
+  const toggleDropdown = (menu) => {
+    setIsDropdownOpen((prevState) => ({
+      ...prevState,
+      [menu]: !prevState[menu],
+    }));
+  };
 
   // membuat button dropdown pada menu konten menjadi aktif
   const location = useLocation();
   const isSubMenuActive = (path) => location.pathname.startsWith(path);
   const isActive =
-    isSubMenuActive("/admin/beranda") ||
-    isSubMenuActive("/admin/artikel") ||
-    isSubMenuActive("/admin/tentang-kami") ||
-    isSubMenuActive("/admin/faq");
+    isSubMenuActive("/admin/halaman-depan/utama") ||
+    isSubMenuActive("/admin/halaman-depan/profil") ||
+    isSubMenuActive("/admin/halaman-depan/kontak") ||
+    isSubMenuActive("/admin/halaman-depan/media-sosial") ||
+    isSubMenuActive("/admin/halaman-depan/dokumentasi") ||
+    isSubMenuActive("/admin/halaman-depan/dokumen");
 
   return (
     <aside
       id="sidebar-multi-level-sidebar"
-      className={`ms-2 px-4 py-5 fixed top-0 left-0 z-40 h-screen transition-width duration-300 ease-in-out group ${
-        isHovered ? "w-60" : "w-28"
+      className={` ms-2 px-4 py-5 fixed top-0 left-0 z-40 h-screen transition-width duration-300 ease-in-out group ${
+        isHovered ? "w-72" : "w-28"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       aria-label="Sidebar"
     >
-      <div className="h-full flex flex-col px-3 py-10 bg-[#572618] rounded-2xl shadow-2xl">
-        <NavLink to="/admin" className="flex items-center space-x-3 mb-6">
+      <div className="h-full overflow-y-auto overflow-x-hidden flex flex-col px-3 py-10 bg-[#572618] rounded-2xl shadow-2xl custom-scrollbar">
+        <NavLink to="/admin" className={`flex items-center space-x-3 mb-6 transition-all duration-300 ease-in-out ${isHovered ? "ml-6" : ""}`}>
           <img
             src={Logo}
             className="h-14 w-14 rounded-full me-[2px]"
@@ -80,15 +96,13 @@ const Sidebar = (props) => {
             <button
               type="button"
               className={`flex p-2 w-full items-center rounded-lg focus:outline-none ${
-                isActive
+                isDropdownOpen.halaman_depan
                   ? "text-gray-900 bg-[#ffffff1a]"
                   : "text-gray-900 hover:bg-[#ffffff1a]"
               }`}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              aria-controls="dropdown-example"
-              data-collapse-toggle="dropdown-example"
+              onClick={() => toggleDropdown("halaman_depan")}
             >
-              <PiArticleNyTimesBold className="flex-shrink-0 w-7 h-7 text-white " />
+              <PiNotebookBold className="flex-shrink-0 w-7 h-7 text-white " />
 
               <span
                 className={`hidden group-hover:inline text-white text-lg ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
@@ -97,7 +111,7 @@ const Sidebar = (props) => {
                     : "-translate-x-10 opacity-0"
                 }`}
               >
-                Konten
+                Halaman Depan
               </span>
 
               <svg
@@ -105,7 +119,7 @@ const Sidebar = (props) => {
                   isHovered
                     ? "translate-x-0 opacity-100"
                     : "-translate-x-10 opacity-0"
-                } ${isDropdownOpen ? "rotate-180" : "rotate-0"}`}
+                } ${isDropdownOpen.halaman_depan ? "rotate-180" : "rotate-0"}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -121,14 +135,13 @@ const Sidebar = (props) => {
               </svg>
             </button>
             <ul
-              id="dropdown-example"
-              className={`transition-all duration-300 ease-in-out  ${
-                isDropdownOpen ? "block" : "hidden"
-              } py-2 space-y-2`}
+              className={`transition-all duration-300 ease-in-out ${
+                isDropdownOpen.halaman_depan ? "block" : "hidden"
+              } pt-2 space-y-2`}
             >
               <li>
                 <NavLink
-                  to={"/admin/beranda"}
+                  to={"/admin/halaman-depan/utama"}
                   className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                 >
                   {({ isActive }) => (
@@ -138,7 +151,6 @@ const Sidebar = (props) => {
                       ) : (
                         <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
                       )}
-
                       <span
                         className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
                           isHovered
@@ -146,16 +158,14 @@ const Sidebar = (props) => {
                             : "-translate-x-10 opacity-0"
                         }`}
                       >
-                        Beranda
+                        Utama
                       </span>
+
                     </>
                   )}
                 </NavLink>
-              </li>
-
-              <li>
                 <NavLink
-                  to={"/admin/artikel"}
+                  to={"/admin/halaman-depan/profil"}
                   className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                 >
                   {({ isActive }) => (
@@ -165,7 +175,6 @@ const Sidebar = (props) => {
                       ) : (
                         <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
                       )}
-
                       <span
                         className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
                           isHovered
@@ -173,16 +182,14 @@ const Sidebar = (props) => {
                             : "-translate-x-10 opacity-0"
                         }`}
                       >
-                        Artikel
+                        Profil
                       </span>
+
                     </>
                   )}
                 </NavLink>
-              </li>
-
-              <li>
                 <NavLink
-                  to={"/admin/tentang-kami"}
+                  to={"/admin/halaman-depan/kontak"}
                   className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                 >
                   {({ isActive }) => (
@@ -192,7 +199,6 @@ const Sidebar = (props) => {
                       ) : (
                         <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
                       )}
-
                       <span
                         className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
                           isHovered
@@ -200,16 +206,14 @@ const Sidebar = (props) => {
                             : "-translate-x-10 opacity-0"
                         }`}
                       >
-                        Tentang Kami
+                        Kontak
                       </span>
+
                     </>
                   )}
                 </NavLink>
-              </li>
-
-              <li>
                 <NavLink
-                  to={"/admin/faq"}
+                  to={"/admin/halaman-depan/media-sosial"}
                   className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
                 >
                   {({ isActive }) => (
@@ -219,7 +223,6 @@ const Sidebar = (props) => {
                       ) : (
                         <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
                       )}
-
                       <span
                         className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
                           isHovered
@@ -227,15 +230,87 @@ const Sidebar = (props) => {
                             : "-translate-x-10 opacity-0"
                         }`}
                       >
-                        FAQ
+                        Media Sosial
                       </span>
+
                     </>
                   )}
                 </NavLink>
+                <NavLink
+                  to={"/admin/halaman-depan/dokumentasi"}
+                  className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+                >
+                  {({ isActive }) => (
+                    <>
+                      {isActive ? (
+                        <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                      ) : (
+                        <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                      )}
+                      <span
+                        className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                          isHovered
+                            ? "translate-x-0 opacity-100"
+                            : "-translate-x-10 opacity-0"
+                        }`}
+                      >
+                        Dokumentasi
+                      </span>
+
+                    </>
+                  )}
+                </NavLink>
+                <NavLink
+                  to={"/admin/halaman-depan/dokumen"}
+                  className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+                >
+                  {({ isActive }) => (
+                    <>
+                      {isActive ? (
+                        <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                      ) : (
+                        <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                      )}
+                      <span
+                        className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                          isHovered
+                            ? "translate-x-0 opacity-100"
+                            : "-translate-x-10 opacity-0"
+                        }`}
+                      >
+                        Dokumen
+                      </span>
+
+                    </>
+                  )}
+                </NavLink>
+                
               </li>
+              {/* Tambahkan item submenu lainnya di sini */}
             </ul>
           </li>
 
+          <li>
+            <NavLink
+              to="/admin/artikel"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
+                  : "flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+              }
+            >
+              <PiArticleNyTimesBold className="flex-shrink-0 w-7 h-7 text-white " />
+              <span
+                className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                  isHovered
+                    ? "translate-x-0 opacity-100"
+                    : "-translate-x-10 opacity-0"
+                }`}
+              >
+                Artikel
+              </span>
+            </NavLink>
+          </li>
           <li>
             <NavLink
               to="/admin/investasi"

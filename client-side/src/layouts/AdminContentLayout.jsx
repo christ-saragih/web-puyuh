@@ -4,7 +4,7 @@ const AdminContentLayout = (props) => {
   return (
     <div
       className={` transition-all duration-300 ease-in-out ${
-        isHovered ? "md:ml-64" : "md:ml-32"
+        isHovered ? "md:ml-[19rem]" : "md:ml-32"
       }`}
     >
         {children}
