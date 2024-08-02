@@ -29,6 +29,17 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: { msg: "Judul tidak boleh kosong!" },
                 },
             },
+            gambar: {
+                type: DataTypes.STRING,
+            },
+            slug: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Slug tidak boleh null!" },
+                    notEmpty: { msg: "Slug tidak boleh kosong!" },
+                },
+            },
             penerbit: {
                 type: DataTypes.STRING,
                 allowNull: false,
