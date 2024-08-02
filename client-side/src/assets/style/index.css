@@ -38,10 +38,18 @@
 .select__menu {
   @apply text-sm block !important;
 }
-
-
-
 /* REACT SELECT: End */
+
+/* CUSTOM SCROLLBAR: Start */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* CUSTOM SCROLLBAR: End */
 
 /* Tabs: Start */
 div[aria-label="Tabs with underline"] button {
