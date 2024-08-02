@@ -24,14 +24,31 @@
 .btn-primary-outline {
   @apply text-[#572618] border-2 border-[#572618] bg-white hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300;
 }
-/* BUTTON: END */
+/* BUTTON: End */
+
+/* REACT SELECT: Start */
+.css-13cymwt-control {
+  @apply w-full px-2 text-sm bg-gray-50 border-2 border-gray-300 rounded-2xl !important;
+}
+
+.css-t3ipsp-control {
+  @apply text-gray-900 px-2 text-sm rounded-2xl outline-none shadow-none border-2 ring-1 ring-[#B87817] border-[#B87817] !important;
+}
+
+.select__menu {
+  @apply text-sm block !important;
+}
+
+
+
+/* REACT SELECT: End */
 
 /* Tabs: Start */
 div[aria-label="Tabs with underline"] button {
-  @apply text-base text-gray-600 focus:ring-0
+  @apply text-base text-gray-600 focus:ring-0;
 }
-div[aria-label="Tabs with underline"] button[aria-selected="true"]  {
-  @apply font-semibold text-[#572618] border-[#572618]
+div[aria-label="Tabs with underline"] button[aria-selected="true"] {
+  @apply font-semibold text-[#572618] border-[#572618];
 }
 
 div[aria-label="Pills"] {

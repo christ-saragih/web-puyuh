@@ -39,19 +39,19 @@ const ArticleItemBody = (props) => {
                 icon={PiEyeBold}
                 className={"text-blue-600"}
                 tooltip={"Detail"}
-                onClick={() => openModal("detail")}
+                onClick={() => openModal("detail_article")}
               />
               <ActionButton
                 icon={PiNotePencilBold}
                 className={"text-yellow-600"}
                 tooltip={"Ubah"}
-                onClick={() => openModal("update")}
+                onClick={() => openModal("update_article")}
               />
               <ActionButton
                 icon={PiTrashBold}
                 className={"text-red-600"}
                 tooltip={"Hapus"}
-                onClick={() => openModal("delete")}
+                onClick={() => openModal("delete_article")}
               />
             </>
           ) : (

@@ -28,6 +28,7 @@ import {
   updateArticleTag,
   deleteArticleTag,
 } from "../../services/article-tag.service";
+import MultiSelect from "../../components/common/MultiSelect";
 
 const AdminKontenArtikel = () => {
   const [articles, setArticles] = useState([]);
@@ -50,6 +51,11 @@ const AdminKontenArtikel = () => {
       setArticleTags(data);
     });
   }, []);
+
+  const articleTagsOption = articleTags.map((articleTags) => ({
+    value: articleTags.id,
+    label: articleTags.nama,
+  }));
 
   // tambah tag artikel
   const handleAddTag = () => {
@@ -105,7 +111,7 @@ const AdminKontenArtikel = () => {
     setNewTag("");
   };
   // buat size modal delete menjadi lebih kecil
-  const modalSize = modalType === "delete" ? "small" : "large";
+  const modalSize = modalType === "delete_article" ? "small" : "large";
 
   // search artikel
   useEffect(() => {
@@ -324,7 +330,7 @@ const AdminKontenArtikel = () => {
 
                   <button
                     className="flex items-center py-2 px-6 bg-green-800 text-white font-medium rounded-2xl"
-                    onClick={() => openModal("add")}
+                    onClick={() => openModal("add_article")}
                   >
                     <PiPlusCircle className="w-6 h-6 me-1" />
                     <p>Tambah</p>
@@ -335,7 +341,7 @@ const AdminKontenArtikel = () => {
                     onClose={closeModal}
                     size={modalSize}
                   >
-                    {modalType === "add" && (
+                    {modalType === "add_article" && (
                       <>
                         <Modal.Header
                           title={"Tambah Artikel"}
@@ -364,7 +370,7 @@ const AdminKontenArtikel = () => {
                                 name={"author"}
                                 placeholder={"Masukkan nama penulis.."}
                                 variant={"primary-outline"}
-                                className={"mt-1"}
+                                className={"mt-1 mb-4"}
                               />
                             </div>
                             <div>
@@ -372,13 +378,7 @@ const AdminKontenArtikel = () => {
                                 htmlFor={"article_tags"}
                                 value={"Tag Artikel"}
                               />
-                              <Input
-                                type={"text"}
-                                name={"article_tags"}
-                                placeholder={"Masukkan tag artikel.."}
-                                variant={"primary-outline"}
-                                className={"mt-1 mb-4"}
-                              />
+                              <MultiSelect options={articleTagsOption} placeholder={"Pilih tag artikel.."}/>
                             </div>
                           </div>
                           <Label
@@ -478,7 +478,7 @@ const AdminKontenArtikel = () => {
                       </>
                     )}
 
-                    {modalType === "detail" && (
+                    {modalType === "detail_article" && (
                       <>
                         <Modal.Header
                           title={"Detail Artikel"}
@@ -490,7 +490,7 @@ const AdminKontenArtikel = () => {
                       </>
                     )}
 
-                    {modalType === "update" && (
+                    {modalType === "update_article" && (
                       <>
                         <Modal.Header
                           title={"Ubah Artikel"}
@@ -529,14 +529,7 @@ const AdminKontenArtikel = () => {
                                 htmlFor={"article_tags"}
                                 value={"Tag Artikel"}
                               />
-                              <Input
-                                type={"text"}
-                                name={"article_tags"}
-                                placeholder={"Masukkan tag artikel.."}
-                                variant={"primary-outline"}
-                                className={"mt-1 mb-4"}
-                                value={"#stultus . #amoveo . #caritas"}
-                              />
+                              <MultiSelect options={articleTagsOption} placeholder={"Pilih tag artikel.."}/>
                             </div>
                           </div>
                           <Label
@@ -636,15 +629,13 @@ const AdminKontenArtikel = () => {
                       </>
                     )}
 
-                    {modalType === "delete" && (
+                    {modalType === "delete_article" && (
                       <>
                         <Modal.Header
                           title={"Hapus Artikel"}
                           onClose={closeModal}
                         />
                         <Modal.Body>
-                          {/* Konten untuk delete artikel */}
-
                           <p>Apakah Anda yakin ingin menghapus artikel ini?</p>
                         </Modal.Body>
                         <Modal.Footer action={"Hapus"} onClose={closeModal} />
