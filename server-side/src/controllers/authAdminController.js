@@ -84,7 +84,7 @@ exports.login = async (req, res) => {
                 role: "admin",
             },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" } // Access token valid for 15 minutes
+            { expiresIn: "1d" } // Access token valid for 15 minutes
         );
 
         const refreshToken = jwt.sign(
@@ -162,7 +162,7 @@ exports.refreshToken = async (req, res) => {
         const newAccessToken = jwt.sign(
             { username: admin.username, email: admin.email, role: "admin" },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "1d" }
         );
 
         res.cookie("token", newAccessToken, { httpOnly: true });

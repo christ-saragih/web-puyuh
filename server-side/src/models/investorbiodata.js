@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
                     key: "id",
                 },
             },
+            foto_profil: {
+                type: DataTypes.STRING,
+            },
             nama_lengkap: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -57,17 +60,6 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 validate: {
                     isNumeric: { msg: "Numerik" },
-                },
-            },
-            kategori_investor: {
-                type: DataTypes.ENUM("individu", "organisasi"),
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Kategori tidak boleh null!" },
-                    isIn: {
-                        args: [["individu", "organisasi"]],
-                        msg: "Status harus salah satu dari 'individu' atau 'organisasi'",
-                    },
                 },
             },
         },

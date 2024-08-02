@@ -47,6 +47,8 @@ const investorIdentitasRoutes = require("./routes/investorIdentitasRoutes");
 const investorDataPendukungRoutes = require("./routes/investorDataPendukungRoutes");
 const adminBiodataRoutes = require("./routes/adminBiodataRoutes");
 const investasiRoutes = require("./routes/investasiRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const investorRoutes = require("./routes/investorRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -59,8 +61,8 @@ app.use("/api/tentang-kami", tentangKamiRoutes);
 app.use("/api/sejarah", sejarahRoutes);
 app.use("/api/dokumen-frontpage", dokumenFrontpageRoutes);
 app.use("/api/founder", founderRoutes);
-app.use("/api/investor", authInvestorRoutes);
-app.use("/api/admin", authAdminRoutes);
+app.use("/api/auth/investor", authInvestorRoutes);
+app.use("/api/auth/admin", authAdminRoutes);
 app.use("/api/role", roleRoutes);
 app.use("/api/biodata-investor", investorBiodataRoutes);
 app.use("/api/alamat-investor", investorAlamatRoutes);
@@ -68,6 +70,8 @@ app.use("/api/identitas-investor", investorIdentitasRoutes);
 app.use("/api/data-pendukung-investor", investorDataPendukungRoutes);
 app.use("/api/biodata-admin", adminBiodataRoutes);
 app.use("/api/investasi", investasiRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/investor", investorRoutes);
 
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);

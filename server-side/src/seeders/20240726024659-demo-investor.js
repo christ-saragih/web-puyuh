@@ -23,6 +23,10 @@ module.exports = {
                 username: faker.internet.userName(),
                 email: faker.internet.email(),
                 password: password,
+                kategori_investor: faker.helpers.arrayElement([
+                    "individu",
+                    "organisasi",
+                ]),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };

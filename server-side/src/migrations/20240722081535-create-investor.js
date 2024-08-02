@@ -18,6 +18,9 @@ module.exports = {
             password: {
                 type: Sequelize.STRING,
             },
+            kategori_investor: {
+                type: Sequelize.ENUM("individu", "organisasi"),
+            },
             refresh_token: {
                 type: Sequelize.STRING,
             },

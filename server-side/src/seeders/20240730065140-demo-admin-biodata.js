@@ -19,6 +19,7 @@ module.exports = {
         );
         const adminBiodata = admins[0].map((admin) => ({
             adminId: admin.id,
+            foto_profil: faker.image.avatar(),
             nama_lengkap: faker.person.fullName(),
             jk: faker.helpers.arrayElement(["pria", "wanita"]),
             tempat_lahir: faker.location.city(),

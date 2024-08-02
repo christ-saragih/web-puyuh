@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association
             AdminBiodata.belongsTo(models.Admin, {
-                foreignKey: "investorId",
+                foreignKey: "adminId",
             });
         }
     }
@@ -20,9 +20,12 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
-                    model: "Investors",
+                    model: "Admins",
                     key: "id",
                 },
+            },
+            foto_profil: {
+                type: DataTypes.STRING,
             },
             nama_lengkap: {
                 type: DataTypes.STRING,
