@@ -27,3 +27,25 @@ export const addArticleTag = (tag, callback) => {
       console.log(err);
     });
 };
+
+export const updateArticleTag = (id, updatedTag, callback) => {
+  axios
+    .put(`http://localhost:3000/api/tag-artikel/${id}`, updatedTag)
+    .then((res) => {
+      callback(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const deleteArticleTag = (id, callback) => {
+  axios
+    .delete(`http://localhost:3000/api/tag-artikel/${id}`)
+    .then(() => {
+      callback();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
