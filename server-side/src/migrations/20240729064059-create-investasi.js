@@ -15,6 +15,12 @@ module.exports = {
             judul: {
                 type: Sequelize.STRING,
             },
+            gambar: {
+                type: Sequelize.STRING,
+            },
+            slug: {
+                type: Sequelize.STRING,
+            },
             penerbit: {
                 type: Sequelize.STRING,
             },
