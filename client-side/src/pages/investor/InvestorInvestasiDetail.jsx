@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import SidebarInvestor from "../../components/common/SidebarInvestor";
 import GambarInvestasi from "../../assets/images/GambarInvestasi.svg";
-import { MdWidthFull } from "react-icons/md";
 
 const InvestorProfil = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -11,7 +10,7 @@ const InvestorProfil = () => {
             <SidebarInvestor isHovered={isHovered} setIsHovered={setIsHovered} />
             <div className={`transition-all duration-300 ease-in-out ${isHovered ? "md:ml-60" : "md:ml-28"}`}>
                 <div className="p-2">
-                    <div className="flex flex-col w-full bg-[#F5F5F7] p-6 rounded-xl ">
+                    <div className="flex flex-col w-full bg-[#F5F5F7] p-6 rounded-xl mb-5 ">
                         <div className="flex flex-row mb-10">
                             <img
                                 src={GambarInvestasi}
@@ -54,7 +53,41 @@ const InvestorProfil = () => {
                         </div>
                     </div>
                     <div className="w-full bg-[#F5F5F7] p-4 rounded-xl">
-                        Tes
+                        <div className="flex space-x-4">
+                            {/* Kartu 1 */}
+                            <div className="bg-white p-4 shadow-md rounded-md w-1/2">
+                                <h3 className="text-lg font-bold mb-2">Minimum Investasi</h3>
+                                <p>Rp 1.000.000,-</p>
+                                <h3 className="text-lg font-bold mb-2">Maksimum Investasi</h3>
+                                <p>Rp 10.000.000,-</p>
+                                <h3 className="text-lg font-bold mb-2">Bagi Hasil</h3>
+                                <p>15%</p>
+                                <h3 className="text-lg font-bold mb-2">Tenor</h3>
+                                <p>5 Bulan</p>
+                                <h3 className="text-lg font-bold mb-2">Pembayaran Bagi Hasil</h3>
+                                <p>per Bulan</p>
+                            </div>
+                            
+                            {/* Kartu 2 */}
+                            <div className="bg-white p-4 shadow-md rounded-md w-1/2">
+                                <h3 className="text-lg font-bold mb-2">Minimum Pendanaan</h3>
+                                <p>Rp 2.000.000.000,-</p>
+                                <h3 className="text-lg font-bold mb-2">Maksimum Pendanaan</h3>
+                                <p>Rp 3.000.000.000,-</p>
+                                <h3 className="text-lg font-bold mb-2">Penggunaan Dana</h3>
+                                <p>Pembangunan kandang baru di Cisarua, Jawa Barat</p>
+                                <h3 className="text-lg font-bold mb-2">Satuan Perdagangan</h3>
+                                <p>Rp 100.000</p>
+                                <h3 className="text-lg font-bold mb-2">Jaminan Kebendaan</h3>
+                                <p>Tidak Ada</p>
+                            </div>
+                        </div>
+                        {/* Tombol Investasi */}
+                        <div className="flex justify-center mt-4">
+                            <button className="px-6 py-2 bg-[#572618] text-white font-bold rounded-md hover:bg-brown-700 transition">
+                                Investasi Sekarang
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
