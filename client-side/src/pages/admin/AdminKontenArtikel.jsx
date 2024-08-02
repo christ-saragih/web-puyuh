@@ -22,7 +22,12 @@ import Label from "../../components/common/Label";
 import Pagination from "../../components/common/Pagination";
 import { Tabs } from "flowbite-react";
 import ActionButton from "../../components/common/ActionButton";
-import { getArticleTags, addArticleTag  } from "../../services/article-tag.service";
+import {
+  getArticleTags,
+  addArticleTag,
+  updateArticleTag,
+  deleteArticleTag,
+} from "../../services/article-tag.service";
 
 const AdminKontenArtikel = () => {
   const [articles, setArticles] = useState([]);
@@ -36,6 +41,7 @@ const AdminKontenArtikel = () => {
   const [selectedValue, setSelectedValue] = useState("4");
   const [currentPage, setCurrentPage] = useState(1);
   const [articleTags, setArticleTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState(null);
   const [newTag, setNewTag] = useState("");
 
   // get data tag artikel
@@ -45,10 +51,28 @@ const AdminKontenArtikel = () => {
     });
   }, []);
 
-  // tambah data tag artikel
+  // tambah tag artikel
   const handleAddTag = () => {
     addArticleTag({ nama: newTag }, (data) => {
       setArticleTags([...articleTags, data]);
+      closeModal();
+    });
+  };
+
+  // update tag artikel
+  const handleUpdateTag = () => {
+    updateArticleTag(selectedTag.id, { nama: newTag }, (updatedTag) => {
+      setArticleTags(
+        articleTags.map((tag) => (tag.id === selectedTag.id ? updatedTag : tag))
+      );
+      closeModal();
+    });
+  };
+
+  //  delete tag artikel
+  const handleDeleteTag = () => {
+    deleteArticleTag(selectedTag.id, () => {
+      setArticleTags(articleTags.filter((tag) => tag.id !== selectedTag.id));
       closeModal();
     });
   };
@@ -67,9 +91,13 @@ const AdminKontenArtikel = () => {
   }, []);
 
   // modal logic
-  const openModal = (type) => {
+  const openModal = (type, tag = null) => {
     setModalType(type);
     setIsModalOpen(true);
+    setSelectedTag(tag);
+    if (type === "update_article_tag") {
+      setNewTag(tag.nama);
+    }
   };
   const closeModal = () => {
     setModalType("");
@@ -174,35 +202,43 @@ const AdminKontenArtikel = () => {
                             handleChange={handleChange}
                           />
                         </Modal.Body>
-                        <Modal.Footer action={"Tambah"} onAction={handleAddTag} onClose={closeModal} />
+                        <Modal.Footer
+                          action={"Tambah"}
+                          onAction={handleAddTag}
+                          onClose={closeModal}
+                        />
                       </>
                     )}
 
                     {modalType === "update_article_tag" && (
                       <>
                         <Modal.Header
-                          title={"Ubah Tag Artikel"}
+                          title="Ubah Tag Artikel"
                           onClose={closeModal}
                         />
                         <Modal.Body>
-                          <Label htmlFor={"article_tags"} value={"Nama Tag"} />
+                          <Label htmlFor="article_tags" value="Nama Tag" />
                           <Input
-                            type={"text"}
-                            name={"article_tags"}
-                            variant={"primary-outline"}
-                            className={"mt-1 mb-4"}
-                            value={"defleo"}
-                            
+                            type="text"
+                            name="article_tags"
+                            variant="primary-outline"
+                            className="mt-1 mb-4"
+                            value={newTag}
+                            handleChange={handleChange}
                           />
                         </Modal.Body>
-                        <Modal.Footer action={"Ubah"} onClose={closeModal} />
+                        <Modal.Footer
+                          action="Ubah"
+                          onAction={handleUpdateTag}
+                          onClose={closeModal}
+                        />
                       </>
                     )}
 
                     {modalType === "delete_article_tag" && (
                       <>
                         <Modal.Header
-                          title={"Hapus Artikel"}
+                          title="Hapus Tag Artikel"
                           onClose={closeModal}
                         />
                         <Modal.Body>
@@ -210,7 +246,11 @@ const AdminKontenArtikel = () => {
                             Apakah Anda yakin ingin menghapus tag artikel ini?
                           </p>
                         </Modal.Body>
-                        <Modal.Footer action={"Hapus"} onClose={closeModal} />
+                        <Modal.Footer
+                          action="Hapus"
+                          onAction={handleDeleteTag}
+                          onClose={closeModal}
+                        />
                       </>
                     )}
                   </Modal>
@@ -248,15 +288,19 @@ const AdminKontenArtikel = () => {
                           <td className="px-6 py-4 text-center space-x-2">
                             <ActionButton
                               icon={PiNotePencilBold}
-                              className={"text-yellow-600"}
-                              tooltip={"Ubah"}
-                              onClick={() => openModal("update_article_tag")}
+                              className="text-yellow-600"
+                              tooltip="Ubah"
+                              onClick={() =>
+                                openModal("update_article_tag", articleTag)
+                              }
                             />
                             <ActionButton
                               icon={PiTrashBold}
-                              className={"text-red-600"}
-                              tooltip={"Hapus"}
-                              onClick={() => openModal("delete_article_tag")}
+                              className="text-red-600"
+                              tooltip="Hapus"
+                              onClick={() =>
+                                openModal("delete_article_tag", articleTag)
+                              }
                             />
                           </td>
                         </tr>
