@@ -26,6 +26,7 @@ import AdminKontenFaq from "./pages/admin/AdminKontenFaq";
 import AdminInvestasi from "./pages/admin/AdminInvestasi";
 import AdminInvestor from "./pages/admin/AdminInvestor";
 import Utama from "./pages/admin/halaman_depan/Utama";
+import Profil from "./pages/admin/halaman_depan/Profil";
 
 import InvestorDashboard from "./pages/investor/InvestorDashboard";
 import InvestorProfil from "./pages/investor/InvestorProfil";
@@ -144,6 +145,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/investor",
     element: <AdminInvestor />,
+  },
+  {
+    path: "/admin/halaman-depan/profil",
+    element: <Profil />,
   },
   // admin end
 ]);
