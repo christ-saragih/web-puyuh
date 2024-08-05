@@ -8,8 +8,9 @@ const {
     updateSchema,
 } = require("../validators/sejarahValidation");
 
-router.post("/", validate(createSchema), sejarahController.create);
-router.put("/:id", validate(updateSchema), sejarahController.update);
+router.post("/", validate(createSchema), sejarahController.upsert);
+// router.post("/", validate(createSchema), sejarahController.create);
+// router.put("/:id", validate(updateSchema), sejarahController.update);
 router.get("/", sejarahController.findAll);
 router.get("/:id", sejarahController.findOne);
 router.delete("/:id", sejarahController.delete);
