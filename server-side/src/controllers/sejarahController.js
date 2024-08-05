@@ -1,21 +1,34 @@
 const { Sejarah } = require("../models");
-const fs = require("fs");
-const path = require("path");
 
-// Create
-exports.create = async (req, res) => {
+// Upsert
+exports.upsert = async (req, res) => {
     try {
-        const { judul, deskripsi } = req.body;
+        const sejarah = await Sejarah.findOne();
+        if (!sejarah) {
+            const { judul, deskripsi } = req.body;
 
-        const sejarah = await Sejarah.create({
-            judul,
-            deskripsi,
-        });
+            const sejarah = await Sejarah.create({
+                judul,
+                deskripsi,
+            });
 
-        res.status(201).json({
-            message: "Sejarah Berhasil Ditambahkan!",
-            data: sejarah,
-        });
+            res.status(201).json({
+                message: "Sejarah Berhasil Ditambahkan!",
+                data: sejarah,
+            });
+        } else {
+            const { judul, deskripsi } = req.body;
+
+            await sejarah.update({
+                judul,
+                deskripsi,
+            });
+
+            res.status(200).json({
+                message: "Tentang Kami Berhasil Diupdate!",
+                data: sejarah,
+            });
+        }
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
             const messages = error.errors.map((err) => err.message);
@@ -31,6 +44,36 @@ exports.create = async (req, res) => {
         }
     }
 };
+
+// // Create
+// exports.create = async (req, res) => {
+//     try {
+//         const { judul, deskripsi } = req.body;
+
+//         const sejarah = await Sejarah.create({
+//             judul,
+//             deskripsi,
+//         });
+
+//         res.status(201).json({
+//             message: "Sejarah Berhasil Ditambahkan!",
+//             data: sejarah,
+//         });
+//     } catch (error) {
+//         if (error.name === "SequelizeValidationError") {
+//             const messages = error.errors.map((err) => err.message);
+//             res.status(400).json({
+//                 message: "Validation error",
+//                 errors: messages,
+//             });
+//         } else {
+//             res.status(500).json({
+//                 message: "Internal server error",
+//                 error: error.message,
+//             });
+//         }
+//     }
+// };
 
 // Read all
 exports.findAll = async (req, res) => {
@@ -64,41 +107,41 @@ exports.findOne = async (req, res) => {
     }
 };
 
-// Update
-exports.update = async (req, res) => {
-    try {
-        const { judul, deskripsi } = req.body;
+// // Update
+// exports.update = async (req, res) => {
+//     try {
+//         const { judul, deskripsi } = req.body;
 
-        const sejarah = await Sejarah.findByPk(req.params.id);
+//         const sejarah = await Sejarah.findByPk(req.params.id);
 
-        if (!sejarah) {
-            return res.status(404).json({ message: "Sejarah Tidak Ada!" });
-        }
+//         if (!sejarah) {
+//             return res.status(404).json({ message: "Sejarah Tidak Ada!" });
+//         }
 
-        await sejarah.update({
-            judul,
-            deskripsi,
-        });
+//         await sejarah.update({
+//             judul,
+//             deskripsi,
+//         });
 
-        res.status(200).json({
-            message: "Tentang Kami Berhasil Diupdate!",
-            data: sejarah,
-        });
-    } catch (error) {
-        if (error.name === "SequelizeValidationError") {
-            const messages = error.errors.map((err) => err.message);
-            res.status(400).json({
-                message: "Validation error",
-                errors: messages,
-            });
-        } else {
-            res.status(500).json({
-                message: "Internal server error",
-                error: error.message,
-            });
-        }
-    }
-};
+//         res.status(200).json({
+//             message: "Tentang Kami Berhasil Diupdate!",
+//             data: sejarah,
+//         });
+//     } catch (error) {
+//         if (error.name === "SequelizeValidationError") {
+//             const messages = error.errors.map((err) => err.message);
+//             res.status(400).json({
+//                 message: "Validation error",
+//                 errors: messages,
+//             });
+//         } else {
+//             res.status(500).json({
+//                 message: "Internal server error",
+//                 error: error.message,
+//             });
+//         }
+//     }
+// };
 
 // Delete
 exports.delete = async (req, res) => {

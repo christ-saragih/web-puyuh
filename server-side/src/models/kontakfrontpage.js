@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 validate: {
                     notEmpty: { msg: "Url map tidak boleh kosong!" },
-                    isUrl: { msg: "Url map harus berupa link url!" },
+                    // isUrl: { msg: "Url map harus berupa link url!" },
                     notNull: { msg: "Url map tidak boleh null" },
                 },
             },

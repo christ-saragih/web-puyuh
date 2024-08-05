@@ -20,17 +20,26 @@ router.post(
         fieldName: "image_background",
     }),
     validate(createSchema),
-    tentangKamiContoller.create
+    tentangKamiContoller.upsert
 );
-router.put(
-    "/:id",
-    upload.single("image_background"),
-    validateUploadFile({
-        fieldName: "image_background",
-    }),
-    validate(updateSchema),
-    tentangKamiContoller.update
-);
+// router.post(
+//     "/",
+//     upload.single("image_background"),
+//     validateUploadFile({
+//         fieldName: "image_background",
+//     }),
+//     validate(createSchema),
+//     tentangKamiContoller.create
+// );
+// router.put(
+//     "/:id",
+//     upload.single("image_background"),
+//     validateUploadFile({
+//         fieldName: "image_background",
+//     }),
+//     validate(updateSchema),
+//     tentangKamiContoller.update
+// );
 router.get("/", tentangKamiContoller.findAll);
 router.get("/:id", tentangKamiContoller.findOne);
 router.delete("/:id", tentangKamiContoller.delete);
