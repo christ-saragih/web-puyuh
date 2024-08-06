@@ -19,6 +19,16 @@ router.post(
     validate(registrasiSchema),
     authInvestorController.register
 );
+router.get("/verify-email", authInvestorController.verifyEmail);
+router.post(
+    "/request-verification",
+    authInvestorController.requestVerification
+);
+router.post("/reset-password", authInvestorController.resetPassword);
+router.post(
+    "/request-password-reset",
+    authInvestorController.requestPasswordReset
+);
 router.post("/login", validate(loginSchema), authInvestorController.login);
 router.post("/logout", logoutInvestor);
 // Protected route

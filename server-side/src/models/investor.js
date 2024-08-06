@@ -69,8 +69,28 @@ module.exports = (sequelize, DataTypes) => {
                     },
                 },
             },
+            verificationToken: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            verificationTokenExpiry: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+            isVerified: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
             refresh_token: {
                 type: DataTypes.STRING,
+            },
+            resetPasswordToken: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            resetPasswordTokenExpiry: {
+                type: DataTypes.DATE,
+                allowNull: true,
             },
         },
         {

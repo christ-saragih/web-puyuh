@@ -24,6 +24,26 @@ module.exports = {
             refresh_token: {
                 type: Sequelize.STRING,
             },
+            verificationToken: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            verificationTokenExpiry: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
+            isVerified: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
+            },
+            resetPasswordToken: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            resetPasswordTokenExpiry: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,
