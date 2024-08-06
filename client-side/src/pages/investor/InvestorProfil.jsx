@@ -25,7 +25,6 @@ const InvestorProfil = () => {
                             <VerticalTabProfil />
                         </div>
                     </div>
-
             </div>
         </div>
     )
