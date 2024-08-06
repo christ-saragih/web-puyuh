@@ -32,8 +32,7 @@ import InvestorProfil from "./pages/investor/InvestorProfil";
 import InvestorInvestasi from "./pages/investor/InvestorInvestasi";
 import InvestorInvestasiDetail from "./pages/investor/InvestorInvestasiDetail";
 import InvestorTransaksi from "./pages/investor/InvestorTransaksi";
-
-
+import Profil from "./pages/admin/halaman_depan/Profil";
 
 const router = createBrowserRouter([
   //guess start
@@ -119,6 +118,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/halaman-depan/utama",
     element: <Utama />,
+  },
+  {
+    path: "/admin/halaman-depan/profil",
+    element: <Profil />,
   },
 
   {
