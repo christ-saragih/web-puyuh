@@ -9,5 +9,11 @@ const authorizeRole = require("../middleware/authorizeRole");
 
 router.get("/", adminController.findAll);
 router.get("/:id", adminController.findOne);
+router.post(
+    "/ubah-password",
+    authenticateAdminToken,
+    authorizeRole("admin"),
+    adminController.ubahPassword
+);
 
 module.exports = router;
