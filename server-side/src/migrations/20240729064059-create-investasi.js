@@ -27,29 +27,17 @@ module.exports = {
             penggunaan_dana: {
                 type: Sequelize.STRING,
             },
-            jaminan_kebendaan: {
-                type: Sequelize.STRING,
-            },
             bagi_hasil: {
                 type: Sequelize.STRING,
             },
             minimum_investasi: {
-                type: Sequelize.FLOAT,
+                type: Sequelize.BIGINT,
             },
             maksimum_investasi: {
-                type: Sequelize.FLOAT,
-            },
-            satuan_perdagangan: {
-                type: Sequelize.STRING,
-            },
-            minimum_pendanaan: {
-                type: Sequelize.FLOAT,
-            },
-            maksimum_pendanaan: {
-                type: Sequelize.FLOAT,
+                type: Sequelize.BIGINT,
             },
             total_pendanaan: {
-                type: Sequelize.FLOAT,
+                type: Sequelize.BIGINT,
             },
             tenor: {
                 type: Sequelize.STRING,

@@ -56,14 +56,6 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: { msg: "Penggunaan Dana tidak boleh kosong!" },
                 },
             },
-            jaminan_kebendaan: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Jaminan Kebendaan tidak boleh null!" },
-                    notEmpty: { msg: "Jaminan Kebendaan tidak boleh kosong!" },
-                },
-            },
             bagi_hasil: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -73,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             minimum_investasi: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.BIGINT,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Minimum Investasi tidak boleh null!" },
@@ -81,39 +73,15 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             maksimum_investasi: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.BIGINT,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Maksimum Investasi tidak boleh null!" },
                     notEmpty: { msg: "Maksimum Investasi tidak boleh kosong!" },
                 },
             },
-            satuan_perdagangan: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Satuan Perdagangan tidak boleh null!" },
-                    notEmpty: { msg: "Satuan Perdagangan tidak boleh kosong!" },
-                },
-            },
-            minimum_pendanaan: {
-                type: DataTypes.FLOAT,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Minimum Pendanaan tidak boleh null!" },
-                    notEmpty: { msg: "Minimum Pendanaan tidak boleh kosong!" },
-                },
-            },
-            maksimum_pendanaan: {
-                type: DataTypes.FLOAT,
-                allowNull: false,
-                validate: {
-                    notNull: { msg: "Maksimum Pendanaan tidak boleh null!" },
-                    notEmpty: { msg: "Maksimum Pendanaan tidak boleh kosong!" },
-                },
-            },
             total_pendanaan: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.BIGINT,
             },
             tenor: {
                 type: DataTypes.STRING,
