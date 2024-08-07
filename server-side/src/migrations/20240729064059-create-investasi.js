@@ -11,6 +11,10 @@ module.exports = {
             },
             adminId: {
                 type: Sequelize.INTEGER,
+                references: {
+                    model: "Admins",
+                    key: "id",
+                },
             },
             judul: {
                 type: Sequelize.STRING,
