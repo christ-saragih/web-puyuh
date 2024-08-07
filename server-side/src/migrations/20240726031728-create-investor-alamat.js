@@ -11,6 +11,10 @@ module.exports = {
             },
             investorId: {
                 type: Sequelize.INTEGER,
+                references: {
+                    model: "Investors",
+                    key: "id",
+                },
             },
             alamat: {
                 type: Sequelize.TEXT,

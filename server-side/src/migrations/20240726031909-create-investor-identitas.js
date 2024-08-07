@@ -11,6 +11,10 @@ module.exports = {
             },
             investorId: {
                 type: Sequelize.INTEGER,
+                references: {
+                    model: "Investors",
+                    key: "id",
+                },
             },
             no_ktp: {
                 type: Sequelize.STRING,
