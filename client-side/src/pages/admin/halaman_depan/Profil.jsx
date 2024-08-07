@@ -53,7 +53,7 @@ const Profil = () => {
       console.error(err);
     }
   };
-
+  
   return (
     <AdminLayout title={"Halaman Depan / Profil"}>
       <div className="flex flex-col">
