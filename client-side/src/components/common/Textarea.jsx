@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const Textarea = (props) => {
   const { id, placeholder, required, rows, variant, className } = props;
 
@@ -13,3 +15,12 @@ const Textarea = (props) => {
 };
 
 export default Textarea;
+
+Textarea.propTypes = {
+  id: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
+  rows: PropTypes.number.isRequired,
+  variant: PropTypes.oneOf(["primary", "primary-outline", "error", "disabled"]),
+  className: PropTypes.string,
+};
