@@ -22,7 +22,7 @@ const ArticleItemBody = (props) => {
         </h3>
         <p>{deskripsi.substring(0, 180)}...</p>
       </div>
-
+    
       <div className="bg-[#F5F5F5] rounded-xl flex items-center px-3 py-2 mt-3 ">
         <div className="w-9 h-9 text-slate-800  rounded-full">
           <LiaUserEditSolid className="w-full h-full" />

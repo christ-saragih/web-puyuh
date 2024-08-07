@@ -8,12 +8,19 @@
 /* .input-primary {
 } */
 .input-primary-outline,
+.input-primary-outline-search,
 .textarea-primary-outline {
   @apply text-gray-900 bg-gray-50 border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
 }
+
+.input-primary-outline,
+.textarea-primary-outline {
+  @apply mt-2 mb-4;
+}
+
 .input-disabled,
 .textarea-disabled {
-  @apply text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+  @apply mt-2 mb-4 text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
 }
 /* .input-error {
 } */

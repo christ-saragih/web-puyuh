@@ -8,9 +8,9 @@ const Kontak = () => {
   return (
     <AdminLayout title={"Halaman Depan / Kontak"}>
       <div className="flex flex-col">
-        <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
+        <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
           <div className="w-full flex justify-between mb-5">
-            <h3 className="font-bold text-[#572618] text-xl">Sejarah</h3>
+            <h3 className="font-bold text-[#572618] text-xl">Kontak</h3>
             <Button value={"Simpan"} />
           </div>
 
