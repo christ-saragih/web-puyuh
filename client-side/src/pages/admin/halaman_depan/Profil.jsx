@@ -2,20 +2,36 @@ import React, { useState } from "react";
 import Sidebar from "../../../components/common/Sidebar";
 import AdminNavbar from "../../../components/admin/AdminNavbar";
 import axios from "axios";
+import ReactQuill from "react-quill";
 
 const Profil = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [formData, setFormData] = useState({
-        judul: '',
-        image_background: null,
-        deskripsi: ''
+        tentangKami: {
+            judul: '',
+            image_background: null,
+            deskripsi: ''
+        },
+        sejarah: {
+            judul: '',
+            deskripsi: ''
+        }
     });
-    const [imagePreview, setImagePreview] = useState(null); // State untuk pratinjau gambar
+    const [imagePreview, setImagePreview] = useState(null);
+    const [notification, setNotification] = useState(null);
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const { name, value, files, dataset } = e.target;
+        const { section } = dataset;
+
         if (files && files[0]) {
-            setFormData({ ...formData, [name]: files[0] });
+            setFormData(prevState => ({
+                ...prevState,
+                [section]: {
+                    ...prevState[section],
+                    [name]: files[0]
+                }
+            }));
 
             // Membaca file dan mengatur URL pratinjau
             const reader = new FileReader();
@@ -24,27 +40,55 @@ const Profil = () => {
             };
             reader.readAsDataURL(files[0]);
         } else {
-            setFormData({ ...formData, [name]: value });
+            setFormData(prevState => ({
+                ...prevState,
+                [section]: {
+                    ...prevState[section],
+                    [name]: value
+                }
+            }));
         }
     };
 
     const handleSubmit = async () => {
-        const form = new FormData();
-        form.append("judul", formData.judul);
-        form.append("image_background", formData.image_background);
-        form.append("deskripsi", formData.deskripsi);
-
+        const tentangKamiForm = new FormData();
+        tentangKamiForm.append("judul", formData.tentangKami.judul);
+        tentangKamiForm.append("image_background", formData.tentangKami.image_background);
+        tentangKamiForm.append("deskripsi", formData.tentangKami.deskripsi);
+    
+        const sejarahForm = new FormData();
+        sejarahForm.append("judul", formData.sejarah.judul);
+        sejarahForm.append("deskripsi", formData.sejarah.deskripsi);
+    
+        console.log('Tentang Kami Form Data:', [...tentangKamiForm.entries()]);
+        console.log('Sejarah Form Data:', [...sejarahForm.entries()]);
+    
         try {
-            const { data } = await axios.post('http://localhost:3000/api/tentang-kami', form, {
+            const tentangKamiResponse = await axios.post('http://localhost:3000/api/tentang-kami', tentangKamiForm, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log(data);
+            console.log('Tentang Kami Response:', tentangKamiResponse.data);
+    
+            const sejarahResponse = await axios.post('http://localhost:3000/api/sejarah', sejarahForm, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Sejarah Response:', sejarahResponse.data);
+    
+            setNotification({ message: "Data berhasil disimpan!", type: "success" });
         } catch (err) {
-            console.error(err);
+            console.error('Error:', err.response ? err.response.data : err.message);
+            setNotification({ message: "Terjadi kesalahan saat menyimpan data.", type: "error" });
+        } finally {
+            setTimeout(() => setNotification(null), 3000);
         }
     };
+
+    // console.log(typeof formData.sejarah.judul); 
+    
 
     return (
         <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
@@ -61,7 +105,7 @@ const Profil = () => {
                         </div>
                         <div className="px-10 py-5">
                             <label htmlFor="input-judul" className="block mb-2 text-sm font-medium text-gray-900">Judul :</label>
-                            <input type="text" id="input-judul" onChange={handleChange} name="judul" className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg" />
+                            <input type="text" id="input-judul" onChange={handleChange} name="judul" data-section="tentangKami" className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg" />
                         </div>
                         <div className="px-10">
                             <label htmlFor="dropzone-file" className="block mb-2 text-sm font-medium text-gray-900">Gambar Latar Belakang :</label>
@@ -80,18 +124,121 @@ const Profil = () => {
                                             </>
                                         )}
                                     </div>
-                                    <input id="dropzone-file" onChange={handleChange} type="file" name="image_background" className="hidden" />
+                                    <input id="dropzone-file" onChange={handleChange} type="file" name="image_background" data-section="tentangKami" className="hidden" />
                                 </label>
                             </div>
                         </div>
                         <div className="px-10">
                             <label htmlFor="deskripsi-input" className="block mb-2 text-sm font-medium text-gray-900">Deskripsi :</label>
-                            <textarea type="text" id="deskripsi-input" name="deskripsi" onChange={handleChange} className="bg-white text-gray-900 text-sm rounded-lg w-full h-48 p-2.5 border-none focus:ring-orange-900 drop-shadow-lg" />
+                            <ReactQuill id="deskripsi-input" name="deskripsi" onChange={(value) => setFormData(prevState => ({
+                                ...prevState,
+                                tentangKami: { ...prevState.tentangKami, deskripsi: value }
+                            }))} style={{ height: "400px" }}
+                                modules={{
+                                    toolbar: [
+                                        [
+                                            { header: "1" },
+                                            { header: "2" },
+                                            { font: [] },
+                                        ],
+                                        [{ size: [] }],
+                                        [
+                                            "bold",
+                                            "italic",
+                                            "underline",
+                                            "strike",
+                                            "blockquote",
+                                        ],
+                                        [
+                                            { list: "ordered" },
+                                            { list: "bullet" },
+                                            { indent: "-1" },
+                                            { indent: "+1" },
+                                        ],
+                                        ["link", "image", "video"],
+                                        ["clean"],
+                                    ],
+                                }}
+                                formats={[
+                                    "header",
+                                    "font",
+                                    "size",
+                                    "bold",
+                                    "italic",
+                                    "underline",
+                                    "strike",
+                                    "blockquote",
+                                    "list",
+                                    "bullet",
+                                    "indent",
+                                    "link",
+                                    "image",
+                                    "video",
+                                ]}
+                            />
                         </div>
                     </div>
-                    <div></div>
+                    <div className="w-full rounded-xl bg-[#F5F5F7] mt-10 flex flex-col py-5">
+                        <div className="px-10 py-5">
+                            <h2 className="font-quicksand font-bold text-[#572618] text-lg">Sejarah</h2>
+                            <label htmlFor="input-sejarah-judul" className="block mb-2 text-sm font-medium text-gray-900">Judul Sejarah :</label>
+                            <input type="text" id="input-sejarah-judul" onChange={handleChange} name="judul" data-section="sejarah" className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg" />
+                            <label htmlFor="input-sejarah-deskripsi" className="block mt-4 mb-2 text-sm font-medium text-gray-900">Deskripsi Sejarah :</label>
+                            <ReactQuill id="input-sejarah-deskripsi" name="deskripsi" onChange={(value) => setFormData(prevState => ({
+                                ...prevState,
+                                sejarah: { ...prevState.sejarah, deskripsi: value }
+                            }))} style={{ height: "200px" }}
+                                modules={{
+                                    toolbar: [
+                                        [
+                                            { header: "1" },
+                                            { header: "2" },
+                                            { font: [] },
+                                        ],
+                                        [{ size: [] }],
+                                        [
+                                            "bold",
+                                            "italic",
+                                            "underline",
+                                            "strike",
+                                            "blockquote",
+                                        ],
+                                        [
+                                            { list: "ordered" },
+                                            { list: "bullet" },
+                                            { indent: "-1" },
+                                            { indent: "+1" },
+                                        ],
+                                        ["link", "image", "video"],
+                                        ["clean"],
+                                    ],
+                                }}
+                                formats={[
+                                    "header",
+                                    "font",
+                                    "size",
+                                    "bold",
+                                    "italic",
+                                    "underline",
+                                    "strike",
+                                    "blockquote",
+                                    "list",
+                                    "bullet",
+                                    "indent",
+                                    "link",
+                                    "image",
+                                    "video",
+                                ]}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
+            {notification && (
+                <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`}>
+                    {notification.message}
+                </div>
+            )}
         </div>
     );
 };
