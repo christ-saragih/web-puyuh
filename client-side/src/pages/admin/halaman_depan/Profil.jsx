@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../../../components/common/Sidebar";
-import AdminNavbar from "../../../components/admin/AdminNavbar";
-import axios from "axios";
 import AdminLayout from "../../../layouts/AdminLayout.jsx";
-import Button from "../../../components/common/Button";
-import Label from "../../../components/common/Label";
-import Input from "../../../components/common/Input";
-import Textarea from "../../../components/common/Textarea";
+import axios from "axios";
 
 const Profil = () => {
   const [formData, setFormData] = useState({
@@ -14,14 +8,18 @@ const Profil = () => {
     image_background: null,
     deskripsi: "",
   });
-  const [imagePreview, setImagePreview] = useState(null); // State untuk pratinjau gambar
+
+  const [sejarahData, setSejarahData] = useState({
+    judul: "",
+    deskripsi: "",
+  });
+
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files && files[0]) {
       setFormData({ ...formData, [name]: files[0] });
-
-      // Membaca file dan mengatur URL pratinjau
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
@@ -30,6 +28,11 @@ const Profil = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+  };
+
+  const handleChangeSejarah = (e) => {
+    const { name, value } = e.target;
+    setSejarahData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async () => {
@@ -48,20 +51,35 @@ const Profil = () => {
           },
         }
       );
-      console.log(data);
+      console.log("Tentang Kami data:", data);
     } catch (err) {
-      console.error(err);
+      console.error("Error Tentang Kami:", err.response ? err.response.data : err.message);
     }
   };
-  
+
+  const handleSubmitSejarah = async () => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3000/api/sejarah",
+        sejarahData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Sejarah data:", data);
+    } catch (err) {
+      console.error("Error Sejarah:", err.response ? err.response.data : err.message);
+    }
+  };
+
   return (
     <AdminLayout title={"Halaman Depan / Profil"}>
       <div className="flex flex-col">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
           <div className="flex flex-row justify-between mb-5">
-            <h1 className="font-bold text-[#572618] text-xl">
-              Tentang Kami
-            </h1>
+            <h1 className="font-bold text-[#572618] text-xl">Tentang Kami</h1>
             <button
               onClick={handleSubmit}
               className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
@@ -159,22 +177,40 @@ const Profil = () => {
           </div>
         </div>
 
+        {/* sejarah */}
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
           <div className="w-full flex justify-between mb-5">
             <h3 className="font-bold text-[#572618] text-xl">Sejarah</h3>
-            <Button value={"Simpan"} />
+            <button
+              onClick={handleSubmitSejarah}
+              className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
+            >
+              Simpan
+            </button>
           </div>
 
           <div>
-            <Label htmlFor={"judul"} value={"Judul"} />
-            <Input type={"text"} name={"judul"} variant={"primary-outline"} />
+            <label htmlFor="judul-sejarah" className="block mb-2 text-sm font-medium text-gray-900">
+              Judul
+            </label>
+            <input
+              type="text"
+              name="judul"
+              id="judul-sejarah"
+              onChange={handleChangeSejarah}
+              className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
+            />
 
-            <Label htmlFor={"deskripsi"} value={"Deskripsi"} />
-            <Textarea
-              id={"deskripsi"}
+            <label htmlFor="deskripsi-sejarah" className="block mb-2 text-sm font-medium text-gray-900">
+              Deskripsi
+            </label>
+            <textarea
+              id="deskripsi-sejarah"
+              name="deskripsi"
               required
               rows={4}
-              variant={"primary-outline"}
+              onChange={handleChangeSejarah}
+              className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
             />
           </div>
         </div>
