@@ -240,13 +240,13 @@ const Daftar = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleRegisterType('badan')}
+                onClick={() => handleRegisterType('organisasi')}
                 className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
-                  registerType === 'badan' ? 'bg-slate-300 border-black' : 'hover:bg-slate-300 border-zinc-950'
+                  registerType === 'organisasi' ? 'bg-slate-300 border-black' : 'hover:bg-slate-300 border-zinc-950'
                 }`}
               >
                 <HiOutlineBuildingOffice2 className="w-[34px] h-[35px]" />
-                <p className="font-bold text-[15px]">BADAN</p>
+                <p className="font-bold text-[15px]">ORGANISASI</p>
               </button>
             </div>
             <div className="mb-6">
