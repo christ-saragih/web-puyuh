@@ -15,6 +15,21 @@ const Faq = () => {
     });
   }, []);
 
+  // const fetchFaqs = async () => {
+  //   try {
+  //     const faqsResponse = await axiosInstance.get("/faq");
+  //     setFaqs(faqsResponse.data);
+  //     console.log(faqsResponse.data);
+      
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetchFaqs();
+  // }, [])
+
   return (
     <>
       <Navbar />

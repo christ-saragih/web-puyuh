@@ -33,7 +33,7 @@ const Input = (props) => {
       id={name}
       value={value}
       defaultValue={defaultValue}
-      className={`block w-full px-4 py-2 mt-2 mb-4 text-sm border-2 rounded-2xl shadow ${
+      className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl shadow ${
         isError && "input-error"
       } input-${variant} ${className}`}
       ref={input}
@@ -60,7 +60,7 @@ Input.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-  variant: PropTypes.oneOf(["primary", "primary-outline", "error", "disabled"]),
+  variant: PropTypes.oneOf(["primary", "primary-outline", "primary-outline-search", "error", "disabled"]),
   autoComplete: PropTypes.string,
   required: PropTypes.bool,
   isFocused: PropTypes.bool,

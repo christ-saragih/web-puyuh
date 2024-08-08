@@ -25,8 +25,8 @@ const InputSearch = (props) => {
       <Input
         type={"text"}
         placeholder={"Masukkan pencarian.."}
-        variant={"primary-outline"}
-        className={"mb-0 mt-0 ps-10 max-w-sm"}
+        variant={"primary-outline-search"}
+        className={"ps-10 max-w-sm"}
         handleChange={handleChange}
       />
     </div>

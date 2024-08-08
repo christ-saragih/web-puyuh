@@ -12,11 +12,30 @@ import BagiHasil from "../../assets/images/bagi-hasil.svg";
 import BatchList from "../../components/guest/BatchList";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getDashboardFrontpage } from "../../services/dashboard-frontpage.service";
 import { getArticles } from "../../services/article.service";
 import ArticleList from "../../components/common/ArticleList";
 
 const Dashboard = () => {
+  const [dashboardFrontpage, setDashboardFrontpage] = useState({
+    nama_header: "",
+    nama_subheader: "",
+    image_header: "",
+  });
   const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    getDashboardFrontpage((response) => {
+      if (response.data && response.data.length > 0) {
+        const data = response.data[0];
+        setDashboardFrontpage({
+          nama_header: data.nama_header,
+          nama_subheader: data.nama_subheader,
+          image_header: data.image_header,
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     getArticles((data) => {
@@ -26,26 +45,25 @@ const Dashboard = () => {
     });
   }, []);
 
+  console.log(dashboardFrontpage);
+
   return (
     <>
       <Navbar />
       <GuestLayout className="mt-28 lg:mt-32 -mb-0">
         <div className="w-full lg:w-[80%] mb-10">
           <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
-            Wujudkan Ekosistem Pendanaan &{" "}
-            <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
+            {dashboardFrontpage.nama_header}
+            {/* <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
             Berdampak
-            <span className="text-[#B87817]"> Nyata</span>
+            <span className="text-[#B87817]"> Nyata</span> */}
           </h1>
         </div>
 
         <div className="flex flex-col items-center gap-12 mb-20 md:flex-row lg:mb-0">
           <div className="w-full lg:w-1/2 flex flex-col gap-12">
             <p className="text-[#2B2B2B] text-2xl">
-              FundEx, platform securities crowdfunding untuk pendanaan dan
-              investasi bisnis serta proyek potensial di Indonesia. FundEx,
-              platform securities crowdfunding untuk pendanaan dan investasi
-              bisnis serta.
+              {dashboardFrontpage.nama_subheader}
             </p>
             <div className="hidden lg:flex justify-center lg:gap-10">
               <button className="bg-[#4B241A] w-1/2 py-3 rounded-3xl shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
@@ -57,7 +75,8 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="w-full lg:w-1/2 flex justify-center">
-            <img src={JumbotronImage} alt="" className="w-[26rem]" />
+            <img src={`http://localhost:3000/api/beranda/image/${dashboardFrontpage.image_header}`} alt="" className="w-[26rem]" />
+            {/* <img src={JumbotronImage} alt="" className="w-[26rem]" /> */}
           </div>
         </div>
 
