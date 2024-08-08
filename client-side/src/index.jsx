@@ -33,6 +33,7 @@ import InvestorProfil from "./pages/investor/InvestorProfil";
 import InvestorInvestasi from "./pages/investor/InvestorInvestasi";
 import InvestorInvestasiDetail from "./pages/investor/InvestorInvestasiDetail";
 import InvestorTransaksi from "./pages/investor/InvestorTransaksi";
+import Verifikasi from "./pages/investor/Verifikasi";
 
 const router = createBrowserRouter([
   //guess start
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
   {
     path: "/investor/transaksi",
     element: <InvestorTransaksi />,
+  },
+  {
+    path: "/verifikasi",
+    element: <Verifikasi />
   },
   // investor end
 

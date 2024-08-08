@@ -4,6 +4,8 @@ import Logo from "../../assets/images/logo.png";
 import GuestLayout from '../../layouts/GuestLayout';
 import { FiUser } from 'react-icons/fi';
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const PasswordValidation = ({ password, confirmPassword }) => {
   const hasMinLength = password.length >= 8;
@@ -122,15 +124,45 @@ const Daftar = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [msg, setMsg] = useState('');
   const [registerType, setRegisterType] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your form submission logic here
-  };
+  const navigate = useNavigate();
 
   const handleRegisterType = (type) => {
     setRegisterType(type);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!registerType) {
+        setMsg("Pilih kategori investor.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        setMsg("Passwords do not match.");
+        return;
+    }
+
+    try {
+      const payload = {
+        username: username,   // Pastikan field name yang dikirim sesuai dengan yang diharapkan API
+        email: email,
+        password: password,
+        kategori_investor: registerType
+      };
+      
+      console.log("Payload yang dikirim:", payload);  // Debugging
+      
+      await axios.post('http://localhost:3000/api/auth/investor/regis', payload);
+      navigate("/verifikasi");
+    } catch (error) {
+      if (error.response) {
+        console.log("Error Response:", error.response.data);  // Debugging
+        setMsg(error.response.data.msg);
+      }
+    }
   };
 
   return (
@@ -194,14 +226,26 @@ const Daftar = () => {
               />
             </div>
             <PasswordValidation password={password} confirmPassword={confirmPassword} />
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">Daftar Sebagai</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="registerType">Daftar Sebagai</label>
             <div className="flex flex-row items-center mb-4 gap-4">
-              <button type="button" onClick={() => handleRegisterType('individu')} className="flex flex-col items-center hover:bg-slate-300 border-[4px] border-zinc-950 w-32 py-2 rounded-xl ">
-                <FiUser className="w-[34px] h-[35px]"/>
+              <button
+                type="button"
+                onClick={() => handleRegisterType('individu')}
+                className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
+                  registerType === 'individu' ? 'bg-slate-300 border-black' : 'hover:bg-slate-300 border-zinc-950'
+                }`}
+              >
+                <FiUser className="w-[34px] h-[35px]" />
                 <p className="font-bold text-[15px]">INDIVIDU</p>
               </button>
-              <button type="button" onClick={() => handleRegisterType('badan')} className="flex flex-col items-center hover:bg-slate-300 border-[4px] border-zinc-950 w-32 py-2 rounded-xl ">
-                <HiOutlineBuildingOffice2 className="w-[34px] h-[35px]"/>
+              <button
+                type="button"
+                onClick={() => handleRegisterType('badan')}
+                className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
+                  registerType === 'badan' ? 'bg-slate-300 border-black' : 'hover:bg-slate-300 border-zinc-950'
+                }`}
+              >
+                <HiOutlineBuildingOffice2 className="w-[34px] h-[35px]" />
                 <p className="font-bold text-[15px]">BADAN</p>
               </button>
             </div>
@@ -210,6 +254,7 @@ const Daftar = () => {
                 Daftar
               </button>
             </div>
+            {msg && <p className="text-red-500 text-xs italic">{msg}</p>}
           </form>
           <div className="text-center mt-5">
             <a href="/masuk" className="font-medium text-orange-300">
