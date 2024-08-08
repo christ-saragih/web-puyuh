@@ -43,7 +43,7 @@ router.put(
     investasiController.update
 );
 router.get("/", investasiController.findAll);
-router.get("/:id", investasiController.findOne);
+// router.get("/:id", investasiController.findOne);
 router.get("/:slug", investasiController.findDataBySlug);
 router.delete("/:id", investasiController.delete);
 router.get("/image/:gambar", investasiController.getImageByName);

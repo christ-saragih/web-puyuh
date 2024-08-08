@@ -17,13 +17,9 @@ exports.create = async (req, res) => {
             judul,
             penerbit,
             penggunaan_dana,
-            jaminan_kebendaan,
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
-            satuan_perdagangan,
-            minimum_pendanaan,
-            maksimum_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
@@ -39,13 +35,9 @@ exports.create = async (req, res) => {
             judul &&
             penerbit &&
             penggunaan_dana &&
-            jaminan_kebendaan &&
             bagi_hasil &&
             minimum_investasi &&
             maksimum_investasi &&
-            satuan_perdagangan &&
-            minimum_pendanaan &&
-            maksimum_pendanaan &&
             tenor &&
             pembayaran_bagi_hasil &&
             tanggal_pembukaan_penawaran &&
@@ -65,13 +57,9 @@ exports.create = async (req, res) => {
             slug: slugify(judul, { replacement: "-", lower: true }),
             penerbit,
             penggunaan_dana,
-            jaminan_kebendaan,
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
-            satuan_perdagangan,
-            minimum_pendanaan,
-            maksimum_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
@@ -139,7 +127,6 @@ exports.findDataBySlug = async (req, res) => {
     try {
         const investasi = await Investasi.findOne({
             where: { slug: req.params.slug },
-            include: Tag,
         });
         if (!investasi) {
             return res.status(404).json({ message: "Investasi tidak!" });
@@ -163,13 +150,9 @@ exports.update = async (req, res) => {
             judul,
             penerbit,
             penggunaan_dana,
-            jaminan_kebendaan,
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
-            satuan_perdagangan,
-            minimum_pendanaan,
-            maksimum_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
@@ -206,13 +189,9 @@ exports.update = async (req, res) => {
             slug: slugify(judul, { replacement: "-", lower: true }),
             penerbit,
             penggunaan_dana,
-            jaminan_kebendaan,
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
-            satuan_perdagangan,
-            minimum_pendanaan,
-            maksimum_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,

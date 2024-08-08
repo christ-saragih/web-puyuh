@@ -5,6 +5,7 @@ const {
     InvestorDataPendukung,
     InvestorAlamat,
 } = require("../models");
+const bcrypt = require("bcrypt");
 
 // Read All
 exports.findAll = async (req, res) => {
@@ -54,5 +55,40 @@ exports.findOne = async (req, res) => {
             message: "Internal server error",
             error: error.message,
         });
+    }
+};
+
+exports.ubahPassword = async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+        const investor = await Investor.findByPk(req.investor.id);
+
+        if (!investor) {
+            return res.status(404).json({ message: "Investor tidak ada!" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await investor.update({
+            password: hashedPassword,
+        });
+
+        res.status(200).json({
+            message: "Password berhasil diperbaharui!",
+            data: investor,
+        });
+    } catch (error) {
+        if (error.name === "SequelizeValidationError") {
+            const messages = error.errors.map((err) => err.message);
+            res.status(400).json({
+                message: "Validation error",
+                errors: messages,
+            });
+        } else {
+            res.status(500).json({
+                message: "Internal server error",
+                error: error.message,
+            });
+        }
     }
 };

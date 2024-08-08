@@ -11,9 +11,17 @@ module.exports = {
             },
             artikelId: {
                 type: Sequelize.INTEGER,
+                references: {
+                    model: "Artikels",
+                    key: "id",
+                },
             },
             tagId: {
                 type: Sequelize.INTEGER,
+                references: {
+                    model: "Tags",
+                    key: "id",
+                },
             },
             createdAt: {
                 allowNull: false,

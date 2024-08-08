@@ -9,5 +9,11 @@ const authorizeRole = require("../middleware/authorizeRole");
 
 router.get("/", investorController.findAll);
 router.get("/:id", investorController.findOne);
+router.post(
+    "/ubah-password",
+    authenticateInvestorToken,
+    authorizeRole("investor"),
+    investorController.ubahPassword
+);
 
 module.exports = router;
