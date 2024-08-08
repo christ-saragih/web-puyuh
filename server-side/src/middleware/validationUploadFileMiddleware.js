@@ -4,7 +4,7 @@ exports.validateUploadFile = (options) => {
     return (req, res, next) => {
         const {
             fieldName = "image",
-            allowedFileTypes = /jpeg|jpg|png/,
+            allowedFileTypes = /jpeg|jpg|png|svg/,
             maxFileSize = 1024 * 1024 * 5, // Default to 5MB
             required = true,
         } = options;

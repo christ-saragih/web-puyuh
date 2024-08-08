@@ -11,9 +11,6 @@ router.post(
     upload.single("image_header"),
     validateUploadFile({
         fieldName: "image_header",
-        allowedFileTypes: /jpeg|jpg|png/,
-        maxFileSize: 1024 * 1024 * 5, // 5MB
-        required: true,
     }),
     berandaController.upsert
 );
