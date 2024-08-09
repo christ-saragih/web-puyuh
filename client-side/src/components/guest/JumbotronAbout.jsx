@@ -1,16 +1,29 @@
-import '../../assets/style/index.css';
-import image_jumbotron_1 from '../../assets/images/jumbotron-aboutus.png'; // Sesuaikan dengan path gambar yang diupload
+const JumbotronAbout = (props) => {
+  const { abouts } = props;
 
-const JumbotronAbout = () => {
+  // Replace backslashes with forward slashes for URL
+  const imagePath = abouts.tentangkami[0].image_background;
+
+  // console.log('DATA:');
+  
+  // Menggabungkan URL dengan path gambar
+  // const backgroundImageStyle = {
+  //   backgroundImage: `url(http://localhost:3000/api/tentang-kami/image/${imagePath})`,
+  // };
+  // const backgroundImageStyle = `${imagePath}`;
+
+  // Memisahkan kata-kata dalam judul
+  const judulArray = abouts.tentangkami[0].judul.split(' ');
+
   return (
-    <div className="jumbotron-image-container">
-      <div className='absolute'>
-        <h1 className='tentang-h1 font-inter mt-7 -mb-24 ml-[9rem] font-bold text-[8rem] text-[#A6513C]'>TENTANG</h1>
-        <h1 className='kami-h1 font-inter ml-[10rem] font-bold text-[16rem] text-[#A6513C]'>KAMI</h1>
-      </div>
-      <img src={image_jumbotron_1} alt="Tentang Kami" className="jumbotron-image" />
+    <div className="relative">
+      <img src={`http://localhost:3000/api/tentang-kami/image/${imagePath}`} alt="" className="object-cover w-full h-[30rem] rounded-br-[250px] lg:py-8" />
+      <h1 className='absolute lg:top-[3.2rem] tentang-h1 font-inter font-bold text-[4rem] md:text-[7rem] text-[#A6513C] lg:px-24'>
+        <span className='text-[4rem] lg:text-[6.5rem]'>{judulArray[0]}</span> <br />
+        <span className='text-[5rem] lg:text-[12rem] leading-none'>{judulArray[1]}</span>
+      </h1>
     </div>
   );
-}
+};
 
 export default JumbotronAbout;

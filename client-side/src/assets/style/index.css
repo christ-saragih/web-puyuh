@@ -2,7 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-/* guest start */
+/* COMMON: Start */
+
+/* INPUT: Start */
+/* .input-primary {
+} */
+.input-primary-outline,
+.input-primary-outline-search,
+.textarea-primary-outline {
+  @apply text-gray-900 bg-gray-50 border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+}
+
+.input-primary-outline,
+.textarea-primary-outline {
+  @apply mt-2 mb-4;
+}
+
+.input-disabled,
+.textarea-disabled {
+  @apply mt-2 mb-4 text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+}
+/* .input-error {
+} */
+
+/* BUTTON: Start */
+.btn-primary {
+  @apply text-white border-2 border-[#572618] bg-[#572618] hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300;
+}
+
+.btn-primary-outline {
+  @apply text-[#572618] border-2 border-[#572618] bg-white hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300;
+}
+
+.btn-update {
+  @apply text-white border-2 border-yellow-400 bg-yellow-400 hover:font-semibold hover:text-yellow-400 hover:bg-white hover:border-yellow-400 ease-in-out duration-300;
+}
+/* BUTTON: End */
+
+/* REACT SELECT: Start */
+.css-13cymwt-control {
+  @apply w-full px-2 text-sm bg-gray-50 border-2 border-gray-300 rounded-2xl !important;
+}
+
+.css-t3ipsp-control {
+  @apply text-gray-900 px-2 text-sm rounded-2xl outline-none shadow-none border-2 ring-1 ring-[#B87817] border-[#B87817] !important;
+}
+
+.select__menu {
+  @apply text-sm block !important;
+}
+/* REACT SELECT: End */
+
+/* CUSTOM SCROLLBAR: Start */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* CUSTOM SCROLLBAR: End */
+
+/* Tabs: Start */
+div[aria-label="Tabs with underline"] button {
+  @apply text-base text-gray-600 focus:ring-0;
+}
+div[aria-label="Tabs with underline"] button[aria-selected="true"] {
+  @apply font-semibold text-[#572618] border-[#572618];
+}
+
+div[aria-label="Pills"] {
+  @apply flex-nowrap justify-center space-x-0 font-medium text-center max-w-full w-9/12 mx-auto rounded-3xl bg-gray-200 mt-3 mb-1;
+}
+
+div[aria-label="Pills"] button[role="tab"] {
+  @apply w-full rounded-3xl py-2 focus:ring-0;
+}
+
+div[aria-label="Pills"] button[role="tab"][aria-selected="true"] {
+  @apply text-[#EFEFEF] font-semibold bg-[#4B241A] cursor-default;
+}
+
+div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
+  @apply text-[#4B241A] hover:bg-[#4B241A] hover:text-[#EFEFEF] hover:font-semibold ease-in-out duration-300;
+}
+
+/* Tabs: End */
+
+/* COMMON: End */
+
+/* GUEST: Start */
 .menu-item-active,
 .menu-item {
   position: relative;
@@ -23,10 +113,9 @@
 
 .swiper_container {
   height: 30rem;
-  padding: 1rem ;
+  padding: 1rem;
   position: relative;
 }
-
 
 .swiper-slide {
   width: 337px;
@@ -37,7 +126,6 @@
 .swiper-slide.swiper-slide-next.swiper-slide-visible {
   background-color: red !important;
 }
-
 
 /* .swiper-slide-shadow-left {
   border-radius: 4rem;
@@ -61,7 +149,6 @@
   }
 }
 
-
 .slider-controler {
   position: relative;
   bottom: 15rem;
@@ -74,11 +161,10 @@
   background: #4b241a;
 }
 
-
 .jumbotron-image {
   width: 100%;
   margin-top: 60px;
-  border-bottom-right-radius: 250px ;
+  border-bottom-right-radius: 250px;
 }
 
 .menu-item::after {
@@ -91,7 +177,6 @@
   height: 4px;
   background-color: #4b241a;
   border-radius: 10px;
-
   transition: opacity 0.4s ease, width 0.4s ease;
   opacity: 0;
 }
@@ -115,4 +200,21 @@
     height: 600px; /* Atur tinggi untuk tampilan desktop */
   }
 }
-/* guest end */
+/* GUEST: End */
+
+/* ADMIN: Start */
+.quill {
+  @apply border-2 rounded-2xl bg-gray-50 border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+}
+
+.ql-toolbar {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.ql-container {
+  border: none !important;
+}
+/* ADMIN: End */
