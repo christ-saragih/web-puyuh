@@ -5,7 +5,6 @@ export const getDashboardFrontpage = (callback) => {
     .get("/beranda")
     .then((res) => {
       callback(res.data.data);
-      // console.log(res.data.data);
     })
     .catch((err) => {
       console.log(err);
@@ -22,9 +21,3 @@ export const saveDashboardFrontpage = (data, callback) => {
       console.log(err);
     });
 };
-
-// .post("http://localhost:3000/api/beranda", formData, {
-//   headers: {
-//     "Content-Type": "multipart/form-data",
-//   },
-// })
