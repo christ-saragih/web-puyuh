@@ -8,7 +8,7 @@ const SocialMediaItem = (props) => {
   return (
     <div className="bg-white flex gap-3 py-3 px-5 rounded-2xl shadow-lg flex-wrap items-center xl:flex-nowrap">
       <div className=" w-full">
-        <div className="flex items-center gap-3 mb-2 ">
+        <div className="flex items-center gap-3 mb-3 ">
           <img
             src={`http://localhost:3000/api/sosial-media/image/${icon}`}
             alt="Media Sosial"
@@ -30,13 +30,13 @@ const SocialMediaItem = (props) => {
               icon={PiNotePencilBold}
               className={"text-yellow-600"}
               tooltip={"Ubah"}
-              onClick={() => openModal("update_social_media")}
+              onClick={() => openModal("update_social_media", { id, nama, icon, url })}
             />
             <ActionButton
               icon={PiTrashBold}
               className={"text-red-600"}
               tooltip={"Hapus"}
-              onClick={() => openModal("delete_social_media")}
+              onClick={() => openModal("delete_social_media" , { id })}
             />
           </div>
         </div>

@@ -7,7 +7,6 @@ import {
   saveDashboardFrontpage,
 } from "../../../services/dashboard-frontpage.service";
 import AdminLayout from "../../../layouts/AdminLayout.jsx";
-import { axiosInstance } from "../../../lib/axios.js";
 
 const Utama = () => {
   const [dashboardFrontpage, setDasboardFrontpage] = useState([]);
@@ -17,6 +16,10 @@ const Utama = () => {
     nama_subheader: "",
     image_header: null,
   });
+  console.log("FORM DATA: ");
+
+  console.log(formData);
+
   const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
@@ -92,12 +95,11 @@ const Utama = () => {
         </div>
 
         <Label htmlFor={"gambar_header"} value={"Gambar Header"} />
-
-        {/* flex items-center justify-center w-full mt-2 mb-4 h-48 border-2 rounded-2xl bg-gray-50 shadow ${
-            !isDataEmpty && !editMode ? "border-gray-50" : "border-gray-300"
-
-        className="flex flex-col items-center justify-center w-full cursor-pointer" */}
-        <div className={`flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow ${!isDataEmpty && !editMode ? "border-gray-50 ": "border-gray-300"}`}>
+        <div
+          className={`flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+            !isDataEmpty && !editMode ? "border-gray-50 " : "border-gray-300"
+          }`}
+        >
           {/* Preview gambar yang dipilih */}
           {previewImage && (
             <div className={`w-80 h-56 rounded-md shadow overflow-hidden`}>
@@ -113,7 +115,9 @@ const Utama = () => {
             <>
               <label
                 htmlFor="gambar_header"
-                className={`flex flex-col items-center justify-center w-full cursor-pointer ${!previewImage ? "h-56" : "mt-3"}`}
+                className={`flex flex-col items-center justify-center w-full cursor-pointer ${
+                  !previewImage ? "h-56" : "mt-3"
+                }`}
               >
                 <div className={`flex flex-col items-center justify-center`}>
                   <div className="flex items-center gap-2 mb-2">
@@ -153,41 +157,6 @@ const Utama = () => {
           ) : (
             ""
           )}
-
-          {/* <label
-            htmlFor="gambar_header"
-            className="flex flex-col items-center justify-center w-full cursor-pointer"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg
-                className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Unggah gambar di sini</span>
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                SVG, PNG, JPG or GIF (MAX. 800x400px)
-              </p>
-            </div>
-            <input
-              id="gambar_header"
-              type="file"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </label> */}
         </div>
 
         <Label htmlFor={"nama_header"} value={"Judul"} />

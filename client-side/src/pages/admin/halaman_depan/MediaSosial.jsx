@@ -1,53 +1,126 @@
-import {
-  PiEyeBold,
-  PiNotePencilBold,
-  PiPlusCircle,
-  PiTrashBold,
-  PiUserBold,
-} from "react-icons/pi";
-import Button from "../../../components/common/Button.jsx";
-import Input from "../../../components/common/Input.jsx";
-import InputSearch from "../../../components/common/InputSearch.jsx";
-import Label from "../../../components/common/Label.jsx";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
-import Dropdown from "../../../components/common/Dropdown";
-import { Tooltip } from "flowbite-react";
+import { PiPlusCircle } from "react-icons/pi";
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { FaFacebook } from "react-icons/fa";
-import ActionButton from "../../../components/common/ActionButton.jsx";
+import Input from "../../../components/common/Input.jsx";
+import Label from "../../../components/common/Label.jsx";
 import Modal from "../../../components/common/Modal";
-import { getSocialMedia } from "../../../services/social-media.service.js";
+import AdminLayout from "../../../layouts/AdminLayout.jsx";
 import SocialMediaList from "../../../components/admin/SocialMediaList.jsx";
+import {
+  getSocialMedia,
+  addSocialMedia,
+  updateSocialMedia,
+  deleteSocialMedia,
+} from "../../../services/social-media.service.js";
+import Dropdown from "../../../components/common/Dropdown.jsx";
+import InputSearch from "../../../components/common/InputSearch.jsx";
 
 const MediaSosial = () => {
   const [socialMedias, setSocialMedias] = useState([]);
+  const [formData, setFormData] = useState({
+    nama: "",
+    icon: null,
+    url: "",
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
+  const [previewIcon, setPreviewIcon] = useState("");
+  const [selectedSocialMedia, setSelectedSocialMedia] = useState(null);
 
   useEffect(() => {
     getSocialMedia((data) => {
       setSocialMedias(data);
     });
   }, []);
- 
 
-  // modal logic
-  const openModal = (type) => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, icon: file });
+    setPreviewIcon(URL.createObjectURL(file));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAddSocialMedia = () => {
+    const form = new FormData();
+    form.append("nama", formData.nama);
+    form.append("icon", formData.icon);
+    form.append("url", formData.url);
+
+    addSocialMedia(form, (response) => {
+      setSocialMedias([...socialMedias, response]);
+      closeModal();
+      resetForm();
+    });
+  };
+
+  const handleUpdateSocialMedia = () => {
+    const form = new FormData();
+    form.append("nama", formData.nama);
+    if (formData.icon instanceof File) {
+      form.append("icon", formData.icon);
+    }
+    form.append("url", formData.url);
+
+    updateSocialMedia(selectedSocialMedia.id, form, (updatedData) => {
+      setSocialMedias((prevSocialMedias) =>
+        prevSocialMedias.map((item) =>
+          item.id === updatedData.id ? updatedData : item
+        )
+      );
+      closeModal();
+      resetForm();
+    });
+  };
+
+  const handleDeleteSocialMedia = () => {
+    deleteSocialMedia(selectedSocialMedia.id, () => {
+      setSocialMedias(
+        socialMedias.filter(
+          (socialMedia) => socialMedia.id !== selectedSocialMedia.id
+        )
+      );
+      closeModal();
+    });
+  };
+  
+
+  const resetForm = () => {
+    setFormData({
+      nama: "",
+      icon: null,
+      url: "",
+    });
+    setPreviewIcon("");
+    setSelectedSocialMedia(null);
+  };
+
+  const openModal = (type, socialMedia = null) => {
     setModalType(type);
     setIsModalOpen(true);
-    // setSelectedTag(tag);
-    // if (type === "update_article_tag") {
-    //   setNewTag(tag.nama);
-    // }
+    if (type === "update_social_media" && socialMedia) {
+      setSelectedSocialMedia(socialMedia);
+      setFormData({
+        nama: socialMedia.nama,
+        icon: socialMedia.icon,
+        url: socialMedia.url,
+      });
+      setPreviewIcon(
+        `http://localhost:3000/api/sosial-media/image/${socialMedia.icon}`
+      );
+    } else if (type === "delete_social_media" && socialMedia) {
+      setSelectedSocialMedia(socialMedia);
+    }
   };
+  
+
   const closeModal = () => {
     setModalType("");
     setIsModalOpen(false);
-    // setNewTag("");
+    resetForm();
   };
-
-  const modalSize = modalType === "delete_article" ? "small" : "large";
 
   return (
     <AdminLayout title={"Halaman Depan / Media Sosial"}>
@@ -76,43 +149,59 @@ const MediaSosial = () => {
             <Modal
               open={isModalOpen}
               onClose={closeModal}
-              size={modalSize}
               className={"w-[35rem]"}
             >
-              {modalType === "add_sosial_media" && (
+              {(modalType === "add_sosial_media" ||
+                modalType === "update_social_media") && (
                 <>
                   <Modal.Header
-                    title={"Tambah Media Sosial"}
+                    title={
+                      modalType === "add_sosial_media"
+                        ? "Tambah Media Sosial"
+                        : "Ubah Media Sosial"
+                    }
                     onClose={closeModal}
                   />
                   <Modal.Body>
                     <Label htmlFor={"icon"} value={"Icon"} />
-                    <div className="flex items-center justify-center w-full mt-2 mb-4">
+                    <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
+                      {previewIcon && (
+                        <img
+                          src={previewIcon}
+                          alt="Preview"
+                          className="w-28 h-28 mb-4 object-cover rounded-full border-2 border-gray-300"
+                        />
+                      )}
+
                       <label
                         htmlFor="icon"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 rounded-2xl cursor-pointer bg-gray-50 shadow"
+                        className={`flex flex-col items-center justify-center w-full cursor-pointer ${
+                          !previewIcon && "h-32"
+                        }`}
                       >
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <svg
-                            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 16"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                            />
-                          </svg>
-                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">
-                              Unggah gambar di sini
-                            </span>
-                          </p>
+                        <div className="flex flex-col items-center justify-center">
+                          <div className="flex items-center gap-2 mb-2">
+                            <svg
+                              className="w-8 h-8 text-gray-500 dark:text-gray-400"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 20 16"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                              />
+                            </svg>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              <span className="font-semibold">
+                                Unggah gambar di sini
+                              </span>
+                            </p>
+                          </div>
                           <p className="text-xs text-gray-500 dark:text-gray-400">
                             SVG, PNG, JPG or GIF (MAX. 800x400px)
                           </p>
@@ -121,7 +210,7 @@ const MediaSosial = () => {
                           id="icon"
                           type="file"
                           className="hidden"
-                          // onChange={handleFileChange}
+                          onChange={handleFileChange}
                         />
                       </label>
                     </div>
@@ -129,101 +218,34 @@ const MediaSosial = () => {
                     <Label htmlFor={"media_sosial"} value={"Media Sosial"} />
                     <Input
                       type={"text"}
-                      name={"media_sosial"}
-                      placeholder={"Masukkan media sosial.."}
+                      name={"nama"}
+                      placeholder={"Masukkan nama media sosial.."}
                       variant={"primary-outline"}
                       className={"mt-1 mb-4"}
-                      // value={newTag}
-                      // handleChange={handleChange}
+                      value={formData.nama}
+                      handleChange={handleInputChange}
                     />
                     <Label htmlFor={"link"} value={"Link"} />
                     <Input
                       type={"text"}
-                      name={"link"}
-                      placeholder={"Masukkan nama link.."}
+                      name={"url"}
+                      placeholder={"Masukkan URL link.."}
                       variant={"primary-outline"}
                       className={"mt-1 mb-4"}
-                      // value={newTag}
-                      // handleChange={handleChange}
+                      value={formData.url}
+                      handleChange={handleInputChange}
                     />
                   </Modal.Body>
                   <Modal.Footer
-                    action={"Tambah"}
-                    // onAction={}
+                    action={
+                      modalType === "add_sosial_media" ? "Tambah" : "Ubah"
+                    }
+                    onAction={
+                      modalType === "add_sosial_media"
+                        ? handleAddSocialMedia
+                        : handleUpdateSocialMedia
+                    }
                     onClose={closeModal}
-                  />
-                </>
-              )}
-
-              {modalType === "update_social_media" && (
-                <>
-                  <Modal.Header title="Ubah Media Sosial" onClose={closeModal} />
-                  <Modal.Body>
-                    <Label htmlFor={"icon"} value={"Icon"} />
-                    <div className="flex items-center justify-center w-full mt-2 mb-4">
-                      <label
-                        htmlFor="icon"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 rounded-2xl cursor-pointer bg-gray-50 shadow"
-                      >
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <svg
-                            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 16"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                            />
-                          </svg>
-                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">
-                              Unggah gambar di sini
-                            </span>
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (MAX. 800x400px)
-                          </p>
-                        </div>
-                        <input
-                          id="icon"
-                          type="file"
-                          className="hidden"
-                          // onChange={handleFileChange}
-                        />
-                      </label>
-                    </div>
-
-                    <Label htmlFor={"media_sosial"} value={"Media Sosial"} />
-                    <Input
-                      type={"text"}
-                      name={"media_sosial"}
-                      placeholder={"Masukkan media sosial.."}
-                      variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
-                      // value={newTag}
-                      // handleChange={handleChange}
-                    />
-                    <Label htmlFor={"link"} value={"Link"} />
-                    <Input
-                      type={"text"}
-                      name={"link"}
-                      placeholder={"Masukkan nama link.."}
-                      variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
-                      // value={newTag}
-                      // handleChange={handleChange}
-                    />
-                  </Modal.Body>
-                  <Modal.Footer
-                    action="Ubah"
-                    // onAction={handleUpdateTag}
-                    // onClose={closeModal}
                   />
                 </>
               )}
@@ -231,15 +253,15 @@ const MediaSosial = () => {
               {modalType === "delete_social_media" && (
                 <>
                   <Modal.Header
-                    title="Hapus Media Sosial"
+                    title="Hapus Tag Artikel"
                     onClose={closeModal}
                   />
                   <Modal.Body>
-                    <p>Apakah Anda yakin ingin menghapus media sosial ini?</p>
+                    <p>Apakah Anda yakin ingin menghapus tag artikel ini?</p>
                   </Modal.Body>
                   <Modal.Footer
                     action="Hapus"
-                    // onAction={handleDeleteTag}
+                    onAction={handleDeleteSocialMedia}
                     onClose={closeModal}
                   />
                 </>
@@ -247,65 +269,12 @@ const MediaSosial = () => {
             </Modal>
           </div>
 
-          <SocialMediaList socialMedias={socialMedias} openModal={openModal}/>
+          {/* TODO: 
+              1. Mempelajari alur dari create dan update data
+              2. Membuat fitur hapus data
+          */}
 
-          {/* Media Sosial List */}
-          {/* <div className="grid grid-cols-3 gap-x-10 gap-y-8 mb-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              // Media Sosial Item
-              <div
-                key={i}
-                className="bg-white flex gap-3 py-3 px-5 rounded-2xl shadow-lg flex-wrap items-center xl:flex-nowrap"
-              >
-                <div className="relative w-full">
-                  <img
-                    src={FaFacebook}
-                    alt="Media Sosial"
-                    className="w-14 h-14 text-blue-600 mb-2"
-                  />
-
-                  <img src={PiPlusCircle} alt="" />
-
-                  <h3 className="text-2xl mb-1 font-bold tracking-tight text-gray-900 ">
-                    Facebook
-                  </h3>
-                  <div className="overflow-hidden">
-                    <Tooltip
-                      content="https://www.instagram.com/bennefitchristy/bennefitchristy"
-                      placement="bottom"
-                      className="bg-gray-600"
-                      arrow={false}
-                    >
-                      <NavLink
-                        to={
-                          "https://www.instagram.com/bennefitchristy/bennefitchristy"
-                        }
-                        target="_blank"
-                        className={"w-[80%] max-w-full truncate inline-block"}
-                      >
-                        https://www.instagram.com/bennefitchristy/bennefitchristy/
-                      </NavLink>
-                    </Tooltip>
-                  </div>
-
-                  <div className="absolute top-2 right-0 space-x-2">
-                    <ActionButton
-                      icon={PiNotePencilBold}
-                      className={"text-yellow-600"}
-                      tooltip={"Ubah"}
-                      onClick={() => openModal("update_article")}
-                    />
-                    <ActionButton
-                      icon={PiTrashBold}
-                      className={"text-red-600"}
-                      tooltip={"Hapus"}
-                      onClick={() => openModal("delete_article")}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
+          <SocialMediaList socialMedias={socialMedias} openModal={openModal} />
         </div>
       </div>
     </AdminLayout>
