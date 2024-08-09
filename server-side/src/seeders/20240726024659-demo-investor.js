@@ -27,6 +27,7 @@ module.exports = {
                     "individu",
                     "organisasi",
                 ]),
+                isVerified: faker.datatype.boolean(1),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
