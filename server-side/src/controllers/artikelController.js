@@ -77,7 +77,10 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
     try {
         const artikels = await Artikel.findAll({ include: Tag });
-        res.status(200).json(artikels);
+        res.status(200).json({
+            message: "Artikel Berhasil Didapat!",
+            data: artikels,
+        });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -93,7 +96,10 @@ exports.findOne = async (req, res) => {
         if (!artikel) {
             return res.status(404).json({ message: "Artikel tidak ada!" });
         }
-        res.status(200).json(artikel);
+        res.status(200).json({
+            message: "Artikel Berhasil Didapat!",
+            data: artikel,
+        });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -112,7 +118,10 @@ exports.findDataBySlug = async (req, res) => {
         if (!artikel) {
             return res.status(404).json({ message: "Artikel tidak !" });
         }
-        res.status(200).json(artikel);
+        res.status(200).json({
+            message: "Artikel Berhasil didapat!",
+            data: artikel,
+        });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",

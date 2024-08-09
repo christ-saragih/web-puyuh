@@ -41,7 +41,10 @@ exports.create = async (req, res) => {
 exports.getAll = async (req, res) => {
     try {
         const faqs = await Faq.findAll();
-        res.status(200).json(faqs);
+        res.status(200).json({
+            message: "FAQ berhasil Didapat!",
+            data: faqs,
+        });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -57,7 +60,10 @@ exports.getOne = async (req, res) => {
         if (!faq) {
             return res.status(404).json({ message: "FAQ tidak ditemukan" });
         }
-        res.status(200).json(faq);
+        res.status(200).json({
+            message: "FAQ berhasil Didapat!",
+            data: faq,
+        });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
