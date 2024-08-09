@@ -23,7 +23,7 @@ const Masuk = () => {
     try {
       const response = await axios.post('http://localhost:3000/api/auth/investor/login', formData);
       console.log("Login response:", response.data); // Log the successful response
-      navigate("/dashboard");
+      navigate("/investor");
     } catch (error) {
       if (error.response) {
         console.error("Error response:", error.response); // Log detailed error response
