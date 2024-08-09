@@ -42,7 +42,7 @@ const Sidebar = (props) => {
   return (
     <aside
       id="sidebar-multi-level-sidebar"
-      className={` ms-2 px-4 py-5 fixed top-0 left-0 z-40 h-screen transition-width duration-300 ease-in-out group ${
+      className={` ms-2 px-4 py-5 fixed top-0 left-0 z-10 h-screen transition-width duration-300 ease-in-out group ${
         isHovered ? "w-72" : "w-28"
       }`}
       onMouseEnter={() => setIsHovered(true)}
