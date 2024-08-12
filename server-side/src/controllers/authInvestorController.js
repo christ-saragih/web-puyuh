@@ -346,7 +346,7 @@ exports.refreshToken = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        res.cookie("token", newAccessToken, { httpOnly: true });
+        res.cookie("accessToken", newAccessToken, { httpOnly: true });
         res.json({
             message: "Access token refreshed",
             accessToken: newAccessToken,
