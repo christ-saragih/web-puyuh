@@ -219,8 +219,14 @@ exports.login = async (req, res) => {
 
         // Simpan token dalam session dan cookie
         req.session.investor = investor;
-        res.cookie("token", accessToken, { httpOnly: true });
-        res.cookie("refreshToken", refreshToken, { httpOnly: true });
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+        });
 
         res.json({ message: "Login successful", accessToken, refreshToken });
     } catch (error) {
@@ -297,7 +303,7 @@ exports.resetPassword = async (req, res) => {
 };
 // Logout
 exports.logout = (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("accessToken");
     req.session.destroy();
     res.json({ message: "Logout successful" });
 };

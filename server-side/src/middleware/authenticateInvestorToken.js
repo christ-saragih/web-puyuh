@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const blacklist = new Set();
 
 const authenticateInvestorToken = (req, res, next) => {
-    const token = req.header("Authorization");
-    // const token = req.cookies.token || req.header("Authorization");
+    // const token = req.header("Authorization");
+    const token = req.cookies.accessToken || req.header("Authorization");
 
     if (!token) {
         return res
@@ -29,12 +29,12 @@ const authenticateInvestorToken = (req, res, next) => {
 };
 
 const logoutInvestor = (req, res) => {
-    const token = req.cookies.token || req.header("Authorization");
+    const token = req.cookies.accessToken || req.header("Authorization");
     if (token) {
         const cleanToken = token.replace("Bearer ", "");
         blacklist.add(cleanToken);
     }
-    res.clearCookie("token");
+    res.clearCookie("accessToken");
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({ message: "Failed to logout." });
