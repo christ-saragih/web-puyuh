@@ -4,7 +4,7 @@ export const getFaqs = (callback) => {
   axiosInstance
     .get("/faq")
     .then((res) => {
-      callback(res.data);
+      callback(res.data.data);
     })
     .catch((err) => {
       console.log(err);

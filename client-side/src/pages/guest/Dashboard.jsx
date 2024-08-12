@@ -17,23 +17,12 @@ import { getArticles } from "../../services/article.service";
 import ArticleList from "../../components/common/ArticleList";
 
 const Dashboard = () => {
-  const [dashboardFrontpage, setDashboardFrontpage] = useState({
-    nama_header: "",
-    nama_subheader: "",
-    image_header: "",
-  });
+  const [dashboardFrontpage, setDashboardFrontpage] = useState([]);
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    getDashboardFrontpage((response) => {
-      if (response.data && response.data.length > 0) {
-        const data = response.data[0];
-        setDashboardFrontpage({
-          nama_header: data.nama_header,
-          nama_subheader: data.nama_subheader,
-          image_header: data.image_header,
-        });
-      }
+    getDashboardFrontpage((data) => {
+      setDashboardFrontpage(data[0]);
     });
   }, []);
 
@@ -45,7 +34,11 @@ const Dashboard = () => {
     });
   }, []);
 
+  console.log("START");
+
   console.log(dashboardFrontpage);
+  // console.log(dashboardFrontpage.data[0].nama_header);
+  console.log("END");
 
   return (
     <>
@@ -75,8 +68,13 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="w-full lg:w-1/2 flex justify-center">
-            <img src={`http://localhost:3000/api/beranda/image/${dashboardFrontpage.image_header}`} alt="" className="w-[26rem]" />
-            {/* <img src={JumbotronImage} alt="" className="w-[26rem]" /> */}
+            <img
+              src={`http://localhost:3000/api/beranda/image/${dashboardFrontpage.image_header}`}
+              alt=""
+              className="w-[26rem]"
+            />
+            {/* GET data image dari seeder */}
+            {/* <img src={dashboardFrontpage.image_header} alt="" className="w-[26rem]" /> */}
           </div>
         </div>
 

@@ -36,6 +36,7 @@ import InvestorInvestasi from "./pages/investor/InvestorInvestasi";
 import InvestorInvestasiDetail from "./pages/investor/InvestorInvestasiDetail";
 import InvestorTransaksi from "./pages/investor/InvestorTransaksi";
 import Verifikasi from "./pages/investor/Verifikasi";
+import Dokumentasi from "./pages/admin/halaman_depan/Dokumentasi";
 
 const router = createBrowserRouter([
   //guess start
@@ -138,7 +139,10 @@ const router = createBrowserRouter([
     path: "/admin/halaman-depan/media-sosial",
     element: <MediaSosial />,
   },
-
+  {
+    path: "/admin/halaman-depan/dokumentasi",
+    element: <Dokumentasi />,
+  },
   {
     path: "/admin/beranda",
     element: <AdminKontenBeranda />,

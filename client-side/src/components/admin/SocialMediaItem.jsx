@@ -15,6 +15,7 @@ const SocialMediaItem = (props) => {
             className="w-10 h-10 rounded-full"
           />
 
+          {/* GET image dari seeder */}
           {/* <img
             src={icon}
             alt="Media Sosial"
@@ -30,13 +31,15 @@ const SocialMediaItem = (props) => {
               icon={PiNotePencilBold}
               className={"text-yellow-600"}
               tooltip={"Ubah"}
-              onClick={() => openModal("update_social_media", { id, nama, icon, url })}
+              onClick={() =>
+                openModal("update_social_media", { id, nama, icon, url })
+              }
             />
             <ActionButton
               icon={PiTrashBold}
               className={"text-red-600"}
               tooltip={"Hapus"}
-              onClick={() => openModal("delete_social_media" , { id })}
+              onClick={() => openModal("delete_social_media", { id })}
             />
           </div>
         </div>

@@ -4,7 +4,7 @@ export const getArticles = (callback) => {
   axios
     .get("http://localhost:3000/api/artikel")
     .then((res) => {
-      callback(res.data);
+      callback(res.data.data);
     })
     .catch((err) => {
       console.log(err);
