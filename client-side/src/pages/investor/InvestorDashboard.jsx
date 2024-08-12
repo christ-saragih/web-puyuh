@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import SidebarInvestor from "../../components/common/SidebarInvestor";
 import CalendarInvestor from "../../components/common/CalendarInvestor"
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
@@ -7,9 +7,95 @@ import WavingIllustration from "../../assets/images/Illustration waving.svg";
 import GrowingMoney from "../../assets/images/Growing Money.svg";
 import { MdNotificationsActive } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [username, setUsername] = useState('');
+  const [token, setToken] = useState('');
+  const [expire, setExpire] = useState('');
+  const [investors, setInvestors] = useState([]); // Penyesuaian di sini
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    refreshToken();
+}, []);
+
+useEffect(() => {
+    if (token) {
+        getInvestors();
+    }
+}, [token]);
+
+const refreshToken = async () => {
+  try {
+      const response = await axios.post('http://localhost:3000/api/auth/investor/refresh-token', {}, { withCredentials: true });
+      setToken(response.data.accessToken);
+      const decoded = jwtDecode(response.data.accessToken);
+      setUsername(decoded.username);
+      setExpire(decoded.exp);
+      console.log("Token refreshed:", response.data.accessToken); // Debugging
+  } catch (error) {
+      if (error.response) {
+          navigate("/investor");
+      }
+  }
+}
+
+
+const axiosJWT = axios.create();
+
+axiosJWT.interceptors.request.use(
+    async (config) => {
+        const currentDate = new Date();
+        if (expire * 1000 < currentDate.getTime()) {
+            try {
+                const response = await axios.post(
+                    'http://localhost:3000/api/auth/investor/refresh-token',
+                    {}, // Jika perlu mengirimkan body, tambahkan di sini
+                    { withCredentials: true } // Pastikan untuk mengirimkan cookie
+                );
+                const newAccessToken = response.data.accessToken;
+                config.headers.Authorization = `Bearer ${newAccessToken}`;
+                setToken(newAccessToken);
+                const decoded = jwtDecode(newAccessToken);
+                setUsername(decoded.username);
+                setExpire(decoded.exp);
+            } catch (error) {
+                console.error("Error refreshing token:", error);
+                // Handle error, possibly redirect to login page
+                navigate("/investor");
+            }
+        } else {
+            // If the token is still valid, add it to the request
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+
+  const getInvestors = async () => {
+    try {
+      const response = await axiosJWT.get('http://localhost:3000/api/investor', {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
+      console.log(response.data);
+      setInvestors(response.data);
+    } catch (error) {
+      console.error("Error fetching investors:", error);
+    }
+  }
+
+  console.log("Token sent in request:", token); // Debugging
+
 
   return (
     <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
@@ -23,7 +109,7 @@ const InvestorDashboard = () => {
           <div className="md:col-span-2 space-y-4">
             <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center">
               <div className="flex flex-col items-center ml-10">
-                <h1 className="text-[2.5rem] font-bold mb-3 text-[#000]">Hello, Investor!</h1>
+                <h1 className="text-[2.5rem] font-bold mb-3 text-[#000]">Hello, {username}</h1>
                 <p className="text-[#000]">Senang Bertemu Anda</p>
               </div>
               <img src={WavingIllustration} alt="Waving Illustration" className="w-[15rem] h-[15rem] mt-4 ml-56 -mb-[1.6rem]" />
