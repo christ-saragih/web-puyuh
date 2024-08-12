@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import GuestLayout from '../../layouts/GuestLayout.jsx';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Import js-cookie
 import '../../assets/style/index.css';
 import Logo from "../../assets/images/logo.png";
 
@@ -21,9 +22,12 @@ const Masuk = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/investor/login', formData);
-      console.log("Login response:", response.data); // Log the successful response
-      navigate("/investor");
+      await axios.post('http://localhost:3000/api/auth/investor/login', formData, {withCredentials:true});
+
+      // Simpan token di cookie dengan js-cookie
+      // Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'strict' });
+
+      navigate("/investor"); // Arahkan ke halaman investor setelah login
     } catch (error) {
       if (error.response) {
         console.error("Error response:", error.response); // Log detailed error response
