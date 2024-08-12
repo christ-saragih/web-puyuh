@@ -22,12 +22,11 @@ export const addSocialMedia = (data, callback) => {
     });
 };
 
-// Contoh fungsi updateSocialMedia di social-media.service.js
 export const updateSocialMedia = (id, data, callback) => {
   axiosInstance
     .put(`/sosial-media/${id}`, data)
     .then((res) => {
-      callback(res.data.data); // Pastikan data yang dikembalikan benar
+      callback(res.data.data);
     })
     .catch((err) => {
       console.log(err);
@@ -38,7 +37,6 @@ export const deleteSocialMedia = (id, callback) => {
   axiosInstance
     .delete(`/sosial-media/${id}`)
     .then(() => {
-      console.log(`Successfully deleted social media with id: ${id}`);
       callback();
     })
     .catch((err) => {
