@@ -9,7 +9,13 @@ const cookieParser = require("cookie-parser");
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:5173", // React app URL
+        credentials: true,
+    })
+);
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -17,12 +23,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
-  session({
-    secret: process.env.ACCESS_SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
-  })
+    session({
+        secret: process.env.ACCESS_SECRET_KEY,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }, // Ubah menjadi true jika menggunakan https
+    })
 );
 
 const PORT = process.env.PORT || 3000;
@@ -74,11 +80,11 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/investor", investorRoutes);
 
 app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
-  try {
-    await sequelize.authenticate();
-    console.log("Database Connected!");
-  } catch (error) {
-    console.error("Database Connection Failed:", error);
-  }
+    console.log(`Server is running on port ${PORT}`);
+    try {
+        await sequelize.authenticate();
+        console.log("Database Connected!");
+    } catch (error) {
+        console.error("Database Connection Failed:", error);
+    }
 });
