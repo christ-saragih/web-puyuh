@@ -35,6 +35,8 @@ const logoutInvestor = (req, res) => {
         blacklist.add(cleanToken);
     }
     res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.clearCookie("token");
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({ message: "Failed to logout." });
