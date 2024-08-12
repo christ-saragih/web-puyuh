@@ -79,6 +79,10 @@ const Utama = () => {
     setEditMode(true);
   };
 
+  console.log("ADMIN");
+  console.log(dashboardFrontpage);
+  
+  
   const isDataEmpty = dashboardFrontpage.length === 0;
 
   return (
@@ -102,7 +106,7 @@ const Utama = () => {
         >
           {/* Preview gambar yang dipilih */}
           {previewImage && (
-            <div className={`w-80 h-56 rounded-md shadow overflow-hidden`}>
+            <div className={`w-80 h-56 rounded-md overflow-hidden`}>
               <img
                 src={previewImage}
                 alt="Preview"
@@ -122,7 +126,7 @@ const Utama = () => {
                 <div className={`flex flex-col items-center justify-center`}>
                   <div className="flex items-center gap-2 mb-2">
                     <svg
-                      className="w-8 h-8 text-gray-500 dark:text-gray-400"
+                      className="w-8 h-8 text-gray-500"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -136,13 +140,13 @@ const Utama = () => {
                         d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                       />
                     </svg>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-gray-500">
                       <span className="font-semibold">
                         Unggah gambar di sini
                       </span>
                     </p>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-500">
                     SVG, PNG, JPG or GIF (MAX. 800x400px)
                   </p>
                 </div>

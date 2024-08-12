@@ -253,11 +253,11 @@ const MediaSosial = () => {
               {modalType === "delete_social_media" && (
                 <>
                   <Modal.Header
-                    title="Hapus Tag Artikel"
+                    title="Hapus Media Sosial"
                     onClose={closeModal}
                   />
                   <Modal.Body>
-                    <p>Apakah Anda yakin ingin menghapus tag artikel ini?</p>
+                    <p>Apakah Anda yakin ingin menghapus media sosial ini?</p>
                   </Modal.Body>
                   <Modal.Footer
                     action="Hapus"
