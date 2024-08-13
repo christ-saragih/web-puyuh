@@ -21,13 +21,13 @@ const InvestorDashboard = () => {
 
   useEffect(() => {
     refreshToken();
-}, []);
+  }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (token) {
         getInvestors();
     }
-}, [token]);
+  }, [token]);
 
 const refreshToken = async () => {
   try {
@@ -39,10 +39,12 @@ const refreshToken = async () => {
       console.log("Token refreshed:", response.data.accessToken); // Debugging
   } catch (error) {
       if (error.response) {
-          navigate("/investor");
+          navigate("/masuk");
       }
   }
 }
+// console.log(username);
+
 
 
 const axiosJWT = axios.create();
