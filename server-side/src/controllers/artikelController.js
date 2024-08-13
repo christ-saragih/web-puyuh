@@ -257,3 +257,25 @@ exports.getImageByName = (req, res) => {
         });
     }
 };
+
+exports.getArticleByTag = async (req, res) => {
+    try {
+        const tag = await Tag.findAll({
+            where: { nama: req.query.tag },
+            include: Artikel,
+        });
+
+        if (!tag) {
+            return res.status(404).json({ message: "Tag artikel tidak !" });
+        }
+        res.status(200).json({
+            message: "Artikel Berhasil Didapat!",
+            data: tag,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
