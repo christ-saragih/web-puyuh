@@ -16,7 +16,7 @@ module.exports = {
                     key: "id",
                 },
             },
-            investasi: {
+            investasiId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: "Investasis",

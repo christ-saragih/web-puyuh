@@ -267,3 +267,24 @@ exports.getImageByName = (req, res) => {
         });
     }
 };
+
+exports.getInvestasiByStatus = async (req, res) => {
+    try {
+        const investasi = await Investasi.findAll({
+            where: { status: req.query.status },
+        });
+
+        if (!investasi) {
+            return res.status(404).json({ message: "Data investasi tidak !" });
+        }
+        res.status(200).json({
+            message: "Investasi Berhasil Didapat!",
+            data: investasi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
