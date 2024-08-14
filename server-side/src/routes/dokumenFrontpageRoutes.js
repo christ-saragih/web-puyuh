@@ -29,6 +29,7 @@ router.put(
     validateUploadFile({
         fieldName: "file",
         allowedFileTypes: /pdf/,
+        required: false,
     }),
     validate(updateSchema),
     dokumenFrontpageController.update
