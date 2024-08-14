@@ -37,7 +37,8 @@ const Sidebar = (props) => {
     isSubMenuActive("/admin/halaman-depan/kontak") ||
     isSubMenuActive("/admin/halaman-depan/media-sosial") ||
     isSubMenuActive("/admin/halaman-depan/dokumentasi") ||
-    isSubMenuActive("/admin/halaman-depan/dokumen");
+    isSubMenuActive("/admin/halaman-depan/dokumen") ||
+    isSubMenuActive("/admin/halaman-depan/faq") ;
 
   return (
     <aside
@@ -283,6 +284,29 @@ const Sidebar = (props) => {
                     </>
                   )}
                 </NavLink>
+                <NavLink
+                  to={"/admin/halaman-depan/faq"}
+                  className="flex p-2 items-center text-gray-900 rounded-lg hover:bg-[#ffffff1a]"
+                >
+                  {({ isActive }) => (
+                    <>
+                      {isActive ? (
+                        <PiCircleDuotone className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                      ) : (
+                        <PiCircleThin className="flex-shrink-0 w-7 h-7 text-white bg-transparent" />
+                      )}
+                      <span
+                        className={`hidden group-hover:inline text-white text-lg flex-1 ms-3 whitespace-nowrap transition-all duration-300 ease-in-out transform ${
+                          isHovered
+                            ? "translate-x-0 opacity-100"
+                            : "-translate-x-10 opacity-0"
+                        }`}
+                      >
+                        Faq
+                      </span>
+                    </>
+                  )}
+                </NavLink>
               </li>
               {/* Tambahkan item submenu lainnya di sini */}
             </ul>
@@ -309,6 +333,7 @@ const Sidebar = (props) => {
               </span>
             </NavLink>
           </li>
+
           <li>
             <NavLink
               to="/admin/investasi"
