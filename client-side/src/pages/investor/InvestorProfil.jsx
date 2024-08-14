@@ -8,10 +8,11 @@ import { useNavigate } from "react-router-dom";
 
 const InvestorProfil = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const {biodataInvestor, setBiodataInvestor} = useState(null);
   const [token, setToken] = useState('');
   const [expire, setExpire] = useState('');
-  const [investorData, setInvestorData] = useState({});
+  const [investors, setInvestors] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const InvestorProfil = () => {
 
   useEffect(() => {
     if (token) {
-      getInvestorData();
+      getInvestors();
     }
   }, [token]);
 
@@ -29,7 +30,9 @@ const InvestorProfil = () => {
       const response = await axios.post('http://localhost:3000/api/auth/investor/refresh-token', {}, { withCredentials: true });
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
-      setUsername(decoded.username);
+      setEmail(decoded.email);
+      // console.log(decoded);
+      
       setExpire(decoded.exp);
       console.log("Token refreshed:", response.data.accessToken);
     } catch (error) {
@@ -38,6 +41,9 @@ const InvestorProfil = () => {
       }
     }
   }
+
+  // console.log(username);
+  
 
   const axiosJWT = axios.create();
 
@@ -55,7 +61,8 @@ const InvestorProfil = () => {
           config.headers.Authorization = `Bearer ${newAccessToken}`;
           setToken(newAccessToken);
           const decoded = jwtDecode(newAccessToken);
-          setUsername(decoded.username);
+          setBiodataInvestor(decoded)
+          setEmail(decoded.email);
           setExpire(decoded.exp);
         } catch (error) {
           console.error("Error refreshing token:", error);
@@ -70,19 +77,22 @@ const InvestorProfil = () => {
       return Promise.reject(error);
     }
   );
+  
 
-  const getInvestorData = async () => {
+  const getInvestors = async () => {
     try {
-      const response = await axiosJWT.get('http://localhost:3000/api/investor/profil', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      const response = await axiosJWT.get('http://localhost:3000/api/investor', {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
       });
-      setInvestorData(response.data);
+      console.log(response.data);
+      setInvestors(response.data);
     } catch (error) {
-      console.error("Error fetching investor data:", error);
+      console.error("Error fetching investors:", error);
     }
   }
+  
 
   return (
     <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
@@ -95,10 +105,10 @@ const InvestorProfil = () => {
           <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center mb-10">
             <img className="w-20 h-20 rounded m-10" src={profilePicture} alt="Default avatar" />
             <div className="flex flex-col items-center ml-10">
-              <button type="button" className="py-2.5 px-5 me-2 mb-2 text-sm font-quicksand focus:outline-none bg-white rounded-full hover:bg-gray-100 dark:bg-[#D9D9D9] text-[#000] dark:hover:text-white dark:hover:bg-[#572618] mb-5">
+              <button type="button" className="py-2.5 px-5 me-20 text-sm font-quicksand focus:outline-none bg-white rounded-full hover:bg-gray-100 dark:bg-[#D9D9D9] text-[#000] dark:hover:text-white dark:hover:bg-[#572618] mb-5">
                 Ganti Foto
               </button>
-              <h2 className="font-quicksand text-l text-[#000]">{investorData.email || 'example@gmail.com'}</h2>
+              <h2 className="font-quicksand text-l text-[#000]">{email}</h2>
             </div>
           </div>
           <div className="w-full rounded-xl bg-[#F5F5F7]">
