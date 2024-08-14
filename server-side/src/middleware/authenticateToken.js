@@ -27,8 +27,8 @@ const jwt = require("jsonwebtoken");
 const blacklist = new Set();
 
 const authenticateToken = (req, res, next) => {
-    // const token = req.cookies.token || req.header("Authorization");
-    const token = req.header("Authorization");
+    const token = req.cookies.accessToken || req.header("Authorization");
+    // const token = req.header("Authorization");
 
     if (!token) {
         return res
