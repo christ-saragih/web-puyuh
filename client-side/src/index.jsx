@@ -38,6 +38,7 @@ import InvestorTransaksi from "./pages/investor/InvestorTransaksi";
 import Verifikasi from "./pages/investor/Verifikasi";
 import Dokumentasi from "./pages/admin/halaman_depan/Dokumentasi";
 import Dokumen from "./pages/admin/halaman_depan/Dokumen";
+import FaqAdmin from "./pages/admin/halaman_depan/Faq";
 
 const router = createBrowserRouter([
   //guess start
@@ -148,6 +149,12 @@ const router = createBrowserRouter([
     path: "/admin/halaman-depan/dokumen",
     element: <Dokumen />,
   },
+  {
+    path: "/admin/halaman-depan/faq",
+    element: <FaqAdmin />,
+  },
+
+
   {
     path: "/admin/beranda",
     element: <AdminKontenBeranda />,
