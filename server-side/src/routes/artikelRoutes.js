@@ -36,5 +36,6 @@ router.get("/", artikelController.findAll);
 router.get("/:slug", artikelController.findDataBySlug);
 router.delete("/:id", artikelController.delete);
 router.get("/image/:gambar", artikelController.getImageByName);
+router.get("/filter/tag", artikelController.getArticleByTag);
 
 module.exports = router;

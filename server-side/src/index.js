@@ -55,6 +55,7 @@ const adminBiodataRoutes = require("./routes/adminBiodataRoutes");
 const investasiRoutes = require("./routes/investasiRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const investorRoutes = require("./routes/investorRoutes");
+const transaksiRoutes = require("./routes/transaksiRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -78,6 +79,7 @@ app.use("/api/biodata-admin", adminBiodataRoutes);
 app.use("/api/investasi", investasiRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/investor", investorRoutes);
+app.use("/api/transaksi", transaksiRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);

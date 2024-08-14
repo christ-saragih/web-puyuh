@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const authorizeRole = (requiredRole) => {
     return (req, res, next) => {
-        const token = req.cookies.token || req.header("Authorization");
+        const token = req.cookies.accessToken || req.header("Authorization");
         if (!token) {
             return res
                 .status(401)

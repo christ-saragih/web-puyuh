@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                     key: "id",
                 },
             },
-            investasi: {
+            investasiId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {

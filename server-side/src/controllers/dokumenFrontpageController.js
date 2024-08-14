@@ -87,7 +87,7 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { nama, status } = req.body;
-        const file = req.file ? req.file.path : null;
+        const file = req.file ? req.file.buffer : null;
 
         const dokumen = await DokumenFrontpage.findByPk(req.params.id);
         if (!dokumen) {
@@ -95,12 +95,12 @@ exports.update = async (req, res) => {
         }
 
         let nama_file = dokumen.file;
-        if (req.file) {
+        if (file) {
             const dir = "public/file/dokumenFrontpage";
             ensureDir(dir);
 
             nama_file = `${Date.now()}-${req.file.originalname}`;
-            fs.writeFileSync(path.join(dir, nama_file), req.file.buffer);
+            fs.writeFileSync(path.join(dir, nama_file), file);
 
             if (dokumen.file) {
                 const oldFilePath = path.join(dir, dokumen.file);
