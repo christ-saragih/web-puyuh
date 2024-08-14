@@ -1,14 +1,15 @@
-import DocumentItem from "./DocumentItem"
+import DocumentItem from "./DocumentItem";
 
-const DocumentList = () => {
+const DocumentList = (props) => {
+  const { documents, openModal } = props;
 
-    return (
-        <div className="grid grid-cols-4 gap-x-9 gap-y-8 mb-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <DocumentItem key={i} />
-            ))}
-          </div>
-    )
-}
+  return (
+    <div className="grid grid-cols-3 gap-x-9 gap-y-8 mb-4">
+      {documents.map((document) => (
+        <DocumentItem key={document.id} {...document} openModal={openModal} />
+      ))}
+    </div>
+  );
+};
 
 export default DocumentList;
