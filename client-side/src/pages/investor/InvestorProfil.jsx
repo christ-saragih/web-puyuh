@@ -9,10 +9,12 @@ import { useNavigate } from "react-router-dom";
 const InvestorProfil = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [email, setEmail] = useState('');
-  const {biodataInvestor, setBiodataInvestor} = useState(null);
+  const [biodataInvestor, setBiodataInvestor] = useState(null);
   const [token, setToken] = useState('');
   const [expire, setExpire] = useState('');
   const [investors, setInvestors] = useState([]);
+  // const [investors, setInvestors] = useState([]);
+  const [kategoriInvestor, setKategoriInvestor] = useState([]); // State untuk menyimpan kategori
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +33,6 @@ const InvestorProfil = () => {
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setEmail(decoded.email);
-      // console.log(decoded);
-      
       setExpire(decoded.exp);
       console.log("Token refreshed:", response.data.accessToken);
     } catch (error) {
@@ -41,9 +41,6 @@ const InvestorProfil = () => {
       }
     }
   }
-
-  // console.log(username);
-  
 
   const axiosJWT = axios.create();
 
@@ -77,22 +74,23 @@ const InvestorProfil = () => {
       return Promise.reject(error);
     }
   );
-  
 
   const getInvestors = async () => {
     try {
-      const response = await axiosJWT.get('http://localhost:3000/api/investor', {
-          headers: {
-              Authorization: `Bearer ${token}`
-          }
-      });
-      console.log(response.data);
-      setInvestors(response.data);
+        // Misalnya, token JWT mengandung informasi user_id dalam payload
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id; // Sesuaikan dengan struktur payload token And
+      const response = await axiosJWT.get(`http://localhost:3000/api/investor/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+      console.log(response.data.data.kategori_investor);
+      setInvestors(response.data.data);
     } catch (error) {
       console.error("Error fetching investors:", error);
     }
   }
-  
 
   return (
     <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
@@ -109,10 +107,12 @@ const InvestorProfil = () => {
                 Ganti Foto
               </button>
               <h2 className="font-quicksand text-l text-[#000]">{email}</h2>
+              {/* <h1>{investors.kategori_investor}</h1> */}
             </div>
           </div>
           <div className="w-full rounded-xl bg-[#F5F5F7]">
-            <VerticalTabProfil />
+            {/* Pass data kategori investor ke VerticalTabProfil */}
+            <VerticalTabProfil getInvestors={getInvestors} investors={investors} />
           </div>
         </div>
       </div>
