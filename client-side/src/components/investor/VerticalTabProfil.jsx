@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Datepicker } from "flowbite-react";
 
-const VerticalTabProfil = () => {
+const VerticalTabProfil = ({investors}) => {
     const [activeTab, setActiveTab] = useState('Biodata');
     const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
     const [selectedGender, setSelectedGender] = useState('Pilih Kelamin');
     const [selectedCategory, setSelectedCategory] = useState('Pilih Kategori');
+    const [categories, setCategories] = useState(['organisasi', 'individu']);
     const genderDropdownRef = useRef(null);
     const categoryDropdownRef = useRef(null);
 
@@ -27,6 +28,15 @@ const VerticalTabProfil = () => {
         };
     }, []);
 
+
+    useEffect(() => {
+        console.log('Selected category:', selectedCategory);
+    }, [selectedCategory]);
+    
+    useEffect(() => {
+        console.log('Categories:', categories);
+    }, [categories]);
+
     const handleGenderDropdownToggle = () => {
         setIsGenderDropdownOpen(!isGenderDropdownOpen);
         if (isCategoryDropdownOpen) {
@@ -35,11 +45,65 @@ const VerticalTabProfil = () => {
     };
 
     const handleCategoryDropdownToggle = () => {
-        setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-        if (isGenderDropdownOpen) {
-            setIsGenderDropdownOpen(false); // Close gender dropdown if it's open
-        }
+        setIsCategoryDropdownOpen((prevState) => !prevState);
     };
+
+    const handleCategorySelect = (category) => {
+        console.log(`Category selected: ${category}`); 
+        setSelectedCategory(category);
+        setIsCategoryDropdownOpen(false);
+    };
+
+    // useEffect(() => {
+    //     const fetchInvestorData = async () => {
+    //         try {
+    //             const response = await fetch('http://localhost:3000/api/investor');
+    //             const data = await response.json();
+    
+    //             console.log('Fetched data:', data);
+    
+    //             // Periksa apakah data kategori_investor adalah string
+    //             if (typeof data.kategori_investor === 'string') {
+    //                 // Jika kategori_investor adalah string, set kategori yang relevan
+    //                 setCategories(['organisasi', 'individu']); // Misalnya, jika ini adalah pilihan yang mungkin
+    //                 console.log('Categories set:', ['organisasi', 'individu']);
+    
+    //                 // Set kategori yang dipilih berdasarkan data
+    //                 if (['organisasi', 'individu'].includes(data.kategori_investor)) {
+    //                     setSelectedCategory(data.kategori_investor);
+    //                     console.log('Selected category set:', data.kategori_investor);
+    //                 } else {
+    //                     console.error('Invalid kategori_investor:', data.kategori_investor);
+    //                     // Anda bisa set default category jika diperlukan
+    //                     setSelectedCategory('Pilih Kategori');
+    //                 }
+    //             } else {
+    //                 console.error('Expected kategori_investor to be a string');
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching investor data:', error);
+    //         }
+    //     };
+    
+    //     fetchInvestorData();
+    // }, []);
+
+    useEffect(() => {
+        if (investors && investors.kategori_investor) {
+            setCategories(['organisasi', 'individu']); // Misalnya, jika ini adalah pilihan yang mungkin
+            console.log('Categories set:', ['organisasi', 'individu']);
+
+            // Set kategori yang dipilih berdasarkan data
+            if (['organisasi', 'individu'].includes(investors.kategori_investor)) {
+                setSelectedCategory(investors.kategori_investor);
+                console.log('Selected category set:', investors.kategori_investor);
+            } else {
+                console.error('Invalid kategori_investor:', investors.kategori_investor);
+                // Anda bisa set default category jika diperlukan
+                setSelectedCategory('Pilih Kategori');
+            }
+        }
+    }, [investors]);
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -119,30 +183,18 @@ const VerticalTabProfil = () => {
                                 </svg>
                             </button>
                             {isCategoryDropdownOpen && (
-                                <div ref={categoryDropdownRef} className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                <div className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        <li>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedCategory('Perorangan');
-                                                    setIsCategoryDropdownOpen(false);
-                                                }}
-                                                className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            >
-                                                Perorangan
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedCategory('Badan');
-                                                    setIsCategoryDropdownOpen(false);
-                                                }}
-                                                className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            >
-                                                Badan
-                                            </button>
-                                        </li>
+                                        {categories.map((category, index) => (
+                                            <li key={index}>
+                                                <button
+                                                    onClick={() => handleCategorySelect(category)}
+                                                    className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                >
+                                                    {category}
+                                                </button>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             )}
