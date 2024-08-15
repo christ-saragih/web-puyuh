@@ -37,6 +37,7 @@ router.put(
     upload.single("foto_profil"),
     validateUploadFile({
         fieldName: "foto_profil",
+        required: false,
     }),
     investorBiodataController.update
 );
