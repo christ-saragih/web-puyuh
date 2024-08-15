@@ -27,6 +27,7 @@ router.put(
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
+        required: false,
     }),
     validate(updateSchema),
     artikelController.update
