@@ -36,7 +36,7 @@ const VerticalTabProfil = ({investors}) => {
 
     useEffect(() => {
         if (token) {
-          handleSubmit();
+          handleSubmitBiodata();
         }
       }, [token]);
 
@@ -138,33 +138,46 @@ const VerticalTabProfil = ({investors}) => {
 
       const axiosJWT = axios.create();
 
-      const handleSubmit = async (e) => {
+      useEffect(() => {
+        const storedData = localStorage.getItem('formData');
+        if (storedData) {
+          const data = JSON.parse(storedData);
+          setNamaLengkap(data.nama_lengkap);
+          setJk(data.jk);
+          setTempatLahir(data.tempat_lahir);
+          setTanggalLahir(data.tanggal_lahir);
+          setNoHp(data.no_hp);
+        }
+      }, []);
+
+      const handleSubmitBiodata = async (e) => {
         e.preventDefault();
         try {
-            const decodedToken = jwtDecode(token);
-            const userId = decodedToken.id;
-    
-            const dataToSend = {
-                nama_lengkap: namaLengkap,
-                jk: jk,
-                tempat_lahir: tempatLahir,
-                tanggal_lahir: tanggalLahir,
-                no_hp: noHp,
-            };
-            console.log(dataToSend);
-    
-            const response = await axiosJWT.put(`http://localhost:3000/api/biodata-investor/${userId}`, dataToSend, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log(response.data);
-            // Handle success response
+          const dataToSend = {
+            nama_lengkap: namaLengkap,
+            jk: jk,
+            tempat_lahir: tempatLahir,
+            tanggal_lahir: tanggalLahir,
+            no_hp: noHp,
+          };
+          console.log(dataToSend);
+      
+          const response = await axiosJWT.post(`http://localhost:3000/api/biodata-investor`, dataToSend, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(response.data);
+      
+          // Store form data in local storage
+          localStorage.setItem('formData', JSON.stringify(dataToSend));
+      
+          // Handle success response
         } catch (error) {
-            console.error("Error submitting data:", error);
-            console.error("Error response:", error.response);
+          console.error("Error submitting data:", error);
+          console.error("Error response:", error.response);
         }
-    };
+      };
 
       
 
@@ -271,7 +284,7 @@ const VerticalTabProfil = ({investors}) => {
                                 )}
                             </div>
                             <div className="flex justify-end">
-                                <button type="button" onClick={handleSubmit} className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
+                                <button type="button" onClick={handleSubmitBiodata} className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
                             </div>
                         </div>
                     );
