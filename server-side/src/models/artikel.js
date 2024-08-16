@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             tanggal: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Tanggal tidak boleh null!" },

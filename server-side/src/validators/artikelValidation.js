@@ -40,7 +40,7 @@ const updateSchema = [
     check("tanggal")
         .optional()
         .isDate()
-        .withMessage("Tanggal harus berupa string!"),
+        .withMessage("Tanggal harus berupa tanggal!"),
     check("tags").optional(),
 ];
 
