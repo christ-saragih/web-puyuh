@@ -20,8 +20,8 @@ const ArticleDetail = () => {
   if (!article) {
     return <div>Data artikel tidak ditemukan!</div>;
   }
+
   console.log(article);
-  const formattedDate = formatDate(article.tanggal);
 
   return (
     <>
@@ -36,7 +36,9 @@ const ArticleDetail = () => {
               <p className="font-semibold text-xl text-[#3E3232]">
                 {article.penulis}
               </p>
-              <p className="text-[#3E3232] opacity-90">{formattedDate}</p>
+              <p className="text-[#3E3232] opacity-90">
+                {formatDate(article.tanggal)}
+              </p>
             </div>
           </div>
 
@@ -58,8 +60,7 @@ const ArticleDetail = () => {
 
         <div className="px-16 h-[30rem] mt-16 mb-8">
           <img
-            // src={`http://localhost:3000/api/artikel/image/${article.gambar}`}
-            src={article.gambar}
+            src={`http://localhost:3000/api/artikel/image/${article.gambar}`}
             alt="Artikel"
             className="rounded-3xl w-full h-full object-cover"
           />
