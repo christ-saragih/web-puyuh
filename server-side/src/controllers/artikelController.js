@@ -14,13 +14,13 @@ const ensureDir = (dir) => {
 exports.create = async (req, res) => {
     try {
         const { penulis, judul, deskripsi, tanggal, tags } = req.body;
-        const gambar = req.file ? req.file.buffer : null;
+        let gambar_name = null;
 
-        if (gambar && penulis && judul && deskripsi && tanggal && tags) {
+        if (req.file && penulis && judul && deskripsi && tanggal && tags) {
             const dir = "public/images/artikels";
-            ensureDir(dir);
+            ensureDir(dir); // Pastikan fungsi ensureDir ada atau gunakan fs.mkdirSync(dir, { recursive: true });
             gambar_name = `${Date.now()}-${req.file.originalname}`;
-            fs.writeFileSync(path.join(dir, gambar_name), gambar);
+            fs.writeFileSync(path.join(dir, gambar_name), req.file.buffer);
         }
 
         const artikel = await Artikel.create({
@@ -42,20 +42,19 @@ exports.create = async (req, res) => {
                 return res.status(400).json({ message: "Tag tidak ada" });
             }
 
-            await Promise.all(
-                validTags.map(async (tag) => {
-                    await ArtikelTag.create({
-                        artikelId: artikel.id,
-                        tagId: tag.id,
-                    });
-                })
-            );
+            // Tambahkan tag ke artikel dengan menggunakan setTags
+            await artikel.setTags(validTags);
         }
+
+        // Ambil kembali artikel dengan relasi tags
+        const artikelWithTags = await Artikel.findOne({
+            where: { id: artikel.id },
+            include: Tag, // Sertakan relasi tags
+        });
 
         res.status(201).json({
             message: "Artikel Berhasil Ditambahkan!",
-            data: artikel,
-            tags,
+            data: artikelWithTags, // Kirim artikel dengan tags dalam response
         });
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
@@ -134,9 +133,8 @@ exports.findDataBySlug = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { penulis, judul, deskripsi, tanggal, tags } = req.body;
-        const gambar = req.file ? req.file.path : null;
-
         const artikel = await Artikel.findByPk(req.params.id);
+
         if (!artikel) {
             return res.status(404).json({ message: "Artikel tidak ada!" });
         }
@@ -148,6 +146,7 @@ exports.update = async (req, res) => {
             gambar_name = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(path.join(dir, gambar_name), req.file.buffer);
 
+            // Hapus gambar lama jika ada
             if (artikel.gambar) {
                 const oldImagePath = path.join(dir, artikel.gambar);
                 if (fs.existsSync(oldImagePath)) {
@@ -156,6 +155,7 @@ exports.update = async (req, res) => {
             }
         }
 
+        // Update artikel
         await artikel.update({
             penulis,
             judul,
@@ -175,21 +175,19 @@ exports.update = async (req, res) => {
                 return res.status(400).json({ message: "Tag tidak ada!" });
             }
 
-            await ArtikelTag.destroy({ where: { artikelId: artikel.id } });
-
-            await Promise.all(
-                validTags.map(async (tag) => {
-                    await ArtikelTag.create({
-                        artikelId: artikel.id,
-                        tagId: tag.id,
-                    });
-                })
-            );
+            // Hapus semua tag lama dan tambahkan tag baru
+            await artikel.setTags(validTags);
         }
+
+        // Ambil kembali artikel dengan relasi tags
+        const artikelWithTags = await Artikel.findOne({
+            where: { id: artikel.id },
+            include: Tag, // Sertakan relasi tags
+        });
 
         res.status(200).json({
             message: "Artikel Berhasil Diupdate!",
-            data: artikel,
+            data: artikelWithTags,
         });
     } catch (error) {
         if (error.name === "SequelizeValidationError") {
