@@ -21,6 +21,13 @@ const VerticalTabProfil = ({investors}) => {
     const [tanggalLahir, setTanggalLahir] = useState(null);
     const [noHp, setNoHp] = useState('');
     const [kategoriInvestor, setKategoriInvestor] = useState('');
+    // alamat
+    const [alamat, setAlamat] = useState('');
+    const [provinsi, setProvinsi] = useState('');
+    const [kota, setKota] = useState('');
+    const [kecamatan, setKecamatan] = useState('');
+    const [kelurahan, setKelurahan] = useState('');
+    const [kodePos, setKodePos] = useState('');
     const [token, setToken] = useState('');
     const [email, setEmail] = useState('');
     const [expire, setExpire] = useState('');
@@ -113,28 +120,16 @@ const VerticalTabProfil = ({investors}) => {
         setNamaLengkap(e.target.value);
       };
     
-      const handleJkChange = (e) => {
-        setJk(e.target.value);
-      };
     
       const handleTempatLahirChange = (e) => {
         setTempatLahir(e.target.value);
       };
     
-        const handleTanggalLahirChange = (date) => {
-            console.log("Selected Date:", date);
-            console.log("Date type:", typeof date);
-            setTanggalLahir(date);
-            console.log("Tanggal Lahir state:", tanggalLahir);
-        };
     
       const handleNoHpChange = (e) => {
         setNoHp(e.target.value);
       };
     
-      const handleKategoriInvestorChange = (e) => {
-        setKategoriInvestor(e.target.value);
-      };
 
       const axiosJWT = axios.create();
 
@@ -163,6 +158,36 @@ const VerticalTabProfil = ({investors}) => {
           console.log(dataToSend);
       
           const response = await axiosJWT.post(`http://localhost:3000/api/biodata-investor`, dataToSend, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(response.data);
+      
+          // Store form data in local storage
+          localStorage.setItem('formData', JSON.stringify(dataToSend));
+      
+          // Handle success response
+        } catch (error) {
+          console.error("Error submitting data:", error);
+          console.error("Error response:", error.response);
+        }
+      };
+
+      const handleSubmitAlamat = async (e) => {
+        e.preventDefault();
+        try {
+          const dataToSend = {
+            alamat: alamat,
+            provinsi: provinsi,
+            kota: kota,
+            kecamatan: kecamatan,
+            kelurahan: kelurahan,
+            kode_pos: kodePos,
+          };
+          console.log(dataToSend);
+      
+          const response = await axiosJWT.post(`http://localhost:3000/api/alamat-investor`, dataToSend, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -295,30 +320,30 @@ const VerticalTabProfil = ({investors}) => {
                         <h3 className="text-lg font-bold text-gray-900 mb-2">Alamat</h3>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Alamat Sesuai KTP</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="base-input" value={alamat} onChange={(e) => setAlamat(e.target.value)} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Provinsi</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="base-input" value={provinsi} onChange={(e) => setProvinsi(e.target.value)} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Kota/Kabupaten</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="base-input" value={kota} onChange={(e) => setKota(e.target.value)} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Kecamatan</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="base-input" value={kecamatan} onChange={(e) => setKecamatan(e.target.value)} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Kelurahan</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="base-input" value={kelurahan} onChange={(e) => setKelurahan(e.target.value)} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Kode Pos</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="base-input" value={kodePos} onChange={(e) => setKodePos(e.target.value)} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="flex justify-end">
-                            <button type="button" className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
+                            <button type="button" onClick={handleSubmitAlamat} className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
                         </div>
                     </div>
                 );
