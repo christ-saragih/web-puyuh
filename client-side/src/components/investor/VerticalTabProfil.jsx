@@ -1,33 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Datepicker } from "flowbite-react";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+
 
 const VerticalTabProfil = ({investors}) => {
     const [activeTab, setActiveTab] = useState('Biodata');
     const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
-    const [selectedGender, setSelectedGender] = useState('Pilih Kelamin');
+    // const [selectedGender, setSelectedGender] = useState('Pilih Kelamin');
     const [selectedCategory, setSelectedCategory] = useState('Pilih Kategori');
     const [categories, setCategories] = useState(['organisasi', 'individu']);
     const genderDropdownRef = useRef(null);
     const categoryDropdownRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (
-                (genderDropdownRef.current && !genderDropdownRef.current.contains(event.target)) &&
-                (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target))
-            ) {
-                setIsGenderDropdownOpen(false);
-                setIsCategoryDropdownOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
+    const [namaLengkap, setNamaLengkap] = useState('');
+    const [jk, setJk] = useState('');
+    const [tempatLahir, setTempatLahir] = useState('');
+    const [tanggalLahir, setTanggalLahir] = useState(null);
+    const [noHp, setNoHp] = useState('');
+    const [kategoriInvestor, setKategoriInvestor] = useState('');
+    const [token, setToken] = useState('');
+    const [email, setEmail] = useState('');
+    const [expire, setExpire] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log('Selected category:', selectedCategory);
@@ -37,11 +34,50 @@ const VerticalTabProfil = ({investors}) => {
         console.log('Categories:', categories);
     }, [categories]);
 
+    useEffect(() => {
+        if (token) {
+          handleSubmit();
+        }
+      }, [token]);
+
+      useEffect(() => {
+        refreshToken();
+      }, []);
+
+    const refreshToken = async () => {
+        try {
+          const response = await axios.post('http://localhost:3000/api/auth/investor/refresh-token', {}, { withCredentials: true });
+          setToken(response.data.accessToken);
+          const decoded = jwtDecode(response.data.accessToken);
+          setEmail(decoded.email);
+          setExpire(decoded.exp);
+          console.log("Token refreshed:", response.data.accessToken);
+        } catch (error) {
+          if (error.response) {
+            navigate("/masuk");
+          }
+        }
+      }
+
     const handleGenderDropdownToggle = () => {
         setIsGenderDropdownOpen(!isGenderDropdownOpen);
-        if (isCategoryDropdownOpen) {
-            setIsCategoryDropdownOpen(false); // Close category dropdown if it's open
+        if (isGenderDropdownOpen) {
+          document.addEventListener('click', handleGenderDropdownClose);
+        } else {
+          document.removeEventListener('click', handleGenderDropdownClose);
         }
+      };
+
+      const handleJkSelect = (jk) => {
+        setJk(jk);
+        setIsGenderDropdownOpen(false);
+      };
+
+    const handleGenderDropdownClose = (event) => {
+    if (!genderDropdownRef.current.contains(event.target)) {
+        setIsGenderDropdownOpen(false);
+        document.removeEventListener('click', handleGenderDropdownClose);
+    }
     };
 
     const handleCategoryDropdownToggle = () => {
@@ -51,42 +87,10 @@ const VerticalTabProfil = ({investors}) => {
     const handleCategorySelect = (category) => {
         console.log(`Category selected: ${category}`); 
         setSelectedCategory(category);
+        setKategoriInvestor(category);
         setIsCategoryDropdownOpen(false);
     };
 
-    // useEffect(() => {
-    //     const fetchInvestorData = async () => {
-    //         try {
-    //             const response = await fetch('http://localhost:3000/api/investor');
-    //             const data = await response.json();
-    
-    //             console.log('Fetched data:', data);
-    
-    //             // Periksa apakah data kategori_investor adalah string
-    //             if (typeof data.kategori_investor === 'string') {
-    //                 // Jika kategori_investor adalah string, set kategori yang relevan
-    //                 setCategories(['organisasi', 'individu']); // Misalnya, jika ini adalah pilihan yang mungkin
-    //                 console.log('Categories set:', ['organisasi', 'individu']);
-    
-    //                 // Set kategori yang dipilih berdasarkan data
-    //                 if (['organisasi', 'individu'].includes(data.kategori_investor)) {
-    //                     setSelectedCategory(data.kategori_investor);
-    //                     console.log('Selected category set:', data.kategori_investor);
-    //                 } else {
-    //                     console.error('Invalid kategori_investor:', data.kategori_investor);
-    //                     // Anda bisa set default category jika diperlukan
-    //                     setSelectedCategory('Pilih Kategori');
-    //                 }
-    //             } else {
-    //                 console.error('Expected kategori_investor to be a string');
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching investor data:', error);
-    //         }
-    //     };
-    
-    //     fetchInvestorData();
-    // }, []);
 
     useEffect(() => {
         if (investors && investors.kategori_investor) {
@@ -105,105 +109,173 @@ const VerticalTabProfil = ({investors}) => {
         }
     }, [investors]);
 
+    const handleNamaLengkapChange = (e) => {
+        setNamaLengkap(e.target.value);
+      };
+    
+      const handleJkChange = (e) => {
+        setJk(e.target.value);
+      };
+    
+      const handleTempatLahirChange = (e) => {
+        setTempatLahir(e.target.value);
+      };
+    
+        const handleTanggalLahirChange = (date) => {
+            console.log("Selected Date:", date);
+            console.log("Date type:", typeof date);
+            setTanggalLahir(date);
+            console.log("Tanggal Lahir state:", tanggalLahir);
+        };
+    
+      const handleNoHpChange = (e) => {
+        setNoHp(e.target.value);
+      };
+    
+      const handleKategoriInvestorChange = (e) => {
+        setKategoriInvestor(e.target.value);
+      };
+
+      const axiosJWT = axios.create();
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.id;
+    
+            const dataToSend = {
+                nama_lengkap: namaLengkap,
+                jk: jk,
+                tempat_lahir: tempatLahir,
+                tanggal_lahir: tanggalLahir,
+                no_hp: noHp,
+            };
+            console.log(dataToSend);
+    
+            const response = await axiosJWT.put(`http://localhost:3000/api/biodata-investor/${userId}`, dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response.data);
+            // Handle success response
+        } catch (error) {
+            console.error("Error submitting data:", error);
+            console.error("Error response:", error.response);
+        }
+    };
+
+      
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'Biodata':
-                return (
-                    <div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">Biodata</h3>
-                        <div className="mb-5">
-                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nama Lengkap</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
-                        </div>
-                        <div className="mb-5">
-                            <label htmlFor="gender-dropdown" className="block mb-2 text-sm font-medium text-gray-900">Jenis Kelamin</label>
-                            <button
+                    return (
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">Biodata</h3>
+                            <div className="mb-5">
+                                <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nama Lengkap</label>
+                                <input type="text" id="base-input" value={namaLengkap} onChange={handleNamaLengkapChange} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            </div>
+                            <div className="mb-5">
+                                <label htmlFor="gender-dropdown" className="block mb-2 text-sm font-medium text-gray-900">Jenis Kelamin</label>
+                                <button
                                 id="gender-dropdown"
                                 onClick={handleGenderDropdownToggle}
                                 className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${isGenderDropdownOpen ? 'border-black' : ''}`}
                                 type="button"
-                            >
-                                <span className="flex-1">{selectedGender}</span>
+                                >
+                                <span className="flex-1">{jk}</span>
                                 <svg className="w-2.5 h-2.5 ml-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                                 </svg>
-                            </button>
-                            {isGenderDropdownOpen && (
+                                </button>
+                                {isGenderDropdownOpen && (
                                 <div ref={genderDropdownRef} className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        <li>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedGender('Laki-laki');
-                                                    setIsGenderDropdownOpen(false);
-                                                }}
-                                                className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            >
-                                                Laki-laki
-                                            </button>
+                                    <li>
+                                        <button
+                                            onClick={() => handleJkSelect('pria')}
+                                            className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${isGenderDropdownOpen ? 'border-black' : ''}`}
+                                            type="button"
+                                        >
+                                            Pria
+                                        </button>
                                         </li>
                                         <li>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedGender('Perempuan');
-                                                    setIsGenderDropdownOpen(false);
-                                                }}
-                                                className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            >
-                                                Perempuan
-                                            </button>
+                                        <button
+                                            onClick={() => handleJkSelect('wanita')}
+                                            className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${isGenderDropdownOpen ? 'border-black' : ''}`}
+                                            type="button"
+                                        >
+                                            Wanita
+                                        </button>
                                         </li>
                                     </ul>
                                 </div>
-                            )}
+                                )}
+                            </div>
+                            <div className="mb-5">
+                                <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Tempat Lahir</label>
+                                <input
+                                    type="text"
+                                    id="base-input"
+                                    value={tempatLahir}
+                                    onChange={handleTempatLahirChange}
+                                    className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                />
+                            </div>
+                            <div className="mb-5">
+                                <label htmlFor="tanggal-lahir-input" className="block mb-2 text-sm font-medium text-gray-900">Tanggal Lahir</label>
+                                <input type="date" id="tanggal_lahir" name="tanggal_lahir" value={tanggalLahir} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" onChange={(e) => setTanggalLahir(e.target.value)} />
+                            </div>
+                            <div className="mb-5">
+                                <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor Handphone</label>
+                                <input
+                                    type="text"
+                                    id="base-input"
+                                    value={noHp}
+                                    onChange={handleNoHpChange}
+                                    className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                />
+                            </div>
+                            <div className="mb-5">
+                                <label htmlFor="category-dropdown" className="block mb-2 text-sm font-medium text-gray-900">Kategori Investor</label>
+                                <button
+                                    id="category-dropdown"
+                                    onClick={handleCategoryDropdownToggle}
+                                    className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${isCategoryDropdownOpen ? 'border-black' : ''}`}
+                                    type="button"
+                                >
+                                    <span className="flex-1">{selectedCategory}</span>
+                                    <svg className="w-2.5 h-2.5 ml-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                                    </svg>
+                                </button>
+                                {isCategoryDropdownOpen && (
+                                    <div className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                            {categories.map((category, index) => (
+                                                <li key={index}>
+                                                    <button
+                                                        onClick={() => handleCategorySelect(category)}
+                                                        className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                    >
+                                                        {category}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-end">
+                                <button type="button" onClick={handleSubmit} className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
+                            </div>
                         </div>
-                        <div className="mb-5">
-                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Tempat Lahir</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
-                        </div>
-                        <div className="mb-5">
-                            <label htmlFor="birthdate-input" className="block mb-2 text-sm font-medium text-gray-900">Tanggal Lahir</label>
-                            <Datepicker language="id" labelTodayButton="Hari ini" labelClearButton="Hapus" />
-                        </div>
-                        <div className="mb-5">
-                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor Handphone</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" />
-                        </div>
-                        <div className="mb-5">
-                            <label htmlFor="category-dropdown" className="block mb-2 text-sm font-medium text-gray-900">Kategori Investor</label>
-                            <button
-                                id="category-dropdown"
-                                onClick={handleCategoryDropdownToggle}
-                                className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${isCategoryDropdownOpen ? 'border-black' : ''}`}
-                                type="button"
-                            >
-                                <span className="flex-1">{selectedCategory}</span>
-                                <svg className="w-2.5 h-2.5 ml-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                </svg>
-                            </button>
-                            {isCategoryDropdownOpen && (
-                                <div className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        {categories.map((category, index) => (
-                                            <li key={index}>
-                                                <button
-                                                    onClick={() => handleCategorySelect(category)}
-                                                    className="block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                >
-                                                    {category}
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex justify-end">
-                            <button type="button" className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
-                        </div>
-                    </div>
-                );
+                    );
+                    
             case 'Alamat':
                 return (
                     <div>
