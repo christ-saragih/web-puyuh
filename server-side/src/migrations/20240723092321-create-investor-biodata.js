@@ -29,7 +29,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             tanggal_lahir: {
-                type: Sequelize.DATE,
+                type: Sequelize.DATEONLY,
             },
             no_hp: {
                 type: Sequelize.STRING,

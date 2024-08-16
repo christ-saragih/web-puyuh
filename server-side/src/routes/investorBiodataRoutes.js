@@ -18,17 +18,17 @@ const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
 
-router.post(
-    "/",
-    authenticateInvestorToken,
-    authorizeRole("investor"),
-    upload.single("foto_profil"),
-    validateUploadFile({
-        fieldName: "foto_profil",
-    }),
-    validate(createSchema),
-    investorBiodataController.create
-);
+// router.post(
+//     "/",
+//     authenticateInvestorToken,
+//     authorizeRole("investor"),
+//     upload.single("foto_profil"),
+//     validateUploadFile({
+//         fieldName: "foto_profil",
+//     }),
+//     validate(createSchema),
+//     investorBiodataController.create
+// );
 router.put(
     "/:id",
     authenticateInvestorToken,
@@ -45,5 +45,18 @@ router.get("/", investorBiodataController.findAll);
 router.get("/:id", investorBiodataController.findOne);
 router.delete("/:id", investorBiodataController.delete);
 router.get("/images/:gambar", investorBiodataController.getImageByName);
+
+router.post(
+    "/",
+    authenticateInvestorToken,
+    authorizeRole("investor"),
+    upload.single("foto_profil"),
+    validateUploadFile({
+        fieldName: "foto_profil",
+        required: false,
+    }),
+    validate(updateSchema),
+    investorBiodataController.upsert
+);
 
 module.exports = router;

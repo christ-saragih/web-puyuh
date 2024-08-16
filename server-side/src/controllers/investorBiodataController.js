@@ -1,4 +1,4 @@
-const { InvestorBiodata } = require("../models");
+const { InvestorBiodata, Investor } = require("../models");
 const fs = require("fs");
 const path = require("path");
 
@@ -209,5 +209,116 @@ exports.getImageByName = (req, res) => {
         res.status(404).json({
             message: "Gambar tidak ditemukan",
         });
+    }
+};
+
+// upsert
+exports.upsert = async (req, res) => {
+    try {
+        const {
+            nama_lengkap,
+            jk,
+            tempat_lahir,
+            tanggal_lahir,
+            no_hp,
+            kategori_investor,
+        } = req.body;
+
+        const investorBiodata = await InvestorBiodata.findOne({
+            where: { investorId: req.investor.id },
+        });
+
+        const investor = await Investor.findOne({
+            where: { id: req.investor.id },
+        });
+
+        const foto_profil = req.file ? req.file.buffer : null;
+
+        if (!investorBiodata) {
+            if (
+                foto_profil &&
+                nama_lengkap &&
+                jk &&
+                tempat_lahir &&
+                tanggal_lahir &&
+                no_hp &&
+                kategori_investor
+            ) {
+                const dir = "public/images/investors/profile";
+                ensureDir(dir);
+                nama_foto = `${Date.now()}-${req.file.originalname}`;
+                fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
+            }
+
+            const investorId = req.investor.id;
+            const investorBiodata = await InvestorBiodata.create({
+                investorId: investorId,
+                nama_lengkap,
+                jk,
+                tempat_lahir,
+                tanggal_lahir,
+                no_hp,
+                foto_profil: nama_foto,
+            });
+
+            const investor = await Investor.update({
+                kategori_investor,
+            });
+
+            res.status(201).json({
+                message: "Biodata Berhasil Ditambahkan!",
+                data: investorBiodata,
+                data: investor,
+            });
+        } else {
+            let nama_foto = investorBiodata.foto_profil;
+            if (foto_profil) {
+                const dir = "public/images/investors/profile";
+                ensureDir(dir);
+                nama_foto = `${Date.now()}-${req.file.originalname}`;
+                fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
+
+                if (investorBiodata.foto_profil) {
+                    const oldImagePath = path.join(
+                        dir,
+                        investorBiodata.foto_profil
+                    );
+                    if (fs.existsSync(oldImagePath)) {
+                        fs.unlinkSync(oldImagePath);
+                    }
+                }
+            }
+
+            await investorBiodata.update({
+                nama_lengkap,
+                jk,
+                tempat_lahir,
+                tanggal_lahir,
+                no_hp,
+                foto_profil: nama_foto,
+            });
+
+            await investor.update({
+                kategori_investor,
+            });
+
+            res.status(200).json({
+                message: "Biodata investor berhasil diperbaharui",
+                data: { investorBiodata, investor },
+            });
+        }
+    } catch (error) {
+        if (error.name === "SequelizeValidationError") {
+            const messages = error.errors.map((err) => err.message);
+            res.status(400).json({
+                message: "Validation error",
+                errors: messages,
+            });
+        } else {
+            res.status(500).json({
+                message: "Internal server error",
+                error: error.message,
+            });
+        }
     }
 };
