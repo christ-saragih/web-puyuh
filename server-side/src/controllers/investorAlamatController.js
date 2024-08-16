@@ -1,4 +1,4 @@
-const { InvestorAlamat } = require("../models");
+const { InvestorAlamat, Investor } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
@@ -139,5 +139,63 @@ exports.delete = async (req, res) => {
             message: "Internal server error",
             error: error.message,
         });
+    }
+};
+
+// upsert
+exports.upsert = async (req, res) => {
+    try {
+        const { alamat, provinsi, kota, kecamatan, kelurahan, kode_pos } =
+            req.body;
+
+        const investorAlamat = await InvestorAlamat.findOne({
+            where: { investorId: req.investor.id },
+        });
+
+        if (!investorAlamat) {
+            const investorId = req.investor.id;
+
+            const investorAlamat = await InvestorAlamat.create({
+                investorId: investorId,
+                alamat,
+                provinsi,
+                kota,
+                kecamatan,
+                kelurahan,
+                kode_pos,
+            });
+
+            res.status(201).json({
+                message: "Alamat Investor Berhasil Ditambahkan!",
+                data: investorAlamat,
+            });
+        } else {
+            await investorAlamat.update({
+                alamat,
+                provinsi,
+                kota,
+                kecamatan,
+                kelurahan,
+                kode_pos,
+            });
+
+            res.status(200).json({
+                message: "Alamat Investor berhasil diperbaharui",
+                data: investorAlamat,
+            });
+        }
+    } catch (error) {
+        if (error.name === "SequelizeValidationError") {
+            const messages = error.errors.map((err) => err.message);
+            res.status(400).json({
+                message: "Validation error",
+                errors: messages,
+            });
+        } else {
+            res.status(500).json({
+                message: "Internal server error",
+                error: error.message,
+            });
+        }
     }
 };

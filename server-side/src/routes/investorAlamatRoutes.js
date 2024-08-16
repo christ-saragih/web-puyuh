@@ -10,12 +10,12 @@ const {
     updateSchema,
 } = require("../validators/investorAlamatValidation");
 
-router.post(
-    "/",
-    authenticateInvestorToken,
-    validate(createSchema),
-    investorAlamatController.create
-);
+// router.post(
+//     "/",
+//     authenticateInvestorToken,
+//     validate(createSchema),
+//     investorAlamatController.create
+// );
 router.put(
     "/:id",
     authenticateInvestorToken,
@@ -25,5 +25,12 @@ router.put(
 router.get("/", investorAlamatController.findAll);
 router.get("/:id", investorAlamatController.findOne);
 router.delete("/:id", investorAlamatController.delete);
+
+router.post(
+    "/",
+    authenticateInvestorToken,
+    validate(updateSchema),
+    investorAlamatController.upsert
+);
 
 module.exports = router;
