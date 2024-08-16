@@ -198,6 +198,7 @@ exports.login = async (req, res) => {
                 username: investor.username,
                 email: investor.email,
                 role: "investor",
+                kategori_investor: investor.kategori_investor,
             },
             process.env.ACCESS_SECRET_KEY,
             { expiresIn: "1d" } // Access token valid for 15 minutes
@@ -209,6 +210,7 @@ exports.login = async (req, res) => {
                 username: investor.username,
                 email: investor.email,
                 role: "investor",
+                kategori_investor: investor.kategori_investor,
             },
             process.env.REFRESH_SECRET_KEY,
             { expiresIn: "7d" } // Refresh token valid for 7 days
@@ -341,6 +343,7 @@ exports.refreshToken = async (req, res) => {
                 username: investor.username,
                 email: investor.email,
                 role: "investor",
+                kategori_investor: investor.kategori_investor,
             },
             process.env.ACCESS_SECRET_KEY,
             { expiresIn: "1d" }
