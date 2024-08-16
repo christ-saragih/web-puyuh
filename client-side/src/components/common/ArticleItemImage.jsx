@@ -2,12 +2,12 @@ const ArticleItemImage = (props) => {
   const { gambar } = props;
 
   return (
-    <div className="w-full xl:w-[30%] h-44 xl:h-auto rounded-xl overflow-hidden">
+    <div className="w-full xl:w-[30%] h-44 xl:h-auto xl:max-h-52 rounded-xl overflow-hidden">
       <img
-        // get gambar dari admin
-        // src={`http://localhost:3000/api/artikel/image/${gambar}`}
+        src={`http://localhost:3000/api/artikel/image/${gambar}`}
 
-        src={gambar}
+        // GET gambar dari seeder
+        // src={gambar}
         alt="Artikel"
         className="w-full h-full object-cover"
       />

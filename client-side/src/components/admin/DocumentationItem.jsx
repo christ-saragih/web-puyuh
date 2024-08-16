@@ -3,6 +3,9 @@ import ActionButton from "../common/ActionButton";
 
 const DocumentationItem = (props) => {
   const { id, nama, image, openModal } = props;
+
+  console.log(image);
+  
   return (
     <div className="bg-white flex gap-2 py-3 px-6 rounded-2xl shadow-lg flex-wrap justify-center">
       <h3 className="font-medium">{nama}</h3>
