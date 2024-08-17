@@ -43,3 +43,14 @@ export const updateArticle = (id, data, callback) => {
       console.log(err);
     });
 };
+
+export const deleteArticle = (id, callback) => {
+  axiosInstance
+    .delete(`/artikel/${id}`)
+    .then(() => {
+      callback();
+    })
+    .catch((err) => {
+      console.log(`Error deleting article with id: ${id}`, err);
+    });
+};

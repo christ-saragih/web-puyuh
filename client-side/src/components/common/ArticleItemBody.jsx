@@ -71,7 +71,7 @@ const ArticleItemBody = (props) => {
                 icon={PiTrashBold}
                 className={"text-red-600"}
                 tooltip={"Hapus"}
-                onClick={() => openModal("delete_article")}
+                onClick={() => openModal("delete_article", { id })}
               />
             </>
           ) : (

@@ -13,6 +13,7 @@ import {
   addArticle,
   getArticles,
   updateArticle,
+  deleteArticle,
 } from "../../services/article.service.js";
 import ArticleList from "../../components/common/ArticleList.jsx";
 import Modal from "../../components/common/Modal.jsx";
@@ -172,6 +173,15 @@ const AdminArtikel = () => {
     });
   };
 
+  const handleDeleteArticle = () => {
+    deleteArticle(selectedArticle.id, () => {
+      setArticles(
+        articles.filter((article) => article.id !== selectedArticle.id)
+      );
+      closeModal();
+    });
+  };
+
   // modal logic
   const openModal = (type, tag = null) => {
     setModalType(type);
@@ -179,6 +189,9 @@ const AdminArtikel = () => {
     if (type === "update_article_tag") {
       setSelectedTag(tag);
       setNewTag(tag.nama);
+    }
+    if (type === "delete_article_tag" && tag) {
+      setSelectedTag(tag);
     }
     if (type === "update_article" && tag) {
       setSelectedArticle(tag);
@@ -192,6 +205,9 @@ const AdminArtikel = () => {
       });
 
       setPreviewImage(`http://localhost:3000/api/artikel/image/${tag.gambar}`);
+    }
+    if (type === "delete_article" && tag) {
+      setSelectedArticle(tag);
     }
   };
 
@@ -562,6 +578,23 @@ const AdminArtikel = () => {
                             ? handleAddArticle
                             : handleUpdateArticle
                         }
+                        onClose={closeModal}
+                      />
+                    </>
+                  )}
+
+                  {modalType === "delete_article" && (
+                    <>
+                      <Modal.Header
+                        title="Hapus Artikel"
+                        onClose={closeModal}
+                      />
+                      <Modal.Body>
+                        <p>Apakah Anda yakin ingin menghapus artikel ini?</p>
+                      </Modal.Body>
+                      <Modal.Footer
+                        action="Hapus"
+                        onAction={handleDeleteArticle}
                         onClose={closeModal}
                       />
                     </>
