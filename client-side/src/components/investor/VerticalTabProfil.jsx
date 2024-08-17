@@ -28,6 +28,18 @@ const VerticalTabProfil = ({investors}) => {
     const [kecamatan, setKecamatan] = useState('');
     const [kelurahan, setKelurahan] = useState('');
     const [kodePos, setKodePos] = useState('');
+    // identitas
+    const [formDataIdentitas, setFormDataIdentitas] = useState({
+        no_ktp: "",
+        foto_ktp: null,
+        no_npwp: "",
+        foto_npwp: null,
+        selfie_ktp: null,
+      });
+    const [fotoKtpPreview, setFotoKtpPreview] = useState(null);
+    const [fotoNpwpPreview, setFotoNpwpPreview] = useState(null);
+    const [selfieKtpPreview, setSelfieKtpPreview] = useState(null);
+
     const [token, setToken] = useState('');
     const [email, setEmail] = useState('');
     const [expire, setExpire] = useState('');
@@ -145,6 +157,29 @@ const VerticalTabProfil = ({investors}) => {
         }
       }, []);
 
+      const handleChangeIdentitas = (e) => {
+        const { name, value, files } = e.target;
+      
+        if (files && files[0]) {
+          setFormDataIdentitas({ ...formDataIdentitas, [name]: files[0] });
+      
+          const reader = new FileReader();
+          reader.onload = () => {
+            if (name === 'foto_ktp') {
+              setFotoKtpPreview(reader.result);
+            } else if (name === 'foto_npwp') {
+              setFotoNpwpPreview(reader.result);
+            } else if (name === 'selfie_ktp') {
+              setSelfieKtpPreview(reader.result);
+            }
+          };
+          reader.readAsDataURL(files[0]);
+        } else {
+          setFormDataIdentitas({ ...formDataIdentitas, [name]: value });
+        }
+      };
+      
+
       const handleSubmitBiodata = async (e) => {
         e.preventDefault();
         try {
@@ -204,7 +239,43 @@ const VerticalTabProfil = ({investors}) => {
         }
       };
 
+      const handleSubmitIdentitas = async (e) => {
+        e.preventDefault();
       
+        const form = new FormData();
+        form.append("no_ktp", formDataIdentitas.no_ktp);
+        form.append("foto_ktp", formDataIdentitas.foto_ktp);
+        form.append("no_npwp", formDataIdentitas.no_npwp);
+        form.append("foto_npwp", formDataIdentitas.foto_npwp);
+        form.append("selfie_ktp", formDataIdentitas.selfie_ktp);
+      
+        try {
+          const { data } = await axiosJWT.post(
+            "http://localhost:3000/api/identitas-investor",
+            form,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log("Identitas Investor data:", data);
+      
+          // Simpan data form ke local storage
+        //   localStorage.setItem("formData", JSON.stringify({
+        //     no_ktp: noKtp,
+        //     foto_ktp: fotoKtp,
+        //     no_npwp: noNpwp,
+        //     foto_npwp: fotoNpwp,
+        //     selfie_ktp: selfieKtp,
+        //   }));
+      
+          // Handle success response
+        } catch (err) {
+          console.error("Error submitting data:", err.response ? err.response.data : err.message);
+        }
+      };
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -353,59 +424,148 @@ const VerticalTabProfil = ({investors}) => {
                         <h3 className="text-lg font-bold text-gray-900 mb-2">Identitas</h3>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor KTP</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="nomor-ktp-input" name="no_ktp" onChange={handleChangeIdentitas}className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
-                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Foto KTP</label>
+                            <label htmlFor="foto-ktp-input" className="block mb-2 text-sm font-medium text-gray-900">
+                                Foto KTP
+                            </label>
                             <div className="flex items-center justify-center w-full">
-                                <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <label htmlFor="foto-ktp-input" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                        </svg>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                    <svg
+                                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 20 16"
+                                    >
+                                        <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                        />
+                                    </svg>
+                                    {fotoKtpPreview ? (
+                                        <img
+                                        src={fotoKtpPreview}
+                                        alt="Pratinjau"
+                                        className="max-h-40 mb-2"
+                                        />
+                                    ) : (
+                                        <>
+                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                            <span className="font-semibold">
+                                            Klik untuk mengunggah
+                                            </span>{" "}
+                                            atau seret dan jatuhkan
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            SVG, PNG, JPG atau GIF (MAKS. 800x400px)
+                                        </p>
+                                        </>
+                                    )}
                                     </div>
-                                    <input id="dropzone-file" type="file" className="hidden" />
+                                    <input id="foto-ktp-input" name="foto_ktp" type="file" onChange={handleChangeIdentitas} className="hidden" />
                                 </label>
-                            </div> 
+                            </div>
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor NPWP</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="nomor-npwp-input" name="no_npwp" onChange={handleChangeIdentitas} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
-                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Foto NPWP</label>
+                            <label htmlFor="foto-npwp-input" className="block mb-2 text-sm font-medium text-gray-900">Foto NPWP</label>
                             <div className="flex items-center justify-center w-full">
-                                <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                        </svg>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                <label htmlFor="foto-npwp-input" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg
+                                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 20 16"
+                                    >
+                                        <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                        />
+                                    </svg>
+                                    {fotoNpwpPreview ? (
+                                        <img
+                                        src={fotoNpwpPreview}
+                                        alt="Pratinjau"
+                                        className="max-h-40 mb-2"
+                                        />
+                                    ) : (
+                                        <>
+                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                            <span className="font-semibold">
+                                            Klik untuk mengunggah
+                                            </span>{" "}
+                                            atau seret dan jatuhkan
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            SVG, PNG, JPG atau GIF (MAKS. 800x400px)
+                                        </p>
+                                        </>
+                                    )}
                                     </div>
-                                    <input id="dropzone-file" type="file" className="hidden" />
+                                    <input id="foto-npwp-input" name="foto_npwp" onChange={handleChangeIdentitas} type="file" className="hidden" />
                                 </label>
                             </div> 
                         </div>
                         <div className="mb-5">
-                            <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Foto Selfie dengan KTP</label>
+                            <label htmlFor="selfie-ktp-input" className="block mb-2 text-sm font-medium text-gray-900">Foto Selfie dengan KTP</label>
                             <div className="flex items-center justify-center w-full">
-                                <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                        </svg>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                <label htmlFor="selfie-ktp-input" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg
+                                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 20 16"
+                                    >
+                                        <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                        />
+                                    </svg>
+                                    {selfieKtpPreview ? (
+                                        <img
+                                        src={selfieKtpPreview}
+                                        alt="Pratinjau"
+                                        className="max-h-40 mb-2"
+                                        />
+                                    ) : (
+                                        <>
+                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                            <span className="font-semibold">
+                                            Klik untuk mengunggah
+                                            </span>{" "}
+                                            atau seret dan jatuhkan
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            SVG, PNG, JPG atau GIF (MAKS. 800x400px)
+                                        </p>
+                                        </>
+                                    )}
                                     </div>
-                                    <input id="dropzone-file" type="file" className="hidden" />
+                                    <input id="selfie-ktp-input" name="selfie_ktp" onChange={handleChangeIdentitas} type="file" className="hidden" />
                                 </label>
                             </div> 
                         </div>
                         <div className="flex justify-end">
-                            <button type="button" className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
+                            <button type="button" onClick={handleSubmitIdentitas} className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
                         </div>
                     </div>
                 );
