@@ -10,6 +10,21 @@ import { formatDate } from "../../utils/formatDate";
 import { Link } from "react-router-dom";
 import ActionButton from "./ActionButton";
 
+const extractFirstParagraph = (htmlString) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+  const firstParagraph = doc.querySelector("p");
+
+  return firstParagraph ? firstParagraph.textContent : "";
+};
+
+const truncateText = (text, maxLength) => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + "...";
+  }
+  return text;
+};
+
 const ArticleItemBody = (props) => {
   const {
     id,
@@ -24,13 +39,16 @@ const ArticleItemBody = (props) => {
     openModal,
   } = props;
 
+  const firstParagraphText = extractFirstParagraph(deskripsi);
+  const truncatedDeskripsi = truncateText(firstParagraphText, 180);
+
   return (
     <div className="flex flex-col w-full xl:w-[70%]">
       <div className="px-3 flex-grow">
         <h3 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 truncate">
           <Link to={`/artikel/${slug}`}>{judul}</Link>
         </h3>
-        <p>{deskripsi.substring(0, 180)}...</p>
+        <p>{truncatedDeskripsi}</p>
       </div>
 
       <div className="bg-[#F5F5F5] rounded-xl flex items-center px-3 py-2 mt-3 ">
