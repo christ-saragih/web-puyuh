@@ -23,7 +23,6 @@
   @apply mt-2 mb-4 text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
 }
 
-
 /* .input-error {
 } */
 
@@ -206,7 +205,7 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
 
 /* ADMIN: Start */
 .quill {
-  @apply border-2 rounded-2xl bg-gray-50 border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+  @apply border-2 rounded-2xl bg-gray-50 border-gray-300 shadow focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
 }
 
 .ql-toolbar {
@@ -216,7 +215,19 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
   border-bottom: 1px solid #d1d5db;
 }
 
+.ql-snow .ql-picker {
+  @apply font-quicksand;
+}
+
 .ql-container {
-  border: none !important;
+  @apply border-none h-28 !important;
+}
+
+.ql-editor {
+  @apply font-quicksand;
+}
+
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  @apply text-sm text-gray-500 not-italic content-['Masukkan_isi_artikel..'] !important;
 }
 /* ADMIN: End */

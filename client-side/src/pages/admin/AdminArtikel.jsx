@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../../components/common/Input.jsx";
 import InputSearch from "../../components/common/InputSearch.jsx";
 import Dropdown from "../../components/common/Dropdown.jsx";
@@ -121,10 +121,19 @@ const AdminArtikel = () => {
     });
   };
 
+  const handleArticleDescriptionChange = (value) => {
+    setFormArticle({
+      ...formArticle,
+      deskripsi: value,
+    });
+  };
+
   const articleTagSelected = formArticle.tags.map((tag) => ({
     value: tag.id,
     label: tag.nama,
   }));
+
+  const editorRef = useRef(null);
 
   const handleAddArticle = () => {
     const form = new FormData();
@@ -499,17 +508,16 @@ const AdminArtikel = () => {
                           </div>
                         </div>
                         <Label htmlFor={"deskripsi"} value={"Isi Artikel"} />
-                        <Input
-                          type={"text"}
-                          name={"deskripsi"}
-                          placeholder={"Masukkan deskripsi.."}
-                          variant={"primary-outline"}
-                          className={"mt-1 mb-4"}
+
+                        <ReactQuill
+                          theme="snow"
                           value={formArticle.deskripsi}
-                          handleChange={handleArticleInputChange}
+                          onChange={handleArticleDescriptionChange}
+                          className="mt-1 mb-4"
                         />
 
                         <Label htmlFor={"tanggal"} value={"Tanggal"} />
+
                         <input
                           type="date"
                           id="tanggal"
