@@ -11,9 +11,9 @@ export const getArticles = (callback) => {
     });
 };
 
-export const getArticleById = (id, callback) => {
+export const getArticleBySlug = (slug, callback) => {
   axiosInstance
-    .get(`/artikel/${id}`)
+    .get(`/artikel/${slug}`)
     .then((res) => {
       callback(res.data.data);
     })

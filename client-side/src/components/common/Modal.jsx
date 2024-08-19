@@ -65,12 +65,12 @@ const Body = (props) => {
 };
 
 const Footer = (props) => {
-  const { action, onClose, onAction } = props;
+  const { action, onClose, onAction, buttonLabel = "Batal" } = props;
   return (
     <div className="flex items-center p-4 md:px-5 md:pb-5 mt-5 justify-end">
       <Button
         variant={"primary-outline"}
-        value={"Batal"}
+        value={buttonLabel}
         onClick={onClose}
         className={"me-3"}
       />

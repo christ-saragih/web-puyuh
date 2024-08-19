@@ -4,7 +4,7 @@ import Navbar from "../../components/guest/Navbar";
 import GuestLayout from "../../layouts/GuestLayout";
 import Footer from "../../components/guest/Footer";
 import { LiaUserEditSolid } from "react-icons/lia";
-import { getArticleById } from "../../services/article.service";
+import { getArticleBySlug } from "../../services/article.service";
 import { formatDate } from "../../utils/formatDate";
 
 const ArticleDetail = () => {
@@ -12,7 +12,7 @@ const ArticleDetail = () => {
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
-    getArticleById(slug, (data) => {
+    getArticleBySlug(slug, (data) => {
       setArticle(data);
     });
   }, [slug]);
@@ -20,8 +20,6 @@ const ArticleDetail = () => {
   if (!article) {
     return <div>Data artikel tidak ditemukan!</div>;
   }
-
-  console.log(article);
 
   return (
     <>
@@ -38,6 +36,7 @@ const ArticleDetail = () => {
               </p>
               <p className="text-[#3E3232] opacity-90">
                 {formatDate(article.tanggal)}
+                {/* {article.tanggal} */}
               </p>
             </div>
           </div>
