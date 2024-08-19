@@ -31,6 +31,7 @@ import {
 } from "../../services/article-tag.service.js";
 import MultiSelect from "../../components/common/MultiSelect.jsx";
 import AdminLayout from "../../layouts/AdminLayout.jsx/index.jsx";
+import { LiaUserEditSolid } from "react-icons/lia";
 
 const AdminArtikel = () => {
   const [articles, setArticles] = useState([]);
@@ -591,6 +592,75 @@ const AdminArtikel = () => {
                       />
                       <Modal.Body>
                         <p>Apakah Anda yakin ingin menghapus artikel ini?</p>
+                      </Modal.Body>
+                      <Modal.Footer
+                        action="Hapus"
+                        onAction={handleDeleteArticle}
+                        onClose={closeModal}
+                      />
+                    </>
+                  )}
+
+                  {modalType === "detail_article" && (
+                    <>
+                      <Modal.Header
+                        title=""
+                        onClose={closeModal}
+                      />
+                      <Modal.Body>
+                        <div className="-mt-5">
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-[#F5F5F5] text-slate-800 p-2 rounded-full">
+                                <LiaUserEditSolid className="w-full h-full ml-[2px]" />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-xl text-[#3E3232]">
+                                  Bennefit Christy Saragih
+                                </p>
+                                <p className="text-[#3E3232] opacity-90">
+                                  19 Agustus 2024
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="mt-6 mb-5">
+                              <h2 className="font-bold text-3xl">
+                                Judul Artikel
+                              </h2>
+                            </div>
+
+                            <div className="flex gap-3">
+                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-32 max-w-fit px-2 rounded-3xl">
+                                #Investasi
+                              </div>
+                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-32 max-w-fit px-2 rounded-3xl">
+                                #Puyuh
+                              </div>
+                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-32 max-w-fit px-2 rounded-3xl">
+                                #CVSukaraja
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="px-10 h-[24rem] mt-9 mb-8">
+                            <img
+                              src={`http://localhost:3000/api/artikel/image/1724036160367-quail egg.jpg`}
+                              alt="Artikel"
+                              className="rounded-3xl w-full h-full object-cover"
+                            />
+                          </div>
+
+                          <div className="px-11 w-[100%]">
+                            <p>
+                              Lorem ipsum dolor sit amet consectetur adipisicing
+                              elit. Assumenda laboriosam fugiat quasi error,
+                              impedit corporis doloremque magni reiciendis
+                              sapiente! Consequatur maiores esse cupiditate ipsa
+                              odit iste ullam officia sequi dignissimos!
+                            </p>
+                          </div>
+                        </div>
                       </Modal.Body>
                       <Modal.Footer
                         action="Hapus"
