@@ -67,7 +67,7 @@ const ArticleItemBody = (props) => {
                 icon={PiEyeBold}
                 className={"text-blue-600"}
                 tooltip={"Detail"}
-                onClick={() => openModal("detail_article")}
+                onClick={() => openModal("detail_article", { slug })}
               />
               <ActionButton
                 icon={PiNotePencilBold}
