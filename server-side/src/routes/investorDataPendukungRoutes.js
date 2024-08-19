@@ -10,12 +10,12 @@ const {
     updateSchema,
 } = require("../validators/investorDataPendukungValidation");
 
-router.post(
-    "/",
-    authenticateInvestorToken,
-    validate(createSchema),
-    investorDataPendukungController.create
-);
+// router.post(
+//     "/",
+//     authenticateInvestorToken,
+//     validate(createSchema),
+//     investorDataPendukungController.create
+// );
 router.put(
     "/:id",
     authenticateInvestorToken,
@@ -25,5 +25,11 @@ router.put(
 router.get("/", investorDataPendukungController.findAll);
 router.get("/:id", investorDataPendukungController.findOne);
 router.delete("/:id", investorDataPendukungController.delete);
+router.post(
+    "/",
+    authenticateInvestorToken,
+    validate(updateSchema),
+    investorDataPendukungController.upsert
+);
 
 module.exports = router;

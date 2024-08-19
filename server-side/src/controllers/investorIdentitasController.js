@@ -346,10 +346,6 @@ exports.upsert = async (req, res) => {
             where: { investorId: req.investor.id },
         });
 
-        const investor = await Investor.findOne({
-            where: { id: req.investor.id },
-        });
-
         const foto_ktp =
             req.files && req.files.foto_ktp
                 ? req.files.foto_ktp[0].buffer

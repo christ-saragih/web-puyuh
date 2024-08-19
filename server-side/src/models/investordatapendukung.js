@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             tanggal_pembuatan_sid: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Tanggal tidak boleh null!" },
