@@ -205,14 +205,11 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
 
 /* ADMIN: Start */
 .quill {
-  @apply border-2 rounded-2xl bg-gray-50 border-gray-300 shadow focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+  @apply border-2 rounded-2xl mt-2 mb-4 bg-gray-50 border-gray-300 shadow;
 }
 
 .ql-toolbar {
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: 1px solid #d1d5db;
+  @apply border-x-0 border-t-0 border-b-[#d1d5db] !important;
 }
 
 .ql-snow .ql-picker {
