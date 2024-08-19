@@ -470,24 +470,25 @@ const AdminArtikel = () => {
                           name={"judul"}
                           placeholder={"Masukkan judul artikel.."}
                           variant={"primary-outline"}
-                          className={"mt-1 mb-4"}
                           value={formArticle.judul}
                           handleChange={handleArticleInputChange}
                         />
+                        <Label htmlFor={"penulis"} value={"Nama Penulis"} />
+                        <Input
+                          type={"text"}
+                          name={"penulis"}
+                          placeholder={"Masukkan nama penulis.."}
+                          variant={"primary-outline"}
+                          value={formArticle.penulis}
+                          handleChange={handleArticleInputChange}
+                        />
+                        <Label htmlFor={"deskripsi"} value={"Isi Artikel"} />
+                        <ReactQuill
+                          theme="snow"
+                          value={formArticle.deskripsi}
+                          onChange={handleArticleDescriptionChange}
+                        />
                         <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor={"penulis"} value={"Nama Penulis"} />
-                            <Input
-                              type={"text"}
-                              name={"penulis"}
-                              placeholder={"Masukkan nama penulis.."}
-                              variant={"primary-outline"}
-                              className={"mt-1 mb-4"}
-                              value={formArticle.penulis}
-                              handleChange={handleArticleInputChange}
-                            />
-                          </div>
-
                           <div>
                             <Label htmlFor={"tags"} value={"Tag Artikel"} />
                             <MultiSelect
@@ -506,26 +507,17 @@ const AdminArtikel = () => {
                               }
                             />
                           </div>
+                          <div>
+                            <Label htmlFor={"tanggal"} value={"Tanggal"} />
+                            <Input
+                              type={"date"}
+                              name={"tanggal"}
+                              variant={"primary-outline"}
+                              value={formArticle.tanggal}
+                              handleChange={handleArticleInputChange}
+                            />
+                          </div>
                         </div>
-                        <Label htmlFor={"deskripsi"} value={"Isi Artikel"} />
-
-                        <ReactQuill
-                          theme="snow"
-                          value={formArticle.deskripsi}
-                          onChange={handleArticleDescriptionChange}
-                          className="mt-1 mb-4"
-                        />
-
-                        <Label htmlFor={"tanggal"} value={"Tanggal"} />
-
-                        <input
-                          type="date"
-                          id="tanggal"
-                          name="tanggal"
-                          defaultValue={formArticle.tanggal}
-                          placeholder="Masukkan tanggal.."
-                          onChange={handleArticleInputChange}
-                        />
 
                         <Label htmlFor={"image"} value={"Gambar"} />
                         <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">

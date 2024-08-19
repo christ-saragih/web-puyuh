@@ -66,9 +66,8 @@ const ArticleDetail = () => {
           />
         </div>
 
-        <div className="max-w-3xl mx-auto">
-          <h3 className="text-2xl mb-4 font-semibold">{article.tag}</h3>
-          <p>{article.deskripsi}</p>
+        <div className="format max-w-3xl mx-auto">
+          <p dangerouslySetInnerHTML={{ __html: article.deskripsi }}></p>
         </div>
       </GuestLayout>
 

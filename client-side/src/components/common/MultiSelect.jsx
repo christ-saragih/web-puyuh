@@ -22,7 +22,7 @@ const MultiSelect = (props) => {
     <Select
       id={name}
       name={name}
-      className="mt-1"
+      className="mt-2"
       closeMenuOnSelect={false}
       components={animatedComponents}
       isMulti
