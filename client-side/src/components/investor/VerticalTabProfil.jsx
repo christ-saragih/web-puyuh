@@ -39,7 +39,16 @@ const VerticalTabProfil = ({investors}) => {
     const [fotoKtpPreview, setFotoKtpPreview] = useState(null);
     const [fotoNpwpPreview, setFotoNpwpPreview] = useState(null);
     const [selfieKtpPreview, setSelfieKtpPreview] = useState(null);
-
+    // pendukung
+    const [formDataPendukung, setFormDataPendukung] = useState({
+        latar_pendidikan: "",
+        sumber_penghasilan: "",
+        jumlah_penghasilan: "",
+        bidang_usaha: "",
+        tujuan_investasi: "",
+        no_sid: "",
+        tanggal_pembuatan_sid: "",
+    });
     const [token, setToken] = useState('');
     const [email, setEmail] = useState('');
     const [expire, setExpire] = useState('');
@@ -178,6 +187,11 @@ const VerticalTabProfil = ({investors}) => {
           setFormDataIdentitas({ ...formDataIdentitas, [name]: value });
         }
       };
+
+      const handleChangePendukung = (e) => {
+        const { name, value } = e.target;
+        setFormDataPendukung({ ...formDataPendukung, [name]: value });
+      };
       
 
       const handleSubmitBiodata = async (e) => {
@@ -241,7 +255,9 @@ const VerticalTabProfil = ({investors}) => {
 
       const handleSubmitIdentitas = async (e) => {
         e.preventDefault();
-      
+       
+        console.log(formDataIdentitas);
+        
         const form = new FormData();
         form.append("no_ktp", formDataIdentitas.no_ktp);
         form.append("foto_ktp", formDataIdentitas.foto_ktp);
@@ -249,6 +265,9 @@ const VerticalTabProfil = ({investors}) => {
         form.append("foto_npwp", formDataIdentitas.foto_npwp);
         form.append("selfie_ktp", formDataIdentitas.selfie_ktp);
       
+        // console.log(form);
+        
+
         try {
           const { data } = await axiosJWT.post(
             "http://localhost:3000/api/identitas-investor",
@@ -276,6 +295,53 @@ const VerticalTabProfil = ({investors}) => {
           console.error("Error submitting data:", err.response ? err.response.data : err.message);
         }
       };
+
+      const handleSubmitPendukung = async (e) => {
+        e.preventDefault();
+
+        console.log(formDataPendukung);
+        
+      
+        const form = new FormData();
+        form.append("latar_pendidikan", formDataPendukung.latar_pendidikan);
+        form.append("sumber_penghasilan", formDataPendukung.sumber_penghasilan);
+        form.append("jumlah_penghasilan", formDataPendukung.jumlah_penghasilan);
+        form.append("bidang_usaha", formDataPendukung.bidang_usaha);
+        form.append("tujuan_investasi", formDataPendukung.tujuan_investasi);
+        form.append("no_sid", formDataPendukung.no_sid);
+        form.append("tanggal_pembuatan_sid", formDataPendukung.tanggal_pembuatan_sid);
+      
+        // console.log(form);
+        
+
+        try {
+            const response = await axiosJWT.post(
+              "http://localhost:3000/api/data-pendukung-investor",
+              form,
+            //   {
+            //     latar_pendidikan: formDataPendukung.latar_pendidikan,
+            //     sumber_penghasilan: formDataPendukung.sumber_penghasilan,
+            //     jumlah_penghasilan: formDataPendukung.jumlah_penghasilan,
+            //     bidang_usaha: formDataPendukung.bidang_usaha,
+            //     tujuan_investasi: formDataPendukung.tujuan_investasi,
+            //     no_sid: formDataPendukung.no_sid,
+            //     tanggal_pembuatan_sid: formDataPendukung.tanggal_pembuatan_sid
+            //   },
+              {
+                headers: {
+                "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+        
+            console.log("Response:", response.data);
+          } catch (err) {
+            console.error("Error submitting data:", err.response ? err.response.data : err.message);
+          }
+      };
+
+
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -575,34 +641,89 @@ const VerticalTabProfil = ({investors}) => {
                         <h3 className="text-lg font-bold text-gray-900 mb-2">Pendukung</h3>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Latar Belakang Pendidikan</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="text" 
+                                id="latar-pendidikan-input" 
+                                name="latar_pendidikan" 
+                                // value={formDataPendukung.latar_pendidikan} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Sumber Penghasilan</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="text" 
+                                id="sumber-penghasilan-input" 
+                                name="sumber_penghasilan" 
+                                // value={formDataPendukung.sumber_penghasilan} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Jumlah Penghasilan</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="text" 
+                                id="jumlah-penghasilan-input" 
+                                name="jumlah_penghasilan" 
+                                // value={formDataPendukung.jumlah_penghasilan} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Bidang Usaha</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="text" 
+                                id="bidang-usaha-input" 
+                                name="bidang_usaha" 
+                                // value={formDataPendukung.bidang_usaha} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Tujuan Investasi</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="text" 
+                                id="tujuan-investasi-input" 
+                                name="tujuan_investasi" 
+                                // value={formDataPendukung.tujuan_investasi} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor SID</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="text" 
+                                id="no-sid-input" 
+                                name="no_sid" 
+                                // value={formDataPendukung.no_sid} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Tanggal Pembuatan SID</label>
-                            <input type="text" id="base-input" className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input 
+                                type="date" 
+                                id="tanggal-pembuatan-sid-input" 
+                                name="tanggal_pembuatan_sid" 
+                                // value={formDataPendukung.tanggal_pembuatan_sid || ''} 
+                                onChange={handleChangePendukung} 
+                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
+                            />
                         </div>
                         <div className="flex justify-end">
-                            <button type="button" className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Simpan</button>
+                            <button 
+                                type="button" 
+                                onClick={handleSubmitPendukung} 
+                                className="text-white bg-[#572618] hover:bg-orange-950 focus:ring-4 focus:ring-orange-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                            >
+                                Simpan
+                            </button>
                         </div>
                     </div>
                 );
