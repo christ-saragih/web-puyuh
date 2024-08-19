@@ -35,7 +35,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             tanggal_pembuatan_sid: {
-                type: Sequelize.DATE,
+                type: Sequelize.DATEONLY,
             },
             createdAt: {
                 allowNull: false,
