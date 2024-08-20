@@ -36,7 +36,6 @@ const ArticleDetail = () => {
               </p>
               <p className="text-[#3E3232] opacity-90">
                 {formatDate(article.tanggal)}
-                {/* {article.tanggal} */}
               </p>
             </div>
           </div>
