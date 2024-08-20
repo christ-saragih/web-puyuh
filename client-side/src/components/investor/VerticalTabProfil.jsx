@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 
-const VerticalTabProfil = ({investors}) => {
+const VerticalTabProfil = ({investors, investorbiodata}) => {
     const [activeTab, setActiveTab] = useState('Biodata');
     const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -119,6 +119,8 @@ const VerticalTabProfil = ({investors}) => {
         setIsCategoryDropdownOpen(false);
     };
 
+    
+    
 
     useEffect(() => {
         if (investors && investors.kategori_investor) {
@@ -136,6 +138,9 @@ const VerticalTabProfil = ({investors}) => {
             }
         }
     }, [investors]);
+
+   
+    
 
     const handleNamaLengkapChange = (e) => {
         setNamaLengkap(e.target.value);
@@ -155,14 +160,41 @@ const VerticalTabProfil = ({investors}) => {
       const axiosJWT = axios.create();
 
       useEffect(() => {
-        const storedData = localStorage.getItem('formData');
-        if (storedData) {
-          const data = JSON.parse(storedData);
+        const storedDataBiodata = localStorage.getItem('formDataBiodata');
+        if (storedDataBiodata) {
+          const data = JSON.parse(storedDataBiodata);
           setNamaLengkap(data.nama_lengkap);
           setJk(data.jk);
           setTempatLahir(data.tempat_lahir);
           setTanggalLahir(data.tanggal_lahir);
           setNoHp(data.no_hp);
+        }
+      }, []);
+
+      useEffect(() => {
+        const storedDataAlamat = localStorage.getItem('formDataAlamat');
+        if (storedDataAlamat) {
+          const data = JSON.parse(storedDataAlamat);
+          setAlamat(data.alamat);
+          setProvinsi(data.provinsi);
+          setKota(data.kota);
+          setKecamatan(data.kecamatan);
+          setKelurahan(data.kelurahan);
+          setKodePos(data.kode_pos);
+        }
+      }, []);
+
+      useEffect(() => {
+        const savedFormDataIdentitas = localStorage.getItem('formDataIdentitas');
+        if (savedFormDataIdentitas) {
+          setFormDataIdentitas(JSON.parse(savedFormDataIdentitas));
+        }
+      }, []);
+
+      useEffect(() => {
+        const savedFormDataPendukung = localStorage.getItem('formDataPendukung');
+        if (savedFormDataPendukung) {
+          setFormDataPendukung(JSON.parse(savedFormDataPendukung));
         }
       }, []);
 
@@ -197,16 +229,17 @@ const VerticalTabProfil = ({investors}) => {
       const handleSubmitBiodata = async (e) => {
         e.preventDefault();
         try {
-          const dataToSend = {
+          const dataBiodataToSend = {
             nama_lengkap: namaLengkap,
             jk: jk,
             tempat_lahir: tempatLahir,
             tanggal_lahir: tanggalLahir,
             no_hp: noHp,
+            kategori_investor: kategoriInvestor,
           };
-          console.log(dataToSend);
+          console.log(dataBiodataToSend);
       
-          const response = await axiosJWT.post(`http://localhost:3000/api/biodata-investor`, dataToSend, {
+          const response = await axiosJWT.post(`http://localhost:3000/api/biodata-investor`, dataBiodataToSend, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -214,7 +247,7 @@ const VerticalTabProfil = ({investors}) => {
           console.log(response.data);
       
           // Store form data in local storage
-          localStorage.setItem('formData', JSON.stringify(dataToSend));
+          localStorage.setItem('formDataBiodata', JSON.stringify(dataBiodataToSend));
       
           // Handle success response
         } catch (error) {
@@ -226,7 +259,7 @@ const VerticalTabProfil = ({investors}) => {
       const handleSubmitAlamat = async (e) => {
         e.preventDefault();
         try {
-          const dataToSend = {
+          const dataAlamatToSend = {
             alamat: alamat,
             provinsi: provinsi,
             kota: kota,
@@ -234,9 +267,9 @@ const VerticalTabProfil = ({investors}) => {
             kelurahan: kelurahan,
             kode_pos: kodePos,
           };
-          console.log(dataToSend);
+          console.log(dataAlamatToSend);
       
-          const response = await axiosJWT.post(`http://localhost:3000/api/alamat-investor`, dataToSend, {
+          const response = await axiosJWT.post(`http://localhost:3000/api/alamat-investor`, dataAlamatToSend, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -244,7 +277,7 @@ const VerticalTabProfil = ({investors}) => {
           console.log(response.data);
       
           // Store form data in local storage
-          localStorage.setItem('formData', JSON.stringify(dataToSend));
+          localStorage.setItem('formDataAlamat', JSON.stringify(dataAlamatToSend));
       
           // Handle success response
         } catch (error) {
@@ -281,14 +314,14 @@ const VerticalTabProfil = ({investors}) => {
           );
           console.log("Identitas Investor data:", data);
       
-          // Simpan data form ke local storage
-        //   localStorage.setItem("formData", JSON.stringify({
-        //     no_ktp: noKtp,
-        //     foto_ktp: fotoKtp,
-        //     no_npwp: noNpwp,
-        //     foto_npwp: fotoNpwp,
-        //     selfie_ktp: selfieKtp,
-        //   }));
+          // Simpan data form di local storage
+        localStorage.setItem('formDataIdentitas', JSON.stringify({
+        no_ktp: formDataIdentitas.no_ktp,
+        no_npwp: formDataIdentitas.no_npwp,
+        foto_ktp: formDataIdentitas.foto_ktp,
+        foto_npwp: formDataIdentitas.foto_npwp,
+        selfie_ktp: formDataIdentitas.selfie_ktp
+      }));
       
           // Handle success response
         } catch (err) {
@@ -334,6 +367,18 @@ const VerticalTabProfil = ({investors}) => {
                 },
               }
             );
+
+              // Simpan data form di local storage
+            localStorage.setItem('formDataPendukung', JSON.stringify({
+                latar_pendidikan: formDataPendukung.latar_pendidikan,
+                sumber_penghasilan: formDataPendukung.sumber_penghasilan,
+                jumlah_penghasilan: formDataPendukung.jumlah_penghasilan,
+                bidang_usaha: formDataPendukung.bidang_usaha,
+                tujuan_investasi: formDataPendukung.tujuan_investasi,
+                no_sid: formDataPendukung.no_sid,
+                tanggal_pembuatan_sid: formDataPendukung.tanggal_pembuatan_sid
+
+          }));
         
             console.log("Response:", response.data);
           } catch (err) {
@@ -490,7 +535,7 @@ const VerticalTabProfil = ({investors}) => {
                         <h3 className="text-lg font-bold text-gray-900 mb-2">Identitas</h3>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor KTP</label>
-                            <input type="text" id="nomor-ktp-input" name="no_ktp" onChange={handleChangeIdentitas}className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="nomor-ktp-input" name="no_ktp" value={formDataIdentitas.no_ktp} onChange={handleChangeIdentitas}className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="foto-ktp-input" className="block mb-2 text-sm font-medium text-gray-900">
@@ -534,13 +579,13 @@ const VerticalTabProfil = ({investors}) => {
                                         </>
                                     )}
                                     </div>
-                                    <input id="foto-ktp-input" name="foto_ktp" type="file" onChange={handleChangeIdentitas} className="hidden" />
+                                    <input id="foto-ktp-input" name="foto_ktp"  type="file" onChange={handleChangeIdentitas} className="hidden" />
                                 </label>
                             </div>
                         </div>
                         <div className="mb-5">
                             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900">Nomor NPWP</label>
-                            <input type="text" id="nomor-npwp-input" name="no_npwp" onChange={handleChangeIdentitas} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
+                            <input type="text" id="nomor-npwp-input" name="no_npwp" value={formDataIdentitas.no_npwp} onChange={handleChangeIdentitas} className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 " />
                         </div>
                         <div className="mb-5">
                             <label htmlFor="foto-npwp-input" className="block mb-2 text-sm font-medium text-gray-900">Foto NPWP</label>
@@ -582,7 +627,7 @@ const VerticalTabProfil = ({investors}) => {
                                         </>
                                     )}
                                     </div>
-                                    <input id="foto-npwp-input" name="foto_npwp" onChange={handleChangeIdentitas} type="file" className="hidden" />
+                                    <input id="foto-npwp-input" name="foto_npwp"  onChange={handleChangeIdentitas} type="file" className="hidden" />
                                 </label>
                             </div> 
                         </div>
@@ -645,7 +690,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="text" 
                                 id="latar-pendidikan-input" 
                                 name="latar_pendidikan" 
-                                // value={formDataPendukung.latar_pendidikan} 
+                                value={formDataPendukung.latar_pendidikan} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
@@ -656,7 +701,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="text" 
                                 id="sumber-penghasilan-input" 
                                 name="sumber_penghasilan" 
-                                // value={formDataPendukung.sumber_penghasilan} 
+                                value={formDataPendukung.sumber_penghasilan} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
@@ -667,7 +712,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="text" 
                                 id="jumlah-penghasilan-input" 
                                 name="jumlah_penghasilan" 
-                                // value={formDataPendukung.jumlah_penghasilan} 
+                                value={formDataPendukung.jumlah_penghasilan} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
@@ -678,7 +723,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="text" 
                                 id="bidang-usaha-input" 
                                 name="bidang_usaha" 
-                                // value={formDataPendukung.bidang_usaha} 
+                                value={formDataPendukung.bidang_usaha} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
@@ -689,7 +734,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="text" 
                                 id="tujuan-investasi-input" 
                                 name="tujuan_investasi" 
-                                // value={formDataPendukung.tujuan_investasi} 
+                                value={formDataPendukung.tujuan_investasi} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
@@ -700,7 +745,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="text" 
                                 id="no-sid-input" 
                                 name="no_sid" 
-                                // value={formDataPendukung.no_sid} 
+                                value={formDataPendukung.no_sid} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
@@ -711,7 +756,7 @@ const VerticalTabProfil = ({investors}) => {
                                 type="date" 
                                 id="tanggal-pembuatan-sid-input" 
                                 name="tanggal_pembuatan_sid" 
-                                // value={formDataPendukung.tanggal_pembuatan_sid || ''} 
+                                value={formDataPendukung.tanggal_pembuatan_sid || ''} 
                                 onChange={handleChangePendukung} 
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900" 
                             />
