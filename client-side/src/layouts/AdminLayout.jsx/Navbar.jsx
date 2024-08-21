@@ -2,7 +2,7 @@ import { LiaAngleDownSolid } from "react-icons/lia";
 import Admin from "../../assets/images/admin.svg";
 
 const Navbar = (props) => {
-  const { title } = props;
+  const { title, username, email } = props;
   return (
     <nav className=" bg-[#F5F5F7] rounded-2xl shadow-md">
       <div className="w-full flex flex-wrap justify-between items-center py-4 px-6">
@@ -110,10 +110,10 @@ const Navbar = (props) => {
           <img src={Admin} alt="" className="w-12 h-12" />
           <div>
             <p className="font-poppins font-medium text-lg text-black">
-              Bennefit Christy
+              {username}
             </p>
             <p className="font-poppins text-slate-700">
-              bennefit.christy@admin.com
+              {email}
             </p>
           </div>
           <svg

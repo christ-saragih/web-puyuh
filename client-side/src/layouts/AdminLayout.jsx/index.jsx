@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
 const AdminLayout = (props) => {
-  const { title, children } = props;
+  const { title, username, email, children } = props;
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -13,7 +13,7 @@ const AdminLayout = (props) => {
 
       <AdminContentLayout isHovered={isHovered} setIsHovered={setIsHovered}>
         <div className="flex flex-col gap-8">
-          <Navbar title={title} />
+          <Navbar title={title} username={username} email={email} />
           {children}
         </div>
       </AdminContentLayout>
