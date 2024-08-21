@@ -13,14 +13,20 @@ const {
     registrasiSchema,
     loginSchema,
 } = require("../validators/authAdminValidation");
+const authorizeRole = require("../middleware/authorizeRole");
 
 router.post("/regis", validate(registrasiSchema), authAdminController.register);
 router.post("/login", validate(loginSchema), authAdminController.login);
 router.post("/logout", logoutAdmin);
 // Protected route
-router.get("/protected", authenticateAdminToken, (req, res) => {
-    res.json({ message: "This is a protected route", admin: req.admin });
-});
+router.get(
+    "/protected",
+    authenticateAdminToken,
+    authorizeRole("admin"),
+    (req, res) => {
+        res.json({ message: "This is a protected route", admin: req.admin });
+    }
+);
 
 // router.get("/protected", authenticateToken, authAdminController.protected);
 router.post(
