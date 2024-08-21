@@ -15,6 +15,9 @@ exports.create = async (req, res) => {
     try {
         const {
             judul,
+            deskripsi,
+            alamat,
+            url_map,
             penerbit,
             penggunaan_dana,
             bagi_hasil,
@@ -33,6 +36,9 @@ exports.create = async (req, res) => {
         if (
             gambar &&
             judul &&
+            deskripsi &&
+            alamat &&
+            url_map &&
             penerbit &&
             penggunaan_dana &&
             bagi_hasil &&
@@ -53,6 +59,9 @@ exports.create = async (req, res) => {
         const investasi = await Investasi.create({
             adminId: adminId,
             judul,
+            deskripsi,
+            alamat,
+            url_map,
             gambar: gambar_name,
             slug: slugify(judul, { replacement: "-", lower: true }),
             penerbit,
@@ -148,6 +157,9 @@ exports.update = async (req, res) => {
     try {
         const {
             judul,
+            deskripsi,
+            alamat,
+            url_map,
             penerbit,
             penggunaan_dana,
             bagi_hasil,
@@ -185,6 +197,9 @@ exports.update = async (req, res) => {
         await investasi.update({
             adminId: adminId,
             judul,
+            deskripsi,
+            alamat,
+            url_map,
             gambar: gambar_name,
             slug: slugify(judul, { replacement: "-", lower: true }),
             penerbit,

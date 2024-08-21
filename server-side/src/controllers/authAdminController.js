@@ -103,7 +103,7 @@ exports.login = async (req, res) => {
 
         // Simpan token dalam session dan cookie
         req.session.admin = admin;
-        res.cookie("token", accessToken, { httpOnly: true });
+        res.cookie("accessToken", accessToken, { httpOnly: true });
         res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
         res.json({ message: "Login successful", accessToken, refreshToken });
@@ -123,7 +123,7 @@ exports.login = async (req, res) => {
 
 // Logout
 exports.logout = (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     req.session.destroy((err) => {
         if (err) {
@@ -165,7 +165,7 @@ exports.refreshToken = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        res.cookie("token", newAccessToken, { httpOnly: true });
+        res.cookie("accessToken", newAccessToken, { httpOnly: true });
         res.json({
             message: "Access token refreshed",
             accessToken: newAccessToken,

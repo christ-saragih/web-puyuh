@@ -29,8 +29,32 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: { msg: "Judul tidak boleh kosong!" },
                 },
             },
+            deskripsi: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Deskripsi tidak boleh null!" },
+                    notEmpty: { msg: "Deskripsi tidak boleh kosong!" },
+                },
+            },
             gambar: {
                 type: DataTypes.STRING,
+            },
+            alamat: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Alamat tidak boleh null!" },
+                    notEmpty: { msg: "Alamat tidak boleh kosong!" },
+                },
+            },
+            url_map: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Url Map tidak boleh null!" },
+                    notEmpty: { msg: "Url Map tidak boleh kosong!" },
+                },
             },
             slug: {
                 type: DataTypes.STRING,
@@ -80,7 +104,7 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: { msg: "Maksimum Investasi tidak boleh kosong!" },
                 },
             },
-            total_pendanaan: {
+            target_pendanaan: {
                 type: DataTypes.BIGINT,
             },
             tenor: {

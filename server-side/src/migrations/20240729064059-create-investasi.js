@@ -19,8 +19,17 @@ module.exports = {
             judul: {
                 type: Sequelize.STRING,
             },
+            deskripsi: {
+                type: Sequelize.TEXT,
+            },
             gambar: {
                 type: Sequelize.STRING,
+            },
+            alamat: {
+                type: Sequelize.TEXT,
+            },
+            url_map: {
+                type: Sequelize.TEXT,
             },
             slug: {
                 type: Sequelize.STRING,
@@ -40,7 +49,7 @@ module.exports = {
             maksimum_investasi: {
                 type: Sequelize.BIGINT,
             },
-            total_pendanaan: {
+            target_pendanaan: {
                 type: Sequelize.BIGINT,
             },
             tenor: {
