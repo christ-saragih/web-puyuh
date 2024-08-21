@@ -1,15 +1,17 @@
 import Admin from "../../assets/images/admin.svg";
 import { Dropdown } from "flowbite-react";
 import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
+import { useLoginAdmin } from "../../hooks/useLoginAdmin";
 
 const Navbar = (props) => {
-  const { title, username, email } = props;
+  const { title } = props;
+  const dataAdmin = useLoginAdmin();
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     window.location.href = "/admin/masuk";
   };
-  
+
   return (
     <nav className=" bg-[#F5F5F7] rounded-2xl shadow-md">
       <div className="w-full flex flex-wrap justify-between items-center py-4 px-6">
@@ -117,9 +119,9 @@ const Navbar = (props) => {
           <img src={Admin} alt="" className="w-12 h-12" />
           <div>
             <p className="font-poppins font-medium text-lg text-black">
-              {username}
+              {dataAdmin.username}
             </p>
-            <p className="font-poppins text-slate-700">{email}</p>
+            <p className="font-poppins text-slate-700">{dataAdmin.email}</p>
           </div>
           <Dropdown
             label=""
