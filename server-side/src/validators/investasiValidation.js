@@ -6,6 +6,21 @@ const createSchema = [
         .withMessage("Judul tidak boleh kosong!")
         .isString()
         .withMessage("Judul harus berupa string!"),
+    check("deskripsi")
+        .notEmpty()
+        .withMessage("Dekripsi tidak boleh kosong!")
+        .isString()
+        .withMessage("Dekripsi harus berupa string!"),
+    check("alamat")
+        .notEmpty()
+        .withMessage("Alamat tidak boleh kosong!")
+        .isString()
+        .withMessage("Alamat harus berupa string!"),
+    check("url_map")
+        .notEmpty()
+        .withMessage("Url Map tidak boleh kosong!")
+        .isString()
+        .withMessage("Url Map harus berupa string!"),
     check("penerbit")
         .notEmpty()
         .withMessage("Penerbit tidak boleh kosong!")
@@ -62,6 +77,9 @@ const createSchema = [
 
 const updateSchema = [
     check("judul").isString().withMessage("Judul harus berupa string!"),
+    check("deskripsi").isString().withMessage("Deskripsi harus berupa string!"),
+    check("alamat").isString().withMessage("Alamat harus berupa string!"),
+    check("url_map").isString().withMessage("Url Map harus berupa string!"),
     check("penerbit").isString().withMessage("Penerbit harus berupa string!"),
     check("penggunaan_dana")
         .isString()
