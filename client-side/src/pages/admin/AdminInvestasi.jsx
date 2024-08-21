@@ -275,7 +275,6 @@ const AdminInvestasi = () => {
 
                     <div className="absolute top-[3px] right-0 cursor-pointer">
                       <Dropdown
-                        className="bg-white w-28 rounded-xl shadow font-semibold overflow-hidden"
                         label=""
                         dismissOnClick={false}
                         renderTrigger={() => (
