@@ -1,27 +1,10 @@
-import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout.jsx";
-import { getDataAdmin } from "../../services/authAdmin.service.js";
 
 const AdminDashboard = () => {
-  const [dataAdmin, setDataAdmin] = useState({
-    username: "",
-    email: "",
-  });
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      setDataAdmin(getDataAdmin(accessToken));
-    } else {
-      window.location.href = "/admin/masuk";
-    }
-  }, []);
 
   return (
     <AdminLayout
       title={"Halaman Beranda"}
-      username={dataAdmin.username}
-      email={dataAdmin.email}
     >
       <div className="flex gap-10">
         <div className="bg-[#F5F5F7] w-[65%] rounded-xl py-4 px-6">

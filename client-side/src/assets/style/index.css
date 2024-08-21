@@ -204,6 +204,18 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
 /* GUEST: End */
 
 /* ADMIN: Start */
+/* dropdown */
+div[data-testid="flowbite-dropdown"] {
+  @apply bg-white w-32 rounded-xl shadow font-semibold overflow-hidden
+}
+li[role="menuitem"] button {
+  @apply text-base;
+}
+
+li[role="menuitem"] button svg {
+  @apply w-5 h-5 mr-3;
+}
+
 .quill {
   @apply border-2 rounded-2xl mt-2 mb-4 bg-gray-50 border-gray-300 shadow;
 }
