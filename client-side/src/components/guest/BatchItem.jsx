@@ -52,7 +52,9 @@ const BatchItem = ({id, judul, deskripsi, gambar, alamat, map, slug, penerbit, d
           titlePenutupan={"Tanggal Penutupan"}
           valuePenutupan={penutupan}
         />
-        <BatchItemBody.BatchItemButton />
+        <BatchItemBody.BatchItemButton 
+          slug={slug}
+        />
       </BatchItemBody>
     </div>
 

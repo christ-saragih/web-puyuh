@@ -56,7 +56,7 @@ const router = createBrowserRouter([
     element: <Investasi />,
   },
   {
-    path: "/investasi/:id",
+    path: "/investasi/:slug",
     element: <DetailInvestasi />,
   },
   {
