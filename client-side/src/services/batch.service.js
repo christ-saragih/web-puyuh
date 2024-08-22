@@ -12,3 +12,14 @@ export const getBatchs = (callback) => {
         console.log(err);
       });
   };
+
+  export const getDetailInvestasiBySlug = (slug, callback) => {
+    axiosInstance
+      .get(`/investasi/${slug}`)
+      .then((res) => {
+        callback(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
