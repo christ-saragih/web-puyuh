@@ -49,6 +49,9 @@ module.exports = {
             maksimum_investasi: {
                 type: Sequelize.BIGINT,
             },
+            total_pendanaan: {
+                type: Sequelize.BIGINT,
+            },
             target_pendanaan: {
                 type: Sequelize.BIGINT,
             },

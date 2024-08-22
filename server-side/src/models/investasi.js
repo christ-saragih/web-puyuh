@@ -104,8 +104,16 @@ module.exports = (sequelize, DataTypes) => {
                     notEmpty: { msg: "Maksimum Investasi tidak boleh kosong!" },
                 },
             },
+            total_pendanaan: {
+                type: DataTypes.BIGINT,
+            },
             target_pendanaan: {
                 type: DataTypes.BIGINT,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Total Pendanaan tidak boleh null!" },
+                    notEmpty: { msg: "Total Pendanaan tidak boleh kosong!" },
+                },
             },
             tenor: {
                 type: DataTypes.STRING,

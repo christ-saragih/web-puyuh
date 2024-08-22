@@ -23,6 +23,7 @@ exports.create = async (req, res) => {
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
+            target_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
@@ -44,6 +45,7 @@ exports.create = async (req, res) => {
             bagi_hasil &&
             minimum_investasi &&
             maksimum_investasi &&
+            target_pendanaan &&
             tenor &&
             pembayaran_bagi_hasil &&
             tanggal_pembukaan_penawaran &&
@@ -69,6 +71,7 @@ exports.create = async (req, res) => {
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
+            target_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
@@ -165,6 +168,7 @@ exports.update = async (req, res) => {
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
+            target_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
@@ -207,6 +211,7 @@ exports.update = async (req, res) => {
             bagi_hasil,
             minimum_investasi,
             maksimum_investasi,
+            target_pendanaan,
             tenor,
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
