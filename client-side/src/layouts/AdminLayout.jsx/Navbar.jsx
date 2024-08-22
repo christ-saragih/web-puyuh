@@ -2,14 +2,22 @@ import Admin from "../../assets/images/admin.svg";
 import { Dropdown } from "flowbite-react";
 import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
 import { useLoginAdmin } from "../../hooks/useLoginAdmin";
+import { logoutAdmin } from "../../services/authAdmin.service";
 
 const Navbar = (props) => {
   const { title } = props;
   const dataAdmin = useLoginAdmin();
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    window.location.href = "/admin/masuk";
+    logoutAdmin((success, err) => {
+      if (success) {
+        // Hapus accessToken dari localStorage
+
+        window.location.href = "/admin/masuk";
+      } else {
+        console.error("Gagal logout: ", err);
+      }
+    });
   };
 
   return (
