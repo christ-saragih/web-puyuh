@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getDataAdmin } from "../services/authAdmin.service";
+import Cookies from "js-cookie";
 
 export const useLoginAdmin = () => {
   const [dataAdmin, setDataAdmin] = useState({
@@ -8,7 +9,9 @@ export const useLoginAdmin = () => {
   });
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    // const accessToken = localStorage.getItem("accessToken");
+    const accessToken = Cookies.get("accessToken");
+
     if (accessToken) {
       setDataAdmin(getDataAdmin(accessToken));
     } else {
