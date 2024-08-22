@@ -22,6 +22,7 @@ export default {
   },
   plugins: [
     flowbite.plugin(),
+    require('flowbite-typography'),
     function ({ addUtilities }) {
       const newUtilities = {
         ".transition-width": {

@@ -12,6 +12,7 @@ import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
 import { Tabs } from "flowbite-react";
 import { PiTargetDuotone, PiUsersThreeBold } from "react-icons/pi";
+import AdminLayout from "../../layouts/AdminLayout.jsx";
 
 const AdminInvestor = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -31,14 +32,8 @@ const AdminInvestor = () => {
   const modalSize = modalType === "delete" ? "small" : "large";
 
   return (
-    <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
-      <Sidebar isHovered={isHovered} setIsHovered={setIsHovered} />
-
-      <AdminContentLayout isHovered={isHovered} setIsHovered={setIsHovered}>
-        <div className="flex flex-col gap-8">
-          <AdminNavbar />
-
-          <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
+    <AdminLayout title={"Halaman Managemen Investor"}>
+      <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
             <div className="flex gap-5 mb-6">
               <Dropdown
                 options={["1", "2", "3"]}
@@ -485,9 +480,7 @@ const AdminInvestor = () => {
             </div> */}
             {/* END: Table */}
           </div>
-        </div>
-      </AdminContentLayout>
-    </div>
+    </AdminLayout>
   );
 };
 

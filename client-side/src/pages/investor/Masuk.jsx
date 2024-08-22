@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import GuestLayout from '../../layouts/GuestLayout.jsx';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Import js-cookie
 import '../../assets/style/index.css';
 import Logo from "../../assets/images/logo.png";
 
@@ -19,11 +20,15 @@ const Masuk = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/investor/login', formData);
-      console.log("Login response:", response.data); // Log the successful response
-      navigate("/investor");
+      await axios.post('http://localhost:3000/api/auth/investor/login', formData, {withCredentials:true});
+
+      // Simpan token di cookie dengan js-cookie
+      // Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'strict' });
+
+      navigate("/investor"); // Arahkan ke halaman investor setelah login
     } catch (error) {
       if (error.response) {
         console.error("Error response:", error.response); // Log detailed error response
@@ -42,7 +47,7 @@ const Masuk = () => {
         <div className="w-full lg:w-1/2 bg-cover bg-center min-h-[300px] lg:min-h-screen lg:-ml-40" style={{ backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')` }}>
         </div>
         {/* Form */}
-        <div className="w-full lg:w-1/2 p-8">
+        <form onSubmit={handleSubmit} className="w-full lg:w-1/2 p-8">
           <div className="flex items-center justify-center mb-8">
             <img src={Logo} alt="Logo" className="w-20 h-20 mr-4" />
             <h1 className="text-2xl font-bold text-gray-800">Sukaharja Smart Quail Farm</h1>
@@ -77,8 +82,9 @@ const Masuk = () => {
           </div>
           <div className="mb-6">
             <button
+              type="submit"
               className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
             >
               Masuk
             </button>
@@ -88,7 +94,7 @@ const Masuk = () => {
             <a href="/daftar" className="text-orange-600 font-bold">Daftar</a>
           </div>
           {msg && <div className="mt-4 text-red-600">{msg}</div>}
-        </div>
+        </form>
       </div>
     </GuestLayout>
   );

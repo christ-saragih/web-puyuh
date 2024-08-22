@@ -17,17 +17,21 @@ const customStyles = {
 };
 
 const MultiSelect = (props) => {
-  const { options, placeholder } = props;
+  const { name, options, defaultValue, placeholder, handleChange } = props;
   return (
     <Select
-      className="mt-1"
+      id={name}
+      name={name}
+      className="mt-2"
       closeMenuOnSelect={false}
       components={animatedComponents}
       isMulti
       options={options}
+      defaultValue={defaultValue}
       placeholder={placeholder}
       classNamePrefix="select"
       styles={customStyles}
+      onChange={(e) => handleChange(e)}
     />
   );
 };

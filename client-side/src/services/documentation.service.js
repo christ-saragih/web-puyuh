@@ -1,8 +1,8 @@
 import { axiosInstance } from "../lib/axios";
 
-export const getSocialMedia = (callback) => {
+export const getDocumentation = (callback) => {
   axiosInstance
-    .get("/sosial-media")
+    .get("/dokumentasi-frontpage")
     .then((res) => {
       callback(res.data.data);
     })
@@ -11,9 +11,9 @@ export const getSocialMedia = (callback) => {
     });
 };
 
-export const addSocialMedia = (data, callback) => {
+export const addDocumentation = (data, callback) => {
   axiosInstance
-    .post("/sosial-media", data)
+    .post("/dokumentasi-frontpage", data)
     .then((res) => {
       callback(res.data.data);
     })
@@ -22,9 +22,9 @@ export const addSocialMedia = (data, callback) => {
     });
 };
 
-export const updateSocialMedia = (id, data, callback) => {
+export const updateDocumentation = (id, data, callback) => {
   axiosInstance
-    .put(`/sosial-media/${id}`, data)
+    .put(`/dokumentasi-frontpage/${id}`, data)
     .then((res) => {
       callback(res.data.data);
     })
@@ -33,13 +33,13 @@ export const updateSocialMedia = (id, data, callback) => {
     });
 };
 
-export const deleteSocialMedia = (id, callback) => {
+export const deleteDocumentation = (id, callback) => {
   axiosInstance
-    .delete(`/sosial-media/${id}`)
+    .delete(`/dokumentasi-frontpage/${id}`)
     .then(() => {
       callback();
     })
     .catch((err) => {
-      console.error(`Error deleting social media with id: ${id}`, err);
+      console.error(`Error deleting documentation with id: ${id}`, err);
     });
 };
