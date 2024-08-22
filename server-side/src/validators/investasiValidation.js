@@ -46,6 +46,11 @@ const createSchema = [
         .withMessage("Maksimum Investasi tidak boleh kosong!")
         .isInt()
         .withMessage("Maksimum Investasi harus berupa string!"),
+    check("target_pendanaan")
+        .notEmpty()
+        .withMessage("Target Pendanaan tidak boleh kosong!")
+        .isInt()
+        .withMessage("Target Pendanaan harus berupa string!"),
     check("tenor")
         .notEmpty()
         .withMessage("Tenor tidak boleh kosong!")
@@ -89,10 +94,13 @@ const updateSchema = [
         .withMessage("Bagi Hasil harus berupa string!"),
     check("minimum_investasi")
         .isInt()
-        .withMessage("Minimum Investasi harus berupa string!"),
+        .withMessage("Minimum Investasi harus berupa integer!"),
     check("maksimum_investasi")
         .isInt()
-        .withMessage("Maksimum Investasi harus berupa string!"),
+        .withMessage("Maksimum Investasi harus berupa integer!"),
+    check("target_pendanaan")
+        .isInt()
+        .withMessage("Target Pendanaan harus berupa integer!"),
     check("tenor").isString().withMessage("Tenor harus berupa string!"),
     check("pembayaran_bagi_hasil")
         .isString()
