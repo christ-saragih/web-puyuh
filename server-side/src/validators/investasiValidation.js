@@ -40,17 +40,17 @@ const createSchema = [
         .notEmpty()
         .withMessage("Minimum Investasi tidak boleh kosong!")
         .isInt()
-        .withMessage("Minimum Investasi harus berupa string!"),
+        .withMessage("Minimum Investasi harus berupa Integer!"),
     check("maksimum_investasi")
         .notEmpty()
         .withMessage("Maksimum Investasi tidak boleh kosong!")
         .isInt()
-        .withMessage("Maksimum Investasi harus berupa string!"),
+        .withMessage("Maksimum Investasi harus berupa Integer!"),
     check("target_pendanaan")
         .notEmpty()
         .withMessage("Target Pendanaan tidak boleh kosong!")
         .isInt()
-        .withMessage("Target Pendanaan harus berupa string!"),
+        .withMessage("Target Pendanaan harus berupa Integer!"),
     check("tenor")
         .notEmpty()
         .withMessage("Tenor tidak boleh kosong!")
