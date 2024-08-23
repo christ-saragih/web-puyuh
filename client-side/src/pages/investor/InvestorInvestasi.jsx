@@ -6,6 +6,7 @@ import GuestLayout from "../../layouts/GuestLayout";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { getBatchs } from "../../services/batch.service";
 
 const InvestorInvestasi = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -13,6 +14,7 @@ const InvestorInvestasi = () => {
   const [token, setToken] = useState('');
   const [expire, setExpire] = useState('');
   const [investors, setInvestors] = useState([]);
+  const [batchs, setBatchs] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,14 @@ const InvestorInvestasi = () => {
         getInvestors();
     }
   }, [token]);
+
+  useEffect(() => {
+    getBatchs((data) => {
+      setBatchs(data);
+    });
+  }, []);
+  console.log(batchs);
+  
 
   const refreshToken = async () => {
     try {
@@ -132,7 +142,7 @@ const InvestorInvestasi = () => {
             </div>
           </div>
 
-          <BatchList />
+          <BatchList batchs={batchs} />
         </GuestLayout>
       </div>
     </div>

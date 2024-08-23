@@ -1,31 +1,60 @@
 import BatchInvestasi from "../../assets/images/batch_investasi.png";
 import BatchItemImage from "./BatchItemImage";
 import BatchItemBody from "./BatchItemBody";
+import { useEffect, useState } from "react";
 
-const BatchItem = () => {
-  const totalInvested = 3200000000; // contoh nilai total investasi yang terkumpul
-  const targetAmount = 5000000000; // contoh target dana proyek
+const BatchItem = ({id, judul, deskripsi, gambar, alamat, map, slug, penerbit, dana, bagi, minimum, maksimum, target, tenor, pembayaran, pembukaan, penutupan, status
+}) => {
+  // const [data, setData] = useState({ judul: '', penerbit: '' });
+  // const totalInvested = 3200000000;
+  // const targetAmount = 5000000000;
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:3000/api/investasi');
+  //       const result = await response.json();
+  //       console.log('Data from API:', result);
+  //       setData({ judul: result.judul, penerbit: result.penerbit });
+  //       console.log('State data:', { judul: result.judul, penerbit: result.penerbit });
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // console.log('Rendering BatchItem with data:', data);
 
   return (
     <div className="w-full md:w-[47%] xl:w-1/3 bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden">
-      <BatchItemImage imageUrl={BatchInvestasi} alt={"Batch Investasi"} />
-
+      <BatchItemImage gambar={gambar} alt={"Batch Investasi"} />
       <BatchItemBody>
         <BatchItemBody.BatchItemTitle
-          title={"Sukuk Ijarah Panacea"}
-          location={"PT. Panacea Buana Batam"}
-          totalInvested={totalInvested}
-          targetAmount={targetAmount}
+          judul={judul}
+          penerbit={penerbit}
+          status={status}
+          // totalInvested={totalInvested}
+          // targetAmount={targetAmount}
         />
-        <BatchItemBody.BatchItemProgressBar
-          totalInvested={totalInvested}
-          targetAmount={targetAmount}
-        />
+        {/* <BatchItemBody.BatchItemProgressBar
+          // totalInvested={totalInvested}
+          // targetAmount={targetAmount}
+        /> */}
         <BatchItemBody.BatchItemStatistics
-          title={"Target Proyek"}
-          value={"Rp2.600.000.000"}
+          titleMinimum={"Minimum Investasi"}
+          valueMinimum={minimum}
+          titleMaksimum={"Maksimum Investasi"}
+          valueMaksimum={maksimum}
+          titlePembukaan={"Tanggal Pembukaan"}
+          valuePembukaan={pembukaan}
+          titlePenutupan={"Tanggal Penutupan"}
+          valuePenutupan={penutupan}
         />
-        <BatchItemBody.BatchItemButton />
+        <BatchItemBody.BatchItemButton 
+          slug={slug}
+        />
       </BatchItemBody>
     </div>
 

@@ -17,8 +17,8 @@ const AdminMasuk = () => {
 
     loginAdmin(data, (status, res) => {
       if (status) {
-        localStorage.setItem("accessToken", res);
-        window.location.href = "/admin"
+        // localStorage.setItem("accessToken", res);
+        window.location.href = "/admin";
       } else {
         setLoginFailed(res.response.data.message);
       }
