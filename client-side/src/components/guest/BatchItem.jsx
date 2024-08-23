@@ -3,7 +3,7 @@ import BatchItemImage from "./BatchItemImage";
 import BatchItemBody from "./BatchItemBody";
 import { useEffect, useState } from "react";
 
-const BatchItem = ({id, judul, deskripsi, gambar, alamat, map, slug, penerbit, dana, bagi, minimum, maksimum, target, tenor, pembayaran, pembukaan, penutupan, status
+const BatchItem = ({id, judul, deskripsi, gambar, alamat, map, slug, penerbit, dana, bagi, minimum, maksimum, total, target, tenor, pembayaran, pembukaan, penutupan, status
 }) => {
   // const [data, setData] = useState({ judul: '', penerbit: '' });
   // const totalInvested = 3200000000;
@@ -35,13 +35,15 @@ const BatchItem = ({id, judul, deskripsi, gambar, alamat, map, slug, penerbit, d
           judul={judul}
           penerbit={penerbit}
           status={status}
+          total={total}
+          target={target}
           // totalInvested={totalInvested}
           // targetAmount={targetAmount}
         />
-        {/* <BatchItemBody.BatchItemProgressBar
-          // totalInvested={totalInvested}
-          // targetAmount={targetAmount}
-        /> */}
+        <BatchItemBody.BatchItemProgressBar
+          total={total}
+          target={target}
+        />
         <BatchItemBody.BatchItemStatistics
           titleMinimum={"Minimum Investasi"}
           valueMinimum={minimum}

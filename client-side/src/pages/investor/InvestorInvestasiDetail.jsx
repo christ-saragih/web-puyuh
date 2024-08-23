@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import BatchInvestasi from "../../assets/images/batch_investasi.png";
 import Navbar from "../../components/guest/Navbar";
 import Tabs from "../../components/guest/Tabs";
 import GuestLayout from "../../layouts/GuestLayout";
+import { getDetailInvestasiBySlug } from "../../services/batch.service";
 import {
   PiCalendarCheckDuotone,
   PiCalendarDotsDuotone,
@@ -12,23 +12,26 @@ import {
   PiTimerDuotone,
   PiUserBold,
   PiUsersThreeBold,
-  PiPercent,
-  PiCalendarXDuotone
+  PiCalendarXDuotone,
+  PiPercent
 } from "react-icons/pi";
 import { useParams } from "react-router-dom";
-// import { getInvestasis } from "../../services/detailInvestasi.service";
 
-const InvestorInvestasiDetail = () => {
+const DetailInvestasi = () => {
   const { id } = useParams();
+  const { slug } = useParams();
   const [tab, setTab] = useState(1);
-  const [investasis, setInvestasis] = useState(null);
+  const [investasi, setInvestasi] = useState(null);
 
   useEffect(() => {
-    getInvestasis((data) => {
-      console.log("Investasi data:", data); // Debug log
-      setInvestasis(data); // Simpan data yang diterima dari service ke dalam state
+    getDetailInvestasiBySlug(slug, (data) => {
+      setInvestasi(data);
     });
-  }, []);
+  }, [slug]);
+
+  if (!investasi) {
+    return <div>Data artikel tidak ditemukan!</div>;
+  }
 
   return (
     <>
@@ -38,18 +41,15 @@ const InvestorInvestasiDetail = () => {
         <div className="max-w-3xl mx-auto">
           <div className="h-96 mb-4 rounded-xl overflow-hidden">
             <img
-              src={BatchInvestasi}
+              src={investasi.gambar}
               alt=""
               className="w-full h-full object-cover"
             />
           </div>
           <div className="flex items-center justify-between mb-10">
             <div>
-            {investasis && investasis.length > 0 ? ( // Pastikan investasis ada dan memiliki elemen
-            <h1 className="text-3xl font-bold">{investasis[0].judul}</h1> // Tampilkan judul
-          ) : (
-            <p>Loading data...</p>
-          )}
+              <h2 className="font-bold text-3xl mb-1">{investasi.judul}</h2>
+              <p className="font-medium text-lg">{investasi.penerbit}</p>
             </div>
             <div className="bg-[#FFA90B] font-semibold text-white text-lg text-center py-1 w-32 rounded-3xl">
               12 hari lagi
@@ -93,71 +93,35 @@ const InvestorInvestasiDetail = () => {
           <div className="mb-32">
             <div className={tab === 1 ? "block" : "hidden"}>
               <p>
-                <h3 className="text-2xl mb-4 font-semibold">
+                {/* <h3 className="text-2xl mb-4 font-semibold">
                   Investasi Saham Bisnis Emado's Shawarma Cibubur
-                </h3>{" "}
-                Berinvestasi melalui saham bisnis Emado's Shawarma Cibubur
-                merupakan salah satu cara untuk mendapatkan potensi keuntungan
-                dan dividen yang menarik. Emado's Shawarma merupakan sebuah
-                brand yang didirikan pada tahun 2018 oleh Chef asal Palestina
-                bernama Emad Al Amad. Emado’s Shawarma dikenal sebagai restoran
-                yang menawarkan menu khas Timur Tengah dengan harga yang relatif
-                terjangkau. <br /> <br /> Saat ini Emado’s Shawarma telah
-                memiliki lebih dari 90 outlet yang tersebar di pulau Jawa,
-                Indonesia. Salah satunya, Emado akan melakukan take over
-                outletnya yang berlokasi di Jl. Alternatif Cibubur, Nagrak,
-                Kecamatan Gunung Putri, Kabupaten Bogor, Jawa Barat. Outlet ini
-                merupakan salah satu dari Top 3 Best Performance Outlet Emados’s
-                Shawarma di seluruh Indonesia. <br /> <br />
-                Kerennya, outlet Emado’s Shawarma Cibubur mudah ditemukan karena
-                berada persis di pinggir Jalan Alternatif Cibubur. Outlet ini
-                terdiri dari bangunan dua lantai dengan total luas sebesar 760
-                m2. Total seat capacity di outlet ini mencapai 70 seat yang
-                terbagi menjadi 44 seat di lantai satu dan 26 seat di lantai
-                dua. <br /> <br />
+                </h3>{" "} */}
+                {investasi.deskripsi}<br /> <br />
                 <h3 className="text-2xl mb-4 font-semibold">
-                  Simulasi keuntungan berinvestasi Emado's Shawarma Cibubur
-                  melalui Bizhare
+                  Penggunaan Dana
                 </h3>{" "}
-                Investasi saham bisnis Emado's Shawarma Cibubur melalui Bizhare
-                bisa dimulai dengan nominal Rp 50.000 per lembar
-                sahamnya. Keuntungan Anda akan berfluktuasi tergantung dari
-                kinerja saham tersebut. Tentunya keuntungan tersebut akan
-                bertambah besar ketika Anda nominal investasi Anda lebih besar.{" "}
-                <br /> <br />
-                <h3 className="text-2xl mb-4 font-semibold">
-                  Dapatkan Poin dan XP dengan Investasi di Emado's Shawarma
-                  Cibubur melalui Bizhare
-                </h3>
-                Investasi saham bisnis Emado's Shawarma Cibubur melalui Bizhare
-                akan memberi Anda keuntungan bukan hanya dari dividen, namun
-                Anda juga bisa mendapatkan Poin dan XP. Semakin besar jumlah
-                investasi Anda maka jumlah XP yang Anda dapatkan akan semakin
-                besar. Anda juga akan mendapatkan Poin dengan berinvestasi.
-                Semakin cepat dan besar investasi Anda, maka Poin yang Anda
-                dapatkan semakin besar. Jadi tunggu apa lagi, investasi sekarang
-                juga untuk mendapatkan XP dan Poin sebanyak-banyaknya!
+                {investasi.penggunaan_dana}
               </p>
             </div>
 
             <div className={tab === 2 ? "block" : "hidden"}>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-16 p-1">
+                <div className="w-16 h-16 p-1">
                     <PiCalendarCheckDuotone className="w-full h-full" />
                   </div>
                   <div>
                     <p className="text-lg font-medium">Tanggal Dibuka</p>
-                    <p>12 Agustus 2024</p>
+                    <p>{investasi.tanggal_pembukaan_penawaran}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-16 p-1">
+                <div className="w-16 h-16 p-1">
                     <PiCalendarXDuotone className="w-full h-full" />
                   </div>
                   <div>
                     <p className="text-lg font-medium">Tanggal Ditutup</p>
-                    <p>20 Agustus 2024</p>
+                    <p>{investasi.tanggal_berakhir_penawaran}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -175,7 +139,7 @@ const InvestorInvestasiDetail = () => {
                   </div>
                   <div>
                     <p className="text-lg font-medium">Bagi Hasil</p>
-                    <p>15 %</p>
+                    <p>{investasi.bagi_hasil}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -184,7 +148,7 @@ const InvestorInvestasiDetail = () => {
                   </div>
                   <div>
                     <p className="text-lg font-medium">Tenor</p>
-                    <p>12 bulan</p>
+                    <p>{investasi.tenor}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -193,7 +157,7 @@ const InvestorInvestasiDetail = () => {
                   </div>
                   <div>
                     <p className="text-lg font-medium">Pembayaran Bagi Hasil</p>
-                    <p>per Bulan</p>
+                    <p>{investasi.pembayaran_bagi_hasil}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -202,7 +166,7 @@ const InvestorInvestasiDetail = () => {
                   </div>
                   <div>
                     <p className="text-lg font-medium">Minimum Investasi</p>
-                    <p>Rp500.000</p>
+                    <p>{investasi.minimum_investasi}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -211,26 +175,16 @@ const InvestorInvestasiDetail = () => {
                   </div>
                   <div>
                     <p className="text-lg font-medium">Maksimum Investasi</p>
-                    <p>Rp500.000</p>
+                    <p>{investasi.maksimum_investasi}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className={tab === 3 ? "block" : "hidden"}>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.7116708630515!2d106.7675797745358!3d-6.558035064108204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c5dce5b6ebd3%3A0x7ba6ffb5d199befe!2sSekolah%20Tinggi%20Pariwisata%20Bogor!5e0!3m2!1sid!2sid!4v1721285167172!5m2!1sid!2sid"
-                height="350"
-                allowfullscreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full rounded-xl mb-4 mt-8"
-              ></iframe>
-
+            <div className="w-full" dangerouslySetInnerHTML={{ __html: investasi.url_map }} />
               <p>
-                Lokasi: JL. GIPSI, KOLONCUCU, NO. 11, Desa/Kelurahan Toboleu,
-                Kec. Kota Ternate Utara, Kota Ternate, Provinsi Maluku Utara,
-                Kode Pos: 97726
+                {investasi.alamat}
               </p>
             </div>
 
@@ -306,4 +260,4 @@ const InvestorInvestasiDetail = () => {
   );
 };
 
-export default InvestorInvestasiDetail;
+export default DetailInvestasi;

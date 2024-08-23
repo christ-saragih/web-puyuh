@@ -12,17 +12,18 @@ const BatchItemBody = (props) => {
 };
 
 const BatchItemTitle = (props) => {
-  const { judul, penerbit, totalInvested, targetAmount, status } = props;
+  const { judul, penerbit, total, target, status } = props;
 
   console.log('BatchItemTitle props:', props); // Tambahkan log ini
 
-  const percentage = Math.round((totalInvested / targetAmount) * 100);
-  const bgColor = percentage < 100 ? "#e3a008" : "#057a55";
-  // const statusText = percentage < 100 ? "Proses" : "Selesai";
+  const percentage = Math.round((total / target) * 100);
+
+  // Set warna background berdasarkan status
+  const bgColor = status === "selesai" ? "#057a55" : percentage < 100 ? "#e3a008" : "#057a55";
 
   return (
     <div className="relative">
-      <h5 className="mb-1 text-xl xl:text-2xl font-bold tracking-tight text-gray-900 ">
+      <h5 className="mb-1 text-xl xl:text-2xl font-bold tracking-tight text-gray-900">
         {judul}
       </h5>
       <p className="mb-3 font-normal text-gray-700">{penerbit}</p>
@@ -37,9 +38,9 @@ const BatchItemTitle = (props) => {
 };
 
 const BatchItemProgressBar = (props) => {
-  const { totalInvested, targetAmount } = props;
+  const { total, target } = props;
 
-  const percentage = Math.round((totalInvested / targetAmount) * 100);
+  const percentage = Math.round((total / target) * 100);
   const bgColor = percentage < 100 ? "#e3a008" : "#057a55";
   const textColor = percentage < 100 ? "#e3a008" : "#057a55";
   const statusText = percentage < 100 ? "terkumpul" : "tercapai";
@@ -56,10 +57,9 @@ const BatchItemProgressBar = (props) => {
       </div>
       <p className="text-sm">
         <span className="font-semibold text-base" style={{ color: textColor }}>
-          Rp
-          {totalInvested.toLocaleString("id-ID", {
-            styles: "currency",
-            currency: "USD",
+          {(total || 0).toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
           })}{" "}
         </span>
         {statusText}
