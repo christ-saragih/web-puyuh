@@ -21,6 +21,7 @@ const BatchList = (props) => {
             bagi={batch.bagi_hasil}
             minimum={batch.minimum_investasi}
             maksimum={batch.maksimum_investasi}
+            total={batch.total_pendanaan}
             target={batch.target_pendanaan}
             tenor={batch.tenor}
             pembayaran={batch.pembayaran_bagi_hasil}
