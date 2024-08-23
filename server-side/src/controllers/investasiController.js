@@ -28,7 +28,6 @@ exports.create = async (req, res) => {
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
-            status,
         } = req.body;
         const adminId = req.admin.id;
 
@@ -49,13 +48,27 @@ exports.create = async (req, res) => {
             tenor &&
             pembayaran_bagi_hasil &&
             tanggal_pembukaan_penawaran &&
-            tanggal_berakhir_penawaran &&
-            status
+            tanggal_berakhir_penawaran
         ) {
             const dir = "public/images/investasi";
             ensureDir(dir);
             gambar_name = `${Date.now()}-${req.file.originalname}`;
             fs.writeFileSync(path.join(dir, gambar_name), gambar);
+        }
+
+        let statusPenawaran = "";
+
+        const now = new Date();
+
+        const pembukaan = new Date(tanggal_pembukaan_penawaran);
+        const penutupan = new Date(tanggal_berakhir_penawaran);
+
+        if (now >= pembukaan && now <= penutupan) {
+            statusPenawaran = "proses";
+        } else if (pembukaan > now) {
+            statusPenawaran = "segera";
+        } else {
+            statusPenawaran = "selesai";
         }
 
         const investasi = await Investasi.create({
@@ -76,7 +89,7 @@ exports.create = async (req, res) => {
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
-            status,
+            status: statusPenawaran,
         });
 
         res.status(201).json({
@@ -173,7 +186,6 @@ exports.update = async (req, res) => {
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
-            status,
         } = req.body;
 
         const investasi = await Investasi.findByPk(req.params.id);
@@ -198,6 +210,20 @@ exports.update = async (req, res) => {
             }
         }
 
+        let statusPenawaran = "";
+
+        const now = new Date();
+        const pembukaan = new Date(tanggal_pembukaan_penawaran);
+        const penutupan = new Date(tanggal_berakhir_penawaran);
+
+        if (now >= pembukaan && now <= penutupan) {
+            statusPenawaran = "proses";
+        } else if (pembukaan > now) {
+            statusPenawaran = "segera";
+        } else {
+            statusPenawaran = "selesai";
+        }
+
         await investasi.update({
             adminId: adminId,
             judul,
@@ -216,7 +242,7 @@ exports.update = async (req, res) => {
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
-            status,
+            status: statusPenawaran,
         });
 
         res.status(200).json({
