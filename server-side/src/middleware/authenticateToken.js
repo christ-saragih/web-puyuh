@@ -1,56 +1,42 @@
-// const jwt = require("jsonwebtoken");
-
-// const authenticateToken = (req, res, next) => {
-//     const token = req.header("Authorization");
-
-//     if (!token) {
-//         return res
-//             .status(401)
-//             .json({ message: "Access denied. No token provided." });
-//     }
-
-//     const cleanToken = token.replace("Bearer ", "");
-
-//     jwt.verify(cleanToken, process.env.ACCESS_SECRET_KEY, (err, admin) => {
-//         if (err) {
-//             console.error(err);
-//             return res.status(403).json({ message: "Invalid token." });
-//         }
-
-//         req.admin = admin;
-//         next();
-//     });
-// };
-
-// module.exports = authenticateToken;
 const jwt = require("jsonwebtoken");
 const blacklist = new Set();
 
-const authenticateToken = (req, res, next) => {
-    const token = req.cookies.accessToken || req.header("Authorization");
-    // const token = req.header("Authorization");
+const authenticateToken = (role) => {
+    return (req, res, next) => {
+        const token = req.cookies.accessToken || req.header("Authorization");
+        // const token = req.header("Authorization");
 
-    if (!token) {
-        return res
-            .status(401)
-            .json({ message: "Access denied. No token provided." });
-    }
-
-    const cleanToken = token.replace("Bearer ", "");
-
-    if (blacklist.has(cleanToken)) {
-        return res.status(403).json({ message: "Token has been blacklisted." });
-    }
-
-    jwt.verify(cleanToken, process.env.ACCESS_SECRET_KEY, (err, user) => {
-        if (err) {
-            console.error(err);
-            return res.status(403).json({ message: "Invalid token." });
+        if (!token) {
+            return res
+                .status(401)
+                .json({ message: "Access denied. No token provided." });
         }
 
-        req.user = user;
-        next();
-    });
+        const cleanToken = token.replace("Bearer ", "");
+
+        if (blacklist.has(cleanToken)) {
+            return res
+                .status(403)
+                .json({ message: "Token has been blacklisted." });
+        }
+
+        jwt.verify(cleanToken, process.env.ACCESS_SECRET_KEY, (err, user) => {
+            if (err) {
+                console.error(err);
+                return res.status(403).json({ message: "Invalid token." });
+            }
+
+            if (user.role !== role) {
+                return res.status(403).json({
+                    message:
+                        "Access denied. You do not have the required role.",
+                });
+            }
+
+            req.user = user;
+            next();
+        });
+    };
 };
 
 const logout = (req, res) => {
