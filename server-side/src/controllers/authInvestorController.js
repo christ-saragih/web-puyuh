@@ -201,7 +201,7 @@ exports.login = async (req, res) => {
                 kategori_investor: investor.kategori_investor,
             },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "1d" } // Access token valid for 15 minutes
+            { expiresIn: "15m" }
         );
 
         const refreshToken = jwt.sign(
@@ -213,7 +213,7 @@ exports.login = async (req, res) => {
                 kategori_investor: investor.kategori_investor,
             },
             process.env.REFRESH_SECRET_KEY,
-            { expiresIn: "7d" } // Refresh token valid for 7 days
+            { expiresIn: "1d" }
         );
 
         investor.refresh_token = refreshToken;
@@ -346,7 +346,7 @@ exports.refreshToken = async (req, res) => {
                 kategori_investor: investor.kategori_investor,
             },
             process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "1d" }
+            { expiresIn: "15m" }
         );
 
         res.cookie("accessToken", newAccessToken, { httpOnly: true });
