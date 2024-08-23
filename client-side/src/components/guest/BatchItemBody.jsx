@@ -1,6 +1,7 @@
 import {
   PiCalendarCheckDuotone,
   PiCalendarDotsDuotone,
+  PiMoney,
   PiTargetDuotone,
   PiTimerDuotone,
 } from "react-icons/pi";
@@ -11,23 +12,25 @@ const BatchItemBody = (props) => {
 };
 
 const BatchItemTitle = (props) => {
-  const { title, location, totalInvested, targetAmount } = props;
+  const { judul, penerbit, totalInvested, targetAmount, status } = props;
+
+  console.log('BatchItemTitle props:', props); // Tambahkan log ini
 
   const percentage = Math.round((totalInvested / targetAmount) * 100);
   const bgColor = percentage < 100 ? "#e3a008" : "#057a55";
-  const statusText = percentage < 100 ? "Proses" : "Selesai";
+  // const statusText = percentage < 100 ? "Proses" : "Selesai";
 
   return (
     <div className="relative">
       <h5 className="mb-1 text-xl xl:text-2xl font-bold tracking-tight text-gray-900 ">
-        {title}
+        {judul}
       </h5>
-      <p className="mb-3 font-normal text-gray-700">{location}</p>
+      <p className="mb-3 font-normal text-gray-700">{penerbit}</p>
       <div
         className="absolute top-0 right-0 font-semibold text-white text-center py-1 w-20 rounded-3xl"
         style={{ backgroundColor: bgColor }}
       >
-        {statusText}
+        {status}
       </div>
     </div>
   );
@@ -66,7 +69,7 @@ const BatchItemProgressBar = (props) => {
 };
 
 const StatisticItem = (props) => {
-  const { Icon, title, value } = props;
+  const { Icon, titleMinimum, valueMinimum, titleMaksimum, valueMaksimum, titlePembukaan, valuePembukaan, titlePenutupan, valuePenutupan } = props;
 
   return (
     <div className="flex flex-col items-start gap-1 xl:flex-row xl:items-center xl:gap-2">
@@ -74,33 +77,44 @@ const StatisticItem = (props) => {
         <Icon className="w-full h-full text-[#4B241A]" />
       </div>
       <div>
-        <p className="text-sm">{title}</p>
-        <p className="text-sm xl:text-base font-semibold">{value}</p>
+        <p className="text-sm">{titleMinimum}</p>
+        <p className="text-sm xl:text-base font-semibold">{valueMinimum}</p>
+        <p className="text-sm">{titleMaksimum}</p>
+        <p className="text-sm xl:text-base font-semibold">{valueMaksimum}</p>
+        <p className="text-sm">{titlePembukaan}</p>
+        <p className="text-sm xl:text-base font-semibold">{valuePembukaan}</p>
+        <p className="text-sm">{titlePenutupan}</p>
+        <p className="text-sm xl:text-base font-semibold">{valuePenutupan}</p>
       </div>
     </div>
   );
 };
 
 const BatchItemStatistics = (props) => {
-  const { title, value } = props;
+  const { titleMinimum, valueMinimum, titleMaksimum, valueMaksimum, titlePembukaan, valuePembukaan, titlePenutupan, valuePenutupan } = props;
   return (
     <div className="grid grid-cols-2 gap-3 mt-5 mb-6">
-      <StatisticItem Icon={PiTargetDuotone} title={title} value={value} />
-      <StatisticItem Icon={PiTimerDuotone} title={title} value={value} />
-      <StatisticItem Icon={PiCalendarDotsDuotone} title={title} value={value} />
+      <StatisticItem Icon={PiMoney} titleMinimum={titleMinimum} valueMinimum={valueMinimum} />
+      <StatisticItem Icon={PiMoney} titleMaksimum={titleMaksimum} valueMaksimum={valueMaksimum} />
+      <StatisticItem Icon={PiMoney} titlePembukaan={titlePembukaan} valuePembukaan={valuePembukaan} />
+      <StatisticItem Icon={PiMoney} titlePenutupan={titlePenutupan} valuePenutupan={valuePenutupan} />
+      {/* <StatisticItem Icon={PiCalendarDotsDuotone} title={title} value={value} />
       <StatisticItem
         Icon={PiCalendarCheckDuotone}
         title={title}
         value={value}
-      />
+      /> */}
     </div>
   );
 };
 
-const BatchItemButton = () => (
+const BatchItemButton = (props) => {
+  const {slug} = props;
+
+  return (
   <div className="flex justify-center">
     <a
-      href="/investor/investasi/detail/1"
+      href={`/investasi/${slug}`}
       className="flex justify-center items-center w-11/12 py-2 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
     >
       Investasi Sekarang
@@ -120,8 +134,8 @@ const BatchItemButton = () => (
         />
       </svg>
     </a>
-  </div>
-);
+  </div>)
+};
 
 BatchItemBody.BatchItemTitle = BatchItemTitle;
 BatchItemBody.BatchItemProgressBar = BatchItemProgressBar;

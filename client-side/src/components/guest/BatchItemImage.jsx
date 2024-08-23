@@ -1,12 +1,11 @@
 
 const BatchItemImage = (props) => {
-  const { imageUrl, alt } = props;
+  const { gambar } = props;
   return (
     <div className="h-48">
       <img
         className="object-cover w-full h-full object-left-top"
-        src={imageUrl}
-        alt={alt}
+        src={gambar}
       />
     </div>
   );

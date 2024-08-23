@@ -51,51 +51,50 @@ exports.create = async (req, res) => {
 
 // Register
 exports.register = async (req, res) => {
-    const { username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-    try {
-        // Cek apakah username atau email sudah digunakan
-        const existingUser = await Admin.findOne({
-            where: {
-                [Op.or]: [{ username: username }, { email: email }],
-            },
-        });
+  try {
+    // Cek apakah username atau email sudah digunakan
+    const existingUser = await Admin.findOne({
+      where: {
+        [Op.or]: [{ username: username }, { email: email }],
+      },
+    });
 
-        if (existingUser) {
-            return res.status(400).json({
-                message: "Username atau Email sudah digunakan!",
-            });
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Buat akun admin
-        const admin = await Admin.create({
-            username,
-            email,
-            password: hashedPassword,
-        });
-
-        res.status(201).json({
-            message: "Registrasi Berhasil!",
-            data: admin,
-        });
-    } catch (error) {
-        if (error.name === "SequelizeUniqueConstraintError") {
-            return res.status(400).json({
-                message: "Username or email already in use",
-                error: error.errors.map((e) => e.message),
-            });
-        }
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Username atau Email sudah digunakan!",
+      });
     }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Buat akun admin
+    const admin = await Admin.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({
+      message: "Registrasi Berhasil!",
+      data: admin,
+    });
+  } catch (error) {
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({
+        message: "Username or email already in use",
+        error: error.errors.map((e) => e.message),
+      });
+    }
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
 };
 
-// Login
 exports.login = async (req, res) => {
     try {
         const { usernameOrEmail, password } = req.body;
@@ -190,18 +189,18 @@ exports.ubahPassword = async (req, res) => {
 
 // Logout
 exports.logout = (req, res) => {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ message: "Failed to logout." });
-        }
-        res.json({ message: "Logout successful" });
-    });
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Failed to logout." });
+    }
+    res.json({ message: "Logout successful" });
+  });
 };
 // Protected route example
 exports.protected = (req, res) => {
-    res.json({ message: "This is a protected route", username: req.username });
+  res.json({ message: "This is a protected route", username: req.username });
 };
 
 // Refresh token endpoint
