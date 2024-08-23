@@ -53,6 +53,7 @@ Input.propTypes = {
     "email",
     "password",
     "number",
+    "date",
     "file",
     "search",
   ]),

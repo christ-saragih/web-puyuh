@@ -209,7 +209,7 @@ div[data-testid="flowbite-dropdown"] {
   @apply bg-white w-32 rounded-xl shadow font-semibold overflow-hidden
 }
 li[role="menuitem"] button {
-  @apply text-base;
+  @apply text-base text-slate-700;
 }
 
 li[role="menuitem"] button svg {
@@ -237,6 +237,6 @@ li[role="menuitem"] button svg {
 }
 
 .quill > .ql-container > .ql-editor.ql-blank::before {
-  @apply text-sm text-gray-500 not-italic content-['Masukkan_isi_artikel..'] !important;
+  @apply text-sm text-gray-500 not-italic content-['Masukkan_deskripsi..'] !important;
 }
 /* ADMIN: End */

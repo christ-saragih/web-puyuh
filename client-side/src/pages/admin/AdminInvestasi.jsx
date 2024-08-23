@@ -1,26 +1,148 @@
-import Admin from "../../assets/images/admin.svg";
 import Input from "../../components/common/Input.jsx";
 import InputSearch from "../../components/common/InputSearch.jsx";
 import Label from "../../components/common/Label.jsx";
 import Modal from "../../components/common/Modal.jsx";
 import AdminLayout from "../../layouts/AdminLayout.jsx";
-import BatchInvestasi from "../../assets/images/batch_investasi.png";
-import { useState } from "react";
-import { Dropdown } from "flowbite-react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { PiPlusCircle } from "react-icons/pi";
 import {
-  PiClockCountdown,
-  PiDotsThreeOutlineVerticalBold,
-  PiEyeBold,
-  PiNotePencilBold,
-  PiPlusCircle,
-  PiTrashBold,
-  PiUserCircleFill,
-} from "react-icons/pi";
+  getBatchs,
+  addInvestment,
+  updateInvestment,
+  deleteInvestment,
+} from "../../services/batch.service.js";
+import BatchList from "../../components/admin/BatchList.jsx";
 
 const AdminInvestasi = () => {
+  const [investments, setInvestments] = useState([]);
+  const [formInvestment, setFormInvestment] = useState({
+    judul: "",
+    deskripsi: "",
+    gambar: null,
+    alamat: "",
+    url_map: "",
+    penerbit: "",
+    penggunaan_dana: "",
+    bagi_hasil: "",
+    minimum_investasi: "",
+    maksimum_investasi: "",
+    target_pendanaan: "",
+    tenor: "",
+    pembayaran_bagi_hasil: "",
+    tanggal_pembukaan_penawaran: "",
+    tanggal_berakhir_penawaran: "",
+  });
+
+  const [selectedInvestment, setSelectedInvestment] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
+
+  useEffect(() => {
+    getBatchs((data) => {
+      setInvestments(data);
+    });
+  }, []);
+
+  const handleInvestmentImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormInvestment({ ...formInvestment, gambar: file });
+    setPreviewImage(URL.createObjectURL(file));
+  };
+
+  const handleInvestmentDescriptionChange = (value) => {
+    setFormInvestment({
+      ...formInvestment,
+      deskripsi: value,
+    });
+  };
+
+  const handleInvestmentTextChange = (e) => {
+    const { name, value } = e.target;
+    setFormInvestment({
+      ...formInvestment,
+      [name]: value,
+    });
+  };
+
+  const handleAddInvestment = () => {
+    const form = new FormData();
+    form.append("judul", formInvestment.judul);
+    form.append("gambar", formInvestment.gambar);
+    form.append("deskripsi", formInvestment.deskripsi);
+    form.append("penerbit", formInvestment.penerbit);
+    form.append("penggunaan_dana", formInvestment.penggunaan_dana);
+    form.append(
+      "tanggal_pembukaan_penawaran",
+      formInvestment.tanggal_pembukaan_penawaran
+    );
+    form.append(
+      "tanggal_berakhir_penawaran",
+      formInvestment.tanggal_berakhir_penawaran
+    );
+    form.append("target_pendanaan", formInvestment.target_pendanaan);
+    form.append("tenor", formInvestment.tenor);
+    form.append("pembayaran_bagi_hasil", formInvestment.pembayaran_bagi_hasil);
+    form.append("bagi_hasil", formInvestment.bagi_hasil);
+    form.append("minimum_investasi", formInvestment.minimum_investasi);
+    form.append("maksimum_investasi", formInvestment.maksimum_investasi);
+    form.append("alamat", formInvestment.alamat);
+    form.append("url_map", formInvestment.url_map);
+
+    addInvestment(form, (response) => {
+      setInvestments([response, ...investments]);
+      closeModal();
+      resetForm();
+    });
+  };
+
+  const handleUpdateInvestment = () => {
+    const form = new FormData();
+    form.append("judul", formInvestment.judul);
+    if (formInvestment.gambar instanceof File) {
+      form.append("gambar", formInvestment.gambar);
+    }
+    form.append("deskripsi", formInvestment.deskripsi);
+    form.append("penerbit", formInvestment.penerbit);
+    form.append("penggunaan_dana", formInvestment.penggunaan_dana);
+    form.append(
+      "tanggal_pembukaan_penawaran",
+      formInvestment.tanggal_pembukaan_penawaran
+    );
+    form.append(
+      "tanggal_berakhir_penawaran",
+      formInvestment.tanggal_berakhir_penawaran
+    );
+    form.append("target_pendanaan", formInvestment.target_pendanaan);
+    form.append("tenor", formInvestment.tenor);
+    form.append("pembayaran_bagi_hasil", formInvestment.pembayaran_bagi_hasil);
+    form.append("bagi_hasil", formInvestment.bagi_hasil);
+    form.append("minimum_investasi", formInvestment.minimum_investasi);
+    form.append("maksimum_investasi", formInvestment.maksimum_investasi);
+    form.append("alamat", formInvestment.alamat);
+    form.append("url_map", formInvestment.url_map);
+
+    updateInvestment(selectedInvestment.id, form, (updateData) => {
+      setInvestments((prevInvestment) =>
+        prevInvestment.map((item) =>
+          item.id === updateData.id ? updateData : item
+        )
+      );
+      closeModal();
+      resetForm();
+    });
+  };
+
+  const handleDeleteInvestment = () => {
+    deleteInvestment(selectedInvestment.id, () => {
+      setInvestments(
+        investments.filter(
+          (investment) => investment.id !== selectedInvestment.id
+        )
+      );
+      closeModal();
+    });
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -29,12 +151,62 @@ const AdminInvestasi = () => {
   const openModal = (type, investment = null) => {
     setModalType(type);
     setIsModalOpen(true);
+
+    if (type === "update_investment" && investment) {
+      setSelectedInvestment(investment);
+      setFormInvestment({
+        judul: investment.judul,
+        deskripsi: investment.deskripsi,
+        gambar: investment.gambar,
+        alamat: investment.alamat,
+        url_map: investment.url_map,
+        penerbit: investment.penerbit,
+        penggunaan_dana: investment.penggunaan_dana,
+        bagi_hasil: investment.bagi_hasil,
+        minimum_investasi: investment.minimum_investasi,
+        maksimum_investasi: investment.maksimum_investasi,
+        target_pendanaan: investment.target_pendanaan,
+        tenor: investment.tenor,
+        pembayaran_bagi_hasil: investment.pembayaran_bagi_hasil,
+        tanggal_pembukaan_penawaran: investment.tanggal_pembukaan_penawaran,
+        tanggal_berakhir_penawaran: investment.tanggal_berakhir_penawaran,
+      });
+      setPreviewImage(
+        `http://localhost:3000/api/investasi/image/${investment.gambar}`
+      );
+    }
+
+    if (type === "delete_investment" && investment) {
+      setSelectedInvestment(investment);
+    }
   };
 
   const closeModal = () => {
     setModalType("");
     setIsModalOpen(false);
-    // resetForm();
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setFormInvestment({
+      judul: "",
+      deskripsi: "",
+      gambar: null,
+      alamat: "",
+      url_map: "",
+      penerbit: "",
+      penggunaan_dana: "",
+      bagi_hasil: "",
+      minimum_investasi: "",
+      maksimum_investasi: "",
+      target_pendanaan: "",
+      tenor: "",
+      pembayaran_bagi_hasil: "",
+      tanggal_pembukaan_penawaran: "",
+      tanggal_berakhir_penawaran: "",
+    });
+    setPreviewImage("");
+    setSelectedInvestment(null);
   };
 
   return (
@@ -69,19 +241,16 @@ const AdminInvestasi = () => {
                     onClose={closeModal}
                   />
                   <Modal.Body>
-                    <Label
-                      htmlFor={"investment_title"}
-                      value={"Judul Investasi"}
-                    />
+                    <Label htmlFor={"judul"} value={"Judul Investasi"} />
                     <Input
                       type={"text"}
-                      name={"investment_title"}
+                      name={"judul"}
                       placeholder={"Masukkan judul investasi.."}
                       variant={"primary-outline"}
-                      // value={formArticle.judul}
-                      // handleChange={handleArticleInputChange}
+                      value={formInvestment.judul}
+                      handleChange={handleInvestmentTextChange}
                     />
-                    <Label htmlFor={"image"} value={"Gambar"} />
+                    <Label htmlFor={"gambar"} value={"Gambar"} />
                     <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
                       {previewImage && (
                         <img
@@ -92,7 +261,7 @@ const AdminInvestasi = () => {
                       )}
 
                       <label
-                        htmlFor="image"
+                        htmlFor="gambar"
                         className={`flex flex-col items-center justify-center w-full cursor-pointer ${
                           !previewImage && "h-32"
                         }`}
@@ -125,10 +294,11 @@ const AdminInvestasi = () => {
                           </p>
                         </div>
                         <input
-                          id="image"
+                          id="gambar"
+                          name="gambar"
                           type="file"
                           className="hidden"
-                          // onChange={handleArticleImageChange}
+                          onChange={handleInvestmentImageChange}
                         />
                       </label>
                     </div>
@@ -136,40 +306,74 @@ const AdminInvestasi = () => {
                     <Label htmlFor={"deskripsi"} value={"Deskripsi"} />
                     <ReactQuill
                       theme="snow"
-                      // value={formArticle.deskripsi}
-                      // onChange={handleArticleDescriptionChange}
+                      value={formInvestment.deskripsi}
+                      onChange={handleInvestmentDescriptionChange}
                     />
                     {/* Profil Bisnis */}
                     <div className="grid grid-cols-2 gap-x-4 ">
                       <div>
-                        <Label htmlFor={"tanggal"} value={"Tanggal"} />
+                        <Label htmlFor={"penerbit"} value={"Penerbit"} />
                         <Input
-                          type={"date"}
-                          name={"tanggal"}
+                          type={"text"}
+                          name={"penerbit"}
+                          placeholder={"Masukkan penerbit.."}
                           variant={"primary-outline"}
-                          // value={formArticle.tanggal}
-                          // handleChange={handleArticleInputChange}
+                          value={formInvestment.penerbit}
+                          handleChange={handleInvestmentTextChange}
                         />
                       </div>
                       <div>
                         <Label
-                          htmlFor={"funding_targets"}
+                          htmlFor={"penggunaan_dana"}
+                          value={"Penggunaan Dana"}
+                        />
+                        <Input
+                          type={"text"}
+                          name={"penggunaan_dana"}
+                          placeholder={"Masukkan penggunaan dana.."}
+                          variant={"primary-outline"}
+                          value={formInvestment.penggunaan_dana}
+                          handleChange={handleInvestmentTextChange}
+                        />
+                      </div>
+                      <div>
+                        <Label
+                          htmlFor={"tanggal_pembukaan_penawaran"}
+                          value={"Tanggal Pembukaan"}
+                        />
+                        <Input
+                          type={"date"}
+                          name={"tanggal_pembukaan_penawaran"}
+                          variant={"primary-outline"}
+                          value={formInvestment.tanggal_pembukaan_penawaran}
+                          handleChange={handleInvestmentTextChange}
+                        />
+                      </div>
+                      <div>
+                        <Label
+                          htmlFor={"tanggal_berakhir_penawaran"}
+                          value={"Tanggal Berakhir"}
+                        />
+                        <Input
+                          type={"date"}
+                          name={"tanggal_berakhir_penawaran"}
+                          variant={"primary-outline"}
+                          value={formInvestment.tanggal_berakhir_penawaran}
+                          handleChange={handleInvestmentTextChange}
+                        />
+                      </div>
+                      <div>
+                        <Label
+                          htmlFor={"target_pendanaan"}
                           value={"Target Pendanaan"}
                         />
                         <Input
                           type={"text"}
-                          name={"funding_targets"}
+                          name={"target_pendanaan"}
                           placeholder={"Masukkan target pendanaan.."}
                           variant={"primary-outline"}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={"deadline"} value={"Waktu Pendanaan"} />
-                        <Input
-                          type={"text"}
-                          name={"deadline"}
-                          placeholder={"Masukkan waktu pendanaan.."}
-                          variant={"primary-outline"}
+                          value={formInvestment.target_pendanaan}
+                          handleChange={handleInvestmentTextChange}
                         />
                       </div>
                       <div>
@@ -179,56 +383,119 @@ const AdminInvestasi = () => {
                           name={"tenor"}
                           placeholder={"Masukkan tenor.."}
                           variant={"primary-outline"}
+                          value={formInvestment.tenor}
+                          handleChange={handleInvestmentTextChange}
                         />
                       </div>
                       <div>
                         <Label
-                          htmlFor={"profit_sharing_period"}
-                          value={"Periode Bagi Hasil"}
+                          htmlFor={"pembayaran_bagi_hasil"}
+                          value={"Pembayaran Bagi Hasil"}
                         />
                         <Input
                           type={"text"}
-                          name={"profit_sharing_period"}
-                          placeholder={"Masukkan periode bagi hasil.."}
+                          name={"pembayaran_bagi_hasil"}
+                          placeholder={"Masukkan pembayaran bagi hasil.."}
                           variant={"primary-outline"}
+                          value={formInvestment.pembayaran_bagi_hasil}
+                          handleChange={handleInvestmentTextChange}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil"} />
+                        <Input
+                          type={"text"}
+                          name={"bagi_hasil"}
+                          placeholder={"Masukkan bagi hasil.."}
+                          variant={"primary-outline"}
+                          value={formInvestment.bagi_hasil}
+                          handleChange={handleInvestmentTextChange}
                         />
                       </div>
                       <div>
                         <Label
-                          htmlFor={"minimum_investment"}
+                          htmlFor={"minimum_investasi"}
                           value={"Minimum Investasi"}
                         />
                         <Input
                           type={"text"}
-                          name={"minimum_investment"}
+                          name={"minimum_investasi"}
                           placeholder={"Masukkan minimum investasi.."}
                           variant={"primary-outline"}
+                          value={formInvestment.minimum_investasi}
+                          handleChange={handleInvestmentTextChange}
+                        />
+                      </div>
+                      <div>
+                        <Label
+                          htmlFor={"maksimum_investasi"}
+                          value={"Maksimum Investasi"}
+                        />
+                        <Input
+                          type={"text"}
+                          name={"maksimum_investasi"}
+                          placeholder={"Masukkan maksimum investasi.."}
+                          variant={"primary-outline"}
+                          value={formInvestment.maksimum_investasi}
+                          handleChange={handleInvestmentTextChange}
                         />
                       </div>
                     </div>
 
-                    <Label htmlFor={"address"} value={"Alamat"} />
+                    <Label htmlFor={"alamat"} value={"Alamat"} />
                     <Input
                       type={"text"}
-                      name={"address"}
+                      name={"alamat"}
                       placeholder={"Masukkan alamat.."}
                       variant={"primary-outline"}
+                      value={formInvestment.alamat}
+                      handleChange={handleInvestmentTextChange}
                     />
-                    <Label htmlFor={"map_url"} value={"URL Map"} />
+                    <Label htmlFor={"url_map"} value={"URL Map"} />
                     <Input
                       type={"text"}
-                      name={"map_url"}
+                      name={"url_map"}
                       placeholder={"Masukkan URL map.."}
                       variant={"primary-outline"}
+                      value={formInvestment.url_map}
+                      handleChange={handleInvestmentTextChange}
                     />
                   </Modal.Body>
                   <Modal.Footer
                     action={modalType === "add_investment" ? "Tambah" : "Ubah"}
-                    // onAction={
-                    //   modalType === "add_article"
-                    //     ? handleAddArticle
-                    //     : handleUpdateArticle
-                    // }
+                    onAction={
+                      modalType === "add_investment"
+                        ? handleAddInvestment
+                        : handleUpdateInvestment
+                    }
+                    onClose={closeModal}
+                  />
+                </>
+              )}
+
+              {modalType === "delete_investment" && (
+                <>
+                  <Modal.Header title="Hapus Investasi" onClose={closeModal} />
+                  <Modal.Body>
+                    <p>Apakah Anda yakin ingin menghapus investasi ini?</p>
+                  </Modal.Body>
+                  <Modal.Footer
+                    action="Hapus"
+                    onAction={handleDeleteInvestment}
+                    onClose={closeModal}
+                  />
+                </>
+              )}
+
+              {modalType === "detail_investment" && (
+                <>
+                  <Modal.Header title="Detail Investasi" onClose={closeModal} />
+                  <Modal.Body>
+                    <p>Halaman Detail Batch Investasi</p>
+                  </Modal.Body>
+                  <Modal.Footer
+                    action="Hapus"
+                    // onAction={handleDeleteInvestment}
                     onClose={closeModal}
                   />
                 </>
@@ -237,97 +504,7 @@ const AdminInvestasi = () => {
           </div>
 
           {/* List */}
-          <div className="grid grid-cols-3 gap-x-14 gap-y-12">
-            {/* Item */}
-
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-lg">
-                <img
-                  src={BatchInvestasi}
-                  alt="batch investasi"
-                  className="h-40 w-full object-cover rounded-2xl shadow"
-                />
-                <div className="p-4 flex flex-col">
-                  <div className="relative flex flex-col items-center mb-5 px-4 text-center">
-                    <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-                      Sukuk Ijarah Panacea
-                    </h2>
-                    <p className="font-medium text-gray-700 mb-3">
-                      Lokasi CV Sukaraja
-                    </p>
-                    <div className="flex -space-x-2">
-                      <img
-                        src={Admin}
-                        alt="investor"
-                        className="h-8 w-8 rounded-full border-2 border-white"
-                      />
-                      <img
-                        src={Admin}
-                        alt="investor"
-                        className="h-8 w-8 rounded-full border-2 border-white"
-                      />
-                      <img
-                        src={Admin}
-                        alt="investor"
-                        className="h-8 w-8 rounded-full border-2 border-white"
-                      />
-                    </div>
-
-                    <div className="absolute top-[3px] right-0 cursor-pointer">
-                      <Dropdown
-                        label=""
-                        dismissOnClick={false}
-                        renderTrigger={() => (
-                          <div className="border rounded-full p-[5px]">
-                            <PiDotsThreeOutlineVerticalBold />
-                          </div>
-                        )}
-                        placement="right-end"
-                      >
-                        <Dropdown.Item icon={PiEyeBold}>Detail</Dropdown.Item>
-                        <Dropdown.Item icon={PiNotePencilBold}>
-                          Ubah
-                        </Dropdown.Item>
-                        <Dropdown.Item icon={PiTrashBold}>Hapus</Dropdown.Item>
-                      </Dropdown>
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-1">
-                      <p>Dana Terkumpul</p>
-                      <p className="font-semibold text-lg text-[#e3a008]">
-                        Rp. 2.600.000.000
-                      </p>
-                    </div>
-
-                    <div className="bg-gray-200 rounded-full">
-                      <div
-                        className="text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
-                        style={{
-                          width: "25%",
-                          backgroundColor: "#e3a008",
-                        }}
-                      >
-                        25%
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1 text-slate-700">
-                      <PiUserCircleFill className="w-6 h-6" />
-                      <p className="font-medium">10 investor</p>
-                    </div>
-                    <div className="bg-[#fff5e3] text-[#FFA90B] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
-                      <PiClockCountdown className="-ms-[3px] w-6 h-6" />
-                      <p className="font-medium">12 hari lagi</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <BatchList investments={investments} openModal={openModal} />
         </div>
       </div>
     </AdminLayout>
