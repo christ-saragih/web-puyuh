@@ -134,7 +134,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             tanggal_pembukaan_penawaran: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY,
                 allowNull: false,
                 validate: {
                     notNull: {
@@ -146,7 +146,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             tanggal_berakhir_penawaran: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY,
                 allowNull: false,
                 validate: {
                     notNull: {

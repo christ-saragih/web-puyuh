@@ -62,10 +62,10 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             tanggal_pembukaan_penawaran: {
-                type: Sequelize.DATE,
+                type: Sequelize.DATEONLY,
             },
             tanggal_berakhir_penawaran: {
-                type: Sequelize.DATE,
+                type: Sequelize.DATEONLY,
             },
             status: {
                 type: Sequelize.ENUM("segera", "proses", "selesai"),

@@ -1,7 +1,53 @@
 const { Admin } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
+
+// Create
+exports.create = async (req, res) => {
+    const { username, email, password } = req.body;
+
+    try {
+        // Cek apakah username atau email sudah digunakan
+        const existingUser = await Admin.findOne({
+            where: {
+                [Op.or]: [{ username: username }, { email: email }],
+            },
+        });
+
+        if (existingUser) {
+            return res.status(400).json({
+                message: "Username atau Email sudah digunakan!",
+            });
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Buat akun admin
+        const admin = await Admin.create({
+            username,
+            email,
+            password: hashedPassword,
+        });
+
+        res.status(201).json({
+            message: "Registrasi Berhasil!",
+            data: admin,
+        });
+    } catch (error) {
+        if (error.name === "SequelizeUniqueConstraintError") {
+            return res.status(400).json({
+                message: "Username or email already in use",
+                error: error.errors.map((e) => e.message),
+            });
+        }
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
 
 // Register
 exports.register = async (req, res) => {
@@ -118,6 +164,27 @@ exports.login = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+exports.ubahPassword = async (req, res) => {
+    const { password } = req.body;
+
+    try {
+        const admin = await Admin.findOne({
+            where: {
+                [Op.or]: [
+                    { username: req.admin.username },
+                    { email: req.admin.email },
+                ],
+            },
+        });
+
+        const passwordBaru = bcrypt.hash(password, 10);
+
+        await admin.update({
+            password: passwordBaru,
+        });
+    } catch (error) {}
 };
 
 // Logout
