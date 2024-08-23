@@ -71,13 +71,6 @@ const createSchema = [
         .withMessage("Tanggal Berakhir Penawaran tidak boleh kosong!")
         .isDate()
         .withMessage("Tanggal Berakhir Penawaran harus berupa tanggal!"),
-    check("status")
-        .notEmpty()
-        .withMessage("Status tidak boleh kosong!")
-        .isIn(["segera", "proses", "selesai"])
-        .withMessage(
-            "Status harus salah satu dari 'segera' 'proses' atau 'selesai'"
-        ),
 ];
 
 const updateSchema = [
