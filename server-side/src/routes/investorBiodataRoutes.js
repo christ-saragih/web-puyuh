@@ -17,6 +17,7 @@ const upload = require("../middleware/uploadFileMiddleware");
 const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 // router.post(
 //     "/",
@@ -48,8 +49,7 @@ router.get("/images/:gambar", investorBiodataController.getImageByName);
 
 router.post(
     "/",
-    authenticateInvestorToken,
-    authorizeRole("investor"),
+    authenticateToken("investor"),
     upload.single("foto_profil"),
     validateUploadFile({
         fieldName: "foto_profil",
