@@ -13,6 +13,7 @@ const {
     registrasiSchema,
     loginSchema,
 } = require("../validators/authInvestorValidation");
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 router.post(
     "/regis",
@@ -32,8 +33,8 @@ router.post(
 router.post("/login", validate(loginSchema), authInvestorController.login);
 router.post("/logout", logoutInvestor);
 // Protected route
-router.get("/protected", authenticateInvestorToken, (req, res) => {
-    res.json({ message: "This is a protected route", investor: req.investor });
+router.get("/protected", authenticateToken("investor"), (req, res) => {
+    res.json({ message: "This is a protected route", user: req.investor });
 });
 
 // router.get("/protected", authenticateToken, authInvestorController.protected);
