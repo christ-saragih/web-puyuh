@@ -2,6 +2,7 @@ const { Investasi } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
+const { Op } = require("sequelize");
 const { default: slugify } = require("slugify");
 
 const ensureDir = (dir) => {
@@ -115,6 +116,28 @@ exports.create = async (req, res) => {
 // Read All
 exports.findAll = async (req, res) => {
     try {
+        const now = new Date();
+
+        // Perbarui status investasi sebelum mengambil data
+        await Investasi.update(
+            { status: "proses" },
+            {
+                where: {
+                    status: "segera",
+                    tanggal_pembukaan_penawaran: { [Op.lte]: now },
+                },
+            }
+        );
+
+        await Investasi.update(
+            { status: "selesai" },
+            {
+                where: {
+                    status: "proses",
+                    tanggal_berakhir_penawaran: { [Op.lte]: now },
+                },
+            }
+        );
         const investasi = await Investasi.findAll();
         res.status(200).json({
             message: "Data  berhasil diambil!",
@@ -131,6 +154,28 @@ exports.findAll = async (req, res) => {
 // Read One
 exports.findOne = async (req, res) => {
     try {
+        const now = new Date();
+
+        // Perbarui status investasi sebelum mengambil data
+        await Investasi.update(
+            { status: "proses" },
+            {
+                where: {
+                    status: "segera",
+                    tanggal_pembukaan_penawaran: { [Op.lte]: now },
+                },
+            }
+        );
+
+        await Investasi.update(
+            { status: "selesai" },
+            {
+                where: {
+                    status: "proses",
+                    tanggal_berakhir_penawaran: { [Op.lte]: now },
+                },
+            }
+        );
         const investasi = await Investasi.findByPk(req.params.id);
         if (!investasi) {
             return res.status(404).json({ message: "Data  tidak ada!" });
