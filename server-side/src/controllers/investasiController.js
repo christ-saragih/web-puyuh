@@ -143,10 +143,55 @@ exports.findAll = async (req, res) => {
                 },
             }
         );
-        const investasi = await Investasi.findAll();
+        const investasi = await Investasi.findAll({
+            include: {
+                model: Transaksi,
+                as: "transaksi",
+                attributes: ["investorId"],
+                include: {
+                    model: Investor,
+                    as: "investor",
+                    attributes: ["id"], // Atribut lain yang diperlukan
+                    include: {
+                        model: InvestorBiodata,
+                        as: "investorBiodata",
+                        attributes: ["nama_lengkap"], // Ambil nama_lengkap dari biodataInvestor
+                    },
+                },
+            },
+        });
+
+        // Proses data untuk menghapus duplikat investorId di transaksi dan menyertakan nama_lengkap
+        const investasiWithUniqueTransaksi = investasi.map((item) => {
+            const transaksi = item.transaksi;
+
+            // Mengelompokkan transaksi berdasarkan investorId dan menghapus duplikat
+            const uniqueTransaksi = transaksi.reduce((acc, current) => {
+                const x = acc.find(
+                    (item) => item.investorId === current.investorId
+                );
+                if (!x) {
+                    acc.push({
+                        investorId: current.investorId,
+                        nama_lengkap:
+                            current.investor.investorBiodata.nama_lengkap,
+                    });
+                }
+                return acc;
+            }, []);
+
+            // Mengembalikan objek investasi dengan transaksi unik
+            return {
+                ...item.toJSON(),
+                transaksi: uniqueTransaksi,
+            };
+        });
+        // console.log(investasi);
+        // exit();
+
         res.status(200).json({
             message: "Data  berhasil diambil!",
-            data: investasi,
+            data: investasiWithUniqueTransaksi,
         });
     } catch (error) {
         res.status(500).json({
