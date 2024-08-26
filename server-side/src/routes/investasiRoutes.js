@@ -45,6 +45,14 @@ router.put(
 );
 router.get("/", investasiController.findAll);
 // router.get("/:id", investasiController.findOne);
+router.get(
+    "/:investasiId/transaksi",
+    investasiController.getAllTransactionByInvestasiId
+);
+router.get(
+    "/:investasiId/transaksi/:id",
+    investasiController.getOneTransactionByInvestasiId
+);
 router.get("/:slug", investasiController.findDataBySlug);
 router.delete("/:id", investasiController.delete);
 router.get("/image/:gambar", investasiController.getImageByName);
