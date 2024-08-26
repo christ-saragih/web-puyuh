@@ -3,6 +3,7 @@ const {
     Transaksi,
     Investor,
     InvestorBiodata,
+    sequelize,
 } = require("../models");
 const fs = require("fs");
 const path = require("path");
@@ -198,25 +199,34 @@ exports.getOneTransactionByInvestasiId = async (req, res) => {
 exports.getAllInvestorByInvestasiId = async (req, res) => {
     try {
         const { investasiId } = req.params;
+
         const transaksi = await Transaksi.findAll({
             where: { investasiId: investasiId },
-            attributes: ["investorId"],
-            group: ["investorId"],
+            attributes: [
+                "investorId",
+                [
+                    sequelize.fn(
+                        "MAX",
+                        sequelize.col("investor->investorBiodata.nama_lengkap")
+                    ),
+                    "nama_lengkap",
+                ],
+            ],
             include: [
                 {
                     model: Investor,
+                    attributes: ["id"],
+                    as: "investor",
                     include: [
                         {
                             model: InvestorBiodata,
                             attributes: ["nama_lengkap"],
-                            as: "investorBiodata",
+                            as: "investorBiodata", // Gunakan alias yang didefinisikan di model
                         },
                     ],
-                    attributes: ["id"],
-                    as: "investor",
                 },
             ],
-            subQuery: false,
+            subQuery: false, // Menambahkan subQuery: false jika perlu
         });
         res.status(200).json({
             message: "Data Transaksi!",
