@@ -7,7 +7,7 @@ const {
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const { default: slugify } = require("slugify");
 
 const ensureDir = (dir) => {
@@ -200,8 +200,12 @@ exports.getAllInvestorByInvestasiId = async (req, res) => {
         const { investasiId } = req.params;
         const transaksi = await Transaksi.findAll({
             where: { investasiId: investasiId },
-            attributes: ["investorId"],
-            group: ["investorId"],
+            attributes: [
+                [
+                    Sequelize.fn("DISTINCT", Sequelize.col("investorId")),
+                    "investorId",
+                ],
+            ],
             include: [
                 {
                     model: Investor,
