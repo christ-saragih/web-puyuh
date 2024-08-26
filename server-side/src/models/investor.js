@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             // define association here\
             Investor.hasOne(models.InvestorBiodata, {
                 foreignKey: "investorId",
+                as: "investorBiodata",
             });
             Investor.hasOne(models.InvestorAlamat, {
                 foreignKey: "investorId",

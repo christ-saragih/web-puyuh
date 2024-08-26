@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             InvestorBiodata.belongsTo(models.Investor, {
                 foreignKey: "investorId",
+                as: "investor",
             });
         }
     }
