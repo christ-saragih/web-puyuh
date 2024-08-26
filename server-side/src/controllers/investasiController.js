@@ -209,6 +209,7 @@ exports.getAllInvestorByInvestasiId = async (req, res) => {
                         {
                             model: InvestorBiodata,
                             attributes: ["nama_lengkap"],
+                            as: "investorBiodata",
                         },
                     ],
                     attributes: ["id"],
