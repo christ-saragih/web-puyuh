@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
             Investor.hasOne(models.InvestorDataPendukung, {
                 foreignKey: "investorId",
             });
+            Investor.hasMany(models.Transaksi, {
+                foreignKey: "investorId",
+                as: "transaksi",
+            });
         }
     }
     Investor.init(

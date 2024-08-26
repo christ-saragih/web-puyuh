@@ -53,6 +53,14 @@ router.get(
     "/:investasiId/transaksi/:id",
     investasiController.getOneTransactionByInvestasiId
 );
+router.get(
+    "/:investasiId/investor",
+    investasiController.getAllInvestorByInvestasiId
+);
+// router.get(
+//     "/:investasiId/investor/:id",
+//     investasiController.getOneTransactionByInvestasiId
+// );
 router.get("/:slug", investasiController.findDataBySlug);
 router.delete("/:id", investasiController.delete);
 router.get("/image/:gambar", investasiController.getImageByName);

@@ -1,4 +1,9 @@
-const { Investasi, Transaksi } = require("../models");
+const {
+    Investasi,
+    Transaksi,
+    Investor,
+    InvestorBiodata,
+} = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
@@ -176,6 +181,40 @@ exports.getOneTransactionByInvestasiId = async (req, res) => {
         const { investasiId, id } = req.params;
         const transaksi = await Transaksi.findOne({
             where: { investasiId, id },
+        });
+        res.status(200).json({
+            message: "Data Transaksi!",
+            data: transaksi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Get all investor by investasi Id
+exports.getAllInvestorByInvestasiId = async (req, res) => {
+    try {
+        const { investasiId } = req.params;
+        const transaksi = await Transaksi.findAll({
+            where: { investasiId: investasiId },
+            attributes: ["investorId"],
+            group: ["investorId"],
+            include: [
+                {
+                    model: Investor,
+                    include: [
+                        {
+                            model: InvestorBiodata,
+                            attributes: ["nama_lengkap"],
+                        },
+                    ],
+                    attributes: ["id"],
+                    as: "investor",
+                },
+            ],
         });
         res.status(200).json({
             message: "Data Transaksi!",
