@@ -15,6 +15,10 @@ router.post(
     transaksiController.transaction
 );
 router.get("/", transaksiController.getAllTransaction);
+router.get(
+    "/investasi/:investasiId",
+    transaksiController.getAllTransactionByInvestasiId
+);
 router.get("/:id", transaksiController.getTransactionById);
 router.put("/:id", transaksiController.updateTransaction);
 router.delete("/:id", transaksiController.deleteTransaction);

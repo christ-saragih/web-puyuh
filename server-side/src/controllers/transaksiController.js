@@ -65,6 +65,25 @@ exports.getAllTransaction = async (req, res) => {
     }
 };
 
+// Get all transactions by investasi Id
+exports.getAllTransactionByInvestasiId = async (req, res) => {
+    try {
+        const { investasiId } = req.params;
+        const transaksi = await Transaksi.findAll({
+            where: { investasiId: investasiId },
+        });
+        res.status(200).json({
+            message: "Data Transaksi!",
+            data: transaksi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
 // Get a single transaction by ID
 exports.getTransactionById = async (req, res) => {
     try {
