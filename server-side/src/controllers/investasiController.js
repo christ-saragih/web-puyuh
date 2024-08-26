@@ -1,8 +1,8 @@
-const { Investasi } = require("../models");
+const { Investasi, Transaksi } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { default: slugify } = require("slugify");
 
 const ensureDir = (dir) => {
@@ -138,7 +138,7 @@ exports.findAll = async (req, res) => {
                 },
             }
         );
-        const investasi = await Investasi.findAll();
+        const investasi = await Investasi.findAll({ include: Transaksi });
         res.status(200).json({
             message: "Data  berhasil diambil!",
             data: investasi,
