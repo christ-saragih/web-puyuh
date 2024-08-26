@@ -8,10 +8,7 @@ const {
     updateSchema,
 } = require("../validators/adminBiodataValidation");
 
-const {
-    authenticateAdminToken,
-} = require("../middleware/authenticateAdminToken");
-const authorizeRole = require("../middleware/authorizeRole");
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 const upload = require("../middleware/uploadFileMiddleware");
 const {
@@ -20,8 +17,7 @@ const {
 
 router.post(
     "/",
-    authenticateAdminToken,
-    authorizeRole("admin"),
+    authenticateToken("admin"),
     upload.single("foto_profil"),
     validateUploadFile({
         fieldName: "foto_profil",
@@ -31,8 +27,7 @@ router.post(
 );
 router.put(
     "/:id",
-    authenticateAdminToken,
-    validate(updateSchema),
+    authenticateToken("admin"),
     upload.single("foto_profil"),
     validateUploadFile({
         fieldName: "foto_profil",

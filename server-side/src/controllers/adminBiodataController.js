@@ -31,7 +31,7 @@ exports.create = async (req, res) => {
             fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
         }
 
-        const adminId = req.admin.id;
+        const adminId = req.user.id;
         const adminBiodata = await AdminBiodata.create({
             adminId: adminId,
             nama_lengkap,
@@ -65,10 +65,11 @@ exports.create = async (req, res) => {
 // Read All
 exports.findAll = async (req, res) => {
     try {
-        const AdminBiodata = await AdminBiodata.findAll();
+        const adminBiodata = await AdminBiodata.findAll();
+
         res.status(200).json({
             message: "Biodata Admin berhasil diambil!",
-            data: AdminBiodata,
+            data: adminBiodata,
         });
     } catch (error) {
         res.status(500).json({
@@ -81,15 +82,15 @@ exports.findAll = async (req, res) => {
 // Read One
 exports.findOne = async (req, res) => {
     try {
-        const AdminBiodata = await AdminBiodata.findByPk(req.params.id);
-        if (!AdminBiodata) {
+        const adminBiodata = await AdminBiodata.findByPk(req.params.id);
+        if (!adminBiodata) {
             return res
                 .status(404)
                 .json({ message: "Biodata Admin tidak ada!" });
         }
         res.status(200).json({
             message: "Biodata Admin berhasil diambil",
-            data: AdminBiodata,
+            data: adminBiodata,
         });
     } catch (error) {
         res.status(500).json({
