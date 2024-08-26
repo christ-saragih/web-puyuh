@@ -109,6 +109,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             total_pendanaan: {
                 type: DataTypes.BIGINT,
+                defaultValue: 0,
             },
             target_pendanaan: {
                 type: DataTypes.BIGINT,
