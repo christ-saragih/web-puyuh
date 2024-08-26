@@ -1,4 +1,4 @@
-const { Investasi } = require("../models");
+const { Investasi, Transaksi } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
@@ -142,6 +142,44 @@ exports.findAll = async (req, res) => {
         res.status(200).json({
             message: "Data  berhasil diambil!",
             data: investasi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Get all transactions by investasi Id
+exports.getAllTransactionByInvestasiId = async (req, res) => {
+    try {
+        const { investasiId } = req.params;
+        const transaksi = await Transaksi.findAll({
+            where: { investasiId: investasiId },
+        });
+        res.status(200).json({
+            message: "Data Transaksi!",
+            data: transaksi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Get one transactions by investasi Id
+exports.getOneTransactionByInvestasiId = async (req, res) => {
+    try {
+        const { investasiId, id } = req.params;
+        const transaksi = await Transaksi.findOne({
+            where: { investasiId, id },
+        });
+        res.status(200).json({
+            message: "Data Transaksi!",
+            data: transaksi,
         });
     } catch (error) {
         res.status(500).json({
