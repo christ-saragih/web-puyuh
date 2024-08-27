@@ -12,10 +12,22 @@ exports.findAll = async (req, res) => {
     try {
         const investors = await Investor.findAll({
             include: [
-                InvestorBiodata,
-                InvestorIdentitas,
-                InvestorDataPendukung,
-                InvestorAlamat,
+                {
+                    model: InvestorBiodata,
+                    as: "investorBiodata",
+                },
+                {
+                    model: InvestorIdentitas,
+                    as: "investorIdentitas",
+                },
+                {
+                    model: InvestorDataPendukung,
+                    as: "investorDataPendukung",
+                },
+                {
+                    model: InvestorAlamat,
+                    as: "investorAlamat",
+                },
             ],
         });
         res.status(200).json({
