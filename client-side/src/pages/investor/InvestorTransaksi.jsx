@@ -7,18 +7,25 @@ import { faEye } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { getTransaksi } from "../../services/transaksi.service";
+import { useParams } from "react-router-dom";
+import { formatRupiah } from "../../utils/formatRupiah";
 
 const InvestorTransaksi = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [username, setUsername] = useState('');
+    const [investorId, setInvestorId] = useState('');
     const [token, setToken] = useState('');
     const [expire, setExpire] = useState('');
-    const [transactions, setTransactions] = useState([]);
+    const [transaksi, setTransaksi] = useState([]);
     const [selectedValue, setSelectedValue] = useState("4");
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true); // Add loading state
+    const { id } = useParams();
     const options = ["4", "8", "16", "32", "Semua"];
     const navigate = useNavigate();
+    const [investors, setInvestors] = useState([]); 
 
     useEffect(() => {
         refreshToken();
@@ -26,24 +33,42 @@ const InvestorTransaksi = () => {
 
     useEffect(() => {
         if (token) {
-            getTransactions();
+            getInvestors();
         }
-    }, [token, currentPage, selectedValue, search]);
+      }, [token]);
 
-    const refreshToken = async () => {
-        try {
-            const response = await axios.post('http://localhost:3000/api/auth/investor/refresh-token', {}, { withCredentials: true });
-            setToken(response.data.accessToken);
-            const decoded = jwtDecode(response.data.accessToken);
-            setUsername(decoded.username);
-            setExpire(decoded.exp);
-            console.log("Token refreshed:", response.data.accessToken);
-        } catch (error) {
-            if (error.response) {
-                navigate("/masuk");
-            }
+      useEffect(() => {
+        if (token) {
+          getTransaksi((data) => {
+            setTransaksi(data);
+            setLoading(false); // Set loading to false when data is fetched
+          }, token); // Pass token here
         }
-    };
+      }, [token]);
+
+
+    //   menghitung total investasi investor
+      const totalInvestasi = transaksi.reduce((total, item) => {
+        return total + item.total_investasi;
+    }, 0);
+      
+      
+
+      const refreshToken = async () => {
+        try {
+          const response = await axios.post('http://localhost:3000/api/auth/investor/refresh-token', {}, { withCredentials: true });
+          setToken(response.data.accessToken);
+          const decoded = jwtDecode(response.data.accessToken);
+          setUsername(decoded.username);
+          setInvestorId(decoded.payload.investorId); // Access the investorId property explicitly
+          setExpire(decoded.exp);
+          console.log("Investor ID from token:", decoded.payload.investorId); // Log investorId from token
+        } catch (error) {
+          if (error.response) {
+            navigate("/masuk");
+          }
+        }
+      };
 
     const axiosJWT = axios.create();
 
@@ -62,7 +87,10 @@ const InvestorTransaksi = () => {
                     setToken(newAccessToken);
                     const decoded = jwtDecode(newAccessToken);
                     setUsername(decoded.username);
+                    setInvestorId(decoded.investorId);  // Set investorId from the refreshed token
                     setExpire(decoded.exp);
+                    console.log("Token refreshed and decoded:", decoded); // Log decoded token after refresh
+                    console.log("Investor ID after token refresh:", decoded.investorId); // Log investorId after refresh
                 } catch (error) {
                     console.error("Error refreshing token:", error);
                     navigate("/investor");
@@ -77,24 +105,19 @@ const InvestorTransaksi = () => {
         }
     );
 
-    const getTransactions = async () => {
+    const getInvestors = async () => {
         try {
-            const response = await axiosJWT.get('http://localhost:3000/api/investor/transactions', {
-                params: {
-                    page: currentPage,
-                    limit: selectedValue === "Semua" ? undefined : selectedValue,
-                    search: search
-                },
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            console.log(response.data);
-            setTransactions(response.data);
+          const response = await axiosJWT.get('http://localhost:3000/api/investor', {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              }
+          });
+          console.log(response.data);
+          setInvestors(response.data);
         } catch (error) {
-            console.error("Error fetching transactions:", error);
+          console.error("Error fetching investors:", error);
         }
-    };
+      } 
 
     const handleOptionSelect = (option) => {
         setSelectedValue(option);
@@ -111,7 +134,11 @@ const InvestorTransaksi = () => {
                 <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center mb-10 shadow-lg">
                     <div className="flex flex-col">
                         <h1 className="text-[1.75rem] font-bold p-4 ml-8">Total Riwayat Investasi</h1>
-                        <p className="text-[2rem] font-medium p-4 ml-28">Rp 2.000.000.000</p>
+                        {loading ? ( // Display a loading message while data is being fetched
+                            <p className="text-[2rem] font-medium p-4 ml-28">Loading...</p>
+                        ) : (
+                            <p className="text-[2rem] font-medium p-4 ml-28">{formatRupiah(totalInvestasi)}</p>
+                        )}
                     </div>
                 </div>
                 <div className="w-full rounded-xl bg-[#F5F5F7] flex flex-col mb-10 shadow-lg p-4">
@@ -122,7 +149,6 @@ const InvestorTransaksi = () => {
                             onOptionSelect={handleOptionSelect}
                         />
 
-                        {/* FITUR SEARCHING */}
                         <InputSearch
                             handleChange={(e) => setSearch(e.target.value)}
                         />
@@ -140,8 +166,9 @@ const InvestorTransaksi = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {transactions.length > 0 ? (
-                                    transactions.map((transaction, index) => (
+                                {/* Map transaksi to display each transaction */}
+                                {/* {transaksi.length > 0 ? (
+                                    transaksi.map((transaction, index) => (
                                         <tr key={transaction.id} className="bg-white border-b hover:bg-gray-50">
                                             <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
                                                 {index + 1}
@@ -161,7 +188,7 @@ const InvestorTransaksi = () => {
                                             Tidak ada transaksi ditemukan
                                         </td>
                                     </tr>
-                                )}
+                                )} */}
                             </tbody>
                         </table>
                     </div>
