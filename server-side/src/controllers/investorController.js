@@ -1,4 +1,5 @@
 const {
+    Investasi,
     Investor,
     InvestorBiodata,
     InvestorIdentitas,
@@ -111,9 +112,14 @@ exports.getAllInvestorTransaction = async (req, res) => {
     try {
         const transaksi = await Transaksi.findAll({
             where: { investorId: req.user.id },
+            include: {
+                model: Investasi,
+                as: "investasi",
+            },
         });
+
         res.status(200).json({
-            message: "Data Transaksi!",
+            message: "Data Transaksi dan Investasi berhasil diambil!",
             data: transaksi,
         });
     } catch (error) {
