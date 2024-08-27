@@ -26,6 +26,7 @@ module.exports = {
                 minimum_investasi: faker.number.bigInt(),
                 maksimum_investasi: faker.number.bigInt(),
                 tenor: faker.lorem.word(),
+                target_pendanaan: 100000000000,
                 pembayaran_bagi_hasil: faker.lorem.word(),
                 tanggal_pembukaan_penawaran: faker.date.past(),
                 tanggal_berakhir_penawaran: faker.date.past(),
