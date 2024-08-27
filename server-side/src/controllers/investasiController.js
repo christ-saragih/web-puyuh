@@ -118,7 +118,7 @@ exports.create = async (req, res) => {
     }
 };
 
-// Read All
+// // Read All
 exports.findAll = async (req, res) => {
     try {
         const now = new Date();
@@ -143,11 +143,12 @@ exports.findAll = async (req, res) => {
                 },
             }
         );
+
         const investasi = await Investasi.findAll({
             include: {
                 model: Transaksi,
                 as: "transaksi",
-                attributes: ["investorId"],
+                attributes: ["investorId", "total_investasi"], // Ambil total_investasi juga
                 include: {
                     model: Investor,
                     as: "investor",
@@ -155,43 +156,53 @@ exports.findAll = async (req, res) => {
                     include: {
                         model: InvestorBiodata,
                         as: "investorBiodata",
-                        attributes: ["nama_lengkap"], // Ambil nama_lengkap dari biodataInvestor
+                        attributes: ["nama_lengkap", "foto_profil"], // Ambil nama_lengkap dari biodataInvestor
                     },
                 },
             },
         });
 
-        // Proses data untuk menghapus duplikat investorId di transaksi dan menyertakan nama_lengkap
-        const investasiWithUniqueTransaksi = investasi.map((item) => {
+        // Proses data untuk mengakumulasi total_investasi berdasarkan investorId dan investasiId
+        const investasiWithTotal = investasi.map((item) => {
             const transaksi = item.transaksi;
 
-            // Mengelompokkan transaksi berdasarkan investorId dan menghapus duplikat
-            const uniqueTransaksi = transaksi.reduce((acc, current) => {
-                const x = acc.find(
-                    (item) => item.investorId === current.investorId
-                );
-                if (!x) {
-                    acc.push({
+            // Gunakan objek sebagai map untuk akumulasi total_investasi
+            const transaksiMap = {};
+
+            transaksi.forEach((current) => {
+                const key = `${current.investorId}-${item.id}`; // Buat kunci unik berdasarkan investorId dan investasiId
+
+                if (transaksiMap[key]) {
+                    // Jika kunci sudah ada, tambahkan total_investasi
+                    transaksiMap[key].total_investasi +=
+                        current.total_investasi;
+                } else {
+                    // Jika belum ada, tambahkan data transaksi baru
+                    transaksiMap[key] = {
                         investorId: current.investorId,
                         nama_lengkap:
                             current.investor.investorBiodata.nama_lengkap,
-                    });
+                        foto_profil:
+                            current.investor.investorBiodata.foto_profil,
+                        total_investasi: current.total_investasi,
+                        // investasiId: item.id,
+                    };
                 }
-                return acc;
-            }, []);
+            });
 
-            // Mengembalikan objek investasi dengan transaksi unik
+            // Mengubah transaksiMap kembali menjadi array dengan transaksi unik
+            const uniqueTransaksi = Object.values(transaksiMap);
+
+            // Mengembalikan objek investasi dengan transaksi yang telah diakumulasi dan unik
             return {
                 ...item.toJSON(),
                 transaksi: uniqueTransaksi,
             };
         });
-        // console.log(investasi);
-        // exit();
 
         res.status(200).json({
-            message: "Data  berhasil diambil!",
-            data: investasiWithUniqueTransaksi,
+            message: "Data berhasil diambil!",
+            data: investasiWithTotal,
         });
     } catch (error) {
         res.status(500).json({
@@ -200,6 +211,59 @@ exports.findAll = async (req, res) => {
         });
     }
 };
+
+// // Read All
+// exports.findAll = async (req, res) => {
+//     try {
+//         const now = new Date();
+
+//         // Perbarui status investasi sebelum mengambil data
+//         await Investasi.update(
+//             { status: "proses" },
+//             {
+//                 where: {
+//                     status: "segera",
+//                     tanggal_pembukaan_penawaran: { [Op.lte]: now },
+//                 },
+//             }
+//         );
+
+//         await Investasi.update(
+//             { status: "selesai" },
+//             {
+//                 where: {
+//                     status: "proses",
+//                     tanggal_berakhir_penawaran: { [Op.lte]: now },
+//                 },
+//             }
+//         );
+//         const investasi = await Investasi.findAll({
+//             include: {
+//                 model: Transaksi,
+//                 as: "transaksi",
+//                 attributes: ["id", "total_investasi"],
+//                 include: {
+//                     model: Investor,
+//                     as: "investor",
+//                     include: {
+//                         model: InvestorBiodata,
+//                         as: "investorBiodata",
+//                     },
+//                 },
+//             },
+//         });
+
+//         res.status(200).json({
+//             message: "Data  berhasil diambil!",
+//             data: investasi,
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Internal server error",
+//             error: error.message,
+//         });
+//     }
+// };
 
 // Get all transactions by investasi Id
 exports.getAllTransactionByInvestasiId = async (req, res) => {
