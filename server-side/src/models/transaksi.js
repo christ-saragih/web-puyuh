@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: "investorId",
                 as: "investor",
             });
+            Transaksi.belongsTo(models.Investasi, {
+                foreignKey: "investasiId",
+                as: "investasi",
+            });
         }
     }
     Transaksi.init(
