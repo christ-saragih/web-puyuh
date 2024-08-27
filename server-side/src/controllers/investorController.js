@@ -4,6 +4,7 @@ const {
     InvestorIdentitas,
     InvestorDataPendukung,
     InvestorAlamat,
+    Transaksi,
 } = require("../models");
 const bcrypt = require("bcrypt");
 
@@ -102,5 +103,23 @@ exports.ubahPassword = async (req, res) => {
                 error: error.message,
             });
         }
+    }
+};
+
+// Get all transactions Investor
+exports.getAllInvestorTransaction = async (req, res) => {
+    try {
+        const transaksi = await Transaksi.findAll({
+            where: { investorId: req.user.id },
+        });
+        res.status(200).json({
+            message: "Data Transaksi!",
+            data: transaksi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
     }
 };

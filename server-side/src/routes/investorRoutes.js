@@ -2,18 +2,19 @@ const express = require("express");
 const router = express.Router();
 const investorController = require("../controllers/investorController");
 
-const {
-    authenticateInvestorToken,
-} = require("../middleware/authenticateInvestorToken");
-const authorizeRole = require("../middleware/authorizeRole");
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 router.get("/", investorController.findAll);
 router.get("/:id", investorController.findOne);
 router.post(
     "/ubah-password",
-    authenticateInvestorToken,
-    authorizeRole("investor"),
+    authenticateToken("investor"),
     investorController.ubahPassword
+);
+router.get(
+    "/transaksi/all",
+    authenticateToken("investor"),
+    investorController.getAllInvestorTransaction
 );
 
 module.exports = router;
