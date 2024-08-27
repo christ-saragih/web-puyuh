@@ -383,14 +383,66 @@ exports.findOne = async (req, res) => {
 exports.findDataBySlug = async (req, res) => {
     try {
         const investasi = await Investasi.findOne({
-            where: { slug: req.params.slug },
+            where: { slug: req.params.slug }, // Cari investasi berdasarkan slug
+            include: {
+                model: Transaksi,
+                as: "transaksi",
+                attributes: ["investorId", "total_investasi"], // Ambil total_investasi juga
+                include: {
+                    model: Investor,
+                    as: "investor",
+                    attributes: ["id"], // Atribut lain yang diperlukan
+                    include: {
+                        model: InvestorBiodata,
+                        as: "investorBiodata",
+                        attributes: ["nama_lengkap", "foto_profil"], // Ambil nama_lengkap dan foto_profil dari biodataInvestor
+                    },
+                },
+            },
         });
+
         if (!investasi) {
-            return res.status(404).json({ message: "Investasi tidak!" });
+            return res.status(404).json({
+                message: "Investasi tidak ditemukan!",
+            });
         }
+
+        // Proses data untuk mengakumulasi total_investasi berdasarkan investorId dan investasiId
+        const transaksi = investasi.transaksi;
+
+        // Gunakan objek sebagai map untuk akumulasi total_investasi
+        const transaksiMap = {};
+
+        transaksi.forEach((current) => {
+            const key = `${current.investorId}-${investasi.id}`; // Buat kunci unik berdasarkan investorId dan investasiId
+
+            if (transaksiMap[key]) {
+                // Jika kunci sudah ada, tambahkan total_investasi
+                transaksiMap[key].total_investasi += current.total_investasi;
+            } else {
+                // Jika belum ada, tambahkan data transaksi baru
+                transaksiMap[key] = {
+                    investorId: current.investorId,
+                    nama_lengkap: current.investor.investorBiodata.nama_lengkap,
+                    foto_profil: current.investor.investorBiodata.foto_profil,
+                    total_investasi: current.total_investasi,
+                    // investasiId: investasi.id,
+                };
+            }
+        });
+
+        // Mengubah transaksiMap kembali menjadi array dengan transaksi unik
+        const uniqueTransaksi = Object.values(transaksiMap);
+
+        // Mengembalikan objek investasi dengan transaksi yang telah diakumulasi dan unik
+        const investasiWithTotal = {
+            ...investasi.toJSON(),
+            transaksi: uniqueTransaksi,
+        };
+
         res.status(200).json({
-            message: "Data  berhasil diambil",
-            data: investasi,
+            message: "Data Investasi berhasil diambil!",
+            data: investasiWithTotal,
         });
     } catch (error) {
         res.status(500).json({
