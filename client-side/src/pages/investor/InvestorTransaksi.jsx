@@ -167,15 +167,15 @@ const InvestorTransaksi = () => {
                             </thead>
                             <tbody>
                                 {/* Map transaksi to display each transaction */}
-                                {/* {transaksi.length > 0 ? (
+                                {transaksi.length > 0 ? (
                                     transaksi.map((transaction, index) => (
                                         <tr key={transaction.id} className="bg-white border-b hover:bg-gray-50">
                                             <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
                                                 {index + 1}
                                             </th>
-                                            <td className="px-6 py-4">{transaction.title}</td>
-                                            <td className="px-6 py-4 text-center">{transaction.date}</td>
-                                            <td className="px-6 py-4 text-center">Rp {transaction.amount}</td>
+                                            <td className="px-6 py-4">{transaction.investasi.judul}</td>
+                                            <td className="px-6 py-4 text-center">{transaction.tanggal_transaksi}</td>
+                                            <td className="px-6 py-4 text-center">{formatRupiah (transaction.total_investasi)}</td>
                                             <td className="px-6 py-4 text-center">{transaction.status}</td>
                                             <td className="px-6 py-4 text-center">
                                                 <FontAwesomeIcon icon={faEye} />
@@ -188,7 +188,7 @@ const InvestorTransaksi = () => {
                                             Tidak ada transaksi ditemukan
                                         </td>
                                     </tr>
-                                )} */}
+                                )}
                             </tbody>
                         </table>
                     </div>
