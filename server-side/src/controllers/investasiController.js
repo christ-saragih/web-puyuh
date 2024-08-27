@@ -152,7 +152,7 @@ exports.findAll = async (req, res) => {
                 include: {
                     model: Investor,
                     as: "investor",
-                    attributes: ["id"], // Atribut lain yang diperlukan
+                    attributes: ["id", "kategori_investor"], // Atribut lain yang diperlukan
                     include: {
                         model: InvestorBiodata,
                         as: "investorBiodata",
@@ -185,6 +185,7 @@ exports.findAll = async (req, res) => {
                         foto_profil:
                             current.investor.investorBiodata.foto_profil,
                         total_investasi: current.total_investasi,
+                        kategori_investor: current.investor.kategori_investor,
                         // investasiId: item.id,
                     };
                 }
@@ -391,7 +392,7 @@ exports.findDataBySlug = async (req, res) => {
                 include: {
                     model: Investor,
                     as: "investor",
-                    attributes: ["id"], // Atribut lain yang diperlukan
+                    attributes: ["id", "kategori_investor"], // Atribut lain yang diperlukan
                     include: {
                         model: InvestorBiodata,
                         as: "investorBiodata",
@@ -426,6 +427,7 @@ exports.findDataBySlug = async (req, res) => {
                     nama_lengkap: current.investor.investorBiodata.nama_lengkap,
                     foto_profil: current.investor.investorBiodata.foto_profil,
                     total_investasi: current.total_investasi,
+                    kategori_investor: current.investor.kategori_investor,
                     // investasiId: investasi.id,
                 };
             }
