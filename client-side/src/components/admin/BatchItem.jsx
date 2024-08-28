@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Admin from "../../assets/images/admin.svg";
 import BatchInvestasi from "../../assets/images/batch_investasi.png";
-import { Dropdown } from "flowbite-react";
+import { Dropdown, Tooltip } from "flowbite-react";
 import {
   PiCalendarCheck,
   PiClockCountdown,
@@ -9,8 +9,12 @@ import {
   PiEyeBold,
   PiNotePencilBold,
   PiTrashBold,
+  PiUserBold,
   PiUserCircleFill,
+  PiUsersThreeBold,
 } from "react-icons/pi";
+import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining";
+import { formatRupiah } from "../../utils/formatRupiah";
 
 const BatchItem = (props) => {
   const {
@@ -33,55 +37,61 @@ const BatchItem = (props) => {
     tanggal_pembukaan_penawaran,
     tanggal_berakhir_penawaran,
     status,
+    transaksi = [],
     openModal,
   } = props;
 
-  const [daysRemaining, setDaysRemaining] = useState(0);
+  const [percentage, setPercentage] = useState(0);
+
+  const daysRemaining = calculateDaysRemaining(
+    tanggal_pembukaan_penawaran,
+    tanggal_berakhir_penawaran
+  );
+
+  // mengambil total investor
+  const totalInvestor = transaksi.length;
 
   useEffect(() => {
-    // Parsing tanggal
-    const pembukaanDate = new Date(tanggal_pembukaan_penawaran);
-    const berakhirDate = new Date(tanggal_berakhir_penawaran);
-
-    // Menghitung selisih waktu dalam milidetik
-    const timeDiff = berakhirDate - pembukaanDate;
-
-    // Mengonversi milidetik ke hari
-    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-    // Set state untuk waktu yang tersisa
-    setDaysRemaining(days);
-  }, [tanggal_pembukaan_penawaran, tanggal_berakhir_penawaran]);
+    setPercentage(Math.round((total_pendanaan / target_pendanaan) * 100));
+  }, [total_pendanaan, target_pendanaan]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg">
+    <div className="bg-white rounded-2xl shadow-lg flex flex-col">
       <img
         src={`http://localhost:3000/api/investasi/image/${gambar}`}
         alt={gambar}
         className="h-44 w-full object-cover rounded-t-2xl rounded-b-xl shadow"
       />
-      <div className="p-4 flex flex-col">
-        <div className="relative flex flex-col items-center mb-5 px-6 text-center">
+      <div className="p-4 flex flex-col grow">
+        <div className="relative flex flex-col items-center mb-5 px-6 text-center grow">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900 leading-tight px-2">
             {judul}
           </h2>
           <p className="font-medium text-gray-700 mb-3">{penerbit}</p>
           <div className="flex -space-x-2">
-            <img
-              src={Admin}
-              alt="investor"
-              className="h-8 w-8 rounded-full border-2 border-white"
-            />
-            <img
-              src={Admin}
-              alt="investor"
-              className="h-8 w-8 rounded-full border-2 border-white"
-            />
-            <img
-              src={Admin}
-              alt="investor"
-              className="h-8 w-8 rounded-full border-2 border-white"
-            />
+            {/* 3 investor dengan investasi tertinggi */}
+            {transaksi.map((investor) => (
+              <Tooltip
+                key={investor.investorId}
+                content={investor.nama_lengkap}
+                placement="bottom"
+               
+              >
+                <div className="h-10 w-10 bg-gray-200 rounded-full overflow-hidden border-[3px] border-white p-1">
+                  {investor.foto_profil ? (
+                    <img
+                      src={investor.foto_profil}
+                      alt={investor.nama_lengkap}
+                      className="w-full h-full"
+                    />
+                  ) : investor.kategori_investor === "organisasi" ? (
+                    <PiUsersThreeBold className="w-full h-full" />
+                  ) : (
+                    <PiUserBold className="w-full h-full" />
+                  )}
+                </div>
+              </Tooltip>
+            ))}
           </div>
 
           <div className="absolute top-[2px] right-0 cursor-pointer">
@@ -97,7 +107,7 @@ const BatchItem = (props) => {
             >
               <Dropdown.Item
                 icon={PiEyeBold}
-                onClick={() => openModal("detail_investment")}
+                onClick={() => openModal("detail_investment", { slug })}
               >
                 Detail
               </Dropdown.Item>
@@ -140,7 +150,7 @@ const BatchItem = (props) => {
           <div className="flex items-center justify-between mb-1">
             <p>Dana Terkumpul</p>
             <p className="font-semibold text-lg text-[#e3a008]">
-              Rp{total_pendanaan === (undefined || null) ? 0 : total_pendanaan}
+              {formatRupiah(total_pendanaan === null ? 0 : total_pendanaan)}
             </p>
           </div>
 
@@ -148,11 +158,11 @@ const BatchItem = (props) => {
             <div
               className="text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
               style={{
-                width: "25%",
+                width: `${percentage}%`,
                 backgroundColor: "#e3a008",
               }}
             >
-              25%
+              {percentage}%
             </div>
           </div>
         </div>
@@ -160,7 +170,10 @@ const BatchItem = (props) => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-1 text-slate-700">
             <PiUserCircleFill className="w-6 h-6" />
-            <p className="font-medium">10 investor</p>
+            {/* total investor */}
+            <p className="font-medium">
+              {totalInvestor > 0 ? totalInvestor : 0}
+            </p>
           </div>
 
           {daysRemaining > 0 ? (

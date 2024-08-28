@@ -6,14 +6,29 @@ import AdminLayout from "../../layouts/AdminLayout.jsx";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { PiPlusCircle } from "react-icons/pi";
+import {
+  PiCalendarCheckDuotone,
+  PiCalendarDotsDuotone,
+  PiCalendarXDuotone,
+  PiMoneyWavyDuotone,
+  PiPercent,
+  PiPlusCircle,
+  PiTargetDuotone,
+  PiUserBold,
+  PiUsersThreeBold,
+} from "react-icons/pi";
 import {
   getBatchs,
+  getDetailInvestasiBySlug,
   addInvestment,
   updateInvestment,
   deleteInvestment,
 } from "../../services/batch.service.js";
 import BatchList from "../../components/admin/BatchList.jsx";
+import { Tabs } from "flowbite-react";
+import { formatDate } from "../../utils/formatDate.js";
+import { formatRupiah } from "../../utils/formatRupiah.js";
+import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining.js";
 
 const AdminInvestasi = () => {
   const [investments, setInvestments] = useState([]);
@@ -28,11 +43,13 @@ const AdminInvestasi = () => {
     bagi_hasil: "",
     minimum_investasi: "",
     maksimum_investasi: "",
+    total_pendanaan: "",
     target_pendanaan: "",
     tenor: "",
     pembayaran_bagi_hasil: "",
     tanggal_pembukaan_penawaran: "",
     tanggal_berakhir_penawaran: "",
+    transaksi: [],
   });
 
   const [selectedInvestment, setSelectedInvestment] = useState(null);
@@ -152,6 +169,32 @@ const AdminInvestasi = () => {
     setModalType(type);
     setIsModalOpen(true);
 
+    if (type === "detail_investment" && investment) {
+      setSelectedInvestment(investment);
+
+      getDetailInvestasiBySlug(investment.slug, (investment) => {
+        setFormInvestment({
+          judul: investment.judul,
+          deskripsi: investment.deskripsi,
+          gambar: investment.gambar,
+          alamat: investment.alamat,
+          url_map: investment.url_map,
+          penerbit: investment.penerbit,
+          penggunaan_dana: investment.penggunaan_dana,
+          bagi_hasil: investment.bagi_hasil,
+          minimum_investasi: investment.minimum_investasi,
+          maksimum_investasi: investment.maksimum_investasi,
+          total_pendanaan: investment.total_pendanaan,
+          target_pendanaan: investment.target_pendanaan,
+          tenor: investment.tenor,
+          pembayaran_bagi_hasil: investment.pembayaran_bagi_hasil,
+          tanggal_pembukaan_penawaran: investment.tanggal_pembukaan_penawaran,
+          tanggal_berakhir_penawaran: investment.tanggal_berakhir_penawaran,
+          transaksi: investment.transaksi,
+        });
+      });
+    }
+
     if (type === "update_investment" && investment) {
       setSelectedInvestment(investment);
       setFormInvestment({
@@ -204,6 +247,7 @@ const AdminInvestasi = () => {
       pembayaran_bagi_hasil: "",
       tanggal_pembukaan_penawaran: "",
       tanggal_berakhir_penawaran: "",
+      transaksi: [],
     });
     setPreviewImage("");
     setSelectedInvestment(null);
@@ -491,13 +535,320 @@ const AdminInvestasi = () => {
                 <>
                   <Modal.Header title="Detail Investasi" onClose={closeModal} />
                   <Modal.Body>
-                    <p>Halaman Detail Batch Investasi</p>
+                    {console.log(formInvestment)}
+                    {console.log(formInvestment)}
+                    <div className="max-w-3xl mx-auto">
+                      <div className="h-96 mb-4 rounded-xl overflow-hidden">
+                        <img
+                          src={`http://localhost:3000/api/investasi/image/${formInvestment.gambar}`}
+                          alt="gambar"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between mb-10">
+                        <div>
+                          <h2 className="font-bold text-3xl mb-1">
+                            {formInvestment.judul}
+                          </h2>
+                          <p className="font-medium text-lg">
+                            {formInvestment.penerbit}
+                          </p>
+                        </div>
+                        <div className="bg-[#FFA90B] font-semibold text-white text-lg text-center py-1 w-32 rounded-3xl">
+                          {calculateDaysRemaining(
+                            formInvestment.tanggal_pembukaan_penawaran,
+                            formInvestment.tanggal_berakhir_penawaran
+                          )}{" "}
+                          hari lagi
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-semibold text-2xl text-[#FFA90B]">
+                            {formatRupiah(formInvestment.total_pendanaan)}
+                          </p>
+                          <p>{`dari target dana ${formatRupiah(
+                            formInvestment.target_pendanaan
+                          )}`}</p>
+                        </div>
+                        {/* total investor */}
+                        <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 w-32 rounded-3xl">
+                          {formInvestment.transaksi.length} investor
+                        </div>
+                      </div>
+
+                      <div className="w-full bg-gray-200 rounded-full mb-12">
+                        <div
+                          className="bg-[#e3a008] font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                          style={{
+                            width: `${Math.round(
+                              (formInvestment.total_pendanaan /
+                                formInvestment.target_pendanaan) *
+                                100
+                            )}%`,
+                            backgroundColor: "#e3a008",
+                          }}
+                        >
+                          {" "}
+                          {Math.round(
+                            (formInvestment.total_pendanaan /
+                              formInvestment.target_pendanaan) *
+                              100
+                          )}
+                          %
+                        </div>
+                      </div>
+
+                      {/* <div className="grid grid-cols-2 gap-4 my-12">
+                        <a
+                          href="#"
+                          className="py-2 text-lg font-semibold text-center text-[#4B241A] border-2 border-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
+                        >
+                          Unduh Proposal
+                        </a>
+                        <a
+                          href="#"
+                          className="py-2 text-lg font-semibold text-center text-[#4B241A] border-2 border-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
+                        >
+                          Bagikan Bisnis
+                        </a>
+                      </div> */}
+
+                      <Tabs aria-label="Pills" variant="pills">
+                        <Tabs.Item active title="Tentang Bisnis">
+                          <div>
+                            <div className="format min-w-full">
+                              <p
+                                className="text-black"
+                                dangerouslySetInnerHTML={{
+                                  __html: formInvestment.deskripsi,
+                                }}
+                              ></p>
+                            </div>
+                            <h3 className="text-2xl mb-4 font-semibold">
+                              Penggunaan Dana
+                            </h3>{" "}
+                            {formInvestment.penggunaan_dana}
+                          </div>
+                        </Tabs.Item>
+                        <Tabs.Item title="Profil Bisnis">
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-1">
+                                <PiCalendarCheckDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Tanggal Dibuka
+                                </p>
+                                <p>
+                                  {formatDate(
+                                    formInvestment.tanggal_pembukaan_penawaran
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-1">
+                                <PiCalendarXDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Tanggal Ditutup
+                                </p>
+                                <p>
+                                  {formatDate(
+                                    formInvestment.tanggal_berakhir_penawaran
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-1">
+                                <PiTargetDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Target Pendanaan
+                                </p>
+                                <p>
+                                  {formatRupiah(
+                                    formInvestment.target_pendanaan
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-1">
+                                <PiPercent className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Bagi Hasil
+                                </p>
+                                <p>{formInvestment.bagi_hasil}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-1">
+                                <PiCalendarDotsDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">Tenor</p>
+                                <p>{formInvestment.tenor}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-1">
+                                <PiCalendarCheckDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Pembayaran Bagi Hasil
+                                </p>
+                                <p>{formInvestment.pembayaran_bagi_hasil}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-2">
+                                <PiMoneyWavyDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Minimum Investasi
+                                </p>
+                                <p>
+                                  {formatRupiah(
+                                    formInvestment.minimum_investasi
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-16 p-2">
+                                <PiMoneyWavyDuotone className="w-full h-full" />
+                              </div>
+                              <div>
+                                <p className="text-lg font-medium">
+                                  Maksimum Investasi
+                                </p>
+                                <p>
+                                  {formatRupiah(
+                                    formInvestment.maksimum_investasi
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </Tabs.Item>
+                        <Tabs.Item title="Lokasi">
+                          <div className="mt-2">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: formInvestment.url_map,
+                              }}
+                              style={{ width: "100%" }}
+                            />
+                            <p className="mt-2">{formInvestment.alamat}</p>
+                          </div>
+                        </Tabs.Item>
+                        <Tabs.Item title="Investor">
+                          {/* total investor */}
+                          <h3 className="text-2xl font-semibold mb-4">
+                            Investor ({formInvestment.transaksi.length})
+                          </h3>
+
+                          <div className="flex flex-col gap-4">
+                            {formInvestment.transaksi.map((investor) => (
+                              <div
+                                key={investor.investorId}
+                                className="flex gap-3 items-center"
+                              >
+                                <div className="w-16 h-16 p-1 bg-gray-200 rounded-full overflow-hidden p-2">
+                                  {investor.foto_profil ? (
+                                    <img
+                                      src={investor.foto_profil}
+                                      alt={investor.nama_lengkap}
+                                      className="w-full h-full"
+                                    />
+                                  ) : investor.kategori_investor ===
+                                    "organisasi" ? (
+                                    <PiUsersThreeBold className="w-full h-full" />
+                                  ) : (
+                                    <PiUserBold className="w-full h-full" />
+                                  )}
+                                </div>
+                                
+                                <div className="grow">
+                                  <p className="text-lg font-medium">
+                                    {investor.nama_lengkap}
+                                  </p>
+                                  <p>{investor.kategori_investor}</p>
+                                </div>
+                                <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
+                                  {formatRupiah(investor.total_investasi)}
+                                </div>
+                              </div>
+                            ))}
+
+                            {/* <div className="flex gap-3 items-center">
+                              <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
+                                <PiUserBold className="w-full h-full" />
+                              </div>
+                              <div className="grow">
+                                <p className="text-lg font-medium">
+                                  Bennefit Christy Saragih
+                                </p>
+                                <p>Individu</p>
+                              </div>
+                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
+                                Rp700.000.000
+                              </div>
+                            </div>
+                            <div className="flex gap-3 items-center">
+                              <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
+                                <PiUserBold className="w-full h-full" />
+                              </div>
+                              <div className="grow">
+                                <p className="text-lg font-medium">
+                                  Jonathon Sicina
+                                </p>
+                                <p>Individu</p>
+                              </div>
+                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
+                                Rp667.000.000
+                              </div>
+                            </div>
+                            <div className="flex gap-3 items-center">
+                              <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
+                                <PiUserBold className="w-full h-full" />
+                              </div>
+                              <div className="grow">
+                                <p className="text-lg font-medium">
+                                  Iqbal Salim
+                                </p>
+                                <p>Individu</p>
+                              </div>
+                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
+                                Rp500.000
+                              </div>
+                            </div> */}
+                          </div>
+                        </Tabs.Item>
+                      </Tabs>
+
+                      {/* <div className=" fixed bottom-0 left-1/2 transform -translate-x-1/2 z-20 w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-center md:p-6">
+                        <a
+                          href="#"
+                          className="max-w-3xl w-full py-2 text-xl font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
+                        >
+                          Beli Saham
+                        </a>
+                      </div> */}
+                    </div>
                   </Modal.Body>
-                  <Modal.Footer
-                    action="Hapus"
-                    // onAction={handleDeleteInvestment}
-                    onClose={closeModal}
-                  />
+                  <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
                 </>
               )}
             </Modal>
