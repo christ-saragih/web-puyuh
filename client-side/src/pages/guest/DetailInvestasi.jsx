@@ -34,6 +34,16 @@ const DetailInvestasi = () => {
     return <div>Data artikel tidak ditemukan!</div>;
   }
 
+  // Mengambil total dan target dari objek investasi
+  const total = investasi.total_pendanaan;
+  const target = investasi.target_pendanaan;
+
+  // Kalkulasi persentase
+  const percentage = Math.round((total / target) * 100);
+  const bgColor = percentage < 100 ? "#e3a008" : "#057a55";
+  const textColor = percentage < 100 ? "#e3a008" : "#057a55";
+  const statusText = percentage < 100 ? "terkumpul" : "tercapai";
+
   return (
     <>
       <Navbar />
@@ -58,8 +68,8 @@ const DetailInvestasi = () => {
 
           <div className="flex items-center justify-between mb-2">
             <div>
-              <p className="font-bold text-2xl">Rp540.050.000</p>
-              <p>dari target dana Rp4.062.500.000</p>
+              <p className="font-bold text-2xl">{formatRupiah(total)}</p>
+              <p>dari target dana {formatRupiah(target)}</p>
             </div>
             <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 w-32 rounded-3xl">
             {investasi.transaksi.length} investor
@@ -68,7 +78,7 @@ const DetailInvestasi = () => {
 
           <div className="w-full bg-gray-200 rounded-full">
             <div className="bg-[#e3a008] font-medium text-blue-100 text-center p-0.5 leading-none rounded-full w-1/2">
-              50%
+              {percentage} %
             </div>
           </div>
 
