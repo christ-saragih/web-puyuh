@@ -46,7 +46,7 @@ export const updateInvestment = (id, data, callback) => {
 
 export const deleteInvestment = (id, callback) => {
   axiosInstance
-    .delete(`/investasi/${id}`)
+    .delete(`/investasi/${id}`, { withCredentials: true })
     .then(() => {
       callback();
     })
