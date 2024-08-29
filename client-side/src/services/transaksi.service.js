@@ -2,7 +2,7 @@ import { axiosInstance } from "../lib/axios";
 
 export const getTransaksi = (callback, token) => {
   axiosInstance
-    .get('/investor/transaksi/all', {
+    .get('/investor/me/transaksi', {
       headers: {
         Authorization: `Bearer ${token}`, // Sertakan token di sini
       },
