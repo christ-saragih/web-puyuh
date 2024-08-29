@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
             no_sid,
             tanggal_pembuatan_sid,
         } = req.body;
-        const investorId = req.investor.id;
+        const investorId = req.user.id;
         // console.log(investorId);
         // exit();
         const investorDataPendukung = await InvestorDataPendukung.create({
@@ -178,11 +178,11 @@ exports.upsert = async (req, res) => {
         } = req.body;
 
         const investorDataPendukung = await InvestorDataPendukung.findOne({
-            where: { investorId: req.investor.id },
+            where: { investorId: req.user.id },
         });
 
         if (!investorDataPendukung) {
-            const investorId = req.investor.id;
+            const investorId = req.user.id;
             const investorDataPendukung = await InvestorDataPendukung.create({
                 investorId: investorId,
                 latar_pendidikan,

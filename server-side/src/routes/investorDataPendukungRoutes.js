@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const investorDataPendukungController = require("../controllers/investorDataPendukungController");
-const {
-    authenticateInvestorToken,
-} = require("../middleware/authenticateInvestorToken");
+
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 const validate = require("../middleware/validationMiddleware");
 const {
     createSchema,
@@ -18,7 +18,7 @@ const {
 // );
 router.put(
     "/:id",
-    authenticateInvestorToken,
+    authenticateToken("investor"),
     validate(updateSchema),
     investorDataPendukungController.update
 );
@@ -27,7 +27,7 @@ router.get("/:id", investorDataPendukungController.findOne);
 router.delete("/:id", investorDataPendukungController.delete);
 router.post(
     "/",
-    authenticateInvestorToken,
+    authenticateToken("investor"),
     validate(updateSchema),
     investorDataPendukungController.upsert
 );

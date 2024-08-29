@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const investorAlamatController = require("../controllers/investorAlamatController");
-const {
-    authenticateInvestorToken,
-} = require("../middleware/authenticateInvestorToken");
+
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 const validate = require("../middleware/validationMiddleware");
 const {
     createSchema,
@@ -18,7 +18,7 @@ const {
 // );
 router.put(
     "/:id",
-    authenticateInvestorToken,
+    authenticateToken("investor"),
     validate(updateSchema),
     investorAlamatController.update
 );
@@ -28,7 +28,7 @@ router.delete("/:id", investorAlamatController.delete);
 
 router.post(
     "/",
-    authenticateInvestorToken,
+    authenticateToken("investor"),
     validate(updateSchema),
     investorAlamatController.upsert
 );

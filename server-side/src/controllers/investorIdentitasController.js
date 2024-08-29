@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
     try {
         const { no_ktp, no_npwp } = req.body;
 
-        const investorId = req.investor.id;
+        const investorId = req.user.id;
 
         const foto_ktp =
             req.files && req.files.foto_ktp
@@ -343,7 +343,7 @@ exports.upsert = async (req, res) => {
         const { no_ktp, no_npwp } = req.body;
 
         const investorIdentitas = await InvestorIdentitas.findOne({
-            where: { investorId: req.investor.id },
+            where: { investorId: req.user.id },
         });
 
         const foto_ktp =
@@ -406,7 +406,7 @@ exports.upsert = async (req, res) => {
                 );
             }
 
-            const investorId = req.investor.id;
+            const investorId = req.user.id;
             const investorIdentitas = await InvestorIdentitas.create({
                 investorId,
                 no_ktp,
