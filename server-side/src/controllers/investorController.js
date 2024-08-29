@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const {
     Investasi,
     Investor,
@@ -49,10 +50,22 @@ exports.findOne = async (req, res) => {
     try {
         const investor = await Investor.findByPk(req.params.id, {
             include: [
-                InvestorBiodata,
-                InvestorIdentitas,
-                InvestorDataPendukung,
-                InvestorAlamat,
+                {
+                    model: InvestorBiodata,
+                    as: "investorBiodata",
+                },
+                {
+                    model: InvestorIdentitas,
+                    as: "investorIdentitas",
+                },
+                {
+                    model: InvestorDataPendukung,
+                    as: "investorDataPendukung",
+                },
+                {
+                    model: InvestorAlamat,
+                    as: "investorAlamat",
+                },
             ],
         });
         if (!investor) {
@@ -121,6 +134,77 @@ exports.getAllInvestorTransaction = async (req, res) => {
         res.status(200).json({
             message: "Data Transaksi dan Investasi berhasil diambil!",
             data: transaksi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+exports.getDetailInvestorTransaction = async (req, res) => {
+    try {
+        const { transaksiId } = req.params;
+
+        const transaksi = await Transaksi.findOne({
+            where: {
+                id: transaksiId,
+                investorId: req.user.id,
+            },
+            include: {
+                model: Investasi,
+                as: "investasi",
+            },
+        });
+
+        if (!transaksi) {
+            return res.status(404).json({
+                message:
+                    "Transaksi tidak ditemukan atau tidak berhak mengakses transaksi ini",
+            });
+        }
+
+        res.status(200).json({
+            message: "Detail Transaksi dan Investasi berhasil diambil!",
+            data: transaksi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+exports.getAllInvestorByInvestorKategori = async (req, res) => {
+    try {
+        const { kategori_investor } = req.query;
+        const investor = await Investor.findAll({
+            where: { kategori_investor },
+            include: [
+                {
+                    model: InvestorBiodata,
+                    as: "investorBiodata",
+                },
+                {
+                    model: InvestorIdentitas,
+                    as: "investorIdentitas",
+                },
+                {
+                    model: InvestorDataPendukung,
+                    as: "investorDataPendukung",
+                },
+                {
+                    model: InvestorAlamat,
+                    as: "investorAlamat",
+                },
+            ],
+        });
+
+        res.status(200).json({
+            message: "Data Investor Berdasarkan Kategori Berhasil diambil!",
+            data: investor,
         });
     } catch (error) {
         res.status(500).json({

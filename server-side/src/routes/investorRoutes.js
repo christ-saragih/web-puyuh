@@ -12,9 +12,14 @@ router.post(
     investorController.ubahPassword
 );
 router.get(
-    "/transaksi/all",
+    "/me/transaksi/",
     authenticateToken("investor"),
     investorController.getAllInvestorTransaction
+);
+router.get(
+    "/transaksi/:transaksiId",
+    authenticateToken("investor"),
+    investorController.getDetailInvestorTransaction
 );
 
 module.exports = router;
