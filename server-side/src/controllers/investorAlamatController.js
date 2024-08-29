@@ -8,7 +8,7 @@ exports.create = async (req, res) => {
     try {
         const { alamat, provinsi, kota, kecamatan, kelurahan, kode_pos } =
             req.body;
-        const investorId = req.investor.id;
+        const investorId = req.user.id;
         // console.log(investorId);
         // exit();
         const investorAlamat = await InvestorAlamat.create({
@@ -149,11 +149,11 @@ exports.upsert = async (req, res) => {
             req.body;
 
         const investorAlamat = await InvestorAlamat.findOne({
-            where: { investorId: req.investor.id },
+            where: { investorId: req.user.id },
         });
 
         if (!investorAlamat) {
-            const investorId = req.investor.id;
+            const investorId = req.user.id;
 
             const investorAlamat = await InvestorAlamat.create({
                 investorId: investorId,

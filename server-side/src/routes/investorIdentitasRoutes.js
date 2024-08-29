@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const investorIndentitasController = require("../controllers/investorIdentitasController");
-const {
-    authenticateInvestorToken,
-} = require("../middleware/authenticateInvestorToken");
+
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 const validate = require("../middleware/validationMiddleware");
 const {
     createSchema,
@@ -37,7 +37,7 @@ const {
 // );
 router.put(
     "/:id",
-    authenticateInvestorToken,
+    authenticateToken("investor"),
     upload.fields([
         { name: "foto_ktp", maxCount: 1 },
         { name: "foto_npwp", maxCount: 1 },
@@ -55,7 +55,7 @@ router.delete("/:id", investorIndentitasController.delete);
 router.get("/image/:imageName", investorIndentitasController.getImageByName);
 router.post(
     "/",
-    authenticateInvestorToken,
+    authenticateToken("investor"),
     upload.fields([
         { name: "foto_ktp", maxCount: 1 },
         { name: "foto_npwp", maxCount: 1 },

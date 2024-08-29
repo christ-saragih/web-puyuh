@@ -225,11 +225,11 @@ exports.upsert = async (req, res) => {
         } = req.body;
 
         const investorBiodata = await InvestorBiodata.findOne({
-            where: { investorId: req.investor.id },
+            where: { investorId: req.user.id },
         });
 
         const investor = await Investor.findOne({
-            where: { id: req.investor.id },
+            where: { id: req.user.id },
         });
 
         const foto_profil = req.file ? req.file.buffer : null;
@@ -267,8 +267,7 @@ exports.upsert = async (req, res) => {
 
             res.status(201).json({
                 message: "Biodata Berhasil Ditambahkan!",
-                data: investorBiodata,
-                data: investor,
+                data: [investorBiodata, investor],
             });
         } else {
             let nama_foto = investorBiodata.foto_profil;
