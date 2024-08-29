@@ -474,9 +474,27 @@ exports.update = async (req, res) => {
             tanggal_berakhir_penawaran,
         } = req.body;
 
-        const investasi = await Investasi.findByPk(req.params.id);
+        // Cari investasi berdasarkan slug
+        const investasi = await Investasi.findOne({
+            where: { id: req.params.id },
+            include: {
+                model: Transaksi,
+                as: "transaksi",
+                attributes: ["investorId", "total_investasi"], // Ambil data transaksi
+                include: {
+                    model: Investor,
+                    as: "investor",
+                    attributes: ["id", "kategori_investor"], // Atribut lain yang diperlukan
+                    include: {
+                        model: InvestorBiodata,
+                        as: "investorBiodata",
+                        attributes: ["nama_lengkap", "foto_profil"], // Ambil nama_lengkap dan foto_profil dari biodataInvestor
+                    },
+                },
+            },
+        });
 
-        const adminId = req.admin.id;
+        const adminId = req.user.id;
         if (!investasi) {
             return res.status(404).json({ message: "Data  tidak ada!" });
         }
@@ -531,9 +549,42 @@ exports.update = async (req, res) => {
             status: statusPenawaran,
         });
 
+        // Proses data transaksi
+        const transaksi = investasi.transaksi;
+
+        // Gunakan objek sebagai map untuk akumulasi total_investasi
+        const transaksiMap = {};
+
+        transaksi.forEach((current) => {
+            const key = `${current.investorId}-${investasi.id}`; // Buat kunci unik berdasarkan investorId dan investasiId
+
+            if (transaksiMap[key]) {
+                // Jika kunci sudah ada, tambahkan total_investasi
+                transaksiMap[key].total_investasi += current.total_investasi;
+            } else {
+                // Jika belum ada, tambahkan data transaksi baru
+                transaksiMap[key] = {
+                    investorId: current.investorId,
+                    nama_lengkap: current.investor.investorBiodata.nama_lengkap,
+                    foto_profil: current.investor.investorBiodata.foto_profil,
+                    total_investasi: current.total_investasi,
+                    kategori_investor: current.investor.kategori_investor,
+                };
+            }
+        });
+
+        // Mengubah transaksiMap kembali menjadi array dengan transaksi unik
+        const uniqueTransaksi = Object.values(transaksiMap);
+
+        // Mengembalikan objek investasi dengan transaksi yang telah diakumulasi dan unik
+        const investasiWithTotal = {
+            ...investasi.toJSON(),
+            transaksi: uniqueTransaksi,
+        };
+
         res.status(200).json({
-            message: "Data  berhasil diperbaharui",
-            data: investasi,
+            message: "Investasi berhasil diperbarui!",
+            data: investasiWithTotal,
         });
     } catch (error) {
         if (error.name === "SequelizeValidationError") {

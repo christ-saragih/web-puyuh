@@ -13,6 +13,7 @@ const {
     authenticateAdminToken,
 } = require("../middleware/authenticateAdminToken");
 const authorizeRole = require("../middleware/authorizeRole");
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 // Upload gambar
 const upload = require("../middleware/uploadFileMiddleware");
@@ -33,8 +34,7 @@ router.post(
 );
 router.put(
     "/:id",
-    authenticateAdminToken,
-    authorizeRole("admin"),
+    authenticateToken("admin"),
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
