@@ -7,6 +7,39 @@ const {
     sendResetPasswordEmail,
 } = require("../services/emailService");
 const { Op } = require("sequelize");
+const { exit } = require("process");
+require("dotenv").config();
+const blacklist = new Set();
+
+// Membuat access token
+const generateAccessToken = (investor) => {
+    return jwt.sign(
+        {
+            id: investor.id,
+            username: investor.username,
+            email: investor.email,
+            role: "investor",
+            kategori_investor: investor.kategori_investor,
+        },
+        process.env.ACCESS_SECRET_KEY,
+        { expiresIn: "15m" }
+    );
+};
+
+// Membuat refresh token
+const generateRefreshToken = (investor) => {
+    return jwt.sign(
+        {
+            id: investor.id,
+            username: investor.username,
+            email: investor.email,
+            role: "investor",
+            kategori_investor: investor.kategori_investor,
+        },
+        process.env.REFRESH_SECRET_KEY,
+        { expiresIn: "1d" }
+    );
+};
 
 // Register
 exports.register = async (req, res) => {
@@ -192,45 +225,20 @@ exports.login = async (req, res) => {
                 .json({ message: "username/email atau password salah!" });
         }
 
-        const accessToken = jwt.sign(
-            {
-                id: investor.id,
-                username: investor.username,
-                email: investor.email,
-                role: "investor",
-                kategori_investor: investor.kategori_investor,
-            },
-            process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" }
-        );
-
-        const refreshToken = jwt.sign(
-            {
-                id: investor.id,
-                username: investor.username,
-                email: investor.email,
-                role: "investor",
-                kategori_investor: investor.kategori_investor,
-            },
-            process.env.REFRESH_SECRET_KEY,
-            { expiresIn: "1d" }
-        );
+        const accessToken = generateAccessToken(investor);
+        const refreshToken = generateRefreshToken(investor);
 
         investor.refresh_token = refreshToken;
         await investor.save();
 
-        // Simpan token dalam session dan cookie
-        req.session.investor = investor;
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-        });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
+            secure: true,
+            sameSite: "Strict",
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-        res.json({ message: "Login successful", accessToken, refreshToken });
+        res.json({ message: "Login successful", accessToken });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -303,12 +311,6 @@ exports.resetPassword = async (req, res) => {
         });
     }
 };
-// Logout
-exports.logout = (req, res) => {
-    res.clearCookie("accessToken");
-    req.session.destroy();
-    res.json({ message: "Logout successful" });
-};
 
 // Protected route example
 exports.protected = (req, res) => {
@@ -317,43 +319,45 @@ exports.protected = (req, res) => {
 
 // Refresh token endpoint
 exports.refreshToken = async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(403).json({ message: "Token tidak disediakan" });
+    }
+
     try {
-        const { username, email } = req.decoded;
-
-        const investor = await Investor.findOne({
-            where: {
-                [Op.and]: [
-                    { username },
-                    { email },
-                    {
-                        refresh_token:
-                            req.cookies.refreshToken || req.body.refreshToken,
-                    },
-                ],
-            },
+        const storedToken = await Investor.findOne({
+            where: { refresh_token: refreshToken },
+            attributes: ["id", "username", "email", "refresh_token"],
         });
+        // console.log(storedToken);
+        // exit();
 
-        if (!investor) {
-            return res.status(403).json({ message: "Invalid refresh token" });
+        if (!storedToken) {
+            return res.status(403).json({ message: "Token tidak valid" });
         }
 
-        const newAccessToken = jwt.sign(
-            {
-                id: investor.id,
-                username: investor.username,
-                email: investor.email,
-                role: "investor",
-                kategori_investor: investor.kategori_investor,
-            },
-            process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" }
-        );
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_SECRET_KEY,
+            async (err, investor) => {
+                if (err)
+                    return res
+                        .status(403)
+                        .json({ message: "Token tidak valid" });
 
-        res.cookie("accessToken", newAccessToken, { httpOnly: true });
-        res.json({
-            message: "Access token refreshed",
-            accessToken: newAccessToken,
-        });
+                // Generate access token baru
+                const newAccessToken = generateAccessToken({
+                    id: investor.id,
+                    username: investor.username,
+                    email: investor.email,
+                    role: "investor",
+                    kategori_investor: investor.kategori_investor,
+                });
+
+                res.status(200).json({ accessToken: newAccessToken });
+            }
+        );
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",

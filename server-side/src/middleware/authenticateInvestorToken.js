@@ -29,20 +29,14 @@ const authenticateInvestorToken = (req, res, next) => {
 };
 
 const logoutInvestor = (req, res) => {
-    const token = req.cookies.accessToken || req.header("Authorization");
+    const token = req.header("Authorization");
     if (token) {
         const cleanToken = token.replace("Bearer ", "");
         blacklist.add(cleanToken);
     }
-    res.clearCookie("accessToken");
+
     res.clearCookie("refreshToken");
-    res.clearCookie("token");
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ message: "Failed to logout." });
-        }
-        res.json({ message: "Logout successful" });
-    });
+    return res.status(200).json({ message: "Logout Berhasil." });
 };
 
 module.exports = { authenticateInvestorToken, logoutInvestor };
