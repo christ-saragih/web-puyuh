@@ -44,12 +44,7 @@ const SocialMediaItem = (props) => {
           </div>
         </div>
         <div className="overflow-hidden">
-          <Tooltip
-            content={url}
-            placement="bottom"
-            className="bg-gray-600"
-            arrow={false}
-          >
+          <Tooltip content={url} placement="bottom" arrow={false}>
             <NavLink
               to={url}
               target="_blank"

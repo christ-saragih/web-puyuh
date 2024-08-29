@@ -91,6 +91,14 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
 
 /* Tabs: End */
 
+/* Tooltip: Start */
+div[data-testid="flowbite-tooltip"],
+div[data-testid="flowbite-tooltip-arrow"] {
+  @apply bg-gray-600;
+}
+
+/* Tooltip: End */
+
 /* COMMON: End */
 
 /* GUEST: Start */
@@ -131,6 +139,10 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
 /* .swiper-slide-shadow-left {
   border-radius: 4rem;
 } */
+
+iframe {
+  @apply w-full rounded-lg shadow !important;
+}
 
 @media {
   .swiper_container {
@@ -206,10 +218,10 @@ div[aria-label="Pills"] button[role="tab"][aria-selected="false"] {
 /* ADMIN: Start */
 /* dropdown */
 div[data-testid="flowbite-dropdown"] {
-  @apply bg-white w-32 rounded-xl shadow font-semibold overflow-hidden
+  @apply bg-white w-32 rounded-xl shadow font-semibold overflow-hidden;
 }
 li[role="menuitem"] button {
-  @apply text-base;
+  @apply text-base text-slate-700;
 }
 
 li[role="menuitem"] button svg {
@@ -237,6 +249,6 @@ li[role="menuitem"] button svg {
 }
 
 .quill > .ql-container > .ql-editor.ql-blank::before {
-  @apply text-sm text-gray-500 not-italic content-['Masukkan_isi_artikel..'] !important;
+  @apply text-sm text-gray-500 not-italic content-['Masukkan_deskripsi..'] !important;
 }
 /* ADMIN: End */

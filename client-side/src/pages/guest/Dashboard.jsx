@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     getDashboardFrontpage((data) => {
-      setDashboardFrontpage(data[0]);
+      setDashboardFrontpage(data);
     });
   }, []);
 
@@ -33,12 +33,6 @@ const Dashboard = () => {
       setArticles(latestArticles);
     });
   }, []);
-
-  console.log("START");
-
-  console.log(dashboardFrontpage);
-  // console.log(dashboardFrontpage.data[0].nama_header);
-  console.log("END");
 
   return (
     <>

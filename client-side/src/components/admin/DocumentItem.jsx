@@ -23,12 +23,7 @@ const DocumentItem = (props) => {
           {nama}
         </h3>
         <div className="overflow-hidden">
-          <Tooltip
-            content={file}
-            placement="bottom"
-            className="bg-gray-600"
-            arrow={false}
-          >
+          <Tooltip content={file} placement="bottom" arrow={false}>
             <NavLink
               to={`http://localhost:3000/api/dokumen-frontpage/file/${file}`}
               target="_blank"
@@ -44,9 +39,7 @@ const DocumentItem = (props) => {
           icon={PiNotePencilBold}
           className={"text-yellow-600"}
           tooltip={"Ubah"}
-          onClick={() =>
-            openModal("update_document", { id, nama, file })
-          }
+          onClick={() => openModal("update_document", { id, nama, file })}
         />
         <ActionButton
           icon={PiTrashBold}
