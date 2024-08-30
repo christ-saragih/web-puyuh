@@ -16,24 +16,43 @@ import {
 } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 import { formatRupiah } from "../../utils/formatRupiah";
+import  ModalInvestasi  from "../../components/investor/ModalInvestasi";
+import { FaArrowUp } from "react-icons/fa";
 
 const DetailInvestasi = () => {
   const { slug } = useParams();
   const [tab, setTab] = useState(1);
   const [investasi, setInvestasi] = useState(null);
+  const [showModal, setShowModal] = useState(false);  // State untuk modal
+  const [showScroll, setShowScroll] = useState(false);
 
   useEffect(() => {
-    // Mengambil detail investasi
     getDetailInvestasiBySlug(slug, (data) => {
       setInvestasi(data);
     });
+
+    // Fungsi untuk memonitor posisi scroll
+    const handleScroll = () => {
+      if (window.scrollY > 300) {  // Tombol muncul setelah scroll 300px
+        setShowScroll(true);
+      } else {
+        setShowScroll(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    
+    // Cleanup
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [slug]);
 
-  // Menangani kasus jika investasi tidak ada
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   if (!investasi) {
     return <div>Data artikel tidak ditemukan!</div>;
   }
-
   // Mengambil total dan target dari objek investasi
   const total = investasi.total_pendanaan;
   const target = investasi.target_pendanaan;
@@ -223,31 +242,45 @@ const DetailInvestasi = () => {
               )}
             </div>
           </div>
-          <div className="flex justify-center">
-          <a
-            href={`/investasi/${slug}`}
-            className="flex justify-center items-center w-11/12 py-2 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
-          >
-            Investasi Sekarang
-            <svg
-              className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </a>
-        </div>
+          <div className="fixed bottom-0 left-0 w-full bg-white border-t-2">
+            <div className="flex justify-center py-4">
+              <a
+                onClick={() => setShowModal(true)}
+                className="flex justify-center items-center w-11/12 max-w-md py-2 px-4 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
+              >
+                Investasi Sekarang
+                <svg
+                  className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
       </GuestLayout>
+      {showModal && (
+  <ModalInvestasi open={showModal} closeModal={() => setShowModal(false)} />
+)}
+
+{showScroll && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-16 right-4 p-3 bg-[#4B241A] text-white rounded-full shadow-md hover:bg-[#381d15] transition-colors"
+        >
+          <FaArrowUp size={20} />
+        </button>
+      )}
     </>
   );
 };
