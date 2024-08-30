@@ -5,7 +5,7 @@ const Input = (props) => {
   const {
     type,
     name,
-    value = "",
+    value,
     defaultValue,
     className,
     variant = "primary",
