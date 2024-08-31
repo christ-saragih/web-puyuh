@@ -7,13 +7,13 @@ const BatchItemBody = (props) => {
 
 const BatchItemTitle = (props) => {
   const { judul, penerbit, status } = props;
-
+  
   const statusInfo =
-    status === "selesai"
-      ? "#138a36"
+    status === "segera"
+      ? "#5766CE"
       : status === "proses"
-      ? "#e3a008"
-      : "#5766CE";
+      ? "#FFA90B"
+      : "#138a36";
 
   return (
     <div className="relative">
@@ -35,7 +35,7 @@ const BatchItemProgressBar = (props) => {
   const { total, target, status } = props;
 
   const percentage = Math.round((total / target) * 100);
-  const statusInfo = status === "selesai" ? "#138a36" : "#e3a008";
+  const statusInfo = status === "selesai" ? "#138a36" : "#FFA90B";
 
   return (
     <>
@@ -95,7 +95,7 @@ const BatchItemButton = (props) => {
         href={`/investasi/${slug}`}
         className="flex justify-center items-center w-11/12 py-2 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
       >
-        Investasi Sekarang
+        Lihat Detail
         <svg
           className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
           aria-hidden="true"
