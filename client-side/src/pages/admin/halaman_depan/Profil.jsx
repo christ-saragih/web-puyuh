@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import axios from "axios";
 
 const Profil = () => {

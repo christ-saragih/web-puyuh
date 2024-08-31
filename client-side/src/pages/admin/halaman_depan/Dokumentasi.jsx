@@ -2,7 +2,7 @@ import { PiPlusCircle } from "react-icons/pi";
 import Button from "../../../components/common/Button.jsx";
 import Dropdown from "../../../components/common/Dropdown.jsx";
 import InputSearch from "../../../components/common/InputSearch.jsx";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import {
   getDocumentation,
   addDocumentation,

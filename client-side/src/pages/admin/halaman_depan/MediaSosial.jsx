@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Input from "../../../components/common/Input.jsx";
 import Label from "../../../components/common/Label.jsx";
 import Modal from "../../../components/common/Modal";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import SocialMediaList from "../../../components/admin/SocialMediaList.jsx";
 import {
   getSocialMedia,
