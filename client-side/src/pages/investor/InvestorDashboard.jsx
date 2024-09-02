@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SidebarInvestor from "../../components/common/SidebarInvestor";
 import CalendarInvestor from "../../components/common/CalendarInvestor";
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
@@ -10,12 +10,35 @@ import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 // import useAuthInvestor from "../../hooks/useAuthInvestor";
 import { axiosInstance } from "../../hooks/useAxiosConfig";
+import { formatRupiah } from "../../utils/formatRupiah";
+import { getTransaksi } from "../../services/transaksi.service";
+import BatchListInvestor from "../../components/investor/BatchListInvestor";
+import { getBatchs } from "../../services/batch.service";
 
 const InvestorDashboard = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [investor, setInvestor] = useState(null); // State untuk menyimpan data investor
     const [loading, setLoading] = useState(true); // State untuk loading
+    const [transaksi, setTransaksi] = useState([]);
     const navigate = useNavigate();
+    const [batchs, setBatchs] = useState([]);
+
+    useEffect(() => {
+      getBatchs((data) => {
+          setBatchs(data);
+      });
+  }, []);
+
+    useEffect(() => {
+      getTransaksi((data) => {
+          setTransaksi(data);
+          setLoading(false);
+      });
+  }, [navigate]);
+
+    const totalInvestasi = transaksi.reduce((total, item) => {
+      return total + item.total_investasi;
+  }, 0);
 
     // Fungsi untuk memanggil API dan mengambil data investor
     useEffect(() => {
@@ -57,7 +80,7 @@ const InvestorDashboard = () => {
                             <div className="flex flex-col items-center ml-10">
                                 <h1 className="text-[2.5rem] font-bold mb-3 text-[#000]">
                                     Hello,
-                                    {investor.username}
+                                    {investor?.username}
                                 </h1>
                                 <p className="text-[#000]">
                                     Senang Bertemu Anda
@@ -81,7 +104,7 @@ const InvestorDashboard = () => {
                                         className="w-36 h-36"
                                     />
                                     <h1 className="text-3xl font-bold ml-4 text-[#000]">
-                                        Rp. 1.000.000
+                                    {formatRupiah(totalInvestasi)}
                                     </h1>
                                 </div>
                             </div>
@@ -105,16 +128,20 @@ const InvestorDashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-[151%] rounded-xl bg-[#F5F5F7] flex items-center p-4">
-                            <div className="flex flex-col">
-                                <h1 className="text-xl font-bold mb-3 text-[#000]">
-                                    Investasi yang Sedang Berlangsung
-                                </h1>
-                                <div className="flex w-[115%] gap-10">
-                                    <CardBatchInvestor />
-                                    <CardBatchInvestor />
-                                </div>
-                            </div>
+                        <div className="w-[150%] rounded-xl bg-[#F5F5F7] p-4 relative">
+                          <h1 className="text-xl font-bold mb-3 text-[#000]">
+                              Investasi yang Sedang Berlangsung
+                          </h1>
+
+                          <div className="relative flex items-center">
+                              {/* Batch List dengan scroll horizontal */}
+                              <div
+                                  className="flex overflow-x-auto gap-10 w-full scrollbar-hide"
+
+                              >
+                                  <BatchListInvestor batchs={batchs} />
+                              </div>
+                          </div>
                         </div>
                     </div>
 
