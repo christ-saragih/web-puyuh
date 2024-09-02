@@ -10,6 +10,42 @@ const {
 const bcrypt = require("bcrypt");
 
 // Read All
+exports.findInvestorByAuth = async (req, res) => {
+    try {
+        const investors = await Investor.findOne({
+            where: { id: req.user.id },
+            include: [
+                {
+                    model: InvestorBiodata,
+                    as: "investorBiodata",
+                },
+                {
+                    model: InvestorIdentitas,
+                    as: "investorIdentitas",
+                },
+                {
+                    model: InvestorDataPendukung,
+                    as: "investorDataPendukung",
+                },
+                {
+                    model: InvestorAlamat,
+                    as: "investorAlamat",
+                },
+            ],
+        });
+        res.status(200).json({
+            message: "Data Investor berhasil diambil!",
+            data: investors,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Read All
 exports.findAll = async (req, res) => {
     try {
         const investors = await Investor.findAll({

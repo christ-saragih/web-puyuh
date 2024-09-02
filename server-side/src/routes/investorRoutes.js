@@ -4,7 +4,12 @@ const investorController = require("../controllers/investorController");
 
 const { authenticateToken } = require("../middleware/authenticateToken");
 
-router.get("/", investorController.findAll);
+// router.get("/", investorController.findAll);
+router.get(
+    "/",
+    authenticateToken("investor"),
+    investorController.findInvestorByAuth
+);
 router.get("/:id", investorController.findOne);
 router.post(
     "/ubah-password",
