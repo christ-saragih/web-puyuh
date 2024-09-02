@@ -1,99 +1,17 @@
-import { useState, useEffect } from "react";
-import SidebarInvestor from "../../components/common/SidebarInvestor";
 import InputSearch from "../../components/common/InputSearch";
 import BatchList from "../../components/guest/BatchList";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { getBatchs } from "../../services/batch.service";
-import Navbar from "../../components/guest/Navbar";
 import GuestLayouts from "../../layouts/GuestLayouts";
+import { getBatchs } from "../../services/batch.service";
+import { useState, useEffect } from "react";
 
 const InvestorInvestasi = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [username, setUsername] = useState("");
-  const [token, setToken] = useState("");
-  const [expire, setExpire] = useState("");
-  const [investors, setInvestors] = useState([]);
   const [batchs, setBatchs] = useState([]);
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   refreshToken();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (token) {
-  //       getInvestors();
-  //   }
-  // }, [token]);
 
   useEffect(() => {
     getBatchs((data) => {
       setBatchs(data);
     });
   }, []);
-
-  // const refreshToken = async () => {
-  //   try {
-  //     const response = await axios.post('http://localhost:3000/api/auth/investor/refresh-token', {}, { withCredentials: true });
-  //     setToken(response.data.accessToken);
-  //     const decoded = jwtDecode(response.data.accessToken);
-  //     setUsername(decoded.username);
-  //     setExpire(decoded.exp);
-  //     console.log("Token refreshed:", response.data.accessToken);
-  //   } catch (error) {
-  //     if (error.response) {
-  //       navigate("/masuk");
-  //     }
-  //   }
-  // };
-
-  // const axiosJWT = axios.create();
-
-  // axiosJWT.interceptors.request.use(
-  //   async (config) => {
-  //     const currentDate = new Date();
-  //     if (expire * 1000 < currentDate.getTime()) {
-  //       try {
-  //         const response = await axios.post(
-  //           'http://localhost:3000/api/auth/investor/refresh-token',
-  //           {},
-  //           { withCredentials: true }
-  //         );
-  //         const newAccessToken = response.data.accessToken;
-  //         config.headers.Authorization = `Bearer ${newAccessToken}`;
-  //         setToken(newAccessToken);
-  //         const decoded = jwtDecode(newAccessToken);
-  //         setUsername(decoded.username);
-  //         setExpire(decoded.exp);
-  //       } catch (error) {
-  //         console.error("Error refreshing token:", error);
-  //         navigate("/investor");
-  //       }
-  //     } else {
-  //       config.headers.Authorization = `Bearer ${token}`;
-  //     }
-  //     return config;
-  //   },
-  //   (error) => {
-  //     return Promise.reject(error);
-  //   }
-  // );
-
-  // const getInvestors = async () => {
-  //   try {
-  //     const response = await axiosJWT.get('http://localhost:3000/api/investor', {
-  //         headers: {
-  //             Authorization: `Bearer ${token}`
-  //         }
-  //     });
-  //     console.log(response.data);
-  //     setInvestors(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching investors:", error);
-  //   }
-  // };
 
   return (
     <GuestLayouts>

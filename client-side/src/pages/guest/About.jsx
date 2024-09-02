@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/guest/Navbar";
 import ImageSlider from "../../components/guest/ImageSlider";
 import JumbotronAbout from "../../components/guest/JumbotronAbout";
 import dokumen_1 from "../../assets/images/dokumen 1.png";
 import dokumen_2 from "../../assets/images/dokumen 2.png";
 import dokumen_3 from "../../assets/images/dokumen 3.png";
-import Footer from "../../components/guest/Footer";
 import { getAbouts, getAboutSejarahs } from "../../services/about.service";
 import GuestLayouts from "../../layouts/GuestLayouts";
 
