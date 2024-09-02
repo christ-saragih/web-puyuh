@@ -63,13 +63,18 @@ const BatchItemProgressBar = (props) => {
   );
 };
 
-const BatchItemStatistics = ({ statistics }) => {
+const BatchItemStatistics = ({ statistics = [] }) => {
+  // Pastikan statistics adalah array sebelum melakukan map
+  if (!Array.isArray(statistics) || statistics.length === 0) {
+    return null; // Mengembalikan null jika statistics kosong atau tidak terdefinisi
+  }
+
   return (
     <div className="grid grid-cols-2 gap-3 mt-5 mb-6">
       {statistics.map((statistic, i) => (
         <div
           key={`${i}-${statistic.title}`}
-          className="flex gap-1  md:flex-col md:items-center md:text-center lg:flex-row lg:text-start xl:gap-2"
+          className="flex gap-1 md:flex-col md:items-center md:text-center lg:flex-row lg:text-start xl:gap-2"
         >
           <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full">
             <statistic.icon className="w-full h-full text-[#4B241A]" />
@@ -85,6 +90,7 @@ const BatchItemStatistics = ({ statistics }) => {
     </div>
   );
 };
+
 
 const BatchItemButton = (props) => {
   const { slug } = props;
