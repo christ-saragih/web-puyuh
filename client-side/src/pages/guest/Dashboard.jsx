@@ -1,7 +1,3 @@
-import Navbar from "../../components/guest/Navbar";
-import Footer from "../../components/guest/Footer";
-import GuestLayout from "../../layouts/GuestLayout";
-import JumbotronImage from "../../assets/images/burung-puyuh.svg";
 import InklusiKeuangan from "../../assets/images/icons/inklusi-keuangan.svg";
 import PertumbuhanEksponensial from "../../assets/images/icons/pertumbuhan-eksponensial.svg";
 import BerdampakSosial from "../../assets/images/icons/berdampak-sosial.svg";
@@ -10,12 +6,12 @@ import BeliSaham from "../../assets/images/beli-saham.svg";
 import JualSaham from "../../assets/images/jual-dipasar.svg";
 import BagiHasil from "../../assets/images/bagi-hasil.svg";
 import BatchList from "../../components/guest/BatchList";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import ArticleList from "../../components/common/ArticleList";
+import GuestLayouts from "../../layouts/GuestLayouts";
 import { getDashboardFrontpage } from "../../services/dashboard-frontpage.service";
 import { getArticles } from "../../services/article.service";
-import ArticleList from "../../components/common/ArticleList";
-import ScrollToTopButton from "../../components/guest/ScrollToTopButton";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const [dashboardFrontpage, setDashboardFrontpage] = useState([]);
@@ -36,9 +32,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
-      <Navbar />
-      <GuestLayout className="mt-28 lg:mt-32 -mb-0">
+    <GuestLayouts>
+      <div className="w-[90%] mx-auto mt-12 lg:mt-16">
         <div className="w-full lg:w-[80%] mb-10">
           <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
             {dashboardFrontpage.nama_header}
@@ -81,9 +76,9 @@ const Dashboard = () => {
             FundEx Sharia
           </button>
         </div>
-      </GuestLayout>
+      </div>
 
-      <GuestLayout className="w-full">
+      <div className="w-full">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
@@ -151,9 +146,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </GuestLayout>
+      </div>
 
-      <GuestLayout className="-mb-0">
+      <div className="w-[90%] mx-auto mt-12 lg:mt-16">
         <div className="mb-6 ">
           <h2 className="font-bold text-3xl mb-1">
             Penawaran <span className="text-[#B87817]">Saat Ini</span>
@@ -172,9 +167,9 @@ const Dashboard = () => {
             Lihat Semua
           </Link>
         </div>
-      </GuestLayout>
+      </div>
 
-      <GuestLayout className="w-full -mb-0">
+      <div className="w-full">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
@@ -289,9 +284,9 @@ const Dashboard = () => {
             d="M0,160L48,138.7C96,117,192,75,288,85.3C384,96,480,160,576,165.3C672,171,768,117,864,85.3C960,53,1056,43,1152,58.7C1248,75,1344,117,1392,138.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
           ></path>
         </svg>
-      </GuestLayout>
+      </div>
 
-      <GuestLayout>
+      <div className="w-[90%] mx-auto mb-12 lg:mb-16">
         <div className="mb-6">
           <h2 className="font-bold text-3xl mb-1">
             Baca Artikel Terbaru <span className="text-[#B87817]">Kami</span>
@@ -311,10 +306,9 @@ const Dashboard = () => {
             Lihat Semua
           </Link>
         </div>
-      </GuestLayout>
-      <ScrollToTopButton/>
-      <Footer />
-    </>
+      </div>
+      <GuestLayouts.Footer />
+    </GuestLayouts>
   );
 };
 

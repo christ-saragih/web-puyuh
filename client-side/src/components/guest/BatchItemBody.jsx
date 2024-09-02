@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { formatRupiah } from "../../utils/formatRupiah";
 
 const BatchItemBody = (props) => {
@@ -97,8 +98,8 @@ const BatchItemButton = (props) => {
 
   return (
     <div className="flex justify-center mb-2">
-      <a
-        href={`/investasi/${slug}`}
+      <Link
+        to={`/investasi/${slug}`}
         className="flex justify-center items-center w-11/12 py-2 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
       >
         Lihat Detail
@@ -117,7 +118,7 @@ const BatchItemButton = (props) => {
             d="M1 5h12m0 0L9 1m4 4L9 9"
           />
         </svg>
-      </a>
+      </Link>
     </div>
   );
 };

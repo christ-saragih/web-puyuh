@@ -1,7 +1,7 @@
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import {
   getDashboardFrontpage,
   saveDashboardFrontpage,

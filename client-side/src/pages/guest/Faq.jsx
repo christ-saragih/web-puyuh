@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import FaqList from "../../components/guest/FaqList";
-import Navbar from "../../components/guest/Navbar";
-import GuestLayout from "../../layouts/GuestLayout";
-import { getFaqs } from "../../services/faq.service";
-import Footer from "../../components/guest/Footer";
 import FaqImage from "../../assets/images/faq-image.png";
+import FaqList from "../../components/guest/FaqList";
+import GuestLayouts from "../../layouts/GuestLayouts";
+import { getFaqs } from "../../services/faq.service";
+import { useEffect, useState } from "react";
 
 const Faq = () => {
   const [faqs, setFaqs] = useState([]);
@@ -15,25 +13,9 @@ const Faq = () => {
     });
   }, []);
 
-  // const fetchFaqs = async () => {
-  //   try {
-  //     const faqsResponse = await axiosInstance.get("/faq");
-  //     setFaqs(faqsResponse.data);
-  //     console.log(faqsResponse.data);
-      
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   fetchFaqs();
-  // }, [])
-
   return (
-    <>
-      <Navbar />
-      <GuestLayout className="mt-36">
+    <GuestLayouts>
+      <div className="w-[90%] mx-auto my-12 lg:my-16">
         <div className="flex flex-col justify-center items-center gap-x-14 gap-y-5 xl:gap-16 lg:flex-row lg:justify-between max-lg:max-w-2xl mx-auto max-w-full">
           <div className="w-full lg:w-1/2">
             <img
@@ -58,10 +40,9 @@ const Faq = () => {
             </div>
           </div>
         </div>
-      </GuestLayout>
-
-      <Footer />
-    </>
+      </div>
+      <GuestLayouts.Footer />
+    </GuestLayouts>
   );
 };
 

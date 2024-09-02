@@ -1,7 +1,7 @@
 import { PiPlusCircle } from "react-icons/pi";
 import Dropdown from "../../../components/common/Dropdown";
 import InputSearch from "../../../components/common/InputSearch.jsx";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import FaqAdminList from "../../../components/admin/FaqList.jsx";
 import {
   getFaqs,

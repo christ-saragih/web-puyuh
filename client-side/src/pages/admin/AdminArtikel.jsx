@@ -31,7 +31,7 @@ import {
   deleteArticleTag,
 } from "../../services/article-tag.service.js";
 import MultiSelect from "../../components/common/MultiSelect.jsx";
-import AdminLayout from "../../layouts/AdminLayout.jsx/index.jsx";
+import AdminLayout from "../../layouts/AdminLayout";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { formatDate } from "../../utils/formatDate.js";
 
