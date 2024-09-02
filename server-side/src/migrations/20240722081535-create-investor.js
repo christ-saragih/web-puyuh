@@ -22,10 +22,10 @@ module.exports = {
                 type: Sequelize.ENUM("individu", "organisasi"),
             },
             refresh_token: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             verificationToken: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             verificationTokenExpiry: {
@@ -37,7 +37,7 @@ module.exports = {
                 defaultValue: false,
             },
             resetPasswordToken: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
                 allowNull: true,
             },
             resetPasswordTokenExpiry: {

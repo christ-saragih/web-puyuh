@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             verificationToken: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: true,
             },
             verificationTokenExpiry: {
@@ -90,10 +90,10 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: false,
             },
             refresh_token: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
             },
             resetPasswordToken: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: true,
             },
             resetPasswordTokenExpiry: {
