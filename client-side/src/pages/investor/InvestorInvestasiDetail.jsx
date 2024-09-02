@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import BatchInvestasi from "../../assets/images/batch_investasi.png";
-import Navbar from "../../components/guest/Navbar";
+// import Navbar from "../../components/guest/Navbar";
 import Tabs from "../../components/guest/Tabs";
 import GuestLayout from "../../layouts/GuestLayout";
 import { getDetailInvestasiBySlug } from "../../services/batch.service";
@@ -13,7 +13,7 @@ import {
   PiUserBold,
   PiUsersThreeBold,
   PiCalendarXDuotone,
-  PiPercent
+  PiPercent,
 } from "react-icons/pi";
 import { useParams } from "react-router-dom";
 
@@ -35,7 +35,7 @@ const DetailInvestasi = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <GuestLayout className="mt-28 lg:mt-32">
         {/* <p>detail: {id}</p> */}
         <div className="max-w-3xl mx-auto">
@@ -96,7 +96,8 @@ const DetailInvestasi = () => {
                 {/* <h3 className="text-2xl mb-4 font-semibold">
                   Investasi Saham Bisnis Emado's Shawarma Cibubur
                 </h3>{" "} */}
-                {investasi.deskripsi}<br /> <br />
+                {investasi.deskripsi}
+                <br /> <br />
                 <h3 className="text-2xl mb-4 font-semibold">
                   Penggunaan Dana
                 </h3>{" "}
@@ -107,7 +108,7 @@ const DetailInvestasi = () => {
             <div className={tab === 2 ? "block" : "hidden"}>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2">
-                <div className="w-16 h-16 p-1">
+                  <div className="w-16 h-16 p-1">
                     <PiCalendarCheckDuotone className="w-full h-full" />
                   </div>
                   <div>
@@ -116,7 +117,7 @@ const DetailInvestasi = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                <div className="w-16 h-16 p-1">
+                  <div className="w-16 h-16 p-1">
                     <PiCalendarXDuotone className="w-full h-full" />
                   </div>
                   <div>
@@ -182,10 +183,11 @@ const DetailInvestasi = () => {
             </div>
 
             <div className={tab === 3 ? "block" : "hidden"}>
-            <div className="w-full" dangerouslySetInnerHTML={{ __html: investasi.url_map }} />
-              <p>
-                {investasi.alamat}
-              </p>
+              <div
+                className="w-full"
+                dangerouslySetInnerHTML={{ __html: investasi.url_map }}
+              />
+              <p>{investasi.alamat}</p>
             </div>
 
             <div className={tab === 4 ? "block" : "hidden"}>
