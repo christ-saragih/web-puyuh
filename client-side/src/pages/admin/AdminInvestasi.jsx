@@ -49,6 +49,7 @@ const AdminInvestasi = () => {
     pembayaran_bagi_hasil: "",
     tanggal_pembukaan_penawaran: "",
     tanggal_berakhir_penawaran: "",
+    status: "",
     transaksi: [],
   });
 
@@ -60,6 +61,8 @@ const AdminInvestasi = () => {
       setInvestments(data);
     });
   }, []);
+
+  console.log(investments);
 
   const handleInvestmentImageChange = (e) => {
     const file = e.target.files[0];
@@ -145,6 +148,9 @@ const AdminInvestasi = () => {
           item.id === updateData.id ? updateData : item
         )
       );
+      console.log("=== DATA INVESTASI UPDATE ===");
+      console.log(investments);
+
       closeModal();
       resetForm();
     });
@@ -190,6 +196,7 @@ const AdminInvestasi = () => {
           pembayaran_bagi_hasil: investment.pembayaran_bagi_hasil,
           tanggal_pembukaan_penawaran: investment.tanggal_pembukaan_penawaran,
           tanggal_berakhir_penawaran: investment.tanggal_berakhir_penawaran,
+          status: investment.status,
           transaksi: investment.transaksi,
         });
       });
@@ -535,8 +542,6 @@ const AdminInvestasi = () => {
                 <>
                   <Modal.Header title="Detail Investasi" onClose={closeModal} />
                   <Modal.Body>
-                    {console.log(formInvestment)}
-                    {console.log(formInvestment)}
                     <div className="max-w-3xl mx-auto">
                       <div className="h-96 mb-4 rounded-xl overflow-hidden">
                         <img
@@ -554,40 +559,60 @@ const AdminInvestasi = () => {
                             {formInvestment.penerbit}
                           </p>
                         </div>
-                        <div className="bg-[#FFA90B] font-semibold text-white text-lg text-center py-1 w-32 rounded-3xl">
-                          {calculateDaysRemaining(
-                            formInvestment.tanggal_pembukaan_penawaran,
-                            formInvestment.tanggal_berakhir_penawaran
-                          )}{" "}
-                          hari lagi
-                        </div>
+                        {formInvestment.status === "segera" ? (
+                          <div className="bg-[#5766CE] font-semibold text-white text-lg text-center py-1 w-32 rounded-3xl">
+                            Segera
+                          </div>
+                        ) : formInvestment.status === "selesai" ? (
+                          <div className="bg-[#138A36] font-semibold text-white text-lg text-center py-1 w-32 rounded-3xl">
+                            Selesai
+                          </div>
+                        ) : (
+                          <div className="bg-[#FFA90B] font-semibold text-white text-lg text-center py-1 w-32 rounded-3xl">
+                            {calculateDaysRemaining(
+                              formInvestment.tanggal_pembukaan_penawaran,
+                              formInvestment.tanggal_berakhir_penawaran
+                            )}{" "}
+                            hari lagi
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <p className="font-semibold text-2xl text-[#FFA90B]">
-                            {formatRupiah(formInvestment.total_pendanaan)}
-                          </p>
+                          {formInvestment.status === "selesai" ? (
+                            <p className="font-semibold text-2xl text-[#138A36]">
+                              {formatRupiah(formInvestment.total_pendanaan)}
+                            </p>
+                          ) : (
+                            <p className="font-semibold text-2xl text-[#FFA90B]">
+                              {formatRupiah(formInvestment.total_pendanaan)}
+                            </p>
+                          )}
                           <p>{`dari target dana ${formatRupiah(
                             formInvestment.target_pendanaan
                           )}`}</p>
                         </div>
                         {/* total investor */}
-                        <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 w-32 rounded-3xl">
+                        <div className="bg-gray-200 text-slate-900 font-semibold text-lg text-center py-1 w-32 rounded-3xl">
                           {formInvestment.transaksi.length} investor
                         </div>
                       </div>
 
                       <div className="w-full bg-gray-200 rounded-full mb-12">
                         <div
-                          className="bg-[#e3a008] font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                          className="font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
                           style={{
                             width: `${Math.round(
                               (formInvestment.total_pendanaan /
                                 formInvestment.target_pendanaan) *
                                 100
                             )}%`,
-                            backgroundColor: "#e3a008",
+                            backgroundColor: `${
+                              formInvestment.status === "selesai"
+                                ? "#138A36"
+                                : "#FFA90B"
+                            }`,
                           }}
                         >
                           {" "}
@@ -599,21 +624,6 @@ const AdminInvestasi = () => {
                           %
                         </div>
                       </div>
-
-                      {/* <div className="grid grid-cols-2 gap-4 my-12">
-                        <a
-                          href="#"
-                          className="py-2 text-lg font-semibold text-center text-[#4B241A] border-2 border-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
-                        >
-                          Unduh Proposal
-                        </a>
-                        <a
-                          href="#"
-                          className="py-2 text-lg font-semibold text-center text-[#4B241A] border-2 border-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
-                        >
-                          Bagikan Bisnis
-                        </a>
-                      </div> */}
 
                       <Tabs aria-label="Pills" variant="pills">
                         <Tabs.Item active title="Tentang Bisnis">
@@ -765,7 +775,7 @@ const AdminInvestasi = () => {
                                 key={investor.investorId}
                                 className="flex gap-3 items-center"
                               >
-                                <div className="w-16 h-16 p-1 bg-gray-200 rounded-full overflow-hidden p-2">
+                                <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden p-2">
                                   {investor.foto_profil ? (
                                     <img
                                       src={investor.foto_profil}
@@ -779,73 +789,21 @@ const AdminInvestasi = () => {
                                     <PiUserBold className="w-full h-full" />
                                   )}
                                 </div>
-                                
+
                                 <div className="grow">
                                   <p className="text-lg font-medium">
                                     {investor.nama_lengkap}
                                   </p>
                                   <p>{investor.kategori_investor}</p>
                                 </div>
-                                <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
+                                <div className="bg-gray-200 text-slate-900 font-semibold text-lg text-center py-1 min-w-36 max-w-fit rounded-3xl">
                                   {formatRupiah(investor.total_investasi)}
                                 </div>
                               </div>
                             ))}
-
-                            {/* <div className="flex gap-3 items-center">
-                              <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
-                                <PiUserBold className="w-full h-full" />
-                              </div>
-                              <div className="grow">
-                                <p className="text-lg font-medium">
-                                  Bennefit Christy Saragih
-                                </p>
-                                <p>Individu</p>
-                              </div>
-                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
-                                Rp700.000.000
-                              </div>
-                            </div>
-                            <div className="flex gap-3 items-center">
-                              <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
-                                <PiUserBold className="w-full h-full" />
-                              </div>
-                              <div className="grow">
-                                <p className="text-lg font-medium">
-                                  Jonathon Sicina
-                                </p>
-                                <p>Individu</p>
-                              </div>
-                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
-                                Rp667.000.000
-                              </div>
-                            </div>
-                            <div className="flex gap-3 items-center">
-                              <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
-                                <PiUserBold className="w-full h-full" />
-                              </div>
-                              <div className="grow">
-                                <p className="text-lg font-medium">
-                                  Iqbal Salim
-                                </p>
-                                <p>Individu</p>
-                              </div>
-                              <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
-                                Rp500.000
-                              </div>
-                            </div> */}
                           </div>
                         </Tabs.Item>
                       </Tabs>
-
-                      {/* <div className=" fixed bottom-0 left-1/2 transform -translate-x-1/2 z-20 w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-center md:p-6">
-                        <a
-                          href="#"
-                          className="max-w-3xl w-full py-2 text-xl font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
-                        >
-                          Beli Saham
-                        </a>
-                      </div> */}
                     </div>
                   </Modal.Body>
                   <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />

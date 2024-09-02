@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { getDashboardFrontpage } from "../../services/dashboard-frontpage.service";
 import { getArticles } from "../../services/article.service";
 import ArticleList from "../../components/common/ArticleList";
+import ScrollToTopButton from "../../components/guest/ScrollToTopButton";
 
 const Dashboard = () => {
   const [dashboardFrontpage, setDashboardFrontpage] = useState([]);
@@ -311,7 +312,7 @@ const Dashboard = () => {
           </Link>
         </div>
       </GuestLayout>
-
+      <ScrollToTopButton/>
       <Footer />
     </>
   );

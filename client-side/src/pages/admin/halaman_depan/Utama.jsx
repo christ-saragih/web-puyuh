@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
+import AdminLayout from "../../../layouts/AdminLayout.jsx";
 import {
   getDashboardFrontpage,
   saveDashboardFrontpage,
 } from "../../../services/dashboard-frontpage.service";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import { useEffect, useState } from "react";
 
 const Utama = () => {
   const [dashboardFrontpage, setDasboardFrontpage] = useState([]);
@@ -16,30 +16,28 @@ const Utama = () => {
     nama_subheader: "",
     image_header: null,
   });
-  console.log("FORM DATA: ");
-
-  console.log(formData);
 
   const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
     getDashboardFrontpage((data) => {
       setDasboardFrontpage(data);
-      if (data.length > 0) {
+
+      if (data) {
         setFormData({
-          nama_header: data[0].nama_header || "",
-          nama_subheader: data[0].nama_subheader || "",
-          image_header: data[0].image_header || "",
+          nama_header: data.nama_header || "",
+          nama_subheader: data.nama_subheader || "",
+          image_header: data.image_header || "",
         });
         // Set preview image dari data yang ada
         setPreviewImage(
-          `http://localhost:3000/api/beranda/image/${data[0].image_header}`
+          `http://localhost:3000/api/beranda/image/${data.image_header}`
         );
       }
     });
   }, []);
 
-  const handleInputChange = (e) => {
+  const handleTextChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -79,10 +77,6 @@ const Utama = () => {
     setEditMode(true);
   };
 
-  console.log("ADMIN");
-  console.log(dashboardFrontpage);
-  
-  
   const isDataEmpty = dashboardFrontpage.length === 0;
 
   return (
@@ -170,10 +164,9 @@ const Utama = () => {
           placeholder={"Masukkan judul.."}
           variant={isDataEmpty || editMode ? "primary-outline" : "disabled"}
           value={formData.nama_header}
-          handleChange={handleInputChange}
+          handleChange={handleTextChange}
           isDisabled={!isDataEmpty && !editMode}
         />
-
         <Label htmlFor={"nama_subheader"} value={"Sub Judul"} />
         <Input
           type={"text"}
@@ -181,7 +174,7 @@ const Utama = () => {
           placeholder={"Masukkan sub judul.."}
           variant={isDataEmpty || editMode ? "primary-outline" : "disabled"}
           value={formData.nama_subheader}
-          handleChange={handleInputChange}
+          handleChange={handleTextChange}
           isDisabled={!isDataEmpty && !editMode}
         />
       </div>

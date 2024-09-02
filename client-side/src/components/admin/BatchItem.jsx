@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import Admin from "../../assets/images/admin.svg";
-import BatchInvestasi from "../../assets/images/batch_investasi.png";
 import { Dropdown, Tooltip } from "flowbite-react";
 import {
   PiCalendarCheck,
+  PiCalendarDots,
   PiClockCountdown,
   PiDotsThreeOutlineVerticalBold,
   PiEyeBold,
@@ -75,7 +74,6 @@ const BatchItem = (props) => {
                 key={investor.investorId}
                 content={investor.nama_lengkap}
                 placement="bottom"
-               
               >
                 <div className="h-10 w-10 bg-gray-200 rounded-full overflow-hidden border-[3px] border-white p-1">
                   {investor.foto_profil ? (
@@ -149,7 +147,11 @@ const BatchItem = (props) => {
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1">
             <p>Dana Terkumpul</p>
-            <p className="font-semibold text-lg text-[#e3a008]">
+            <p
+              className={`font-semibold text-lg ${
+                status === "selesai" ? "text-[#138a36]" : "text-yellow-400"
+              }`}
+            >
               {formatRupiah(total_pendanaan === null ? 0 : total_pendanaan)}
             </p>
           </div>
@@ -159,7 +161,9 @@ const BatchItem = (props) => {
               className="text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
               style={{
                 width: `${percentage}%`,
-                backgroundColor: "#e3a008",
+                backgroundColor: `${
+                  status === "selesai" ? "#138a36" : "#e3a008"
+                }`,
               }}
             >
               {percentage}%
@@ -172,19 +176,24 @@ const BatchItem = (props) => {
             <PiUserCircleFill className="w-6 h-6" />
             {/* total investor */}
             <p className="font-medium">
-              {totalInvestor > 0 ? totalInvestor : 0}
+              {totalInvestor > 0 ? totalInvestor : 0} investor
             </p>
           </div>
 
-          {daysRemaining > 0 ? (
-            <div className="bg-[#fff5e3] text-[#FFA90B] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
-              <PiClockCountdown className="-ms-[3px] w-5 h-5" />
-              <p className="font-medium">{daysRemaining} hari</p>
+          {status === "segera" ? (
+            <div className="bg-[#eeeffa] text-[#5766CE] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+              <PiCalendarDots className="-ms-[3px] w-5 h-5" />
+              <p className="font-medium">Segera</p>
             </div>
-          ) : (
-            <div className="bg-green-100 text-green-600 items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+          ) : status === "selesai" ? (
+            <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
               <PiCalendarCheck className="-ms-[3px] w-5 h-5" />
               <p className="font-medium">Selesai</p>
+            </div>
+          ) : (
+            <div className="bg-[#fff6e6] text-[#FFA90B] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+              <PiClockCountdown className="-ms-[3px] w-5 h-5" />
+              <p className="font-medium">{daysRemaining} hari</p>
             </div>
           )}
         </div>

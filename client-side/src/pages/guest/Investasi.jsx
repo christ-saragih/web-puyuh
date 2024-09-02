@@ -11,9 +11,9 @@ import Navbar from "../../components/guest/Navbar";
 
 const InvestorInvestasi = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [username, setUsername] = useState('');
-  const [token, setToken] = useState('');
-  const [expire, setExpire] = useState('');
+  const [username, setUsername] = useState("");
+  const [token, setToken] = useState("");
+  const [expire, setExpire] = useState("");
   const [investors, setInvestors] = useState([]);
   const [batchs, setBatchs] = useState([]);
   const navigate = useNavigate();
@@ -33,8 +33,6 @@ const InvestorInvestasi = () => {
       setBatchs(data);
     });
   }, []);
-  console.log(batchs);
-  
 
   // const refreshToken = async () => {
   //   try {
@@ -98,11 +96,10 @@ const InvestorInvestasi = () => {
   // };
 
   return (
-    <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
+    <div className="">
       {/* <SidebarInvestor isHovered={isHovered} setIsHovered={setIsHovered} /> */}
       <Navbar />
-      <div className="mt-20"
-      >
+      <div className="mt-20">
         <GuestLayout className="mt-28 lg:mt-2">
           <h2 className="font-bold text-4xl mb-6">
             Ayo berinvestasi sekarang di CV Slamet!

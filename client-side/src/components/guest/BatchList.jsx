@@ -4,7 +4,7 @@ const BatchList = (props) => {
   const { batchs } = props;
 
   return (
-    <div className="flex justify-center flex-wrap gap-x-10 gap-y-6 xl:gap-x-14 xl:gap-y-8 xl:flex-nowrap">
+    <div className="grid md:grid-cols-2 gap-x-10 gap-y-6 xl:grid-cols-3 xl:gap-x-14 xl:gap-y-8">
       {Array.isArray(batchs) && batchs.length > 0 ? (
         batchs.map((batch) => (
           <BatchItem
