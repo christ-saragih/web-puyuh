@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Navbar from "../../components/guest/Navbar";
-import GuestLayout from "../../layouts/GuestLayout";
-import Footer from "../../components/guest/Footer";
-import { LiaUserEditSolid } from "react-icons/lia";
+
+import GuestLayouts from "../../layouts/GuestLayouts";
 import { getArticleBySlug } from "../../services/article.service";
 import { formatDate } from "../../utils/formatDate";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { LiaUserEditSolid } from "react-icons/lia";
 
 const ArticleDetail = () => {
   const { slug } = useParams();
@@ -22,9 +21,8 @@ const ArticleDetail = () => {
   }
 
   return (
-    <>
-      <Navbar />
-      <GuestLayout className="mt-28 lg:mt-32">
+    <GuestLayouts>
+      <div className="w-[90%] mx-auto my-12 lg:my-16">
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-center items-center gap-3">
             <div className="w-12 h-12 bg-[#F5F5F5] text-slate-800 p-2 rounded-full">
@@ -67,10 +65,10 @@ const ArticleDetail = () => {
         <div className="format max-w-3xl mx-auto">
           <p dangerouslySetInnerHTML={{ __html: article.deskripsi }}></p>
         </div>
-      </GuestLayout>
+      </div>
 
-      <Footer />
-    </>
+      <GuestLayouts.Footer />
+    </GuestLayouts>
   );
 };
 

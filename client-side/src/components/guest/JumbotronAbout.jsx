@@ -17,8 +17,8 @@ const JumbotronAbout = (props) => {
 
   return (
     <div className="relative">
-      <img src={`http://localhost:3000/api/tentang-kami/image/${imagePath}`} alt="" className="object-cover w-full h-[30rem] rounded-br-[250px] lg:py-8" />
-      <h1 className='absolute lg:top-[3.2rem] tentang-h1 font-inter font-bold text-[4rem] md:text-[7rem] text-[#A6513C] lg:px-24'>
+      <img src={`http://localhost:3000/api/tentang-kami/image/${imagePath}`} alt={imagePath} className="object-cover w-full h-[26rem] rounded-br-[250px]" />
+      <h1 className='absolute lg:top-[1.5rem] tentang-h1 font-inter font-bold text-[4rem] md:text-[7rem] text-[#A6513C] lg:px-24'>
         <span className='text-[4rem] lg:text-[6.5rem]'>{judulArray[0]}</span> <br />
         <span className='text-[5rem] lg:text-[12rem] leading-none'>{judulArray[1]}</span>
       </h1>
