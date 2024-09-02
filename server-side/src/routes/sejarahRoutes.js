@@ -9,10 +9,7 @@ const {
 } = require("../validators/sejarahValidation");
 
 router.post("/", validate(createSchema), sejarahController.upsert);
-// router.post("/", validate(createSchema), sejarahController.create);
-// router.put("/:id", validate(updateSchema), sejarahController.update);
-router.get("/", sejarahController.findAll);
-router.get("/:id", sejarahController.findOne);
+router.get("/", sejarahController.findData);
 router.delete("/:id", sejarahController.delete);
 
 module.exports = router;
