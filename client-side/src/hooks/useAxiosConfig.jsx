@@ -1,4 +1,3 @@
-// axiosConfig.js
 import axios from "axios";
 
 // Instance Axios untuk Admin
@@ -57,10 +56,10 @@ apiInvestor.interceptors.response.use(
     }
 );
 
-// Buat instance axios
+// Instance umum untuk request API dengan otentikasi
 const axiosInstance = axios.create({
     baseURL: "http://localhost:3000/api",
-    withCredentials: true, // Pastikan cookie termasuk dalam request
+    withCredentials: true, // Pastikan cookie dikirimkan dalam request
 });
 
 // Interceptor untuk menambahkan accessToken di setiap request
@@ -81,6 +80,39 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// export default axiosInstance;
+// Interceptor untuk menangani response error
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 403 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                // Jalankan refresh token
+                const refreshResponse = await axios.post(
+                    "http://localhost:3000/api/auth/refresh-token",
+                    {},
+                    { withCredentials: true }
+                );
+
+                // Simpan accessToken baru dari response refresh token ke cookie
+                const newAccessToken = refreshResponse.data.accessToken;
+                document.cookie = `accessToken=${newAccessToken}; path=/`;
+
+                // Tambahkan accessToken baru ke request header dan ulangi request asli
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                return axiosInstance(originalRequest);
+            } catch (refreshError) {
+                console.error("Error refreshing token:", refreshError);
+                window.location.href = "/masuk";
+                return Promise.reject(refreshError);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
 
 export { apiAdmin, apiInvestor, axiosInstance };

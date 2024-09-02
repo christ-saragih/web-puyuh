@@ -10,8 +10,8 @@ export const AuthAdminProvider = ({ children }) => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const res = await axiosInstance.get(
-                    "http://localhost:3000/api/auth/admin/login",
+                const res = await axios.get(
+                    "http://localhost:3000/api/auth/admin/protected",
                     {
                         withCredentials: true,
                     }
@@ -42,7 +42,7 @@ export const AuthAdminProvider = ({ children }) => {
     const logout = async () => {
         try {
             await axios.post(
-                "/api/logout-admin",
+                "http://localhost:3000/api/auth/admin/logout",
                 {},
                 { withCredentials: true }
             );

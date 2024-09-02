@@ -10,7 +10,7 @@ const ProtectedRouteInvestor = ({ children }) => {
 
     if (!investor) {
         navigate("/masuk");
-        return null; // Pastikan tidak ada komponen yang dirender saat redirect
+        return null;
     }
 
     return children;

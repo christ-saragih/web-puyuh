@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
-import { axiosInstance } from "../hooks/useAxiosConfig";
+import { apiInvestor, axiosInstance } from "../hooks/useAxiosConfig";
 
 export const AuthInvestorContext = createContext();
 
@@ -10,11 +9,8 @@ export const AuthInvestorProvider = ({ children }) => {
     useEffect(() => {
         const checkInvestor = async () => {
             try {
-                const res = await axios.get(
-                    "http://localhost:3000/api/auth/investor/protected",
-                    {
-                        withCredentials: true,
-                    }
+                const res = await apiInvestor.get(
+                    "/api/auth/investor/protected"
                 );
                 setInvestor(res.data.user);
             } catch (error) {
@@ -26,35 +22,30 @@ export const AuthInvestorProvider = ({ children }) => {
 
     const login = async (usernameOrEmail, password) => {
         try {
-            const res = await axios.post(
-                "http://localhost:3000/api/auth/investor/login",
-                { usernameOrEmail, password },
-                { withCredentials: true }
-            );
+            const res = await apiInvestor.post("/api/auth/investor/login", {
+                usernameOrEmail,
+                password,
+            });
             setInvestor(res.data.investor);
             return res.data;
         } catch (error) {
-            console.error(error.response.data.message);
+            console.error(error.response?.data?.message || "Login failed");
             throw error;
         }
     };
 
     const logout = async () => {
         try {
-            await axiosInstance.post(
-                "/api/auth/investor/logout",
-                {},
-                { withCredentials: true }
-            );
+            await apiInvestor.post("/api/auth/investor/logout");
             setInvestor(null);
         } catch (error) {
-            console.error(error.response.data.message);
+            console.error(error.response?.data?.message || "Logout failed");
         }
     };
 
     const refreshAccessToken = async () => {
         try {
-            const response = await axios.post(
+            const response = await apiInvestor.post(
                 "/api/auth/investor/refresh-token"
             );
             return response.data.accessToken;
@@ -62,6 +53,7 @@ export const AuthInvestorProvider = ({ children }) => {
             console.error("Failed to refresh investor token:", error);
         }
     };
+
     return (
         <AuthInvestorContext.Provider
             value={{ investor, login, logout, refreshAccessToken }}
