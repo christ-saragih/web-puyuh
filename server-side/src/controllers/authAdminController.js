@@ -1,56 +1,40 @@
 const { Admin } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const { Op, where } = require("sequelize");
+require("dotenv").config();
+
+// Membuat access token
+const generateAccessToken = (admin) => {
+    return jwt.sign(
+        {
+            id: admin.id,
+            username: admin.username,
+            email: admin.email,
+            role: "admin",
+        },
+        process.env.ACCESS_SECRET_KEY,
+        { expiresIn: "1m" }
+    );
+};
+
+// Membuat refresh token
+const generateRefreshToken = (admin) => {
+    return jwt.sign(
+        {
+            id: admin.id,
+            username: admin.username,
+            email: admin.email,
+            role: "admin",
+        },
+        process.env.REFRESH_SECRET_KEY,
+        { expiresIn: "1d" }
+    );
+};
 
 // Create
 exports.create = async (req, res) => {
-    const { username, email, password } = req.body;
-
-    try {
-        // Cek apakah username atau email sudah digunakan
-        const existingUser = await Admin.findOne({
-            where: {
-                [Op.or]: [{ username: username }, { email: email }],
-            },
-        });
-
-        if (existingUser) {
-            return res.status(400).json({
-                message: "Username atau Email sudah digunakan!",
-            });
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Buat akun admin
-        const admin = await Admin.create({
-            username,
-            email,
-            password: hashedPassword,
-        });
-
-        res.status(201).json({
-            message: "Registrasi Berhasil!",
-            data: admin,
-        });
-    } catch (error) {
-        if (error.name === "SequelizeUniqueConstraintError") {
-            return res.status(400).json({
-                message: "Username or email already in use",
-                error: error.errors.map((e) => e.message),
-            });
-        }
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
-
-// Register
-exports.register = async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
@@ -121,37 +105,26 @@ exports.login = async (req, res) => {
                 .json({ message: "Kesalahan Username/Email atau Password!" });
         }
 
-        const accessToken = jwt.sign(
-            {
-                id: admin.id,
-                username: admin.username,
-                email: admin.email,
-                role: "admin",
-            },
-            process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" }
-        );
-
-        const refreshToken = jwt.sign(
-            {
-                id: admin.id,
-                username: admin.username,
-                email: admin.email,
-                role: "admin",
-            },
-            process.env.REFRESH_SECRET_KEY,
-            { expiresIn: "1d" }
-        );
+        const accessToken = generateAccessToken(admin);
+        const refreshToken = generateRefreshToken(admin);
 
         admin.refresh_token = refreshToken;
         await admin.save();
 
-        // Simpan token dalam session dan cookie
-        req.session.admin = admin;
-        res.cookie("accessToken", accessToken, { httpOnly: true });
-        res.cookie("refreshToken", refreshToken, { httpOnly: true });
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "Strict",
+            // maxAge: 1 * 60 * 1000,
+        });
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "Strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
-        res.json({ message: "Login successful", accessToken, refreshToken });
+        res.json({ message: "Login Berhasil", accessToken });
     } catch (error) {
         if (error.name === "SequelizeUniqueConstraintError") {
             return res.status(400).json({
@@ -201,55 +174,61 @@ exports.ubahPassword = async (req, res) => {
     }
 };
 
-// Logout
-exports.logout = (req, res) => {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ message: "Failed to logout." });
-        }
-        res.json({ message: "Logout successful" });
-    });
-};
 // Protected route example
 exports.protected = (req, res) => {
-    res.json({ message: "This is a protected route", username: req.username });
+    res.json({ message: "This is a protected route", user: req.user });
 };
 
-// Refresh token endpoint
+// Refresh token
 exports.refreshToken = async (req, res) => {
-    try {
-        const { username, email } = req.decoded;
+    const refreshToken = req.cookies.refreshToken;
 
-        const admin = await Admin.findOne({
-            where: {
-                [Op.and]: [
-                    { username },
-                    { email },
-                    {
-                        refresh_token:
-                            req.cookies.refreshToken || req.body.refreshToken,
-                    },
-                ],
-            },
+    if (!refreshToken) {
+        return res
+            .status(403)
+            .json({ message: "Refresh token tidak disediakan" });
+    }
+
+    try {
+        const storedToken = await Admin.findOne({
+            where: { refresh_token: refreshToken },
+            attributes: ["id", "username", "email", "refresh_token"],
         });
 
-        if (!admin) {
-            return res.status(403).json({ message: "Invalid refresh token" });
+        if (!storedToken) {
+            return res
+                .status(403)
+                .json({ message: "Refresh token tidak valid" });
         }
 
-        const newAccessToken = jwt.sign(
-            { username: admin.username, email: admin.email, role: "admin" },
-            process.env.ACCESS_SECRET_KEY,
-            { expiresIn: "15m" }
-        );
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_SECRET_KEY,
+            async (err, user) => {
+                if (err) {
+                    console.error("Kesalahan Verifikasi Refresh Token:", err);
+                    return res
+                        .status(403)
+                        .json({ message: "Token tidak valid" });
+                }
 
-        res.cookie("accessToken", newAccessToken, { httpOnly: true });
-        res.json({
-            message: "Access token refreshed",
-            accessToken: newAccessToken,
-        });
+                const newAccessToken = generateAccessToken({
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    role: "user",
+                });
+
+                res.cookie("accessToken", newAccessToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "Strict",
+                    // maxAge: 1 * 60 * 1000,
+                });
+
+                res.status(200).json({ accessToken: newAccessToken });
+            }
+        );
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
