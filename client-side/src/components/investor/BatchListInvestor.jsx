@@ -5,7 +5,7 @@ const BatchListInvestor = ({ batchs }) => {
     <div className="overflow-x-auto w-full">
       <div className="flex gap-x-6">
         {Array.isArray(batchs) && batchs.length > 0 ? (
-          batchs.map((batch) => (
+          batchs.filter(batch => batch.status === 'proses').map((batch) => (
             <div key={batch.id} className="flex-shrink-0 w-[20rem]">
               <BatchItemInvestor
                 id={batch.id}
