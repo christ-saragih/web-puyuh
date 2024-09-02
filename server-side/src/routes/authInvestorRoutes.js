@@ -3,12 +3,11 @@ const router = express.Router();
 const authInvestorController = require("../controllers/authInvestorController");
 const validate = require("../middleware/validationMiddleware");
 
-const { verifyRefreshToken } = require("../middleware/verifyRefreshToken");
-
 const {
     registrasiSchema,
     loginSchema,
 } = require("../validators/authInvestorValidation");
+
 const {
     authenticateToken,
     logout,
@@ -31,18 +30,14 @@ router.post(
 );
 router.post("/login", validate(loginSchema), authInvestorController.login);
 router.post("/logout", authenticateToken("investor"), logout);
-// Protected route
-router.get("/protected", authenticateToken("investor"), (req, res) => {
-    res.json({ message: "This is a protected route", user: req.user });
-});
 
-// router.get("/protected", authenticateToken, authInvestorController.protected);
-router.post(
-    "/refresh-token",
-    verifyRefreshToken,
-    authInvestorController.refreshToken
+router.post("/refresh-token", authInvestorController.refreshToken);
+
+// Protected route
+router.get(
+    "/protected",
+    authenticateToken("investor"),
+    authInvestorController.protected
 );
-// router.get("/:id", authInvestorController.getOne);
-// router.delete("/:id", authInvestorController.delete);
 
 module.exports = router;

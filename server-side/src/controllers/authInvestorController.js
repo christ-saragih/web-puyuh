@@ -9,7 +9,6 @@ const {
 const { Op } = require("sequelize");
 const { exit } = require("process");
 require("dotenv").config();
-const blacklist = new Set();
 
 // Membuat access token
 const generateAccessToken = (investor) => {
@@ -22,7 +21,7 @@ const generateAccessToken = (investor) => {
             kategori_investor: investor.kategori_investor,
         },
         process.env.ACCESS_SECRET_KEY,
-        { expiresIn: "15m" }
+        { expiresIn: "1m" }
     );
 };
 
@@ -231,14 +230,20 @@ exports.login = async (req, res) => {
         investor.refresh_token = refreshToken;
         await investor.save();
 
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "Strict",
+            // maxAge: 1 * 60 * 1000,
+        });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: "Strict",
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.json({ message: "Login successful", accessToken });
+        res.json({ message: "Login Berhasil", accessToken });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -314,15 +319,17 @@ exports.resetPassword = async (req, res) => {
 
 // Protected route example
 exports.protected = (req, res) => {
-    res.json({ message: "This is a protected route", username: req.username });
+    res.json({ message: "This is a protected route", user: req.user });
 };
 
-// Refresh token endpoint
+// Refresh token
 exports.refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-        return res.status(403).json({ message: "Token tidak disediakan" });
+        return res
+            .status(403)
+            .json({ message: "Refresh token tidak disediakan" });
     }
 
     try {
@@ -334,25 +341,35 @@ exports.refreshToken = async (req, res) => {
         // exit();
 
         if (!storedToken) {
-            return res.status(403).json({ message: "Token tidak valid" });
+            return res
+                .status(403)
+                .json({ message: "Refresh token tidak valid" });
         }
 
         jwt.verify(
             refreshToken,
             process.env.REFRESH_SECRET_KEY,
             async (err, investor) => {
-                if (err)
+                if (err) {
+                    console.error("Kesalahan Verifikasi Refresh Token:", err);
                     return res
                         .status(403)
                         .json({ message: "Token tidak valid" });
+                }
 
-                // Generate access token baru
                 const newAccessToken = generateAccessToken({
                     id: investor.id,
                     username: investor.username,
                     email: investor.email,
                     role: "investor",
                     kategori_investor: investor.kategori_investor,
+                });
+
+                res.cookie("accessToken", newAccessToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "Strict",
+                    // maxAge: 1 * 60 * 1000,
                 });
 
                 res.status(200).json({ accessToken: newAccessToken });
