@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { apiInvestor, axiosInstance } from "../hooks/useAxiosConfig";
+import { apiInvestor } from "../hooks/useAxiosConfig";
 
 export const AuthInvestorContext = createContext();
 

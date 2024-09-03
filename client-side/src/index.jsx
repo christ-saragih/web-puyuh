@@ -47,6 +47,7 @@ import InvestorInvestasi from "./pages/investor/InvestorInvestasi";
 import InvestorInvestasiDetail from "./pages/investor/InvestorInvestasiDetail";
 import InvestorTransaksi from "./pages/investor/InvestorTransaksi";
 import Verifikasi from "./pages/investor/Verifikasi";
+import PublicRouteAdmin from "./components/admin/PublicRouteAdmin";
 // END: Investor
 
 const router = createBrowserRouter([
@@ -156,7 +157,9 @@ const router = createBrowserRouter([
         path: "/admin/masuk",
         element: (
             <AuthAdminProvider>
-                <AdminMasuk />
+                <PublicRouteAdmin>
+                    <AdminMasuk />
+                </PublicRouteAdmin>
             </AuthAdminProvider>
         ),
     },
@@ -167,11 +170,11 @@ const router = createBrowserRouter([
     {
         path: "/admin",
         element: (
-            <AuthInvestorProvider>
-                <ProtectedRouteInvestor>
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
                     <AdminDashboard />
-                </ProtectedRouteInvestor>
-            </AuthInvestorProvider>
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
         ),
     },
     {
