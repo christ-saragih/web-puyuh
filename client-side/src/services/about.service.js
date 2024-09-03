@@ -21,3 +21,14 @@ export const getAboutSejarahs = (callback) => {
       console.log(err);
     });
 };
+
+export const getFounder = (callback) => {
+  axios
+    .get("http://localhost:3000/api/founder")
+    .then((res) => {
+      callback(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

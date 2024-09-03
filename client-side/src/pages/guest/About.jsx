@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ImageSlider from "../../components/guest/ImageSlider";
 import JumbotronAbout from "../../components/guest/JumbotronAbout";
 import DocumentIcon from "../../assets/images/icons/dokumen.svg";
-import { getAbouts, getAboutSejarahs } from "../../services/about.service";
+import { getAbouts, getAboutSejarahs, getFounder } from "../../services/about.service";
 import GuestLayouts from "../../layouts/GuestLayouts";
 import { getDocument } from "../../services/document.service";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ const About = () => {
   const [abouts, setAbouts] = useState(null);
   const [sejarah, setSejarah] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [founder, setFounder] = useState([]);
 
   useEffect(() => {
     getAbouts((data) => {
@@ -24,7 +25,14 @@ const About = () => {
     getDocument((data) => {
       setDocuments(data);
     });
+
+    getFounder((data) => {
+      setFounder(data);
+    });
   }, []);
+
+  console.log(founder);
+  
 
   if (!abouts || sejarah.length === 0) {
     return <div>Data tentang kami tidak ditemukan!</div>;
@@ -47,7 +55,7 @@ const About = () => {
               </span>
             </h2>
             <p className="font-quicksand font-medium text-[#000000] md:text-lg">
-              {abouts.tentangkami[0].deskripsi}
+              {abouts.tentangkami.deskripsi}
             </p>
           </div>
           {/* column 2 */}
@@ -58,10 +66,10 @@ const About = () => {
         {/* sejarah */}
         <div className="w-[90%] mx-auto px-20 mt-12 lg:mt-32 text-center">
           <h1 className="text-4xl font-bold text-[#4B241A] mb-4">
-            {sejarah.sejarah[0].judul}
+            {sejarah.sejarah.judul}
           </h1>
           <p className="text-lg font-quicksand font-medium text-[#000000]">
-            {sejarah.sejarah[0].deskripsi}
+            {sejarah.sejarah.deskripsi}
           </p>
         </div>
         {/* dokumen */}
@@ -98,42 +106,41 @@ const About = () => {
           </h1>
 
           <div className="mx-4 md:mx-24 rounded-[2rem] bg-white">
-            <div className="flex flex-col items-center">
-              <div className="flex flex-col md:flex-row justify-center items-center">
-                <div className="flex flex-col items-center md:mr-16 md:ml-28 w-[20%]">
-                  <img
-                    src="https://via.placeholder.com/150"
-                    alt="Avatar"
-                    className="w-[150px] h-[150px] rounded-full"
-                  />
+          {founder.data && founder.data.length > 0 ? (
+              founder.data.map((founder) => (
+                <div key={founder.id} className="flex flex-col items-center mb-10">
+                  <div className="flex flex-col md:flex-row justify-center items-center">
+                    <div className="flex flex-col items-center md:mr-16 md:ml-28 w-[20%]">
+                      <img
+                        src={`http://localhost:3000/api/founder/image/${founder.gambar}`}
+                        alt={founder.nama}
+                        className="w-[150px] h-[150px] rounded-full"
+                      />
+                    </div>
+                    <div className="flex flex-col md:mr-14 w-[80%] mt-4 md:mt-4">
+                      <h3 className="text-xl font-bold text-[#4B241A]">{founder.nama}</h3>
+                      <h4 className="mt-1 text-lg font-quicksand font-medium md:text-[24px]">
+                        {founder.jabatan}
+                      </h4>
+                      <p className="font-quicksand font-medium text-lg mr-0 md:mr-10 text-justify mb-10">
+                        {founder.deskripsi}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col md:mr-14 w-[80%] mt-4 md:mt-4">
-                  <h3 className="text-xl font-bold text-[#4B241A]">John Doe</h3>
-                  <h4 className="mt-1 text-lg font-quicksand font-medium md:text-[24px]">
-                    Founder
-                  </h4>
-                  <p className="font-quicksand font-medium text-lg mr-0 md:mr-10 text-justify mb-10">
-                    Sed ut perspiciatis unde omnis iste natus error sit
-                    voluptatem accusantium doloremque laudantium, totam rem
-                    aperiam, eaque ipsa quae ab illo inventore veritatis et
-                    quasi architecto beatae vitae dicta sunt explicabo. Nemo
-                    enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-                    aut fugit, sed quia consequuntur magni dolores eos qui
-                    ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-                    qui dolorem ipsum quia dolor sit amet, consectetur, adipisci
-                    velit, sed quia non numquam eius modi tempora incidunt ut
-                    labore et dolore magnam aliquam quaerat voluptatem.
-                  </p>
-                </div>
-              </div>
-            </div>
+              ))
+            ) : (
+              <div className="text-center">Data founder tidak ditemukan</div>
+            )}
           </div>
         </div>
       </section>
+      
 
       <GuestLayouts.Footer />
     </GuestLayouts>
   );
 };
+
 
 export default About;
