@@ -15,7 +15,7 @@ const generateAccessToken = (admin) => {
             role: "admin",
         },
         process.env.ACCESS_SECRET_KEY,
-        { expiresIn: "1m" }
+        { expiresIn: "15m" }
     );
 };
 
@@ -126,12 +126,6 @@ exports.login = async (req, res) => {
 
         res.json({ message: "Login Berhasil", accessToken });
     } catch (error) {
-        if (error.name === "SequelizeUniqueConstraintError") {
-            return res.status(400).json({
-                message: "Validation error",
-                error: error.errors.map((e) => e.message),
-            });
-        }
         res.status(500).json({
             message: "Internal server error",
             error: error.message,

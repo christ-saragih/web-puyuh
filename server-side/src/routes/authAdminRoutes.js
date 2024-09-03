@@ -23,6 +23,7 @@ router.post(
     authAdminController.ubahPassword
 );
 
+// Protected route
 router.get(
     "/protected",
     authenticateToken("admin"),
