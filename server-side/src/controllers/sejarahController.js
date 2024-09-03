@@ -48,7 +48,7 @@ exports.upsert = async (req, res) => {
 // Read all
 exports.findData = async (req, res) => {
     try {
-        const sejarah = await Sejarah.findData();
+        const sejarah = await Sejarah.findOne();
         res.status(200).json({
             message: "Semua Data Sejarah",
             sejarah,
