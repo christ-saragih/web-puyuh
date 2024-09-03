@@ -2,6 +2,25 @@ const { Admin, AdminBiodata } = require("../models");
 const bcrypt = require("bcrypt");
 
 // Read All
+exports.findAdminByAuth = async (req, res) => {
+    try {
+        const admins = await Admin.findOne({
+            where: { id: req.user.id },
+            include: AdminBiodata,
+        });
+        res.status(200).json({
+            message: "Data Admin berhasil diambil!",
+            data: admins,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Read All
 exports.findAll = async (req, res) => {
     try {
         const admins = await Admin.findAll({ include: AdminBiodata });
