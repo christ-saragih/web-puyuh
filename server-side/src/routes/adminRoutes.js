@@ -3,16 +3,16 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 
 const {
-    authenticateAdminToken,
-} = require("../middleware/authenticateAdminToken");
-const authorizeRole = require("../middleware/authorizeRole");
+    authenticateToken,
+    logout,
+} = require("../middleware/authenticateToken");
 
+router.get("/", authenticateToken("admin"), adminController.findAdminByAuth);
 router.get("/", adminController.findAll);
 router.get("/:id", adminController.findOne);
 router.post(
     "/ubah-password",
-    authenticateAdminToken,
-    authorizeRole("admin"),
+    authenticateToken("admin"),
     adminController.ubahPassword
 );
 

@@ -1,6 +1,6 @@
 // useAuthAdmin.js
 import { useState, useEffect } from "react";
-import { apiAdmin } from "./useAxiosConfig";
+import { axiosInstance } from "./useAxiosConfig";
 
 const useAuthAdmin = () => {
     const [admin, setAdmin] = useState(null);
@@ -9,7 +9,7 @@ const useAuthAdmin = () => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const res = await apiAdmin.get("/api/auth/admin/protected");
+                const res = await axiosInstance.get("/auth/admin/protected");
                 setAdmin(res.data.user);
             } catch (error) {
                 setAdmin(null);
