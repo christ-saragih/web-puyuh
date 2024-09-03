@@ -2,7 +2,7 @@ import Input from "../../components/common/Input.jsx";
 import InputSearch from "../../components/common/InputSearch.jsx";
 import Label from "../../components/common/Label.jsx";
 import Modal from "../../components/common/Modal.jsx";
-import AdminLayout from "../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../layouts/AdminLayout";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";

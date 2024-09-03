@@ -3,7 +3,7 @@ import Modal from "../../components/common/Modal";
 import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
 import InputSearch from "../../components/common/InputSearch";
-import AdminLayout from "../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../layouts/AdminLayout";
 import InvestorList from "../../components/admin/InvestorList.jsx";
 import { formatDate } from "../../utils/formatDate.js";
 import {

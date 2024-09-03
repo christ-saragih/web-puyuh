@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import Navbar from "../../components/guest/Navbar";
-import GuestLayout from "../../layouts/GuestLayout";
-import { getArticles } from "../../services/article.service";
-import Footer from "../../components/guest/Footer";
 import ArticleList from "../../components/common/ArticleList";
+import GuestLayouts from "../../layouts/GuestLayouts";
+import { getArticles } from "../../services/article.service";
+import { useEffect, useState } from "react";
 
 const Article = () => {
   const [articles, setArticles] = useState([]);
@@ -15,14 +13,12 @@ const Article = () => {
   }, []);
 
   return (
-    <>
-      <Navbar />
-      <GuestLayout className="mt-28 lg:mt-32">
+    <GuestLayouts>
+      <div className="w-[90%] mx-auto my-12 lg:my-16">
         <ArticleList articles={articles} role="guest" />
-      </GuestLayout>
-
-      <Footer />
-    </>
+      </div>
+      <GuestLayouts.Footer />
+    </GuestLayouts>
   );
 };
 

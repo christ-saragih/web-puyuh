@@ -3,7 +3,7 @@ import Button from "../../../components/common/Button.jsx";
 import Input from "../../../components/common/Input.jsx";
 import Label from "../../../components/common/Label.jsx";
 import Textarea from "../../../components/common/Textarea.jsx";
-import AdminLayout from "../../../layouts/AdminLayout.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import {
   getContactFrontpage,
   saveContactFrontpage,

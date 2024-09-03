@@ -1,3 +1,19 @@
+import Navbar from "./Navbar";
+import ScrollToTopButton from "./ScrollToTopButton";
+
+const GuestLayouts = (props) => {
+  const { children } = props;
+
+  return (
+    <div>
+      <Navbar />
+      {children}
+
+      <ScrollToTopButton />
+    </div>
+  );
+};
+
 const Footer = () => {
   return (
     <footer className="bg-[#4B241A]">
@@ -171,4 +187,6 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+GuestLayouts.Footer = Footer;
+
+export default GuestLayouts;
