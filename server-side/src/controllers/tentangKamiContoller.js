@@ -101,7 +101,7 @@ exports.findData = async (req, res) => {
         const tentangkami = await TentangKami.findOne();
         res.status(200).json({
             message: "Semua Data Tentang Kami",
-            tentangkami,
+            data: tentangkami,
         });
     } catch (error) {
         res.status(500).json({
