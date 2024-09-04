@@ -10,10 +10,8 @@ export const AuthAdminProvider = ({ children }) => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const res = await apiAdmin.get("/api/auth/admin/protected", {
-                    withCredentials: true,
-                });
-                setAdmin(res.data.user);
+                const res = await apiAdmin.get("/api/auth/admin/protected");
+                setAdmin(res.data.admin);
             } catch (error) {
                 setAdmin(null);
             }
@@ -27,7 +25,7 @@ export const AuthAdminProvider = ({ children }) => {
                 usernameOrEmail,
                 password,
             });
-            setAdmin(res.data.user);
+            setAdmin(res.data.admin);
             return res.data;
         } catch (error) {
             console.error(error.response?.data?.message || "Login failed");

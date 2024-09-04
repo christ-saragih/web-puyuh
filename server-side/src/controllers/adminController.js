@@ -1,4 +1,4 @@
-const { Admin, AdminBiodata } = require("../models");
+const { Admin, AdminBiodata, Investor, InvestorBiodata } = require("../models");
 const bcrypt = require("bcrypt");
 
 // Read All
@@ -89,5 +89,21 @@ exports.ubahPassword = async (req, res) => {
                 error: error.message,
             });
         }
+    }
+};
+
+// get Semua Data Investor
+exports.GetAllDataInvestor = async (req, res) => {
+    try {
+        const investors = await Investor.findAll({ include: InvestorBiodata });
+        res.status(200).json({
+            message: "Data Admin berhasil diambil!",
+            data: investors,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
     }
 };

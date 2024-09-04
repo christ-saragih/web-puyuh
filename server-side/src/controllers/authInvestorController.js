@@ -243,7 +243,7 @@ exports.login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.json({ message: "Login Berhasil", accessToken });
+        res.json({ message: "Login Berhasil", investor, accessToken });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -319,7 +319,7 @@ exports.resetPassword = async (req, res) => {
 
 // Protected route example
 exports.protected = (req, res) => {
-    res.json({ message: "This is a protected route", user: req.user });
+    res.json({ message: "This is a protected route", investor: req.user });
 };
 
 // Refresh token

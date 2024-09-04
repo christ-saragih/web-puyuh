@@ -10,7 +10,7 @@ const useAuthInvestor = () => {
         const checkAuth = async () => {
             try {
                 const res = await axiosInstance.get("/auth/investor/protected");
-                setInvestor(res.data.user);
+                setInvestor(res.data.investor);
             } catch (error) {
                 setInvestor(null);
             } finally {
