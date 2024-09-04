@@ -10,7 +10,7 @@ const useAuthAdmin = () => {
         const checkAuth = async () => {
             try {
                 const res = await axiosInstance.get("/auth/admin/protected");
-                setAdmin(res.data.user);
+                setAdmin(res.data.admin);
             } catch (error) {
                 setAdmin(null);
             } finally {

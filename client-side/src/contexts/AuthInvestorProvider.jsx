@@ -12,7 +12,7 @@ export const AuthInvestorProvider = ({ children }) => {
                 const res = await apiInvestor.get(
                     "/api/auth/investor/protected"
                 );
-                setInvestor(res.data.user);
+                setInvestor(res.data.investor);
             } catch (error) {
                 setInvestor(null);
             }
