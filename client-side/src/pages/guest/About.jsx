@@ -32,6 +32,10 @@ const About = () => {
   }, []);
 
   console.log(founder);
+
+  console.log("DATA TENTANG KAMI");
+  console.log(abouts);
+  
   
 
   if (!abouts || sejarah.length === 0) {
@@ -55,7 +59,7 @@ const About = () => {
               </span>
             </h2>
             <p className="font-quicksand font-medium text-[#000000] md:text-lg">
-              {abouts.tentangkami.deskripsi}
+              {abouts.deskripsi}
             </p>
           </div>
           {/* column 2 */}
@@ -66,10 +70,10 @@ const About = () => {
         {/* sejarah */}
         <div className="w-[90%] mx-auto px-20 mt-12 lg:mt-32 text-center">
           <h1 className="text-4xl font-bold text-[#4B241A] mb-4">
-            {sejarah.sejarah.judul}
+            {sejarah.judul}
           </h1>
           <p className="text-lg font-quicksand font-medium text-[#000000]">
-            {sejarah.sejarah.deskripsi}
+            {sejarah.deskripsi}
           </p>
         </div>
         {/* dokumen */}

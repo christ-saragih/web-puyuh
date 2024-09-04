@@ -2,7 +2,7 @@ const JumbotronAbout = (props) => {
   const { abouts } = props;
 
   // Replace backslashes with forward slashes for URL
-  const imagePath = abouts.tentangkami.image_background;
+  const imagePath = abouts.image_background;
 
   // console.log('DATA:');
   
@@ -13,7 +13,7 @@ const JumbotronAbout = (props) => {
   // const backgroundImageStyle = `${imagePath}`;
 
   // Memisahkan kata-kata dalam judul
-  const judulArray = abouts.tentangkami.judul.split(' ');
+  const judulArray = abouts.judul.split(' ');
 
   return (
     <div className="relative">
