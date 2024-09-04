@@ -9,7 +9,7 @@ const ProtectedRouteAdmin = ({ children }) => {
     const navigate = useNavigate();
 
     // Jika sedang loading (baik untuk admin maupun investor), tampilkan loading
-    // if (loadingAdmin || loadingInvestor) return <div>Loading...</div>;
+    if (loadingAdmin || loadingInvestor) return <div>Loading...</div>;
 
     // Jika investor sudah login, redirect ke halaman dashboard investor
     if (investor) {
