@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthInvestor from "../../hooks/useAuthInvestor";
+import useAuthAdmin from "../../hooks/useAuthAdmin";
 
 const ProtectedRouteInvestor = ({ children }) => {
     const { investor, loading } = useAuthInvestor();

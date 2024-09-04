@@ -18,7 +18,6 @@ const Masuk = () => {
         setError("");
         try {
             await login(usernameOrEmail, password);
-
             navigate("/investor");
         } catch (error) {
             setError("Username/Email atau password salah");
