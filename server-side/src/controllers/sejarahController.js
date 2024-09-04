@@ -51,7 +51,7 @@ exports.findData = async (req, res) => {
         const sejarah = await Sejarah.findOne();
         res.status(200).json({
             message: "Semua Data Sejarah",
-            sejarah,
+            data: sejarah,
         });
     } catch (error) {
         res.status(500).json({
