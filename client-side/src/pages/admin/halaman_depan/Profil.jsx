@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import axios from "axios";
+import { getAbouts, getAboutSejarahs, getFounder } from "../../../services/about.service";
 
 const Profil = () => {
   const [formData, setFormData] = useState({
@@ -14,17 +15,52 @@ const Profil = () => {
     deskripsi_sejarah: "",
   });
 
-  const [founderData, setFounderData] = useState({
-    nama: "",
-    jabatan: "",
-    deskripsi_founder: "",
-    gambar: null,
+  const [founderData, setFounderData] = useState([]);
+  
+  const [editMode, setEditMode] = useState({
+    tentangKami: false,
+    sejarah: false,
+    founder: false,
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
-  const [founderImagePreview, setFounderImagePreview] = useState(null);
+  const [currentFounderIndex, setCurrentFounderIndex] = useState(null);
+  const [actionType, setActionType] = useState("create");
 
-  const handleChange = (e) => {
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    getAbouts((data) => {
+      setFormData({
+        judul: data.judul || "",
+        image_background: data.image_background || "",
+        deskripsi_tentang_kami: data.deskripsi || "",
+      });
+      setImagePreview(
+        `http://localhost:3000/api/tentang-kami/image/${data.image_background}`
+      );
+    });
+
+    getAboutSejarahs((data) => {
+      setSejarahData({
+        judul_sejarah: data.judul || "",
+        deskripsi_sejarah: data.deskripsi || "",
+      });
+    });
+
+    getFounder((data) => {
+      const foundersData = data.data.map((founder) => ({
+        nama: founder.nama || "",
+        jabatan: founder.jabatan || "",
+        deskripsi_founder: founder.deskripsi || "",
+        gambar: founder.gambar || null,
+        gambarPreview: `http://localhost:3000/api/founder/image/${founder.gambar}`,
+        id: founder.id || null,
+      }));
+      setFounderData(foundersData);
+    });
+  }, []);
+
+  const handleChange = (e, index = null) => {
     const { name, value, files } = e.target;
 
     if (files && files[0]) {
@@ -33,8 +69,12 @@ const Profil = () => {
         setFormData({ ...formData, [name]: file });
         handleImagePreview(file, setImagePreview);
       } else if (name === "gambar") {
-        setFounderData({ ...founderData, [name]: file });
-        handleImagePreview(file, setFounderImagePreview);
+        const updatedFounderData = [...founderData];
+        updatedFounderData[index] = {
+          ...updatedFounderData[index],
+          gambar: file,
+        };
+        setFounderData(updatedFounderData);
       }
     } else {
       if (["judul", "deskripsi_tentang_kami"].includes(name)) {
@@ -42,7 +82,12 @@ const Profil = () => {
       } else if (["judul_sejarah", "deskripsi_sejarah"].includes(name)) {
         setSejarahData({ ...sejarahData, [name]: value });
       } else {
-        setFounderData({ ...founderData, [name]: value });
+        const updatedFounderData = [...founderData];
+        updatedFounderData[index] = {
+          ...updatedFounderData[index],
+          [name]: value,
+        };
+        setFounderData(updatedFounderData);
       }
     }
   };
@@ -64,170 +109,353 @@ const Profil = () => {
     }
   };
 
-  const handleSubmitTentangKami = () => {
+  const handleCreateFounder = async () => {
     const form = new FormData();
-    form.append("judul", formData.judul);
-    form.append("image_background", formData.image_background);
-    form.append("deskripsi", formData.deskripsi_tentang_kami);
+    const newFounder = founderData[founderData.length - 1];
+    form.append("nama", newFounder.nama);
+    form.append("jabatan", newFounder.jabatan);
+    form.append("deskripsi", newFounder.deskripsi_founder);
+    if (newFounder.gambar) form.append("gambar", newFounder.gambar);
 
-    handleSubmit("http://localhost:3000/api/tentang-kami", form, {
+    await handleSubmit("http://localhost:3000/api/founder", form, {
       "Content-Type": "multipart/form-data",
     });
+
+    // Clear and refresh
+    setFounderData((prevData) => [...prevData, newFounder]);
+    setEditMode((prevMode) => ({ ...prevMode, founder: false }));
   };
 
-  const handleSubmitSejarah = () => {
+  const handleUpdateFounder = async (index) => {
     const form = new FormData();
-    form.append("judul", sejarahData.judul_sejarah);
-    form.append("deskripsi", sejarahData.deskripsi_sejarah);
+    const founder = founderData[index];
+    form.append("nama", founder.nama);
+    form.append("jabatan", founder.jabatan);
+    form.append("deskripsi", founder.deskripsi_founder);
+    if (founder.gambar) form.append("gambar", founder.gambar);
 
-    handleSubmit("http://localhost:3000/api/sejarah", form, {
-      "Content-Type": "application/json",
-    });
-  };
-
-  const handleSubmitFounder = () => {
-    const form = new FormData();
-    form.append("nama", founderData.nama);
-    form.append("jabatan", founderData.jabatan);
-    form.append("deskripsi", founderData.deskripsi_founder);
-    if (founderData.gambar) form.append("gambar", founderData.gambar);
-
-    handleSubmit("http://localhost:3000/api/founder", form, {
+    await handleSubmit(`http://localhost:3000/api/founder/${founder.id}`, form, {
       "Content-Type": "multipart/form-data",
     });
+
+    // Update state to reflect the changes
+    setFounderData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = founder;
+      return newData;
+    });
+    setEditMode((prevMode) => ({ ...prevMode, founder: false }));
+  };
+
+  const handleDeleteFounder = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/founder/${id}`);
+      setFounderData((prevData) => prevData.filter(founder => founder.id !== id));
+    } catch (error) {
+      console.error("Error deleting founder:", error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handleEdit = (section, index = null) => {
+    if (section === "founder" && index !== null) {
+      setEditMode((prevMode) => ({ ...prevMode, [section]: true }));
+      setCurrentFounderIndex(index);
+      setActionType("update");
+    } else {
+      setEditMode((prevMode) => ({ ...prevMode, [section]: true }));
+      setActionType("create");
+    }
+  };
+
+  const handleSave = async () => {
+    if (actionType === "create") {
+      await handleCreateFounder();
+    } else if (actionType === "update") {
+      await handleUpdateFounder(currentFounderIndex);
+    }
   };
 
   return (
     <AdminLayout title={"Halaman Depan / Profil"}>
       <div className="flex flex-col">
         {/* Tentang Kami */}
-        <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-          <div className="flex justify-between mb-5">
-            <h1 className="font-bold text-[#572618] text-xl">Tentang Kami</h1>
-            <button
-              onClick={handleSubmitTentangKami}
-              className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
-            >
-              Simpan
-            </button>
-          </div>
-          {/* Form Fields */}
-          <InputField label="Judul" name="judul" onChange={handleChange} />
-          <ImageUpload
-            label="Gambar Latar Belakang"
-            imagePreview={imagePreview}
-            onChange={handleChange}
-            name="image_background"
-          />
-          <TextAreaField label="Deskripsi" name="deskripsi_tentang_kami" onChange={handleChange} />
-        </div>
+        <Section
+          title="Tentang Kami"
+          formData={formData}
+          editMode={editMode.tentangKami}
+          handleEdit={() => handleEdit("tentangKami")}
+          handleSave={() => handleSave()}
+          handleChange={handleChange}
+          imagePreview={imagePreview}
+          imageFieldName="image_background"
+          textAreaFieldName="deskripsi_tentang_kami"
+        />
 
         {/* Sejarah */}
-        <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
-          <div className="w-full flex justify-between mb-5">
-            <h3 className="font-bold text-[#572618] text-xl">Sejarah</h3>
-            <button
-              onClick={handleSubmitSejarah}
-              className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
-            >
-              Simpan
-            </button>
-          </div>
-          {/* Form Fields */}
-          <InputField label="Judul" name="judul_sejarah" onChange={handleChange} />
-          <TextAreaField label="Deskripsi" name="deskripsi_sejarah" onChange={handleChange} />
-        </div>
+        <Section
+          title="Sejarah"
+          formData={sejarahData}
+          editMode={editMode.sejarah}
+          handleEdit={() => handleEdit("sejarah")}
+          handleSave={() => handleSave()}
+          handleChange={handleChange}
+          textAreaFieldName="deskripsi_sejarah"
+        />
 
         {/* Founder */}
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
-          <div className="w-full flex justify-between mb-5">
-            <h3 className="font-bold text-[#572618] text-xl">Pendiri</h3>
+          <div className="flex justify-between mb-5">
+            <h1 className="font-bold text-[#572618] text-xl">Founder</h1>
             <button
-              onClick={handleSubmitFounder}
+              onClick={() => handleEdit("founder")}
               className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
             >
-              Simpan
+              Tambah Founder
             </button>
           </div>
-          {/* Form Fields */}
-          <ImageUpload
-            label="Gambar Pendiri"
-            imagePreview={founderImagePreview}
-            onChange={handleChange}
-            name="gambar"
-          />
-          <InputField label="Nama" name="nama" onChange={handleChange} />
-          <InputField label="Jabatan" name="jabatan" onChange={handleChange} />
-          <TextAreaField label="Deskripsi" name="deskripsi_founder" onChange={handleChange} />
+
+          {editMode.founder && actionType === "create" && (
+            <div className="mb-8">
+              <InputField
+                label="Nama Founder"
+                name="nama"
+                value={founderData[founderData.length - 1]?.nama || ""}
+                onChange={(e) => handleChange(e)}
+                isDisabled={!editMode.founder}
+              />
+
+              <InputField
+                label="Jabatan Founder"
+                name="jabatan"
+                value={founderData[founderData.length - 1]?.jabatan || ""}
+                onChange={(e) => handleChange(e)}
+                isDisabled={!editMode.founder}
+              />
+
+              <ImageUpload
+                label="Gambar Founder"
+                name="gambar"
+                onChange={(e) => handleChange(e)}
+              />
+
+              <TextAreaField
+                label="Deskripsi Founder"
+                name="deskripsi_founder"
+                value={founderData[founderData.length - 1]?.deskripsi_founder || ""}
+                onChange={(e) => handleChange(e)}
+                isDisabled={!editMode.founder}
+              />
+
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
+              >
+                Tambah Founder
+              </button>
+            </div>
+          )}
+
+          {founderData.map((founder, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4">
+              {editMode.founder && currentFounderIndex === index && actionType === "update" ? (
+                <>
+                  <InputField
+                    label="Nama Founder"
+                    name="nama"
+                    value={founder.nama}
+                    onChange={(e) => handleChange(e, index)}
+                    isDisabled={!editMode.founder}
+                  />
+
+                  <InputField
+                    label="Jabatan Founder"
+                    name="jabatan"
+                    value={founder.jabatan}
+                    onChange={(e) => handleChange(e, index)}
+                    isDisabled={!editMode.founder}
+                  />
+
+                  <ImageUpload
+                    label="Gambar Founder"
+                    name="gambar"
+                    onChange={(e) => handleChange(e, index)}
+                  />
+
+                  <TextAreaField
+                    label="Deskripsi Founder"
+                    name="deskripsi_founder"
+                    value={founder.deskripsi_founder}
+                    onChange={(e) => handleChange(e, index)}
+                    isDisabled={!editMode.founder}
+                  />
+
+                  <button
+                    onClick={() => handleSave()}
+                    className="px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition mr-2"
+                  >
+                    Simpan
+                  </button>
+
+                  <button
+                    onClick={() => handleDeleteFounder(founder.id)}
+                    className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition"
+                  >
+                    Hapus
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="font-bold text-[#572618]">{founder.nama}</p>
+                  <p>{founder.jabatan}</p>
+                  <p>{founder.deskripsi_founder}</p>
+                  {founder.gambar && (
+                    <div className="w-24 h-24 rounded-md overflow-hidden mb-4">
+                      <img
+                        src={founder.gambarPreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => handleEdit("founder", index)}
+                    className="px-4 py-2 bg-[#572618] text-white font-bold rounded-lg hover:bg-brown-700 transition"
+                  >
+                    Edit
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </AdminLayout>
   );
 };
 
-// Input Field Component
-const InputField = ({ label, name, onChange }) => (
+const InputField = ({ label, name, value, onChange, isDisabled }) => (
   <div className="mb-4">
-    <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
+    <label className="block text-[#572618] font-semibold mb-2">{label}</label>
     <input
       type="text"
       name={name}
+      value={value}
       onChange={onChange}
-      className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
+      disabled={isDisabled}
+      className={`w-full px-4 py-2 rounded-md shadow-sm ${
+        isDisabled
+          ? "bg-gray-100 cursor-not-allowed"
+          : "bg-white border border-gray-300"
+      } focus:outline-none focus:border-brown-500 transition`}
     />
   </div>
 );
 
-// TextArea Component
-const TextAreaField = ({ label, name, onChange }) => (
+const TextAreaField = ({ label, name, value, onChange, isDisabled }) => (
   <div className="mb-4">
-    <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
+    <label className="block text-[#572618] font-semibold mb-2">{label}</label>
     <textarea
       name={name}
-      rows="4"
+      value={value}
       onChange={onChange}
-      className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
+      disabled={isDisabled}
+      rows="4"
+      className={`w-full px-4 py-2 rounded-md shadow-sm ${
+        isDisabled
+          ? "bg-gray-100 cursor-not-allowed"
+          : "bg-white border border-gray-300"
+      } focus:outline-none focus:border-brown-500 transition`}
     />
   </div>
 );
 
-// Image Upload Component
-const ImageUpload = ({ label, imagePreview, onChange, name }) => (
+const ImageUpload = ({ label, name, onChange }) => (
   <div className="mb-4">
-    <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
-    <div className="flex items-center justify-center w-full">
-      <label
-        htmlFor={`dropzone-${name}`}
-        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100"
+    <label className="block text-[#572618] font-semibold mb-2">{label}</label>
+    <input
+      type="file"
+      name={name}
+      onChange={onChange}
+      accept="image/*"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+    />
+  </div>
+);
+
+const Section = ({
+  title,
+  formData,
+  editMode,
+  handleEdit,
+  handleSave,
+  handleChange,
+  imagePreview,
+  imageFieldName,
+  textAreaFieldName,
+  includeFields = [],
+}) => (
+  <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
+    <div className="flex justify-between mb-5">
+      <h1 className="font-bold text-[#572618] text-xl">{title}</h1>
+      <button
+        onClick={editMode ? handleSave : handleEdit}
+        className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
       >
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-          {imagePreview ? (
-            <img src={imagePreview} alt="Preview" className="max-h-40 mb-2" />
-          ) : (
-            <>
-              <svg
-                aria-hidden="true"
-                className="w-10 h-10 mb-3 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M7 16l-4-4m0 0l4-4m-4 4h18M13 7h7v7"
-                ></path>
-              </svg>
-              <p className="mb-2 text-sm text-gray-500">Klik untuk mengunggah gambar</p>
-              <p className="text-xs text-gray-500">SVG, PNG, JPG (MAX. 800x400px)</p>
-            </>
-          )}
-        </div>
-        <input id={`dropzone-${name}`} type="file" name={name} className="hidden" onChange={onChange} />
-      </label>
+        {editMode ? "Simpan" : "Ubah"}
+      </button>
     </div>
+
+    {["Tentang Kami", "Sejarah"].includes(title) && (
+      <InputField
+        label={`Judul ${title}`}
+        name={title === "Tentang Kami" ? "judul" : "judul_sejarah"}
+        value={title === "Tentang Kami" ? formData.judul : formData.judul_sejarah}
+        onChange={handleChange}
+        isDisabled={!editMode}
+      />
+    )}
+
+    {includeFields.includes("nama") && (
+      <InputField
+        label="Nama Founder"
+        name="nama"
+        value={formData.nama || ""}
+        onChange={handleChange}
+        isDisabled={!editMode}
+      />
+    )}
+
+    {includeFields.includes("jabatan") && (
+      <InputField
+        label="Jabatan Founder"
+        name="jabatan"
+        value={formData.jabatan || ""}
+        onChange={handleChange}
+        isDisabled={!editMode}
+      />
+    )}
+
+    {imagePreview && (
+      <div className="w-80 h-56 rounded-md overflow-hidden mb-4">
+        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+      </div>
+    )}
+
+    {editMode && imageFieldName && (
+      <ImageUpload
+        label={`Gambar ${title}`}
+        name={imageFieldName}
+        onChange={handleChange}
+      />
+    )}
+
+    <TextAreaField
+      label="Deskripsi"
+      name={textAreaFieldName}
+      value={formData[textAreaFieldName] || ""}
+      onChange={handleChange}
+      isDisabled={!editMode}
+    />
   </div>
 );
 
