@@ -21,7 +21,7 @@ const generateAccessToken = (investor) => {
             kategori_investor: investor.kategori_investor,
         },
         process.env.ACCESS_SECRET_KEY,
-        { expiresIn: "1m" }
+        { expiresIn: "15m" }
     );
 };
 

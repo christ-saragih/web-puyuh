@@ -1,6 +1,6 @@
 // useAuthInvestor.js
 import { useState, useEffect } from "react";
-import { axiosInstance } from "./useAxiosConfig";
+import { apiInvestor } from "./useAxiosConfig";
 
 const useAuthInvestor = () => {
     const [investor, setInvestor] = useState(null);
@@ -9,7 +9,7 @@ const useAuthInvestor = () => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const res = await axiosInstance.get("/auth/investor/protected");
+                const res = await apiInvestor.get("/auth/investor/protected");
                 setInvestor(res.data.investor);
             } catch (error) {
                 setInvestor(null);

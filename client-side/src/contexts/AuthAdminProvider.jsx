@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
 import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const AuthAdminContext = createContext();
@@ -10,7 +9,7 @@ export const AuthAdminProvider = ({ children }) => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const res = await apiAdmin.get("/api/auth/admin/protected");
+                const res = await apiAdmin.get("/auth/admin/protected");
                 setAdmin(res.data.admin);
             } catch (error) {
                 setAdmin(null);
@@ -21,7 +20,7 @@ export const AuthAdminProvider = ({ children }) => {
 
     const login = async (usernameOrEmail, password) => {
         try {
-            const res = await apiAdmin.post("/api/auth/admin/login", {
+            const res = await apiAdmin.post("/auth/admin/login", {
                 usernameOrEmail,
                 password,
             });
@@ -35,11 +34,7 @@ export const AuthAdminProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await apiAdmin.post(
-                "http://localhost:3000/api/auth/admin/logout",
-                {},
-                { withCredentials: true }
-            );
+            await apiAdmin.post("/auth/admin/logout");
             setAdmin(null);
         } catch (error) {
             console.error(error.response.data.message);
@@ -48,9 +43,7 @@ export const AuthAdminProvider = ({ children }) => {
 
     const refreshAccessToken = async () => {
         try {
-            const response = await axios.post(
-                "http://localhost:3000/api/auth/admin/refresh-token"
-            );
+            const response = await apiAdmin.post("/auth/admin/refresh-token");
             return response.data.accessToken;
         } catch (error) {
             console.error("Failed to refresh admin token:", error);
