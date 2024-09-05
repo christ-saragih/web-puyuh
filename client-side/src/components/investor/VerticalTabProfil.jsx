@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../hooks/useAxiosConfig";
+import { apiInvestor } from "../../hooks/useAxiosConfig";
 
 const VerticalTabProfil = ({ getInvestors, investors }) => {
     const [activeTab, setActiveTab] = useState("Biodata");
@@ -164,8 +164,8 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
             };
             console.log(dataBiodataToSend);
 
-            const response = await axiosInstance.post(
-                `http://localhost:3000/api/biodata-investor`,
+            const response = await apiInvestor.post(
+                `/biodata-investor`,
                 dataBiodataToSend
             );
             console.log(response.data);
@@ -188,8 +188,8 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
             };
             console.log(dataAlamatToSend);
 
-            const response = await axiosInstance.post(
-                `http://localhost:3000/api/alamat-investor`,
+            const response = await apiInvestor.post(
+                `/alamat-investor`,
                 dataAlamatToSend
             );
             console.log(response.data);
@@ -214,8 +214,8 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         // console.log(form);
 
         try {
-            const { data } = await axiosInstance.post(
-                "http://localhost:3000/api/identitas-investor",
+            const { data } = await apiInvestor.post(
+                "/identitas-investor",
                 form
             );
             console.log("Identitas Investor data:", data);
@@ -245,8 +245,8 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         );
 
         try {
-            const response = await axiosInstance.post(
-                "http://localhost:3000/api/data-pendukung-investor",
+            const response = await apiInvestor.post(
+                "/data-pendukung-investor",
                 form,
                 {
                     headers: {

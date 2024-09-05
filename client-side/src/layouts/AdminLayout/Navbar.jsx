@@ -3,7 +3,7 @@ import { Dropdown } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../hooks/useAxiosConfig";
+import { apiAdmin } from "../../hooks/useAxiosConfig";
 
 // import { useLoginAdmin } from "../../hooks/useLoginAdmin";
 // import { logoutAdmin } from "../../services/authAdmin.service";
@@ -18,7 +18,7 @@ const Navbar = (props) => {
     useEffect(() => {
         const fetchAdminData = async () => {
             try {
-                const response = await axiosInstance.get("/admin"); // Gunakan instance axios
+                const response = await apiAdmin.get("/admin"); // Gunakan instance axios
                 console.log(response.data.data);
 
                 setAdmin(response.data.data); // Simpan data admin ke state

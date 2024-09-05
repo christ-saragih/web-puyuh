@@ -9,7 +9,7 @@ import { MdNotificationsActive } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 // import useAuthInvestor from "../../hooks/useAuthInvestor";
-import { axiosInstance } from "../../hooks/useAxiosConfig";
+import { apiInvestor } from "../../hooks/useAxiosConfig";
 import { formatRupiah } from "../../utils/formatRupiah";
 import { getTransaksi } from "../../services/transaksi.service";
 import BatchListInvestor from "../../components/investor/BatchListInvestor";
@@ -24,27 +24,27 @@ const InvestorDashboard = () => {
     const [batchs, setBatchs] = useState([]);
 
     useEffect(() => {
-      getBatchs((data) => {
-          setBatchs(data);
-      });
-  }, []);
+        getBatchs((data) => {
+            setBatchs(data);
+        });
+    }, []);
 
     useEffect(() => {
-      getTransaksi((data) => {
-          setTransaksi(data);
-          setLoading(false);
-      });
-  }, [navigate]);
+        getTransaksi((data) => {
+            setTransaksi(data);
+            setLoading(false);
+        });
+    }, [navigate]);
 
     const totalInvestasi = transaksi.reduce((total, item) => {
-      return total + item.total_investasi;
-  }, 0);
+        return total + item.total_investasi;
+    }, 0);
 
     // Fungsi untuk memanggil API dan mengambil data investor
     useEffect(() => {
         const fetchInvestorData = async () => {
             try {
-                const response = await axiosInstance.get("/investor"); // Gunakan instance axios
+                const response = await apiInvestor.get("/investor"); // Gunakan instance axios
                 setInvestor(response.data.data); // Simpan data investor ke state
             } catch (error) {
                 console.error("Error fetching investor data:", error);
@@ -104,7 +104,7 @@ const InvestorDashboard = () => {
                                         className="w-36 h-36"
                                     />
                                     <h1 className="text-3xl font-bold ml-4 text-[#000]">
-                                    {formatRupiah(totalInvestasi)}
+                                        {formatRupiah(totalInvestasi)}
                                     </h1>
                                 </div>
                             </div>
@@ -129,19 +129,16 @@ const InvestorDashboard = () => {
                             </div>
                         </div>
                         <div className="w-[150%] rounded-xl bg-[#F5F5F7] p-4 relative">
-                          <h1 className="text-xl font-bold mb-3 text-[#000]">
-                              Investasi yang Sedang Berlangsung
-                          </h1>
+                            <h1 className="text-xl font-bold mb-3 text-[#000]">
+                                Investasi yang Sedang Berlangsung
+                            </h1>
 
-                          <div className="relative flex items-center">
-                              {/* Batch List dengan scroll horizontal */}
-                              <div
-                                  className="flex overflow-x-auto gap-10 w-full scrollbar-hide"
-
-                              >
-                                  <BatchListInvestor batchs={batchs} />
-                              </div>
-                          </div>
+                            <div className="relative flex items-center">
+                                {/* Batch List dengan scroll horizontal */}
+                                <div className="flex overflow-x-auto gap-10 w-full scrollbar-hide">
+                                    <BatchListInvestor batchs={batchs} />
+                                </div>
+                            </div>
                         </div>
                     </div>
 

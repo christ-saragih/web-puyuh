@@ -5,7 +5,7 @@ import profilePicture from "../../assets/images/profile-picture-5.jpg";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../hooks/useAxiosConfig";
+import { apiInvestor } from "../../hooks/useAxiosConfig";
 
 const InvestorProfil = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -19,7 +19,7 @@ const InvestorProfil = () => {
 
     const getInvestors = async () => {
         try {
-            const response = await axiosInstance.get(`/investor`);
+            const response = await apiInvestor.get(`/investor`);
 
             setInvestor(response.data.data);
         } catch (error) {
