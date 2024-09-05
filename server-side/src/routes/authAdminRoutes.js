@@ -32,7 +32,7 @@ router.get(
 
 router.post(
     "/refresh-token",
-    authenticateToken("admin"),
+    // authenticateToken("admin"),
     authAdminController.refreshToken
 );
 

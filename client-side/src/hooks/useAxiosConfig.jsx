@@ -1,10 +1,19 @@
 import axios from "axios";
 
 // Mutex untuk menyegarkan token
-const refreshTokenPromise = {
-    promise: null,
-    resolve: null,
-    reject: null,
+const refreshTokenPromises = {
+    admin: {
+        promise: null,
+        resolve: null,
+        reject: null,
+        attempts: 0,
+    },
+    investor: {
+        promise: null,
+        resolve: null,
+        reject: null,
+        attempts: 0,
+    },
 };
 
 // Instance Axios untuk Admin
@@ -21,29 +30,37 @@ apiAdmin.interceptors.response.use(
         if (error.response?.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            if (!refreshTokenPromise.promise) {
-                refreshTokenPromise.promise = new Promise((resolve, reject) => {
-                    refreshTokenPromise.resolve = resolve;
-                    refreshTokenPromise.reject = reject;
-                });
+            if (refreshTokenPromises.admin.promise === null) {
+                refreshTokenPromises.admin.promise = new Promise(
+                    (resolve, reject) => {
+                        refreshTokenPromises.admin.resolve = resolve;
+                        refreshTokenPromises.admin.reject = reject;
+                    }
+                );
 
                 try {
                     await apiAdmin.post("/auth/admin/refresh-token");
-                    refreshTokenPromise.resolve();
+                    refreshTokenPromises.admin.resolve();
                 } catch (refreshError) {
-                    refreshTokenPromise.reject(refreshError);
-                    window.location.href = "/admin/masuk";
-                    return Promise.reject(refreshError);
+                    refreshTokenPromises.admin.reject(refreshError);
+                    if (refreshTokenPromises.admin.attempts < 1) {
+                        refreshTokenPromises.admin.attempts++;
+                        return apiAdmin(originalRequest);
+                    } else {
+                        window.location.href = "/admin/masuk";
+                        return Promise.reject(refreshError);
+                    }
                 } finally {
-                    refreshTokenPromise.promise = null;
+                    refreshTokenPromises.admin.promise = null;
                 }
-            }
-
-            try {
-                await refreshTokenPromise.promise;
-                return apiAdmin(originalRequest);
-            } catch (refreshError) {
-                return Promise.reject(refreshError);
+            } else {
+                // Tunggu hingga promise penyegaran token selesai
+                try {
+                    await refreshTokenPromises.admin.promise;
+                    return apiAdmin(originalRequest);
+                } catch (refreshError) {
+                    return Promise.reject(refreshError);
+                }
             }
         }
 
@@ -65,29 +82,37 @@ apiInvestor.interceptors.response.use(
         if (error.response?.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            if (!refreshTokenPromise.promise) {
-                refreshTokenPromise.promise = new Promise((resolve, reject) => {
-                    refreshTokenPromise.resolve = resolve;
-                    refreshTokenPromise.reject = reject;
-                });
+            if (refreshTokenPromises.investor.promise === null) {
+                refreshTokenPromises.investor.promise = new Promise(
+                    (resolve, reject) => {
+                        refreshTokenPromises.investor.resolve = resolve;
+                        refreshTokenPromises.investor.reject = reject;
+                    }
+                );
 
                 try {
                     await apiInvestor.post("/auth/investor/refresh-token");
-                    refreshTokenPromise.resolve();
+                    refreshTokenPromises.investor.resolve();
                 } catch (refreshError) {
-                    refreshTokenPromise.reject(refreshError);
-                    window.location.href = "/masuk";
-                    return Promise.reject(refreshError);
+                    refreshTokenPromises.investor.reject(refreshError);
+                    if (refreshTokenPromises.investor.attempts < 1) {
+                        refreshTokenPromises.investor.attempts++;
+                        return apiInvestor(originalRequest);
+                    } else {
+                        window.location.href = "/masuk";
+                        return Promise.reject(refreshError);
+                    }
                 } finally {
-                    refreshTokenPromise.promise = null;
+                    refreshTokenPromises.investor.promise = null;
                 }
-            }
-
-            try {
-                await refreshTokenPromise.promise;
-                return apiInvestor(originalRequest);
-            } catch (refreshError) {
-                return Promise.reject(refreshError);
+            } else {
+                // Tunggu hingga promise penyegaran token selesai
+                try {
+                    await refreshTokenPromises.investor.promise;
+                    return apiInvestor(originalRequest);
+                } catch (refreshError) {
+                    return Promise.reject(refreshError);
+                }
             }
         }
 
