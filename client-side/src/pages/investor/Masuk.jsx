@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import GuestLayout from "../../layouts/GuestLayout.jsx";
 import { useNavigate } from "react-router-dom";
 import "../../assets/style/index.css";
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/logo.svg";
 import { AuthInvestorContext } from "../../contexts/AuthInvestorProvider";
 
 const Masuk = () => {
