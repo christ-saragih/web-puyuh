@@ -1,8 +1,24 @@
 import axios from "axios";
 
+// Mutex untuk menyegarkan token
+const refreshTokenPromises = {
+    admin: {
+        promise: null,
+        resolve: null,
+        reject: null,
+        attempts: 0,
+    },
+    investor: {
+        promise: null,
+        resolve: null,
+        reject: null,
+        attempts: 0,
+    },
+};
+
 // Instance Axios untuk Admin
 const apiAdmin = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3000/api",
     withCredentials: true,
 });
 
@@ -14,13 +30,37 @@ apiAdmin.interceptors.response.use(
         if (error.response?.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            try {
-                await apiAdmin.post("/api/auth/admin/refresh-token", {});
-                return apiAdmin(originalRequest);
-            } catch (refreshError) {
-                console.error("Error refreshing token:", refreshError);
-                window.location.href = "/admin/masuk";
-                return Promise.reject(refreshError);
+            if (refreshTokenPromises.admin.promise === null) {
+                refreshTokenPromises.admin.promise = new Promise(
+                    (resolve, reject) => {
+                        refreshTokenPromises.admin.resolve = resolve;
+                        refreshTokenPromises.admin.reject = reject;
+                    }
+                );
+
+                try {
+                    await apiAdmin.post("/auth/admin/refresh-token");
+                    refreshTokenPromises.admin.resolve();
+                } catch (refreshError) {
+                    refreshTokenPromises.admin.reject(refreshError);
+                    if (refreshTokenPromises.admin.attempts < 1) {
+                        refreshTokenPromises.admin.attempts++;
+                        return apiAdmin(originalRequest);
+                    } else {
+                        window.location.href = "/admin/masuk";
+                        return Promise.reject(refreshError);
+                    }
+                } finally {
+                    refreshTokenPromises.admin.promise = null;
+                }
+            } else {
+                // Tunggu hingga promise penyegaran token selesai
+                try {
+                    await refreshTokenPromises.admin.promise;
+                    return apiAdmin(originalRequest);
+                } catch (refreshError) {
+                    return Promise.reject(refreshError);
+                }
             }
         }
 
@@ -30,7 +70,7 @@ apiAdmin.interceptors.response.use(
 
 // Instance Axios untuk Investor
 const apiInvestor = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3000/api",
     withCredentials: true,
 });
 
@@ -42,72 +82,37 @@ apiInvestor.interceptors.response.use(
         if (error.response?.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            try {
-                await apiInvestor.post("/api/auth/investor/refresh-token", {});
-                return apiInvestor(originalRequest);
-            } catch (refreshError) {
-                console.error("Error refreshing token:", refreshError);
-                window.location.href = "/masuk";
-                return Promise.reject(refreshError);
-            }
-        }
-
-        return Promise.reject(error);
-    }
-);
-
-// Instance umum untuk request API dengan otentikasi
-const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000/api",
-    withCredentials: true, // Pastikan cookie dikirimkan dalam request
-});
-
-// Interceptor untuk menambahkan accessToken di setiap request
-axiosInstance.interceptors.request.use(
-    (config) => {
-        const accessToken = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("accessToken="))
-            ?.split("=")[1];
-
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
-
-// Interceptor untuk menangani response error
-axiosInstance.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-
-        if (error.response?.status === 403 && !originalRequest._retry) {
-            originalRequest._retry = true;
-
-            try {
-                // Jalankan refresh token
-                const refreshResponse = await axios.post(
-                    "http://localhost:3000/api/auth/refresh-token",
-                    {},
-                    { withCredentials: true }
+            if (refreshTokenPromises.investor.promise === null) {
+                refreshTokenPromises.investor.promise = new Promise(
+                    (resolve, reject) => {
+                        refreshTokenPromises.investor.resolve = resolve;
+                        refreshTokenPromises.investor.reject = reject;
+                    }
                 );
 
-                // Simpan accessToken baru dari response refresh token ke cookie
-                const newAccessToken = refreshResponse.data.accessToken;
-                document.cookie = `accessToken=${newAccessToken}; path=/`;
-
-                // Tambahkan accessToken baru ke request header dan ulangi request asli
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                return axiosInstance(originalRequest);
-            } catch (refreshError) {
-                console.error("Error refreshing token:", refreshError);
-                window.location.href = "/masuk";
-                return Promise.reject(refreshError);
+                try {
+                    await apiInvestor.post("/auth/investor/refresh-token");
+                    refreshTokenPromises.investor.resolve();
+                } catch (refreshError) {
+                    refreshTokenPromises.investor.reject(refreshError);
+                    if (refreshTokenPromises.investor.attempts < 1) {
+                        refreshTokenPromises.investor.attempts++;
+                        return apiInvestor(originalRequest);
+                    } else {
+                        window.location.href = "/masuk";
+                        return Promise.reject(refreshError);
+                    }
+                } finally {
+                    refreshTokenPromises.investor.promise = null;
+                }
+            } else {
+                // Tunggu hingga promise penyegaran token selesai
+                try {
+                    await refreshTokenPromises.investor.promise;
+                    return apiInvestor(originalRequest);
+                } catch (refreshError) {
+                    return Promise.reject(refreshError);
+                }
             }
         }
 
@@ -115,4 +120,4 @@ axiosInstance.interceptors.response.use(
     }
 );
 
-export { apiAdmin, apiInvestor, axiosInstance };
+export { apiAdmin, apiInvestor };

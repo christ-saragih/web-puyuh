@@ -26,7 +26,13 @@
 /* .input-error {
 } */
 
+/* w-8/12 md:w-1/3 xl:w-1/5 */
+
 /* BUTTON: Start */
+.btn-primary-large {
+  @apply bg-[#4B241A] py-3 rounded-3xl shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-center lg:tracking-wider  text-[#EFEFEF] text-xl lg:text-2xl;
+}
+
 .btn-primary {
   @apply text-white border-2 border-[#572618] bg-[#572618] hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300;
 }
@@ -104,41 +110,27 @@ div[data-testid="flowbite-tooltip-arrow"] {
 /* GUEST: Start */
 .menu-item-active,
 .menu-item {
-  position: relative;
-  display: inline-block;
+  @apply relative flex items-center justify-between lg:block py-2 px-3 md:py-2 md:px-5;
+}
+
+.menu-item-active {
+  @apply underline lg:no-underline;
 }
 
 .menu-item-active::after {
+  @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 lg:w-1/5 h-1 bg-[#4b241a] rounded-lg;
   content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20%;
-  height: 4px;
-  background-color: #4b241a;
-  border-radius: 10px;
 }
 
-/* .swiper_container {
-  height: 30rem;
-  padding: 1rem;
-  position: relative;
-} */
+.menu-item::after {
+  @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1 bg-[#4b241a] rounded-lg opacity-0 transition-opacity transition-width duration-300 ease-in-out;
+  content: "";
+  width: 0%;
+}
 
-/* .swiper-slide {
-  width: 337px;
-  height: 332px;
-  position: relative;
-} */
-
-/* .swiper-slide.swiper-slide-next.swiper-slide-visible {
-  background-color: red !important;
-} */
-
-/* .swiper-slide-shadow-left {
-  border-radius: 4rem;
-} */
+.menu-item {
+  @apply hover:font-semibold hover:text-[#4b241a] hover:underline ease-in-out duration-300 transition-all lg:hover:no-underline lg:hover:after:opacity-[1] lg:hover:after:w-1/4;
+}
 
 iframe {
   @apply w-full rounded-lg shadow !important;
@@ -169,30 +161,6 @@ iframe {
   width: 100%;
   margin-top: 60px;
   border-bottom-right-radius: 250px;
-}
-
-.menu-item::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0%;
-  height: 4px;
-  background-color: #4b241a;
-  border-radius: 10px;
-  transition: opacity 0.4s ease, width 0.4s ease;
-  opacity: 0;
-}
-
-.menu-item:hover {
-  font-weight: 600;
-  color: #4b241a;
-}
-
-.menu-item:hover::after {
-  opacity: 1;
-  width: 25%;
 }
 
 .custom-height {

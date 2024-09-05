@@ -1,21 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthAdmin from "../../hooks/useAuthAdmin";
+import useAuthInvestor from "../../hooks/useAuthInvestor";
 
 const PublicRouteAdmin = ({ children }) => {
-    const { admin, loading } = useAuthAdmin();
+    const { admin, loading: loadingAdmin } = useAuthAdmin();
+    const { investor, loading: loadingInvestor } = useAuthInvestor();
     const navigate = useNavigate();
 
-    // Tunggu hingga status autentikasi selesai diproses
-    if (loading) return <div>Loading...</div>;
+    // // Jika sedang loading (baik untuk admin maupun investor), tampilkan loading
+    // if (loadingAdmin || loadingInvestor) return <div>Loading...</div>;
 
-    // Jika admin sudah login, redirect ke halaman dashboard atau halaman lain yang sesuai
-    if (admin) {
-        navigate("/admin"); // Ganti dengan rute yang sesuai
-        return null; // Pastikan tidak ada komponen yang dirender saat redirect
+    // Jika investor sudah login, redirect ke halaman dashboard investor
+    if (investor) {
+        navigate("/investor"); // Ganti dengan rute dashboard investor yang sesuai
+        return null;
     }
 
-    // Jika admin belum login, tampilkan halaman login
+    // Jika admin belum login, redirect ke halaman login admin
+    if (admin) {
+        navigate("/admin");
+        return null;
+    }
+
+    // Jika admin sudah login, render konten halaman yang di-protect
     return children;
 };
 

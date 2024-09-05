@@ -31,7 +31,11 @@ router.post(
 router.post("/login", validate(loginSchema), authInvestorController.login);
 router.post("/logout", authenticateToken("investor"), logout);
 
-router.post("/refresh-token", authInvestorController.refreshToken);
+router.post(
+    "/refresh-token",
+    // authenticateToken("investor"),
+    authInvestorController.refreshToken
+);
 
 // Protected route
 router.get(

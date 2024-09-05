@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import '../../assets/style/index.css';
-import Logo from "../../assets/images/logo.png";
-import GuestLayout from '../../layouts/GuestLayout';
-import { FiUser } from 'react-icons/fi';
+import React, { useState } from "react";
+import "../../assets/style/index.css";
+import Logo from "../../assets/images/logo.svg";
+import GuestLayout from "../../layouts/GuestLayout";
+import { FiUser } from "react-icons/fi";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const PasswordValidation = ({ password, confirmPassword }) => {
   const hasMinLength = password.length >= 8;
@@ -20,11 +20,16 @@ const PasswordValidation = ({ password, confirmPassword }) => {
           <div
             className={`rounded-full p-0.5 fill-current ${
               passwordsMatch
-                ? 'bg-green-200 text-green-700'
-                : 'bg-red-200 text-red-700'
+                ? "bg-green-200 text-green-700"
+                : "bg-red-200 text-red-700"
             }`}
           >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               {passwordsMatch ? (
                 <path
                   strokeLinecap="round"
@@ -44,19 +49,26 @@ const PasswordValidation = ({ password, confirmPassword }) => {
           </div>
           <span
             className={`font-medium text-xs ml-1 ${
-              passwordsMatch ? 'text-green-700' : 'text-red-700'
+              passwordsMatch ? "text-green-700" : "text-red-700"
             }`}
           >
-            {passwordsMatch ? 'Passwords match' : 'Passwords do not match'}
+            {passwordsMatch ? "Passwords match" : "Passwords do not match"}
           </span>
         </div>
         <div className="flex items-center mr-2">
           <div
             className={`rounded-full p-0.5 fill-current ${
-              hasMinLength ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'
+              hasMinLength
+                ? "bg-green-200 text-green-700"
+                : "bg-red-200 text-red-700"
             }`}
           >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               {hasMinLength ? (
                 <path
                   strokeLinecap="round"
@@ -76,19 +88,28 @@ const PasswordValidation = ({ password, confirmPassword }) => {
           </div>
           <span
             className={`font-medium text-xs ml-1 ${
-              hasMinLength ? 'text-green-700' : 'text-red-700'
+              hasMinLength ? "text-green-700" : "text-red-700"
             }`}
           >
-            {hasMinLength ? 'Min length reached' : 'At least 8 characters required'}
+            {hasMinLength
+              ? "Min length reached"
+              : "At least 8 characters required"}
           </span>
         </div>
         <div className="flex items-center">
           <div
             className={`rounded-full p-0.5 fill-current ${
-              hasSymbol ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'
+              hasSymbol
+                ? "bg-green-200 text-green-700"
+                : "bg-red-200 text-red-700"
             }`}
           >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               {hasSymbol ? (
                 <path
                   strokeLinecap="round"
@@ -108,10 +129,10 @@ const PasswordValidation = ({ password, confirmPassword }) => {
           </div>
           <span
             className={`font-medium text-xs ml-1 ${
-              hasSymbol ? 'text-green-700' : 'text-red-700'
+              hasSymbol ? "text-green-700" : "text-red-700"
             }`}
           >
-            {hasSymbol ? 'Contains a symbol' : 'One symbol required (@!$%*?&)'}
+            {hasSymbol ? "Contains a symbol" : "One symbol required (@!$%*?&)"}
           </span>
         </div>
       </div>
@@ -120,12 +141,12 @@ const PasswordValidation = ({ password, confirmPassword }) => {
 };
 
 const Daftar = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [msg, setMsg] = useState('');
-  const [registerType, setRegisterType] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [msg, setMsg] = useState("");
+  const [registerType, setRegisterType] = useState("");
   const navigate = useNavigate();
 
   const handleRegisterType = (type) => {
@@ -134,32 +155,35 @@ const Daftar = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!registerType) {
-        setMsg("Pilih kategori investor.");
-        return;
+      setMsg("Pilih kategori investor.");
+      return;
     }
 
     if (password !== confirmPassword) {
-        setMsg("Passwords do not match.");
-        return;
+      setMsg("Passwords do not match.");
+      return;
     }
 
     try {
       const payload = {
-        username: username,   // Pastikan field name yang dikirim sesuai dengan yang diharapkan API
+        username: username, // Pastikan field name yang dikirim sesuai dengan yang diharapkan API
         email: email,
         password: password,
-        kategori_investor: registerType
+        kategori_investor: registerType,
       };
-      
-      console.log("Payload yang dikirim:", payload);  // Debugging
-      
-      await axios.post('http://localhost:3000/api/auth/investor/regis', payload);
+
+      console.log("Payload yang dikirim:", payload); // Debugging
+
+      await axios.post(
+        "http://localhost:3000/api/auth/investor/regis",
+        payload
+      );
       navigate("/verifikasi");
     } catch (error) {
       if (error.response) {
-        console.log("Error Response:", error.response.data);  // Debugging
+        console.log("Error Response:", error.response.data); // Debugging
         setMsg(error.response.data.msg);
       }
     }
@@ -169,20 +193,31 @@ const Daftar = () => {
     <GuestLayout className="lg:-mb-2">
       <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen w-full">
         {/* Background */}
-        <div className="w-full lg:w-1/2 bg-cover bg-center min-h-[300px] lg:min-h-screen lg:-ml-40" style={{ backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')` }}>
-        </div>
+        <div
+          className="w-full lg:w-1/2 bg-cover bg-center min-h-[300px] lg:min-h-screen lg:-ml-40"
+          style={{
+            backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')`,
+          }}
+        ></div>
         {/* Form */}
         <div className="w-full lg:w-1/2 lg:-mt-14 p-8">
           <div className="flex items-center justify-center mb-8">
-            <img src={Logo} alt="Logo" className="w-20 h-20 mr-4"/>
-            <h1 className="text-2xl font-bold text-gray-800">Sukaharja Smart Quail Farm</h1>
+            <img src={Logo} alt="Logo" className="w-20 h-20 mr-4" />
+            <h1 className="text-2xl font-bold text-gray-800">
+              Sukaharja Smart Quail Farm
+            </h1>
           </div>
           <div className="font-quicksand font-bold text-[1.5rem] mb-2">
             <h2>Daftar Akun</h2>
           </div>
-          <form onSubmit={handleSubmit} className="min-h-[500px]"> 
+          <form onSubmit={handleSubmit} className="min-h-[500px]">
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">Email</label>
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="email"
+              >
+                Email
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
                 id="email"
@@ -193,7 +228,12 @@ const Daftar = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">Username</label>
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="username"
+              >
+                Username
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
                 id="username"
@@ -204,7 +244,12 @@ const Daftar = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">Password</label>
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="password"
+              >
+                Password
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
                 id="password"
@@ -215,7 +260,12 @@ const Daftar = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">Konfirmasi Password</label>
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="confirmPassword"
+              >
+                Konfirmasi Password
+              </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
                 id="confirmPassword"
@@ -225,14 +275,24 @@ const Daftar = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <PasswordValidation password={password} confirmPassword={confirmPassword} />
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="registerType">Daftar Sebagai</label>
+            <PasswordValidation
+              password={password}
+              confirmPassword={confirmPassword}
+            />
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="registerType"
+            >
+              Daftar Sebagai
+            </label>
             <div className="flex flex-row items-center mb-4 gap-4">
               <button
                 type="button"
-                onClick={() => handleRegisterType('individu')}
+                onClick={() => handleRegisterType("individu")}
                 className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
-                  registerType === 'individu' ? 'bg-slate-300 border-black' : 'hover:bg-slate-300 border-zinc-950'
+                  registerType === "individu"
+                    ? "bg-slate-300 border-black"
+                    : "hover:bg-slate-300 border-zinc-950"
                 }`}
               >
                 <FiUser className="w-[34px] h-[35px]" />
@@ -240,9 +300,11 @@ const Daftar = () => {
               </button>
               <button
                 type="button"
-                onClick={() => handleRegisterType('organisasi')}
+                onClick={() => handleRegisterType("organisasi")}
                 className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
-                  registerType === 'organisasi' ? 'bg-slate-300 border-black' : 'hover:bg-slate-300 border-zinc-950'
+                  registerType === "organisasi"
+                    ? "bg-slate-300 border-black"
+                    : "hover:bg-slate-300 border-zinc-950"
                 }`}
               >
                 <HiOutlineBuildingOffice2 className="w-[34px] h-[35px]" />
@@ -250,7 +312,10 @@ const Daftar = () => {
               </button>
             </div>
             <div className="mb-6">
-              <button className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+              <button
+                className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                type="submit"
+              >
                 Daftar
               </button>
             </div>
@@ -265,6 +330,6 @@ const Daftar = () => {
       </div>
     </GuestLayout>
   );
-}
+};
 
 export default Daftar;

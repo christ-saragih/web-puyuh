@@ -103,7 +103,7 @@ const router = createBrowserRouter([
         element: <LupaPassword />,
     },
     {
-        path: "/investor/",
+        path: "/investor",
         element: (
             <AuthInvestorProvider>
                 <ProtectedRouteInvestor>
