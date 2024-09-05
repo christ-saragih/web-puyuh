@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/logo.svg";
 import LupaPasswordImage from "../../assets/images/Forgot password-bro 1.svg";
 
 const PasswordValidation = ({ password, confirmPassword }) => {

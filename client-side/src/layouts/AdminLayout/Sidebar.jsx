@@ -11,7 +11,7 @@ import {
   PiNotebookLight,
   PiUsersBold,
 } from "react-icons/pi";
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/logo.svg";
 import { NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = (props) => {

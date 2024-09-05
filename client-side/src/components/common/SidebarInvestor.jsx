@@ -4,7 +4,7 @@ import { PiChartLineUpBold } from "react-icons/pi";
 import { FaMoneyBill } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { IoLogOutOutline } from "react-icons/io5";
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/logo.svg";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AuthInvestorContext } from "../../contexts/AuthInvestorProvider";

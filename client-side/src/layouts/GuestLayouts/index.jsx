@@ -1,9 +1,10 @@
 import ScrollToTopButton from "./ScrollToTopButton";
 import Navbar from "./Navbar";
-import Logo from "../../assets/images/logo.png";
+import LogoPutih from "../../assets/images/logo-putih.svg";
 import { getSocialMedia } from "../../services/social-media.service";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { guestMenus } from "./MenuList";
 
 const GuestLayouts = (props) => {
   const { children } = props;
@@ -28,52 +29,38 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#4B241A] ">
-      <div className="mx-auto w-full max-w-screen-xl px-4 pt-6 pb-4 lg:pt-8 lg:pb-5">
+      <div className="mx-auto w-full max-w-screen-xl px-4 pt-6 pb-4 lg:pt-8 lg:pb-5 ">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
-            <a href="#" className="flex items-center">
-              <img src={Logo} alt="Logo" className="h-16 rounded-full me-3" />
-              <span className="self-center text-gray-100 text-2xl font-semibold whitespace-nowrap">
-                CV Slamet Quail Farm
+            <Link to={"/"} className="flex items-center">
+              <img
+                src={LogoPutih}
+                alt="Logo Putih"
+                className="h-10 sm:h-12 lg:h-14 me-3"
+              />
+              <span className="self-center text-gray-100 text-xl lg:text-2xl font-semibold whitespace-nowrap">
+                PT Sukaharja Quail Indonesia
               </span>
-            </a>
+            </Link>
           </div>
 
-          <ul className="flex flex-wrap items-center space-x-4 md:space-x-6 font-medium text-gray-100 sm:mb-0">
-            <li>
-              <Link to={"/"} className="hover:underline">
-                Beranda
-              </Link>
-            </li>
-            <li>
-              <Link to={"/investasi"} className="hover:underline">
-                Investasi
-              </Link>
-            </li>
-            <li>
-              <Link to={"/artikel"} className="hover:underline">
-                Artikel
-              </Link>
-            </li>
-            <li>
-              <Link to={"/tentang-kami"} className="hover:underline">
-                Tentang Kami
-              </Link>
-            </li>
-            <li>
-              <Link to={"/faq"} className="hover:underline">
-                FAQ
-              </Link>
-            </li>
+          <ul className="flex items-center space-x-4 md:space-x-6 font-medium text-gray-100 sm:mb-0 overflow-auto">
+            {guestMenus.map((guestMenus, index) => (
+              <li key={`${index}-${guestMenus.text}`} className="min-w-fit">
+                <Link to={guestMenus.link} className="hover:underline">
+                  {guestMenus.text}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
         <hr className="mt-6 border-[#EFEFEF] sm:mx-auto lg:mt-8 mb-4" />
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-[#EFEFEF] text-sm sm:text-center">
             © 2024{" "}
-            <a href="#" className="hover:underline">
-              CV Slamet Quail Farm
-            </a>
+            <Link to={"/"} className="font-semibold hover:underline">
+              PT Sukaharja Quail Indonesia
+            </Link>
             . All Rights Reserved.
           </span>
           <div className="flex mt-4 sm:justify-center sm:mt-0 space-x-2 md:space-x-4">

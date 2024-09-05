@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import "../../assets/style/index.css";
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../assets/images/logo.svg";
 import GuestLayout from "../../layouts/GuestLayout";
 import { useNavigate } from "react-router-dom";
 import { AuthAdminContext } from "../../contexts/AuthAdminProvider";
