@@ -9,9 +9,7 @@ export const AuthInvestorProvider = ({ children }) => {
     useEffect(() => {
         const checkInvestor = async () => {
             try {
-                const res = await apiInvestor.get(
-                    "/api/auth/investor/protected"
-                );
+                const res = await apiInvestor.get("/auth/investor/protected");
                 setInvestor(res.data.investor);
             } catch (error) {
                 setInvestor(null);
@@ -22,7 +20,7 @@ export const AuthInvestorProvider = ({ children }) => {
 
     const login = async (usernameOrEmail, password) => {
         try {
-            const res = await apiInvestor.post("/api/auth/investor/login", {
+            const res = await apiInvestor.post("/auth/investor/login", {
                 usernameOrEmail,
                 password,
             });
@@ -36,7 +34,7 @@ export const AuthInvestorProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await apiInvestor.post("/api/auth/investor/logout");
+            await apiInvestor.post("/auth/investor/logout");
             setInvestor(null);
         } catch (error) {
             console.error(error.response?.data?.message || "Logout failed");
@@ -46,7 +44,7 @@ export const AuthInvestorProvider = ({ children }) => {
     const refreshAccessToken = async () => {
         try {
             const response = await apiInvestor.post(
-                "/api/auth/investor/refresh-token"
+                "/auth/investor/refresh-token"
             );
             return response.data.accessToken;
         } catch (error) {

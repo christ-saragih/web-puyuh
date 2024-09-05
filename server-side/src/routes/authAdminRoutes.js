@@ -30,7 +30,11 @@ router.get(
     authAdminController.protected
 );
 
-router.post("/refresh-token", authAdminController.refreshToken);
+router.post(
+    "/refresh-token",
+    authenticateToken("admin"),
+    authAdminController.refreshToken
+);
 
 router.post("/logout", logout);
 

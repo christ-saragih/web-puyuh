@@ -1,8 +1,8 @@
 // import { axiosInstance } from "../lib/axios";
-import { axiosInstance } from "../hooks/useAxiosConfig";
+import { apiInvestor } from "../hooks/useAxiosConfig";
 
 export const getTransaksi = (callback) => {
-    axiosInstance
+    apiInvestor
         .get("/investor/me/transaksi")
         .then((res) => {
             console.log("API response:", res.data); // Check the data structure
