@@ -33,7 +33,7 @@ router.post("/logout", authenticateToken("investor"), logout);
 
 router.post(
     "/refresh-token",
-    authenticateToken("investor"),
+    // authenticateToken("investor"),
     authInvestorController.refreshToken
 );
 
