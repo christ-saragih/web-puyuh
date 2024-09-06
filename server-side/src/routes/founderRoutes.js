@@ -13,8 +13,12 @@ const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
 
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 router.post(
     "/",
+    authenticateToken("admin"),
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
@@ -24,6 +28,7 @@ router.post(
 );
 router.put(
     "/:id",
+    authenticateToken("admin"),
     validate(updateSchema),
     upload.single("gambar"),
     validateUploadFile({
@@ -34,7 +39,7 @@ router.put(
 );
 router.get("/", founderController.findAll);
 router.get("/:id", founderController.findOne);
-router.delete("/:id", founderController.delete);
+router.delete("/:id", authenticateToken("admin"), founderController.delete);
 router.get("/image/:gambar", founderController.getImageByName);
 
 module.exports = router;
