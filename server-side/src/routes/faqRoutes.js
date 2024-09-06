@@ -8,10 +8,23 @@ const {
     updateFaqSchema,
 } = require("../validators/faqValidation");
 
-router.post("/", validate(createFaqSchema), faqController.create);
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
+router.post(
+    "/",
+    authenticateToken("admin"),
+    validate(createFaqSchema),
+    faqController.create
+);
 router.get("/", faqController.getAll);
 router.get("/:id", faqController.getOne);
-router.put("/:id", validate(updateFaqSchema), faqController.update);
-router.delete("/:id", faqController.delete);
+router.put(
+    "/:id",
+    authenticateToken("admin"),
+    validate(updateFaqSchema),
+    faqController.update
+);
+router.delete("/:id", authenticateToken("admin"), faqController.delete);
 
 module.exports = router;
