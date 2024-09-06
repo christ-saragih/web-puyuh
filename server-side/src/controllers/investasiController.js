@@ -213,59 +213,6 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// // Read All
-// exports.findAll = async (req, res) => {
-//     try {
-//         const now = new Date();
-
-//         // Perbarui status investasi sebelum mengambil data
-//         await Investasi.update(
-//             { status: "proses" },
-//             {
-//                 where: {
-//                     status: "segera",
-//                     tanggal_pembukaan_penawaran: { [Op.lte]: now },
-//                 },
-//             }
-//         );
-
-//         await Investasi.update(
-//             { status: "selesai" },
-//             {
-//                 where: {
-//                     status: "proses",
-//                     tanggal_berakhir_penawaran: { [Op.lte]: now },
-//                 },
-//             }
-//         );
-//         const investasi = await Investasi.findAll({
-//             include: {
-//                 model: Transaksi,
-//                 as: "transaksi",
-//                 attributes: ["id", "total_investasi"],
-//                 include: {
-//                     model: Investor,
-//                     as: "investor",
-//                     include: {
-//                         model: InvestorBiodata,
-//                         as: "investorBiodata",
-//                     },
-//                 },
-//             },
-//         });
-
-//         res.status(200).json({
-//             message: "Data  berhasil diambil!",
-//             data: investasi,
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Internal server error",
-//             error: error.message,
-//         });
-//     }
-// };
-
 // Get all transactions by investasi Id
 exports.getAllTransactionByInvestasiId = async (req, res) => {
     try {
@@ -330,47 +277,6 @@ exports.getAllInvestorByInvestasiId = async (req, res) => {
         res.status(200).json({
             message: "Data Transaksi!",
             data: transaksi,
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
-
-// Read One
-exports.findOne = async (req, res) => {
-    try {
-        const now = new Date();
-
-        // Perbarui status investasi sebelum mengambil data
-        await Investasi.update(
-            { status: "proses" },
-            {
-                where: {
-                    status: "segera",
-                    tanggal_pembukaan_penawaran: { [Op.lte]: now },
-                },
-            }
-        );
-
-        await Investasi.update(
-            { status: "selesai" },
-            {
-                where: {
-                    status: "proses",
-                    tanggal_berakhir_penawaran: { [Op.lte]: now },
-                },
-            }
-        );
-        const investasi = await Investasi.findByPk(req.params.id);
-        if (!investasi) {
-            return res.status(404).json({ message: "Data  tidak ada!" });
-        }
-        res.status(200).json({
-            message: "Data  berhasil diambil",
-            data: investasi,
         });
     } catch (error) {
         res.status(500).json({
@@ -627,6 +533,7 @@ exports.delete = async (req, res) => {
         await investasi.destroy();
         res.status(200).json({
             message: "Data  berhasil dihapus!",
+            data: investasi,
         });
     } catch (error) {
         res.status(500).json({
