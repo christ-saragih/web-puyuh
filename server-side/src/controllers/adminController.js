@@ -15,7 +15,10 @@ exports.findAdminByAuth = async (req, res) => {
     try {
         const admins = await Admin.findOne({
             where: { id: req.user.id },
-            include: AdminBiodata,
+            include: {
+                model: AdminBiodata,
+                as: "adminBiodata",
+            },
         });
         res.status(200).json({
             message: "Data Admin berhasil diambil!",
