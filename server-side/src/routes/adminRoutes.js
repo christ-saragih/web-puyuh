@@ -2,14 +2,19 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 
-const {
-    authenticateToken,
-    logout,
-} = require("../middleware/authenticateToken");
+const { authenticateToken } = require("../middleware/authenticateToken");
 
 router.get("/", authenticateToken("admin"), adminController.findAdminByAuth);
-router.get("/", adminController.findAll);
-router.get("/:id", adminController.findOne);
+router.get(
+    "/investor",
+    authenticateToken("admin"),
+    adminController.getAllDataInvestor
+);
+router.get(
+    "/investor/:id",
+    authenticateToken("admin"),
+    adminController.getDetailDataInvestor
+);
 router.post(
     "/ubah-password",
     authenticateToken("admin"),

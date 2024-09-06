@@ -1,4 +1,13 @@
-const { Admin, AdminBiodata, Investor, InvestorBiodata } = require("../models");
+const { where } = require("sequelize");
+const {
+    Admin,
+    AdminBiodata,
+    Investor,
+    InvestorBiodata,
+    InvestorIdentitas,
+    InvestorDataPendukung,
+    InvestorAlamat,
+} = require("../models");
 const bcrypt = require("bcrypt");
 
 // Read All
@@ -20,13 +29,22 @@ exports.findAdminByAuth = async (req, res) => {
     }
 };
 
-// Read All
-exports.findAll = async (req, res) => {
+// Dapatkan Semua Data Investor
+exports.getAllDataInvestor = async (req, res) => {
     try {
-        const admins = await Admin.findAll({ include: AdminBiodata });
+        const investors = await Investor.findAll({
+            attributes: ["id", "kategori_investor"],
+            include: [
+                {
+                    model: InvestorBiodata,
+                    as: "investorBiodata",
+                    attributes: ["nama_lengkap", "foto_profil"],
+                },
+            ],
+        });
         res.status(200).json({
-            message: "Data Admin berhasil diambil!",
-            data: admins,
+            message: "Data Investor berhasil diambil!",
+            data: investors,
         });
     } catch (error) {
         res.status(500).json({
@@ -36,18 +54,33 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// Read One
-exports.findOne = async (req, res) => {
+// Dapatkan Detail Data Investor
+exports.getDetailDataInvestor = async (req, res) => {
     try {
-        const admin = await Admin.findByPk(req.params.id, {
-            include: AdminBiodata,
+        const investors = await Investor.findAll({
+            where: { id: req.params.id },
+            include: [
+                {
+                    model: InvestorBiodata,
+                    as: "investorBiodata",
+                },
+                {
+                    model: InvestorIdentitas,
+                    as: "investorIdentitas",
+                },
+                {
+                    model: InvestorDataPendukung,
+                    as: "investorDataPendukung",
+                },
+                {
+                    model: InvestorAlamat,
+                    as: "investorAlamat",
+                },
+            ],
         });
-        if (!admin) {
-            return res.status(404).json({ message: "Data Admin tidak ada!" });
-        }
         res.status(200).json({
-            message: "Data Admin berhasil diambil",
-            data: admin,
+            message: "Data Investor berhasil diambil!",
+            data: investors,
         });
     } catch (error) {
         res.status(500).json({
@@ -57,6 +90,7 @@ exports.findOne = async (req, res) => {
     }
 };
 
+// Ubah Password Admin
 exports.ubahPassword = async (req, res) => {
     try {
         const { newPassword } = req.body;
@@ -89,21 +123,5 @@ exports.ubahPassword = async (req, res) => {
                 error: error.message,
             });
         }
-    }
-};
-
-// get Semua Data Investor
-exports.GetAllDataInvestor = async (req, res) => {
-    try {
-        const investors = await Investor.findAll({ include: InvestorBiodata });
-        res.status(200).json({
-            message: "Data Admin berhasil diambil!",
-            data: investors,
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
     }
 };
