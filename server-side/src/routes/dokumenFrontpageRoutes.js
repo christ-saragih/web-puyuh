@@ -13,8 +13,12 @@ const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
 
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 router.post(
     "/",
+    authenticateToken("admin"),
     upload.single("file"),
     validateUploadFile({
         fieldName: "file",
@@ -25,6 +29,7 @@ router.post(
 );
 router.put(
     "/:id",
+    authenticateToken("admin"),
     upload.single("file"),
     validateUploadFile({
         fieldName: "file",
@@ -36,7 +41,11 @@ router.put(
 );
 router.get("/", dokumenFrontpageController.findAll);
 router.get("/:id", dokumenFrontpageController.findOne);
-router.delete("/:id", dokumenFrontpageController.delete);
+router.delete(
+    "/:id",
+    authenticateToken("admin"),
+    dokumenFrontpageController.delete
+);
 router.get("/file/:file", dokumenFrontpageController.getFileByName);
 
 module.exports = router;

@@ -159,6 +159,7 @@ exports.delete = async (req, res) => {
         await dokumen.destroy();
         res.status(200).json({
             message: "Dokumen Berhasil Dihapus!",
+            data: dokumen,
         });
     } catch (error) {
         res.status(500).json({
