@@ -30,10 +30,6 @@ exports.upsert = async (req, res) => {
         let beranda = await BerandaFrontpage.findOne();
 
         if (!beranda) {
-            if (!image_header) {
-                res.status(404).json({ message: "image tidak ada" });
-            }
-
             let nama_image_header = null;
 
             if (image_header) {
