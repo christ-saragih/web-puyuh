@@ -57,7 +57,7 @@ exports.getAllDataInvestor = async (req, res) => {
 // Dapatkan Detail Data Investor
 exports.getDetailDataInvestor = async (req, res) => {
     try {
-        const investors = await Investor.findAll({
+        const investors = await Investor.findOne({
             where: { id: req.params.id },
             include: [
                 {
