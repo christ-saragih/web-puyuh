@@ -32,21 +32,23 @@ export const AuthAdminProvider = ({ children }) => {
         }
     };
 
-    const logout = async () => {
-        try {
-            await apiAdmin.post("/auth/admin/logout");
-            setAdmin(null);
-        } catch (error) {
-            console.error(error.response?.data?.message || "Logout failed");
-        }
-    };
-
     const refreshAccessToken = async () => {
         try {
             const response = await apiAdmin.post("/auth/admin/refresh-token");
             return response.data.accessToken;
         } catch (error) {
             console.error("Failed to refresh admin token:", error);
+            throw error;
+        }
+    };
+
+    const logout = async () => {
+        try {
+            await refreshAccessToken(); // Memastikan token sudah diperbarui sebelum logout
+            await apiAdmin.post("/auth/admin/logout");
+            setAdmin(null);
+        } catch (error) {
+            console.error(error.response?.data?.message || "Logout failed");
         }
     };
 

@@ -108,33 +108,33 @@ exports.findData = async (req, res) => {
 };
 
 // Delete
-exports.delete = async (req, res) => {
-    try {
-        const beranda = await BerandaFrontpage.findOne();
+// exports.delete = async (req, res) => {
+//     try {
+//         const beranda = await BerandaFrontpage.findOne();
 
-        if (!beranda) {
-            return res.status(404).json({ message: "Beranda tidak ada!" });
-        }
+//         if (!beranda) {
+//             return res.status(404).json({ message: "Beranda tidak ada!" });
+//         }
 
-        const dir = "public/images/berandaFrontpage";
+//         const dir = "public/images/berandaFrontpage";
 
-        /// Hapus file gambar jika ada
-        if (beranda.image_header) {
-            const imagePath = path.join(dir, beranda.image_header);
-            deleteOldImage(imagePath);
-        }
+//         /// Hapus file gambar jika ada
+//         if (beranda.image_header) {
+//             const imagePath = path.join(dir, beranda.image_header);
+//             deleteOldImage(imagePath);
+//         }
 
-        await beranda.destroy();
-        res.status(200).json({
-            message: "Beranda Berhasil Dihapus!",
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
+//         await beranda.destroy();
+//         res.status(200).json({
+//             message: "Beranda Berhasil Dihapus!",
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Internal server error",
+//             error: error.message,
+//         });
+//     }
+// };
 
 // Get Image by Name
 exports.getImageByName = (req, res) => {
