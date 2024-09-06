@@ -1,6 +1,6 @@
 const { check } = require("express-validator");
 
-const createSchema = [
+const upsertSchema = [
     check("judul")
         .notEmpty()
         .withMessage("Judul tidak boleh kosong!")
@@ -13,18 +13,6 @@ const createSchema = [
         .withMessage("Deskripsi harus berupa string!"),
 ];
 
-const updateSchema = [
-    check("judul")
-        .optional()
-        .isString()
-        .withMessage("Judul harus berupa string!"),
-    check("deskripsi")
-        .optional()
-        .isString()
-        .withMessage("Deskripsi harus berupa string!"),
-];
-
 module.exports = {
-    createSchema,
-    updateSchema,
+    upsertSchema,
 };

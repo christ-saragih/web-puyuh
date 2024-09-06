@@ -3,13 +3,18 @@ const express = require("express");
 const router = express.Router();
 const sejarahController = require("../controllers/sejarahController");
 const validate = require("../middleware/validationMiddleware");
-const {
-    createSchema,
-    updateSchema,
-} = require("../validators/sejarahValidation");
+const { upsertSchema } = require("../validators/sejarahValidation");
 
-router.post("/", validate(createSchema), sejarahController.upsert);
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
+router.post(
+    "/",
+    authenticateToken("admin"),
+    validate(upsertSchema),
+    sejarahController.upsert
+);
 router.get("/", sejarahController.findData);
-router.delete("/:id", sejarahController.delete);
+// router.delete("/:id", sejarahController.delete);
 
 module.exports = router;
