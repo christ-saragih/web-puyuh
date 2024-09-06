@@ -11,7 +11,7 @@ import {
   PiNotebookLight,
   PiUsersBold,
 } from "react-icons/pi";
-import Logo from "../../assets/images/logo.svg";
+import LogoPutih from "../../assets/images/logo-putih.svg";
 import { NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = (props) => {
@@ -54,13 +54,13 @@ const Sidebar = (props) => {
         <NavLink
           to="/admin"
           className={`flex items-center space-x-3 mb-6 transition-all duration-300 ease-in-out ${
-            isHovered ? "ml-6" : ""
+            isHovered ? "ml-2" : ""
           }`}
         >
           <img
-            src={Logo}
-            className="h-14 w-14 rounded-full me-[2px]"
-            alt="Logo"
+            src={LogoPutih}
+            className="h-12 w-12 ms-1"
+            alt="Logo Putih"
           />
           <span
             className={`hidden group-hover:block self-center text-xl text-white font-semibold whitespace-nowrap transition-all duration-500 ease-in-out transform ${
@@ -69,7 +69,7 @@ const Sidebar = (props) => {
                 : "-translate-x-10 opacity-0"
             }`}
           >
-            CV Slamet <br /> Quail Farm
+            PT Sukaharja <br /> Quail Indonesia
           </span>
         </NavLink>
 
