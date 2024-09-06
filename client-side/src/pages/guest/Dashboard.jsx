@@ -1,12 +1,11 @@
-import InklusiKeuangan from "../../assets/images/icons/inklusi-keuangan.svg";
-import PertumbuhanEksponensial from "../../assets/images/icons/pertumbuhan-eksponensial.svg";
-import BerdampakSosial from "../../assets/images/icons/berdampak-sosial.svg";
 import TemukanStartup from "../../assets/images/temukan-startup.svg";
 import BeliSaham from "../../assets/images/beli-saham.svg";
 import JualSaham from "../../assets/images/jual-dipasar.svg";
 import BagiHasil from "../../assets/images/bagi-hasil.svg";
 import BatchList from "../../components/guest/BatchList";
 import ArticleList from "../../components/common/ArticleList";
+import { companyValues } from "../../components/guest/ValueCompanyList";
+import ValueCompanyItem from "../../components/guest/ValueCompanyItem";
 import GuestLayouts from "../../layouts/GuestLayouts";
 import { getDashboardFrontpage } from "../../services/dashboard-frontpage.service";
 import { getArticles } from "../../services/article.service";
@@ -34,27 +33,24 @@ const Dashboard = () => {
   return (
     <GuestLayouts>
       <div className="w-[90%] mx-auto mt-12 lg:mt-16">
-        <div className="w-full lg:w-[80%] mb-10">
-          <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px]">
-            {dashboardFrontpage.nama_header}
-            {/* <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
+        <div className="flex flex-col items-center gap-10 mb-20 md:flex-row lg:mb-0">
+          <div className="w-full lg:w-1/2 flex flex-col gap-12">
+            <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px] tracking-wide">
+              {dashboardFrontpage.nama_header}
+              {/* <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
             Berdampak
             <span className="text-[#B87817]"> Nyata</span> */}
-          </h1>
-        </div>
-
-        <div className="flex flex-col items-center gap-12 mb-20 md:flex-row lg:mb-0">
-          <div className="w-full lg:w-1/2 flex flex-col gap-12">
-            <p className="text-[#2B2B2B] text-2xl">
+            </h1>
+            <p className="text-[#2B2B2B] text-xl lg:text-2xl">
               {dashboardFrontpage.nama_subheader}
             </p>
             <div className="hidden lg:flex justify-center lg:gap-10">
-              <button className="bg-[#4B241A] w-1/2 py-3 rounded-3xl shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
-                Investasi Sekarang
-              </button>
-              <button className="bg-[#4B241A] w-1/2 py-3 rounded-3xl shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
-                FundEx Sharia
-              </button>
+              <Link to={"/investasi"} className="btn-primary-large w-full">
+                Lihat Investasi
+              </Link>
+              <Link to={"/tentang-kami"} className="btn-primary-large w-full">
+                Tentang SQI
+              </Link>
             </div>
           </div>
           <div className="w-full lg:w-1/2 flex justify-center">
@@ -63,18 +59,23 @@ const Dashboard = () => {
               alt=""
               className="w-[26rem]"
             />
-            {/* GET data image dari seeder */}
-            {/* <img src={dashboardFrontpage.image_header} alt="" className="w-[26rem]" /> */}
           </div>
         </div>
 
-        <div className="flex justify-center gap-6 lg:justify-start lg:gap-10 lg:-mt-40 lg:hidden">
-          <button className="bg-[#4B241A] w-1/2 lg:w-3/12 py-3 rounded-3xl shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
-            Investasi Sekarang
-          </button>
-          <button className="bg-[#4B241A] w-1/2 lg:w-3/12 py-3 rounded-3xl shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
-            FundEx Sharia
-          </button>
+        {/* Jumbotron button for mobile */}
+        <div className="flex justify-center gap-4 lg:hidden">
+          <Link
+            to={"/investasi"}
+            className="btn-primary-large w-full flex items-center justify-center"
+          >
+            Lihat Investasi
+          </Link>
+          <Link
+            to={"/tentang-kami"}
+            className="btn-primary-large w-full flex items-center justify-center"
+          >
+            Tentang SQI
+          </Link>
         </div>
       </div>
 
@@ -88,61 +89,22 @@ const Dashboard = () => {
           <path
             fill="#FAEFE4"
             fillOpacity="1"
-            d="M0,320L120,293.3C240,267,480,213,720,213.3C960,213,1200,267,1320,293.3L1440,320L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
+            d="M0,320L120,276.16C240,232.9,480,145.7,720,146.3C960,146.7,1200,233,1320,276.16L1440,320L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
           ></path>
         </svg>
 
         <div className="bg-[#FAEFE4]">
-          <div className="w-[90%] mx-auto pt-10 pb-20">
-            <h1 className="font-bold text-center text-4xl mb-16">
-              <span className="text-[#B87817]">Nilai </span> Lorem
-            </h1>
-            <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-4">
-              <div className="flex flex-col items-center xl:px-14">
-                <div className="bg-[#4B241A] rounded-full w-28 h-28 p-6 mb-4">
-                  <img
-                    src={InklusiKeuangan}
-                    alt="Inklusi Keuangan"
-                    className="w-20 h-w-20 object-cover"
-                  />
-                </div>
-                <h3 className="flex-grow font-semibold text-2xl mb-2">
-                  Inklusi Keuangan
-                </h3>
-                <p className="px-8 sm:px-0 font-medium text-lg text-center">
-                  Akses investasi yang mudah dijangkau bagi siapa saja
-                </p>
-              </div>
-              <div className="flex flex-col items-center xl:px-14">
-                <div className="bg-[#4B241A] rounded-full w-28 h-w-28 p-6 mb-4">
-                  <img
-                    src={PertumbuhanEksponensial}
-                    alt="Pertumbuhan Eksponensial"
-                    className="w-20 h-w-20 object-cover"
-                  />
-                </div>
-                <h3 className="flex-grow font-semibold text-center text-2xl mb-2">
-                  Pertumbuhan Eksponensial
-                </h3>
-                <p className="px-8 sm:px-0 font-medium text-lg text-center">
-                  Investasi yang tumbuh dengan cepat dan signifikan
-                </p>
-              </div>
-              <div className="flex flex-col items-center xl:px-14">
-                <div className="bg-[#4B241A] rounded-full w-28 h-w-28 p-6 mb-4">
-                  <img
-                    src={BerdampakSosial}
-                    alt="Berdampak Sosial"
-                    className="w-20 h-w-20 object-cover"
-                  />
-                </div>
-                <h3 className="flex-grow font-semibold text-2xl mb-2">
-                  Berdampak Sosial
-                </h3>
-                <p className="px-8 sm:px-0 font-medium text-lg text-center">
-                  Investasi yang memberikan dampak positif bagi masyarakat
-                </p>
-              </div>
+          <div className="w-[90%] mx-auto pb-12 lg:pb-16">
+            <h2 className="font-bold text-center text-3xl lg:text-4xl mb-1 tracking-wide">
+              <span className="text-[#B87817]">Nilai-Nilai </span> PT SQI
+            </h2>
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-4 mt-14">
+              {companyValues.map((companyValue, index) => (
+                <ValueCompanyItem
+                  key={`${index}-${companyValue.text}`}
+                  {...companyValue}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -150,7 +112,7 @@ const Dashboard = () => {
 
       <div className="w-[90%] mx-auto mt-12 lg:mt-16">
         <div className="mb-6 ">
-          <h2 className="font-bold text-3xl mb-1">
+          <h2 className="font-bold text-3xl lg:text-4xl mb-1 tracking-wide">
             Penawaran <span className="text-[#B87817]">Saat Ini</span>
           </h2>
           <p className="font-medium text-lg text-[#6E6565]">
@@ -162,7 +124,7 @@ const Dashboard = () => {
         <div className="flex justify-center mt-10 mb-3">
           <Link
             to={"/investasi"}
-            className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl text-center"
+            className="btn-primary-large w-[180px] md:w-1/3 xl:w-1/5"
           >
             Lihat Semua
           </Link>
@@ -179,17 +141,17 @@ const Dashboard = () => {
           <path
             fill="#FAEFE4"
             fillOpacity="1"
-            d="M0,160L48,176C96,192,192,224,288,208C384,192,480,128,576,96C672,64,768,64,864,85.3C960,107,1056,149,1152,154.7C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+            d="M0,160L48,176C96,192,192,240,288,224C384,208,480,160,576,128C672,96,768,96,864,106.7C960,117,1056,149,1152,154.7C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
           ></path>
         </svg>
 
         <div className="bg-[#FAEFE4] pb-3">
           <div className="mb-3 text-center">
-            <h2 className="font-bold text-3xl mb-1">
+            <h2 className="font-bold text-3xl lg:text-4xl mb-1 tracking-wide">
               Cara <span className="text-[#B87817]">Berinvestasi</span>
             </h2>
-            <p className="font-medium text-lg text-[#6E6565]">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+            <p className="font-medium text-lg  text-[#6E6565]">
+              Pelajari cara berinvestasi di
             </p>
           </div>
 
@@ -202,13 +164,12 @@ const Dashboard = () => {
               />
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
-                <h3 className="font-semibold text-3xl">
-                  Temukan Startup{" "}
-                  <span className="text-[#B87817]">Menarik</span>
+                <h3 className="font-semibold text-2xl lg:text-3xl">
+                  Pelajari <span className="text-[#B87817]">Keuntungannya</span>
                 </h3>
                 <p className="text-lg">
-                  Anda dapat melakukan analisis dan penilaian terhadap
-                  portofolio startup dari prospektus yang kami sediakan.
+                  Telusuri keuntungan yang bisa didapat dari berinvestasi di PT
+                  Sukaharja Quail
                 </p>
               </div>
             </div>
@@ -221,12 +182,12 @@ const Dashboard = () => {
               />
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
-                <h3 className="font-semibold text-3xl">
-                  Beli Saham <span className="text-[#B87817]">Startup</span>
+                <h3 className="font-semibold text-2xl lg:text-3xl">
+                  Pilih <span className="text-[#B87817]">Kloter</span>
                 </h3>
                 <p className="text-lg">
-                  Tentukan jumlah saham yang ingin dibeli. Setelah penawaran
-                  mencapai target, saham menjadi milik Anda.
+                  Pilih kloter yang terbuka untuk investasi dan masukan jumlah
+                  keuntungan yang diinginkan.
                 </p>
               </div>
             </div>
@@ -239,36 +200,41 @@ const Dashboard = () => {
               />
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
-                <h3 className="font-semibold text-3xl">
-                  Jual di <span className="text-[#B87817]">Pasar Sekunder</span>
+                <h3 className="font-semibold text-2xl lg:text-3xl">
+                  Lengkapi <span className="text-[#B87817]">Dokumen</span>
                 </h3>
                 <p className="text-lg">
-                  Setelah satu tahun, Anda dapat menjual saham di Pasar Sekunder
-                  yang diselenggarakan setiap 6 bulan.
+                  Unggah dokumen yang dibutuhkan untuk memulai proses investasi.
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col justify-center items-center gap-6 ">
               <div className="">
-                <img src={BagiHasil} alt="" className="w-52 h-52" />
+                <img
+                  src={BagiHasil}
+                  alt=""
+                  className="w-40 h-40 md:w-56 md:h-56"
+                />
               </div>
               <div className="flex flex-col item-center text-center gap-3">
-                <h3 className="font-semibold text-3xl">
+                <h3 className="font-semibold text-2xl lg:text-3xl">
                   Dapatkan <span className="text-[#B87817]">Bagi Hasil</span>
                 </h3>
-                <p className="text-lg w-[80%] mx-auto">
-                  Setelah proyek selesai, Anda berhak mendapatkan pengembalian
-                  dana dan bagi hasil dari keuntungan proyek.
+                <p className="text-lg mx-auto">
+                  Nikmati bagi hasil yang diberikan tiap bulannya
                 </p>
               </div>
             </div>
           </div>
 
           <div className="flex justify-center mt-10">
-            <button className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl">
+            <Link
+              to={"/investasi"}
+              className="btn-primary-large w-[190px] md:w-1/3 xl:w-1/5"
+            >
               Mulai Investasi
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -288,7 +254,7 @@ const Dashboard = () => {
 
       <div className="w-[90%] mx-auto mb-12 lg:mb-16">
         <div className="mb-6">
-          <h2 className="font-bold text-3xl mb-1">
+          <h2 className="font-bold text-3xl lg:text-4xl mb-1 tracking-wide">
             Baca Artikel Terbaru <span className="text-[#B87817]">Kami</span>
           </h2>
           <p className="font-medium text-lg text-[#6E6565]">
@@ -301,7 +267,7 @@ const Dashboard = () => {
         <div className="flex justify-center mt-10">
           <Link
             to={"/artikel"}
-            className="bg-[#4B241A] w-8/12 md:w-1/3 xl:w-1/5 py-3 rounded-[2rem] shadow-[0_6px_6px_0_rgba(0,0,0,0.25)] font-semibold text-[#EFEFEF] text-2xl text-center"
+            className="btn-primary-large w-[180px] md:w-1/3 xl:w-1/5"
           >
             Lihat Semua
           </Link>

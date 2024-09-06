@@ -6,178 +6,123 @@ const Profil = () => {
   const [formData, setFormData] = useState({
     judul: "",
     image_background: null,
-    deskripsi: "",
+    deskripsi_tentang_kami: "",
   });
 
   const [sejarahData, setSejarahData] = useState({
-    judul: "",
-    deskripsi: "",
+    judul_sejarah: "",
+    deskripsi_sejarah: "",
+  });
+
+  const [founderData, setFounderData] = useState({
+    nama: "",
+    jabatan: "",
+    deskripsi_founder: "",
+    gambar: null,
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [founderImagePreview, setFounderImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files && files[0]) {
-      setFormData({ ...formData, [name]: files[0] });
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(files[0]);
+      const file = files[0];
+      if (name === "image_background") {
+        setFormData({ ...formData, [name]: file });
+        handleImagePreview(file, setImagePreview);
+      } else if (name === "gambar") {
+        setFounderData({ ...founderData, [name]: file });
+        handleImagePreview(file, setFounderImagePreview);
+      }
     } else {
-      setFormData({ ...formData, [name]: value });
+      if (["judul", "deskripsi_tentang_kami"].includes(name)) {
+        setFormData({ ...formData, [name]: value });
+      } else if (["judul_sejarah", "deskripsi_sejarah"].includes(name)) {
+        setSejarahData({ ...sejarahData, [name]: value });
+      } else {
+        setFounderData({ ...founderData, [name]: value });
+      }
     }
   };
 
-  const handleChangeSejarah = (e) => {
-    const { name, value } = e.target;
-    setSejarahData((prevData) => ({ ...prevData, [name]: value }));
+  const handleImagePreview = (file, setPreview) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (url, data, headers = {}) => {
+    try {
+      const response = await axios.post(url, data, { headers });
+      console.log("Data saved:", response.data);
+    } catch (error) {
+      console.error("Error saving data:", error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handleSubmitTentangKami = () => {
     const form = new FormData();
     form.append("judul", formData.judul);
     form.append("image_background", formData.image_background);
-    form.append("deskripsi", formData.deskripsi);
+    form.append("deskripsi", formData.deskripsi_tentang_kami);
 
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/tentang-kami",
-        form,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Tentang Kami data:", data);
-    } catch (err) {
-      console.error("Error Tentang Kami:", err.response ? err.response.data : err.message);
-    }
+    handleSubmit("http://localhost:3000/api/tentang-kami", form, {
+      "Content-Type": "multipart/form-data",
+    });
   };
 
-  const handleSubmitSejarah = async () => {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/sejarah",
-        sejarahData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Sejarah data:", data);
-    } catch (err) {
-      console.error("Error Sejarah:", err.response ? err.response.data : err.message);
-    }
+  const handleSubmitSejarah = () => {
+    const form = new FormData();
+    form.append("judul", sejarahData.judul_sejarah);
+    form.append("deskripsi", sejarahData.deskripsi_sejarah);
+
+    handleSubmit("http://localhost:3000/api/sejarah", form, {
+      "Content-Type": "application/json",
+    });
+  };
+
+  const handleSubmitFounder = () => {
+    const form = new FormData();
+    form.append("nama", founderData.nama);
+    form.append("jabatan", founderData.jabatan);
+    form.append("deskripsi", founderData.deskripsi_founder);
+    if (founderData.gambar) form.append("gambar", founderData.gambar);
+
+    handleSubmit("http://localhost:3000/api/founder", form, {
+      "Content-Type": "multipart/form-data",
+    });
   };
 
   return (
     <AdminLayout title={"Halaman Depan / Profil"}>
       <div className="flex flex-col">
+        {/* Tentang Kami */}
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-          <div className="flex flex-row justify-between mb-5">
+          <div className="flex justify-between mb-5">
             <h1 className="font-bold text-[#572618] text-xl">Tentang Kami</h1>
             <button
-              onClick={handleSubmit}
+              onClick={handleSubmitTentangKami}
               className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
             >
               Simpan
             </button>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="input-judul"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Judul
-            </label>
-            <input
-              type="text"
-              id="input-judul"
-              onChange={handleChange}
-              name="judul"
-              className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="dropzone-file"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Gambar Latar Belakang
-            </label>
-            <div className="flex items-center justify-center w-full">
-              <label
-                htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-600 dark:hover:border-gray-500"
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                    />
-                  </svg>
-                  {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt="Pratinjau"
-                      className="max-h-40 mb-2"
-                    />
-                  ) : (
-                    <>
-                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold">
-                          Klik untuk mengunggah
-                        </span>{" "}
-                        atau seret dan jatuhkan
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG atau GIF (MAKS. 800x400px)
-                      </p>
-                    </>
-                  )}
-                </div>
-                <input
-                  id="dropzone-file"
-                  onChange={handleChange}
-                  type="file"
-                  name="image_background"
-                  className="hidden"
-                />
-              </label>
-            </div>
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="deskripsi-input"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Deskripsi
-            </label>
-            <textarea
-              type="text"
-              id="deskripsi-input"
-              name="deskripsi"
-              onChange={handleChange}
-              className="bg-white text-gray-900 text-sm rounded-lg w-full h-48 p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
-            />
-          </div>
+          {/* Form Fields */}
+          <InputField label="Judul" name="judul" onChange={handleChange} />
+          <ImageUpload
+            label="Gambar Latar Belakang"
+            imagePreview={imagePreview}
+            onChange={handleChange}
+            name="image_background"
+          />
+          <TextAreaField label="Deskripsi" name="deskripsi_tentang_kami" onChange={handleChange} />
         </div>
 
-        {/* sejarah */}
+        {/* Sejarah */}
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
           <div className="w-full flex justify-between mb-5">
             <h3 className="font-bold text-[#572618] text-xl">Sejarah</h3>
@@ -188,35 +133,102 @@ const Profil = () => {
               Simpan
             </button>
           </div>
+          {/* Form Fields */}
+          <InputField label="Judul" name="judul_sejarah" onChange={handleChange} />
+          <TextAreaField label="Deskripsi" name="deskripsi_sejarah" onChange={handleChange} />
+        </div>
 
-          <div>
-            <label htmlFor="judul-sejarah" className="block mb-2 text-sm font-medium text-gray-900">
-              Judul
-            </label>
-            <input
-              type="text"
-              name="judul"
-              id="judul-sejarah"
-              onChange={handleChangeSejarah}
-              className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
-            />
-
-            <label htmlFor="deskripsi-sejarah" className="block mb-2 text-sm font-medium text-gray-900">
-              Deskripsi
-            </label>
-            <textarea
-              id="deskripsi-sejarah"
-              name="deskripsi"
-              required
-              rows={4}
-              onChange={handleChangeSejarah}
-              className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
-            />
+        {/* Founder */}
+        <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
+          <div className="w-full flex justify-between mb-5">
+            <h3 className="font-bold text-[#572618] text-xl">Pendiri</h3>
+            <button
+              onClick={handleSubmitFounder}
+              className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
+            >
+              Simpan
+            </button>
           </div>
+          {/* Form Fields */}
+          <ImageUpload
+            label="Gambar Pendiri"
+            imagePreview={founderImagePreview}
+            onChange={handleChange}
+            name="gambar"
+          />
+          <InputField label="Nama" name="nama" onChange={handleChange} />
+          <InputField label="Jabatan" name="jabatan" onChange={handleChange} />
+          <TextAreaField label="Deskripsi" name="deskripsi_founder" onChange={handleChange} />
         </div>
       </div>
     </AdminLayout>
   );
 };
+
+// Input Field Component
+const InputField = ({ label, name, onChange }) => (
+  <div className="mb-4">
+    <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
+    <input
+      type="text"
+      name={name}
+      onChange={onChange}
+      className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
+    />
+  </div>
+);
+
+// TextArea Component
+const TextAreaField = ({ label, name, onChange }) => (
+  <div className="mb-4">
+    <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
+    <textarea
+      name={name}
+      rows="4"
+      onChange={onChange}
+      className="bg-white text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 drop-shadow-lg"
+    />
+  </div>
+);
+
+// Image Upload Component
+const ImageUpload = ({ label, imagePreview, onChange, name }) => (
+  <div className="mb-4">
+    <label className="block mb-2 text-sm font-medium text-gray-900">{label}</label>
+    <div className="flex items-center justify-center w-full">
+      <label
+        htmlFor={`dropzone-${name}`}
+        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100"
+      >
+        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+          {imagePreview ? (
+            <img src={imagePreview} alt="Preview" className="max-h-40 mb-2" />
+          ) : (
+            <>
+              <svg
+                aria-hidden="true"
+                className="w-10 h-10 mb-3 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M7 16l-4-4m0 0l4-4m-4 4h18M13 7h7v7"
+                ></path>
+              </svg>
+              <p className="mb-2 text-sm text-gray-500">Klik untuk mengunggah gambar</p>
+              <p className="text-xs text-gray-500">SVG, PNG, JPG (MAX. 800x400px)</p>
+            </>
+          )}
+        </div>
+        <input id={`dropzone-${name}`} type="file" name={name} className="hidden" onChange={onChange} />
+      </label>
+    </div>
+  </div>
+);
 
 export default Profil;
