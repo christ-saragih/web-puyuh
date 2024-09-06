@@ -2,10 +2,13 @@ const express = require("express");
 const router = express.Router();
 const tagControlller = require("../controllers/tagControlller");
 
-router.post("/", tagControlller.create);
-router.put("/:id", tagControlller.update);
+// auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
+router.post("/", authenticateToken("admin"), tagControlller.create);
+router.put("/:id", authenticateToken("admin"), tagControlller.update);
 router.get("/", tagControlller.findAll);
 router.get("/:id", tagControlller.findOne);
-router.delete("/:id", tagControlller.delete);
+router.delete("/:id", authenticateToken("admin"), tagControlller.delete);
 
 module.exports = router;
