@@ -179,49 +179,115 @@ const router = createBrowserRouter([
     },
     {
         path: "/admin/halaman-depan/utama",
-        element: <Utama />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <Utama />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/profil",
-        element: <Profil />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <Profil />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/kontak",
-        element: <Kontak />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <Kontak />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/media-sosial",
-        element: <MediaSosial />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <MediaSosial />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/dokumentasi",
-        element: <Dokumentasi />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <Dokumentasi />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/dokumen",
-        element: <Dokumen />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <Dokumen />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/faq",
-        element: <FaqAdmin />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <FaqAdmin />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
 
     {
         path: "/admin/artikel",
-        element: <AdminArtikel />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <AdminArtikel />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
 
     {
         path: "/admin/investasi",
-        element: <AdminInvestasi />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <AdminInvestasi />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/investor",
-        element: <AdminInvestor />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <AdminInvestor />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     {
         path: "/admin/halaman-depan/profil",
-        element: <Profil />,
+        element: (
+            <AuthAdminProvider>
+                <ProtectedRouteAdmin>
+                    <Profil />
+                </ProtectedRouteAdmin>
+            </AuthAdminProvider>
+        ),
     },
     // admin end
 ]);
