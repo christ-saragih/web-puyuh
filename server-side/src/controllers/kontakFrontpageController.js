@@ -63,23 +63,3 @@ exports.findData = async (req, res) => {
         });
     }
 };
-
-// Delete
-exports.delete = async (req, res) => {
-    try {
-        const kontak = await KontakFrontpage.findByPk(req.params.id);
-        if (!kontak) {
-            return res.status(404).json({ message: "Kontak tidak ada!" });
-        }
-
-        await kontak.destroy();
-        res.status(200).json({
-            message: "Kontak berhasil dihapus!",
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};

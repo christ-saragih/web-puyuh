@@ -2,8 +2,18 @@ const express = require("express");
 const router = express.Router();
 const kontakFrontpageController = require("../controllers/kontakFrontpageController");
 
-router.post("/", kontakFrontpageController.upsert);
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
+const { upsertSchema } = require("../validators/kontakFrontpageValidation");
+const validate = require("../middleware/validationMiddleware");
+
+router.post(
+    "/",
+    authenticateToken("admin"),
+    validate(upsertSchema),
+    kontakFrontpageController.upsert
+);
 router.get("/", kontakFrontpageController.findData);
-router.delete("/:id", kontakFrontpageController.delete);
 
 module.exports = router;
