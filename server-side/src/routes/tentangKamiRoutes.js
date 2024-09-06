@@ -18,6 +18,7 @@ router.post(
     upload.single("image_background"),
     validateUploadFile({
         fieldName: "image_background",
+        required: false,
     }),
     validate(createSchema),
     tentangKamiContoller.upsert

@@ -15,7 +15,7 @@ const generateAccessToken = (admin) => {
             role: "admin",
         },
         process.env.ACCESS_SECRET_KEY,
-        { expiresIn: "15m" }
+        { expiresIn: "1m" }
     );
 };
 

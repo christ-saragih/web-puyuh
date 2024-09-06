@@ -37,7 +37,7 @@ export const AuthAdminProvider = ({ children }) => {
             await apiAdmin.post("/auth/admin/logout");
             setAdmin(null);
         } catch (error) {
-            console.error(error.response.data.message);
+            console.error(error.response?.data?.message || "Logout failed");
         }
     };
 
