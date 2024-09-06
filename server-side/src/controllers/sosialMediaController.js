@@ -158,6 +158,7 @@ exports.delete = async (req, res) => {
         await sosialMedia.destroy();
         res.status(200).json({
             message: "Sosial Media berhasil dihapus",
+            data: sosialMedia,
         });
     } catch (error) {
         res.status(500).json({
