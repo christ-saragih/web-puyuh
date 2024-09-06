@@ -19,6 +19,7 @@ router.post(
     upload.single("image_header"),
     validateUploadFile({
         fieldName: "image_header",
+        required: false,
     }),
     validate(upsertSchema),
     berandaController.upsert
