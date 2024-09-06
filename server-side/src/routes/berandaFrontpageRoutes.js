@@ -14,8 +14,12 @@ const {
 const validate = require("../middleware/validationMiddleware");
 const { upsertSchema } = require("../validators/berandaFrontpageValidation");
 
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 router.post(
     "/",
+    authenticateToken("admin"),
     upload.single("image_header"),
     validateUploadFile({
         fieldName: "image_header",
@@ -25,7 +29,7 @@ router.post(
     berandaController.upsert
 );
 router.get("/", berandaController.findData);
-router.delete("/:id", berandaController.delete);
+// router.delete("/:id", berandaController.delete);
 router.get("/image/:gambar", berandaController.getImageByName);
 
 module.exports = router;
