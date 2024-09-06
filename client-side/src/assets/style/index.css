@@ -181,7 +181,7 @@ iframe {
 /* ADMIN: Start */
 /* dropdown */
 div[data-testid="flowbite-dropdown"] {
-  @apply bg-white w-32 rounded-xl shadow font-semibold overflow-hidden;
+  @apply bg-white min-w-32 max-w-fit rounded-xl shadow font-semibold overflow-hidden;
 }
 li[role="menuitem"] button {
   @apply text-base text-slate-700;
