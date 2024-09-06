@@ -119,7 +119,7 @@ exports.delete = async (req, res) => {
 
         await faq.destroy();
 
-        res.status(200).json({ message: "FAQ berhasil dihapus!" });
+        res.status(200).json({ message: "FAQ berhasil dihapus!", data: faq });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",

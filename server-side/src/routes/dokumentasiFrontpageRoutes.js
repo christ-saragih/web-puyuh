@@ -12,8 +12,11 @@ const {
     updateSchema,
 } = require("../validators/dokumentasiValidation");
 
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
 router.post(
     "/",
+    authenticateToken("admin"),
     upload.single("image"),
     validateUploadFile({
         fieldName: "image",
@@ -23,6 +26,7 @@ router.post(
 );
 router.put(
     "/:id",
+    authenticateToken("admin"),
     upload.single("image"),
     validateUploadFile({
         fieldName: "image",
@@ -33,7 +37,11 @@ router.put(
 );
 router.get("/", dokumentasiControlller.findAll);
 router.get("/:id", dokumentasiControlller.findOne);
-router.delete("/:id", dokumentasiControlller.delete);
+router.delete(
+    "/:id",
+    authenticateToken("admin"),
+    dokumentasiControlller.delete
+);
 router.get("/image/:gambar", dokumentasiControlller.getImageByName);
 
 module.exports = router;

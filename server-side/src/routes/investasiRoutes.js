@@ -9,10 +9,6 @@ const {
 } = require("../validators/investasiValidation");
 
 // auth
-const {
-    authenticateAdminToken,
-} = require("../middleware/authenticateAdminToken");
-const authorizeRole = require("../middleware/authorizeRole");
 const { authenticateToken } = require("../middleware/authenticateToken");
 
 // Upload gambar
@@ -23,8 +19,7 @@ const {
 
 router.post(
     "/",
-    authenticateAdminToken,
-    authorizeRole("admin"),
+    authenticateToken("admin"),
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
@@ -44,7 +39,6 @@ router.put(
     investasiController.update
 );
 router.get("/", investasiController.findAll);
-// router.get("/:id", investasiController.findOne);
 router.get(
     "/:investasiId/transaksi",
     investasiController.getAllTransactionByInvestasiId
@@ -57,12 +51,8 @@ router.get(
     "/:investasiId/investor",
     investasiController.getAllInvestorByInvestasiId
 );
-// router.get(
-//     "/:investasiId/investor/:id",
-//     investasiController.getOneTransactionByInvestasiId
-// );
 router.get("/:slug", investasiController.findDataBySlug);
-router.delete("/:id", investasiController.delete);
+router.delete("/:id", authenticateToken("admin"), investasiController.delete);
 router.get("/image/:gambar", investasiController.getImageByName);
 router.get("/filter/status", investasiController.getInvestasiByStatus);
 

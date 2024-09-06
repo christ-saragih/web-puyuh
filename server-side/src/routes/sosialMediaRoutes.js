@@ -12,9 +12,13 @@ const {
     updateSchema,
 } = require("../validators/sosialMediaValidation");
 
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 router.post(
     "/",
     upload.single("icon"),
+    authenticateToken("admin"),
     validateUploadFile({
         fieldName: "icon",
     }),
@@ -23,6 +27,7 @@ router.post(
 );
 router.put(
     "/:id",
+    authenticateToken("admin"),
     upload.single("icon"),
     validateUploadFile({
         fieldName: "icon",
@@ -33,7 +38,7 @@ router.put(
 );
 router.get("/", sosialMediaController.findAll);
 router.get("/:id", sosialMediaController.findOne);
-router.delete("/:id", sosialMediaController.delete);
+router.delete("/:id", authenticateToken("admin"), sosialMediaController.delete);
 router.get("/image/:gambar", sosialMediaController.getImageByName);
 
 module.exports = router;

@@ -13,8 +13,12 @@ const {
     updateSchema,
 } = require("../validators/artikelValidation");
 
+// Auth
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 router.post(
     "/",
+    authenticateToken("admin"),
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
@@ -24,6 +28,7 @@ router.post(
 );
 router.put(
     "/:id",
+    authenticateToken("admin"),
     upload.single("gambar"),
     validateUploadFile({
         fieldName: "gambar",
@@ -33,9 +38,8 @@ router.put(
     artikelController.update
 );
 router.get("/", artikelController.findAll);
-// router.get("/:id", artikelController.findOne);
 router.get("/:slug", artikelController.findDataBySlug);
-router.delete("/:id", artikelController.delete);
+router.delete("/:id", authenticateToken("admin"), artikelController.delete);
 router.get("/image/:gambar", artikelController.getImageByName);
 router.get("/filter/tag", artikelController.getArticleByTag);
 
