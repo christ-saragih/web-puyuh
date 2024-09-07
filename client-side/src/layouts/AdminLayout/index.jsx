@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import MobileSidebar from "./MobileSidebar"; // Import MobileSidebar component
 
 const AdminLayout = (props) => {
     const { title, children } = props;
@@ -8,7 +9,17 @@ const AdminLayout = (props) => {
 
     return (
         <div className="bg-white w-vw h-full overflow-hidden py-5 pe-6">
-            <Sidebar isHovered={isHovered} setIsHovered={setIsHovered} />
+            {/* Sidebar for Desktop */}
+            <div className="hidden lg:block">
+                <Sidebar isHovered={isHovered} setIsHovered={setIsHovered} />
+            </div>
+
+            {/* MobileSidebar for Mobile */}
+            <div className="lg:hidden">
+                <MobileSidebar isHovered={isHovered} setIsHovered={setIsHovered} />
+            </div>
+
+            {/* Main content section */}
             <div
                 className={`transition-all duration-300 ease-in-out ${
                     isHovered ? "md:ml-[19rem]" : "md:ml-32"
