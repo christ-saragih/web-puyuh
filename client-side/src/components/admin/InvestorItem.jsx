@@ -29,10 +29,16 @@ const InvestorItem = (props) => {
         </h4>
         <p className="text-gray-600 mb-2">{kategori_investor}</p>
         <button
-          className="font-medium text-start w-fit text-blue-700 hover:text-blue-800 hover:underline"
+          className="font-medium text-start me-2 w-fit text-blue-700 hover:text-blue-800 hover:underline"
           onClick={() => openModal("detail_investor", { id })}
         >
-          Lihat Profil
+          Profil
+        </button>
+        <button
+          className="font-medium text-start w-fit text-blue-700 hover:text-blue-800 hover:underline"
+          onClick={() => openModal("view_transactions", { id })}
+        >
+          Riwayat
         </button>
       </div>
     </div>

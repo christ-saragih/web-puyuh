@@ -1,7 +1,7 @@
-import { axiosInstance } from "../lib/axios";
+import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const getArticles = (callback) => {
-  axiosInstance
+  apiAdmin
     .get("/artikel")
     .then((res) => {
       callback(res.data.data.reverse());
@@ -12,7 +12,7 @@ export const getArticles = (callback) => {
 };
 
 export const getArticleBySlug = (slug, callback) => {
-  axiosInstance
+  apiAdmin
     .get(`/artikel/${slug}`)
     .then((res) => {
       callback(res.data.data);
@@ -23,7 +23,7 @@ export const getArticleBySlug = (slug, callback) => {
 };
 
 export const addArticle = (data, callback) => {
-  axiosInstance
+  apiAdmin
     .post("/artikel", data)
     .then((res) => {
       callback(res.data.data);
@@ -34,7 +34,7 @@ export const addArticle = (data, callback) => {
 };
 
 export const updateArticle = (id, data, callback) => {
-  axiosInstance
+  apiAdmin
     .put(`/artikel/${id}`, data)
     .then((res) => {
       callback(res.data.data);
@@ -45,7 +45,7 @@ export const updateArticle = (id, data, callback) => {
 };
 
 export const deleteArticle = (id, callback) => {
-  axiosInstance
+  apiAdmin
     .delete(`/artikel/${id}`)
     .then(() => {
       callback();

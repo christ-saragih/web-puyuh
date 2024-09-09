@@ -257,9 +257,6 @@ const AdminArtikel = () => {
     setSelectedArticle(null);
   };
 
-  // buat size modal delete menjadi lebih kecil
-  const modalSize = modalType === "delete_article" ? "small" : "large";
-
   // search artikel
   useEffect(() => {
     if (search !== "") {
@@ -317,8 +314,7 @@ const AdminArtikel = () => {
                 <Modal
                   open={isModalOpen}
                   onClose={closeModal}
-                  size={modalSize}
-                  className={"w-[35rem]"}
+                  size={modalType === "delete_article_tag" ? "sm" : ""}
                 >
                   {modalType === "add_article_tag" && (
                     <>
@@ -465,7 +461,11 @@ const AdminArtikel = () => {
                   <p>Tambah</p>
                 </button>
 
-                <Modal open={isModalOpen} onClose={closeModal} size={modalSize}>
+                <Modal
+                  open={isModalOpen}
+                  onClose={closeModal}
+                  size={modalType === "delete_article" ? "sm" : ""}
+                >
                   {modalType === "detail_article" && (
                     <>
                       <Modal.Header onClose={closeModal} />

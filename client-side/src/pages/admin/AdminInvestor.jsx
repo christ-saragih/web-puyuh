@@ -12,7 +12,16 @@ import {
 } from "../../services/investor.service.js";
 import { useEffect, useState } from "react";
 import { Tabs } from "flowbite-react";
-import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
+import {
+  PiCalendarCheck,
+  PiCheck,
+  PiNotePencilBold,
+  PiTrashBold,
+  PiUserBold,
+  PiUsersThreeBold,
+} from "react-icons/pi";
+import ActionButton from "../../components/common/ActionButton.jsx";
+import { LuCheck, LuX } from "react-icons/lu";
 
 const AdminInvestor = () => {
   const [investors, setInvestors] = useState([]);
@@ -27,7 +36,7 @@ const AdminInvestor = () => {
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("");
+  const [modalType, setModalType] = useState(null);
 
   // modal logic
   const openModal = (type, investor = null) => {
@@ -82,7 +91,7 @@ const AdminInvestor = () => {
         </div>
 
         {/* START: Modal detail profil investor */}
-        <Modal open={isModalOpen} onClose={closeModal}>
+        <Modal open={isModalOpen} onClose={closeModal} size={modalType === "view_transactions" ? "lg" : ""}>
           {modalType === "detail_investor" && (
             <>
               <Modal.Header onClose={closeModal}>
@@ -287,6 +296,79 @@ const AdminInvestor = () => {
                     />
                   </Tabs.Item>
                 </Tabs>
+              </Modal.Body>
+
+              <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
+            </>
+          )}
+
+          {modalType === "view_transactions" && (
+            <>
+              <Modal.Header
+                title={"Riwayat Transaksi Bennefit Christy Saragih"}
+                onClose={closeModal}
+              ></Modal.Header>
+
+              <Modal.Body className="md:pb-5">
+                <table className="w-full text-base text-left ">
+                  <thead className="bg-white text-sm text-gray-800 uppercase border-b-2">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        No
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Judul
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Jumlah Investasi
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Metode Pembayaran
+                      </th>
+
+                      <th scope="col" className="px-6 py-3">
+                        Status
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Tanggal
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <tr
+                        key={i}
+                        className="bg-white font-medium text-gray-600 border-b hover:bg-gray-50"
+                      >
+                        <td
+                          scope="row"
+                          className="px-6 py-4 whitespace-nowrap "
+                        >
+                          {i}
+                        </td>
+                        <td className="px-6 py-4">Kloter {i}</td>
+                        <td className="px-6 py-4">Rp 5.800.000</td>
+                        <td className="px-6 py-4">
+                          <p>BCA</p>
+                          <p className="text-sm text-gray-500 font-normal">
+                            **** **** **** 6969
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+                            <LuCheck className="-ms-[3px] w-4 h-4" />
+                            <p className="font-medium">Sukses</p>
+                          </div>
+                          {/* <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+                      <LuX className="-ms-[3px] w-4 h-4" />
+                      <p className="font-medium">Gagal</p>
+                    </div> */}
+                        </td>
+                        <td className="px-6 py-4">8 September 2024</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </Modal.Body>
 
               <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />

@@ -3,7 +3,22 @@ import Button from "./Button";
 const Modal = (props) => {
   const { open, onClose, children, className, size } = props;
 
-  const sizeClass = size === "small" ? "w-[29rem]" : "w-[52rem]";
+  let sizeClass;
+
+  switch (size) {
+    case "sm":
+      sizeClass = "w-[42rem]";
+      break;
+    case "md":
+      sizeClass = "w-[48rem]";
+      break;
+    case "lg":
+      sizeClass = "w-[64rem]";
+      break;
+    default:
+      sizeClass = "w-[52rem]";
+      break;
+  }
 
   return (
     <div
@@ -16,7 +31,7 @@ const Modal = (props) => {
       <div
         // kalo klik modalnya tidak ke close
         onClick={(e) => e.stopPropagation()}
-        className={`relative p-4 w-[52rem] max-w-4xl max-h-full transition-all ease-in-out duration-300 ${
+        className={`relative p-4 w-[52rem]  max-h-full transition-all ease-in-out duration-300 ${
           open ? "scale-100 opacity-100" : "scale-125 opacity-0"
         } ${sizeClass} ${className}`}
       >

@@ -4,6 +4,7 @@ import InputSearch from "../../components/common/InputSearch";
 import BatchList from "../../components/guest/BatchList";
 import GuestLayout from "../../layouts/GuestLayout";
 import { getBatchs } from "../../services/batch.service";
+import InvestorLayout from "../../layouts/InvestorLayout";
 
 const InvestorInvestasi = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -16,15 +17,10 @@ const InvestorInvestasi = () => {
     }, []);
 
     return (
-        <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
-            <SidebarInvestor
-                isHovered={isHovered}
-                setIsHovered={setIsHovered}
-            />
+        <div className="bg-white w-dvw min-h-screen overflow-y-auto py-5 pe-6">
+        <InvestorLayout>
             <div
-                className={`px-8 pb-5 transition-all duration-300 ease-in-out ${
-                    isHovered ? "md:ml-60" : "md:ml-28"
-                }`}
+                className="px-16 pb-5 transition-all duration-300 ease-in-out"
             >
                 <GuestLayout className="mt-28 lg:mt-2">
                     <h2 className="font-bold text-4xl mb-6">
@@ -67,6 +63,7 @@ const InvestorInvestasi = () => {
                     <BatchList batchs={batchs} />
                 </GuestLayout>
             </div>
+            </InvestorLayout>
         </div>
     );
 };

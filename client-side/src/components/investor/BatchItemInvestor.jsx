@@ -59,7 +59,7 @@ const BatchItemInvestor = ({
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden h-[30rem] flex flex-col">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden h-[25rem] flex flex-col">
       {/* Tetapkan tinggi tetap dan gunakan flexbox */}
       <BatchItemImage gambar={gambar} className="h-[12rem] w-full object-cover" />
       <BatchItemBody className="flex flex-col justify-between p-4">
