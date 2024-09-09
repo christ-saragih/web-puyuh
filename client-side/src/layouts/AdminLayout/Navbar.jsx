@@ -4,13 +4,13 @@ import { useEffect, useState, useContext } from "react";
 import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { apiAdmin } from "../../hooks/useAxiosConfig";
-import { AuthAdminContext } from "../../contexts/AuthAdminProvider";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 // import { useLoginAdmin } from "../../hooks/useLoginAdmin";
 // import { logoutAdmin } from "../../services/authAdmin.service";
 
 const Navbar = (props) => {
-    const { logout } = useContext(AuthAdminContext);
+    const { logout } = useContext(AuthContext);
     const { title } = props;
     const [admin, setAdmin] = useState(null); // State untuk menyimpan data admin
     const [loading, setLoading] = useState(true); // State untuk loading

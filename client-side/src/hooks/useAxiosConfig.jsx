@@ -121,3 +121,80 @@ apiInvestor.interceptors.response.use(
 );
 
 export { apiAdmin, apiInvestor };
+
+// import axios from "axios";
+
+// // Instance Axios untuk Admin
+// const apiAdmin = axios.create({
+//     baseURL: "http://localhost:3000/api",
+//     withCredentials: true,
+// });
+
+// apiAdmin.interceptors.response.use(
+//     (response) => response,
+//     async (error) => {
+//         const originalRequest = error.config;
+
+//         if (error.response?.status === 403 && !originalRequest._retry) {
+//             originalRequest._retry = true;
+
+//             try {
+//                 // Coba refresh token admin
+//                 await apiAdmin.post("/auth/admin/refresh-token");
+//                 // Coba ulangi request asli
+//                 return apiAdmin(originalRequest);
+//             } catch (refreshError) {
+//                 window.location.href = "/admin/masuk"; // Redirect ke halaman login admin
+//                 return Promise.reject(refreshError);
+//             }
+//         }
+
+//         return Promise.reject(error);
+//     }
+// );
+
+// // Instance Axios untuk Investor
+// const apiInvestor = axios.create({
+//     baseURL: "http://localhost:3000/api",
+//     withCredentials: true,
+// });
+
+// apiInvestor.interceptors.response.use(
+//     (response) => response,
+//     async (error) => {
+//         const originalRequest = error.config;
+
+//         if (error.response?.status === 403 && !originalRequest._retry) {
+//             originalRequest._retry = true;
+
+//             try {
+//                 // Coba refresh token investor
+//                 await apiInvestor.post("/auth/investor/refresh-token");
+//                 // Coba ulangi request asli
+//                 return apiInvestor(originalRequest);
+//             } catch (refreshError) {
+//                 window.location.href = "/masuk"; // Redirect ke halaman login investor
+//                 return Promise.reject(refreshError);
+//             }
+//         }
+
+//         return Promise.reject(error);
+//     }
+// );
+
+// // export { apiAdmin, apiInvestor };
+// import axios from "axios";
+
+// // Instance Axios untuk Admin
+// const apiAdmin = axios.create({
+//     baseURL: "http://localhost:3000/api",
+//     withCredentials: true,
+// });
+
+// // Instance Axios untuk Investor
+// const apiInvestor = axios.create({
+//     baseURL: "http://localhost:3000/api",
+//     withCredentials: true,
+// });
+
+// export { apiAdmin, apiInvestor };

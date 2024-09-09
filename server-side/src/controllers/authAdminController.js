@@ -121,7 +121,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "Strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 1 * 24 * 60 * 60 * 1000,
         });
 
         res.json({ message: "Login Berhasil", admin, accessToken });

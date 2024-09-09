@@ -7,11 +7,11 @@ import { IoLogOutOutline } from "react-icons/io5";
 import Logo from "../../assets/images/logo.svg";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { AuthInvestorContext } from "../../contexts/AuthInvestorProvider";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const SidebarInvestor = ({ isHovered, setIsHovered }) => {
     const navigate = useNavigate();
-    const { logout } = useContext(AuthInvestorContext);
+    const { logout } = useContext(AuthContext);
 
     const Logout = async () => {
         try {

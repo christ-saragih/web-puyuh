@@ -48,6 +48,8 @@ import InvestorInvestasiDetail from "./pages/investor/InvestorInvestasiDetail";
 import InvestorTransaksi from "./pages/investor/InvestorTransaksi";
 import Verifikasi from "./pages/investor/Verifikasi";
 import PublicRouteAdmin from "./components/admin/PublicRouteAdmin";
+import ProtectedRoute from "./components/protectedRoute";
+import { AuthProvider } from "./contexts/AuthProvider";
 // END: Investor
 
 const router = createBrowserRouter([
@@ -87,11 +89,11 @@ const router = createBrowserRouter([
     {
         path: "/masuk",
         element: (
-            <AuthInvestorProvider>
-                <PublicRouteInvestor>
-                    <Masuk />
-                </PublicRouteInvestor>
-            </AuthInvestorProvider>
+            <AuthProvider>
+                {/* <PublicRouteInvestor> */}
+                <Masuk />
+                {/* </PublicRouteInvestor> */}
+            </AuthProvider>
         ),
     },
     {
@@ -105,31 +107,31 @@ const router = createBrowserRouter([
     {
         path: "/investor",
         element: (
-            <AuthInvestorProvider>
-                <ProtectedRouteInvestor>
+            <AuthProvider>
+                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
                     <InvestorDashboard />
-                </ProtectedRouteInvestor>
-            </AuthInvestorProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/investor/profil",
         element: (
-            <AuthInvestorProvider>
-                <ProtectedRouteInvestor>
+            <AuthProvider>
+                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
                     <InvestorProfil />
-                </ProtectedRouteInvestor>
-            </AuthInvestorProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/investor/investasi",
         element: (
-            <AuthInvestorProvider>
-                <ProtectedRouteInvestor>
+            <AuthProvider>
+                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
                     <InvestorInvestasi />
-                </ProtectedRouteInvestor>
-            </AuthInvestorProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
@@ -139,11 +141,11 @@ const router = createBrowserRouter([
     {
         path: "/investor/transaksi",
         element: (
-            <AuthInvestorProvider>
-                <ProtectedRouteInvestor>
+            <AuthProvider>
+                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
                     <InvestorTransaksi />
-                </ProtectedRouteInvestor>
-            </AuthInvestorProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
@@ -156,11 +158,11 @@ const router = createBrowserRouter([
     {
         path: "/admin/masuk",
         element: (
-            <AuthAdminProvider>
-                <PublicRouteAdmin>
-                    <AdminMasuk />
-                </PublicRouteAdmin>
-            </AuthAdminProvider>
+            <AuthProvider>
+                {/* <PublicRouteAdmin> */}
+                <AdminMasuk />
+                {/* </PublicRouteAdmin> */}
+            </AuthProvider>
         ),
     },
     {
@@ -170,41 +172,53 @@ const router = createBrowserRouter([
     {
         path: "/admin",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <AdminDashboard />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/halaman-depan/utama",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <Utama />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/halaman-depan/profil",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <Profil />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/halaman-depan/kontak",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <Kontak />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
@@ -220,73 +234,94 @@ const router = createBrowserRouter([
     {
         path: "/admin/halaman-depan/dokumentasi",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <Dokumentasi />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/halaman-depan/dokumen",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <Dokumen />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/halaman-depan/faq",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <FaqAdmin />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
 
     {
         path: "/admin/artikel",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <AdminArtikel />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
 
     {
         path: "/admin/investasi",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <AdminInvestasi />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/investor",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <AdminInvestor />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
         path: "/admin/halaman-depan/profil",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <Profil />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     // admin end
