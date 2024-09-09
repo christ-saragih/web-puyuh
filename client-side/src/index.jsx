@@ -65,7 +65,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/investasi/:slug",
-        element: <DetailInvestasi />,
+        element: (
+            <AuthProvider>
+                <DetailInvestasi />
+            </AuthProvider>
+        ),
     },
     {
         path: "/artikel",
@@ -224,11 +228,14 @@ const router = createBrowserRouter([
     {
         path: "/admin/halaman-depan/media-sosial",
         element: (
-            <AuthAdminProvider>
-                <ProtectedRouteAdmin>
+            <AuthProvider>
+                <ProtectedRoute
+                    requiredRole="admin"
+                    redirectPath="/admin/masuk"
+                >
                     <MediaSosial />
-                </ProtectedRouteAdmin>
-            </AuthAdminProvider>
+                </ProtectedRoute>
+            </AuthProvider>
         ),
     },
     {
