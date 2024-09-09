@@ -7,6 +7,7 @@ import { getFounders, addFounder, updateFounder, deleteFounder } from "../../../
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
+import { apiAdmin } from "../../../hooks/useAxiosConfig";
 
 const Profil = () => {
   const [formData, setFormData] = useState({
@@ -343,28 +344,42 @@ const Profil = () => {
     form.append("judul", formData.judul);
     form.append("deskripsi", formData.deskripsi_tentang_kami);
     if (formData.image_background) form.append("image_background", formData.image_background);
+
+    try {
+        // Menggunakan instance apiAdmin untuk mengirimkan request
+        await apiAdmin.post("/tentang-kami", form, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        // Reset edit mode after save
+        setEditMode((prevMode) => ({ ...prevMode, tentangKami: false }));
+    } catch (error) {
+        console.error("Error saving Tentang Kami:", error);
+    }
+};
   
-    await handleSubmit("http://localhost:3000/api/tentang-kami", form, {
-      "Content-Type": "multipart/form-data",
-    });
-  
-    // Reset edit mode after save
-    setEditMode((prevMode) => ({ ...prevMode, tentangKami: false }));
-  };
-  
-  const handleSaveSejarah = async () => {
-    const form = new FormData();
-    console.log("Data sebelum dikirim:", sejarahData); 
-    form.append("judul", sejarahData.judul_sejarah);
-    form.append("deskripsi", sejarahData.deskripsi_sejarah);
-  
-    await handleSubmit("http://localhost:3000/api/sejarah", form, {
-      "Content-Type": "application/json",
-    });
-  
-    // Reset edit mode after save
-    setEditMode((prevMode) => ({ ...prevMode, sejarah: false }));
-  };
+const handleSaveSejarah = async () => {
+  const form = new FormData();
+  console.log("Data sebelum dikirim:", sejarahData); 
+  form.append("judul", sejarahData.judul_sejarah);
+  form.append("deskripsi", sejarahData.deskripsi_sejarah);
+
+  try {
+      // Menggunakan instance apiAdmin untuk mengirimkan request
+      await apiAdmin.post("/sejarah", form, {
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      // Reset edit mode after save
+      setEditMode((prevMode) => ({ ...prevMode, sejarah: false }));
+  } catch (error) {
+      console.error("Error saving Sejarah:", error);
+  }
+};
   
 
   return (
