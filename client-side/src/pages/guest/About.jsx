@@ -114,7 +114,7 @@ const About = () => {
               founder.data.map((founder) => (
                 <div
                   key={founder.id}
-                  className="flex flex-col md:flex-row justify-center gap-4 py-4 px-8 lg:gap-8 lg:py-12 lg:px-16"
+                  className="flex flex-col md:flex-row justify-center gap-4 py-4 px-6 lg:gap-8 lg:py-12 lg:px-16"
                 >
                   <div className="flex flex-col items-center lg:items-start">
                     <div className="w-[120px] h-[120px] lg:w-[150px] lg:h-[150px] rounded-full  overflow-hidden mt-2">
