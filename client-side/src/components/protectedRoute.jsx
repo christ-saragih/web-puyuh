@@ -19,11 +19,19 @@ const ProtectedRoute = ({ children, requiredRole, redirectPath }) => {
                     navigate("/admin/masuk");
                 }
             } else {
+                // // Jika user ada dan role sesuai, tidak ada redirect
+                // if (role === "admin") {
+                //     navigate("/admin");
+                // } else if (role === "investor") {
+                //     navigate("/investor");
+                // }
                 // Jika user ada dan role sesuai, tidak ada redirect
-                if (role === "admin") {
+                if (role === "admin" && requiredRole !== "admin") {
                     navigate("/admin");
-                } else if (role === "investor") {
+                } else if (role === "investor" && requiredRole !== "investor") {
                     navigate("/investor");
+                } else if (role !== requiredRole) {
+                    navigate(redirectPath); // Redirect jika role tidak sesuai
                 }
             }
         }

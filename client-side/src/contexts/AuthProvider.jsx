@@ -116,52 +116,113 @@ export const AuthProvider = ({ children }) => {
     //     checkUser();
     // }, []);
 
+    // useEffect(() => {
+    //     const checkUser = async () => {
+    //         try {
+    //             // Cek admin terlebih dahulu
+    //             const resAdmin = await axios.get(
+    //                 "http://localhost:3000/api/auth/admin/protected",
+    //                 { withCredentials: true }
+    //             );
+    //             setUser(resAdmin.data.admin);
+
+    //             const admin = resAdmin.data.admin;
+
+    //             if (admin?.role === "admin") {
+    //                 setRole(admin.role);
+    //             } else {
+    //                 // Jika bukan admin, cek investor
+    //                 const resInvestor = await axios.get(
+    //                     "http://localhost:3000/api/auth/investor/protected",
+    //                     { withCredentials: true }
+    //                 );
+    //                 setUser(resInvestor.data.investor);
+    //                 const investor = resInvestor.data.investor;
+
+    //                 if (investor?.role === "investor") {
+    //                     setRole(investor.role);
+    //                 } else {
+    //                     setRole(null);
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             // Jika terjadi error dengan status 403 pada admin, lanjutkan cek investor
+    //             if (error.response?.status === 403) {
+    //                 try {
+    //                     const resInvestor = await axios.get(
+    //                         "http://localhost:3000/api/auth/investor/protected",
+    //                         { withCredentials: true }
+    //                     );
+    //                     setUser(resInvestor.data.investor);
+    //                     const investor = resInvestor.data.investor;
+
+    //                     if (investor?.role === "investor") {
+    //                         setRole(investor.role);
+    //                     } else {
+    //                         setRole(null);
+    //                     }
+    //                 } catch (investorError) {
+    //                     setUser(null);
+    //                     setRole(null);
+    //                 }
+    //             } else {
+    //                 setUser(null);
+    //                 setRole(null);
+    //             }
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     checkUser();
+    // }, []);
+
     useEffect(() => {
         const checkUser = async () => {
             try {
-                // Cek admin terlebih dahulu
-                const resAdmin = await axios.get(
-                    "http://localhost:3000/api/auth/admin/protected",
+                // Cek investor terlebih dahulu
+                const resInvestor = await axios.get(
+                    "http://localhost:3000/api/auth/investor/protected",
                     { withCredentials: true }
                 );
-                setUser(resAdmin.data.admin);
+                setUser(resInvestor.data.investor);
 
-                const admin = resAdmin.data.admin;
+                const investor = resInvestor.data.investor;
 
-                if (admin?.role === "admin") {
-                    setRole(admin.role);
+                if (investor?.role === "investor") {
+                    setRole(investor.role);
                 } else {
-                    // Jika bukan admin, cek investor
-                    const resInvestor = await axios.get(
-                        "http://localhost:3000/api/auth/investor/protected",
+                    // Jika bukan investor, cek admin
+                    const resAdmin = await axios.get(
+                        "http://localhost:3000/api/auth/admin/protected",
                         { withCredentials: true }
                     );
-                    setUser(resInvestor.data.investor);
-                    const investor = resInvestor.data.investor;
+                    setUser(resAdmin.data.admin);
+                    const admin = resAdmin.data.admin;
 
-                    if (investor?.role === "investor") {
-                        setRole(investor.role);
+                    if (admin?.role === "admin") {
+                        setRole(admin.role);
                     } else {
                         setRole(null);
                     }
                 }
             } catch (error) {
-                // Jika terjadi error dengan status 403 pada admin, lanjutkan cek investor
+                // Jika terjadi error dengan status 403 pada investor, lanjutkan cek admin
                 if (error.response?.status === 403) {
                     try {
-                        const resInvestor = await axios.get(
-                            "http://localhost:3000/api/auth/investor/protected",
+                        const resAdmin = await axios.get(
+                            "http://localhost:3000/api/auth/admin/protected",
                             { withCredentials: true }
                         );
-                        setUser(resInvestor.data.investor);
-                        const investor = resInvestor.data.investor;
+                        setUser(resAdmin.data.admin);
+                        const admin = resAdmin.data.admin;
 
-                        if (investor?.role === "investor") {
-                            setRole(investor.role);
+                        if (admin?.role === "admin") {
+                            setRole(admin.role);
                         } else {
                             setRole(null);
                         }
-                    } catch (investorError) {
+                    } catch (adminError) {
                         setUser(null);
                         setRole(null);
                     }
