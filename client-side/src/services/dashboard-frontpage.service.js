@@ -1,7 +1,7 @@
-import { axiosInstance } from "../lib/axios";
+import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const getDashboardFrontpage = (callback) => {
-  axiosInstance
+  apiAdmin
     .get("/beranda")
     .then((res) => {
       callback(res.data.data);
@@ -12,7 +12,7 @@ export const getDashboardFrontpage = (callback) => {
 };
 
 export const saveDashboardFrontpage = (data, callback) => {
-  axiosInstance
+  apiAdmin
     .post("/beranda", data)
     .then((res) => {
       callback(res.data.data);
