@@ -6,6 +6,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { apiInvestor } from "../../hooks/useAxiosConfig";
+import InvestorLayout from "../../layouts/InvestorLayout";
 
 const InvestorProfil = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -28,11 +29,8 @@ const InvestorProfil = () => {
     };
 
     return (
-        <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
-            <SidebarInvestor
-                isHovered={isHovered}
-                setIsHovered={setIsHovered}
-            />
+        <div className="bg-white w-dvw min-h-screen overflow-y-auto py-5 pe-6">
+            <InvestorLayout>
             <div
                 className={`px-8 pb-5 transition-all duration-300 ease-in-out ${
                     isHovered ? "md:ml-60" : "md:ml-28"
@@ -70,6 +68,7 @@ const InvestorProfil = () => {
                     </div>
                 </div>
             </div>
+            </InvestorLayout>
         </div>
     );
 };

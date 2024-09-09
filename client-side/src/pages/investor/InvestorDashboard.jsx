@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import SidebarInvestor from "../../components/common/SidebarInvestor";
 import CalendarInvestor from "../../components/common/CalendarInvestor";
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
@@ -8,12 +8,12 @@ import GrowingMoney from "../../assets/images/Growing Money.svg";
 import { MdNotificationsActive } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-// import useAuthInvestor from "../../hooks/useAuthInvestor";
 import { apiInvestor } from "../../hooks/useAxiosConfig";
 import { formatRupiah } from "../../utils/formatRupiah";
 import { getTransaksi } from "../../services/transaksi.service";
 import BatchListInvestor from "../../components/investor/BatchListInvestor";
 import { getBatchs } from "../../services/batch.service";
+import InvestorLayout from "../../layouts/InvestorLayout";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -40,7 +40,6 @@ const InvestorDashboard = () => {
     return total + item.total_investasi;
   }, 0);
 
-  // Fungsi untuk memanggil API dan mengambil data investor
   useEffect(() => {
     const fetchInvestorData = async () => {
       try {
@@ -64,132 +63,155 @@ const InvestorDashboard = () => {
   }
 
   return (
-    <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
-      <SidebarInvestor isHovered={isHovered} setIsHovered={setIsHovered} />
-      <div
-        className={`px-8 pb-5 transition-all duration-300 ease-in-out ${
-          isHovered ? "md:ml-60" : "md:ml-28"
-        }`}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div className="md:col-span-2 space-y-4">
-            <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center px-10 pt-3">
-              <div className="w-[70%]">
-                <h1 className="text-[2.5rem] font-bold mb-3 text-[#000] leading-none">
-                  Halo, {investor?.username}
-                </h1>
-                <p className="text-[#000]">Senang bertemu dengan Anda 👋</p>
-              </div>
+    <div className="bg-white w-dvw min-h-screen overflow-y-auto md:py-5 py-14 pe-6 relative">
+      <InvestorLayout>
+        {/* Sidebar untuk tampilan mobile */}
+        <div className="fixed top-0 left-0 bottom-0 z-50 md:hidden">
+        </div>
 
-              <div className="w-[30%]">
-                <img src={WavingIllustration} alt="Waving Illustration" />
-              </div>
-            </div>
-
-            <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center p-4">
-              <div className="flex flex-col">
-                <h1 className="text-xl font-bold mb-3 text-[#000]">
-                  Total Investasi
-                </h1>
-                <div className="flex items-center ml-48">
-                  <img
-                    src={GrowingMoney}
-                    alt="Growing Money"
-                    className="w-36 h-36"
-                  />
-                  <h1 className="text-3xl font-bold ml-4 text-[#000]">
-                    {formatRupiah(totalInvestasi)}
-                  </h1>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center p-4">
-              <div className="flex flex-col">
-                <h1 className="text-xl font-bold mb-3 text-[#000]">
-                  Bagi Hasil
-                </h1>
-                <div className="flex space-x-4">
-                  <CardBagiHasil
-                    batch="Batch 1"
-                    profit="Rp2.000.000"
-                    percentage="2.7%"
-                  />
-                  <CardBagiHasil
-                    batch="Batch 1"
-                    profit="Rp2.000.000"
-                    percentage="2.7%"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="w-[150%] rounded-xl bg-[#F5F5F7] p-4 relative">
-              <h1 className="text-xl font-bold mb-3 text-[#000]">
-                Investasi yang Sedang Berlangsung
-              </h1>
-
-              <div className="relative flex items-center">
-                {/* Batch List dengan scroll horizontal */}
-                <div className="flex overflow-x-auto gap-10 w-full scrollbar-hide">
-                  <BatchListInvestor batchs={batchs} />
-                </div>
-              </div>
-            </div>
+        {/* Header untuk Mobile */}
+        <div className="bottom-0 left-0 right-0 bg-white z-40 md:hidden flex items-center justify-between p-4">
+          <form className="flex items-center w-full">
+            <input
+              type="search"
+              className="block w-full p-2 pl-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
+              placeholder="Cari"
+            />
+          </form>
+          <div className="flex items-center space-x-4">
+            <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" />
+            <CgProfile className="w-8 h-8" />
           </div>
+        </div>
 
-          <div className="md:col-span-1 relative">
-            <div className="flex items-center gap-5">
-              <form className="w-[63%]">
-                <label
-                  htmlFor="default-search"
-                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                >
-                  Search
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
+        {/* Konten utama */}
+        <div className="md:pt-0">
+          <div
+            className={`px-4 pb-5 transition-all duration-300 ease-in-out ${
+              isHovered ? "md:ml-60" : "md:ml-28"
+            }`}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              <div className="md:col-span-2 space-y-7">
+                {/* Welcome Section */}
+                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center px-4 py-3 md:px-10">
+                  <div className="w-full md:w-[70%] mb-4 md:mb-0">
+                    <h1 className="text-2xl md:text-[2.5rem] font-bold mb-2 md:mb-3 text-[#000] leading-none">
+                      Halo, {investor?.username}
+                    </h1>
+                    <p className="text-[#000]">Senang bertemu dengan Anda 👋</p>
                   </div>
-                  <input
-                    type="search"
-                    id="default-search"
-                    className="block w-full p-4 ps-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
-                    placeholder="Cari"
-                  />
+
+                  <div className="w-full md:w-[30%]">
+                    <img
+                      src={WavingIllustration}
+                      alt="Waving Illustration"
+                      className="w-32 md:w-auto mx-auto"
+                    />
+                  </div>
                 </div>
-              </form>
 
-              <div className="">
-                <MdNotificationsActive className="w-10 h-10 text-gray-500 dark:text-gray-400" />
+                {/* Total Investasi Section */}
+                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8">
+                  <div className="flex flex-col w-full">
+                    <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
+                      Total Investasi
+                    </h1>
+                    <div className="flex items-center justify-center md:justify-start space-x-4">
+                      <img
+                        src={GrowingMoney}
+                        alt="Growing Money"
+                        className="w-24 h-24 md:w-36 md:h-36"
+                      />
+                      <h1 className="text-2xl md:text-3xl font-bold ml-2 text-[#000]">
+                        {formatRupiah(totalInvestasi)}
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bagi Hasil Section */}
+                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8">
+                  <div className="flex flex-col w-full">
+                    <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
+                      Bagi Hasil
+                    </h1>
+                    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 ml-1">
+                      <CardBagiHasil
+                        batch="Batch 1"
+                        profit="Rp2.000.000"
+                        percentage="2.7%"
+                      />
+                      <CardBagiHasil
+                        batch="Batch 2"
+                        profit="Rp1.500.000"
+                        percentage="2.5%"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Investasi yang Sedang Berlangsung Section */}
+                <div className="w-[100%] ml-3 md:w-[151%] md:rounded-xl rounded-xl bg-[#F5F5F7] p-4 md:p-8 relative">
+                  <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
+                    Investasi yang Sedang Berlangsung
+                  </h1>
+
+                  <div className="relative flex items-center">
+                    <div className="flex overflow-x-auto gap-4 md:gap-10 w-full scrollbar-hide">
+                      <BatchListInvestor batchs={batchs} />
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <CgProfile className="w-10 h-10" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="w-full h-[10rem]">
-                <CalendarInvestor />
+              {/* Calendar and Notification Section */}
+              <div className="md:col-span-1 relative">
+                <div className="hidden md:flex items-center justify-between gap-5 mb-4">
+                  <form className="w-full md:w-[63%]">
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+                        <svg
+                          className="w-4 h-4 text-gray-500"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                          />
+                        </svg>
+                      </div>
+                      <input
+                        type="search"
+                        className="block w-full p-2 pl-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
+                        placeholder="Cari"
+                      />
+                    </div>
+                  </form>
+
+                  <MdNotificationsActive className="w-8 h-8 text-gray-500" />
+
+                  <CgProfile className="w-8 h-8" />
+                </div>
+                <div className="relative w-full h-100 ml-3 md:h-auto md:overflow-hidden overflow-x-scroll">
+                  <div className="w-[330px] h-[200px] md:w-full md:h-full">
+                    <CalendarInvestor />
+                  </div>
+                </div>
+                <p className="bg-[#572618] absolute bottom-0 right-7 text-xs text-zinc-50 rounded-xl md:hidden pr-3 pl-3">
+                    Gulir untuk melihat keseluruhan kalender 
+                  </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </InvestorLayout>
     </div>
   );
 };

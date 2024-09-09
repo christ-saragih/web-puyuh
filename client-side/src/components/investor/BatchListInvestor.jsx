@@ -2,7 +2,7 @@ import BatchItemInvestor from "./BatchItemInvestor";
 
 const BatchListInvestor = ({ batchs }) => {
   return (
-    <div className="overflow-x-auto w-full">
+    <div className="overflow-x-auto w-full md:w-full">
       <div className="flex gap-x-6">
         {Array.isArray(batchs) && batchs.length > 0 ? (
           batchs.filter(batch => batch.status === 'proses').map((batch) => (

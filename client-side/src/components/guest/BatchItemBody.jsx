@@ -23,7 +23,7 @@ const BatchItemTitle = (props) => {
       </h5>
       <p className="mb-4 font-normal text-gray-700">{penerbit}</p>
       <div
-        className="absolute top-0 right-0 font-semibold text-white text-center py-1 w-20 rounded-3xl"
+        className="absolute top-0 right-2 md:right-0 font-semibold text-white text-center py-1 w-20 rounded-3xl"
         style={{ backgroundColor: statusInfo }}
       >
         {status}
@@ -40,7 +40,7 @@ const BatchItemProgressBar = (props) => {
 
   return (
     <>
-      <div className="w-full bg-gray-200 rounded-full mb-1">
+      <div className="w-[80%] md:w-full bg-gray-200 rounded-full mb-1">
         <div
           className="text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
           style={{
