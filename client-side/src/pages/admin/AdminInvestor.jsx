@@ -36,7 +36,7 @@ const AdminInvestor = () => {
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("");
+  const [modalType, setModalType] = useState(null);
 
   // modal logic
   const openModal = (type, investor = null) => {
@@ -91,282 +91,291 @@ const AdminInvestor = () => {
         </div>
 
         {/* START: Modal detail profil investor */}
-        {modalType === "detail_investor" && (
-          <Modal open={isModalOpen} onClose={closeModal}>
-            <Modal.Header onClose={closeModal}>
-              <div className="flex items-center mx-auto mt-2 gap-4">
-                {formInvestor.investorBiodata.foto_profil ? (
-                  <img
-                    src={formInvestor.investorBiodata.foto_profil}
-                    alt={formInvestor.investorBiodata.nama_lengkap}
-                    className="w-24 h-24 rounded-full"
-                  />
-                ) : (
-                  <div>
-                    <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 p-3">
-                      {formInvestor.kategori_investor === "organisasi" ? (
-                        <PiUsersThreeBold className="w-full h-full" />
-                      ) : (
-                        <PiUserBold className="w-full h-full" />
-                      )}
+        <Modal open={isModalOpen} onClose={closeModal} size={modalType === "view_transactions" ? "lg" : ""}>
+          {modalType === "detail_investor" && (
+            <>
+              <Modal.Header onClose={closeModal}>
+                <div className="flex items-center mx-auto mt-2 gap-4">
+                  {formInvestor.investorBiodata.foto_profil ? (
+                    <img
+                      src={formInvestor.investorBiodata.foto_profil}
+                      alt={formInvestor.investorBiodata.nama_lengkap}
+                      className="w-24 h-24 rounded-full"
+                    />
+                  ) : (
+                    <div>
+                      <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 p-3">
+                        {formInvestor.kategori_investor === "organisasi" ? (
+                          <PiUsersThreeBold className="w-full h-full" />
+                        ) : (
+                          <PiUserBold className="w-full h-full" />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div>
-                  <h3 className="text-2xl font-semibold text-[#572618]">
-                    {formInvestor.investorBiodata.nama_lengkap}
-                  </h3>
-                  <p>{formInvestor.kategori_investor}</p>
+                  <div>
+                    <h3 className="text-2xl font-semibold text-[#572618]">
+                      {formInvestor.investorBiodata.nama_lengkap}
+                    </h3>
+                    <p>{formInvestor.kategori_investor}</p>
+                  </div>
                 </div>
-              </div>
-            </Modal.Header>
+              </Modal.Header>
 
-            <Modal.Body className="md:pb-5">
-              <Tabs aria-label="Pills" variant="pills">
-                <Tabs.Item active title="Biodata">
-                  <Label value={"Username"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.username}
-                    isDisabled={true}
-                  />
-                  <Label value={"Email"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.email}
-                    isDisabled={true}
-                  />
-                  <Label value={"Jenis Kelamin"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorBiodata.jk}
-                    isDisabled={true}
-                  />
-                  <Label value={"Tempat Lahir"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorBiodata.tempat_lahir}
-                    isDisabled={true}
-                  />
-                  <Label value={"Tanggal Lahir"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formatDate(
-                      formInvestor.investorBiodata.tanggal_lahir
-                    )}
-                    isDisabled={true}
-                  />
-                  <Label value={"Nomor Telepon"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorBiodata.no_hp}
-                    isDisabled={true}
-                  />
-                </Tabs.Item>
-                <Tabs.Item title="Alamat">
-                  <Label value={"Alamat sesuai KTP"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorAlamat.alamat}
-                    isDisabled={true}
-                  />
-                  <Label value={"Provinsi"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorAlamat.provinsi}
-                    isDisabled={true}
-                  />
-                  <Label value={"Kabupaten/Kota"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorAlamat.kota}
-                    isDisabled={true}
-                  />
-                  <Label value={"Kecamatan"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorAlamat.kecamatan}
-                    isDisabled={true}
-                  />
-                  <Label value={"Kelurahan"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorAlamat.kelurahan}
-                    isDisabled={true}
-                  />
-                  <Label value={"Kode Pos"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorAlamat.kode_pos}
-                    isDisabled={true}
-                  />
-                </Tabs.Item>
-                <Tabs.Item title="Identitas">
-                  <Label value={"Nomor KTP"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorIdentitas.no_ktp}
-                    isDisabled={true}
-                  />
-                  <Label value={"Foto KTP"} />
-                  <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
-                    <img
-                      src={formInvestor.investorIdentitas.foto_ktp}
-                      alt=""
-                      className="h-full w-[40%] object-cover rounded-lg"
+              <Modal.Body className="md:pb-5">
+                <Tabs aria-label="Pills" variant="pills">
+                  <Tabs.Item active title="Biodata">
+                    <Label value={"Username"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.username}
+                      isDisabled={true}
                     />
-                  </div>
-                  <Label value={"Nomor NPWP"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorIdentitas.no_npwp}
-                    isDisabled={true}
-                  />
-                  <Label value={"Foto NPWP"} />
-                  <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
-                    <img
-                      src={formInvestor.investorIdentitas.foto_npwp}
-                      alt=""
-                      className="h-full w-[40%] object-cover rounded-lg"
+                    <Label value={"Email"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.email}
+                      isDisabled={true}
                     />
-                  </div>
-                  <Label value={"Foto Selfi dengan KTP"} />
-                  <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
-                    <img
-                      src={formInvestor.investorIdentitas.selfie_ktp}
-                      alt=""
-                      className="h-full w-[40%] object-cover rounded-lg"
+                    <Label value={"Jenis Kelamin"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorBiodata.jk}
+                      isDisabled={true}
                     />
-                  </div>
-                </Tabs.Item>
-                <Tabs.Item title="Pendukung">
-                  <Label value={"Latar Belakang Pendidikan"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorDataPendukung.latar_pendidikan}
-                    isDisabled={true}
-                  />
-                  <Label value={"Sumber Penghasilan"} />
-                  <Input
-                    variant={"disabled"}
-                    value={
-                      formInvestor.investorDataPendukung.sumber_penghasilan
-                    }
-                    isDisabled={true}
-                  />
-                  <Label value={"Jumlah Penghasilan"} />
-                  <Input
-                    variant={"disabled"}
-                    value={
-                      formInvestor.investorDataPendukung.jumlah_penghasilan
-                    }
-                    isDisabled={true}
-                  />
-                  <Label value={"Bidang Usaha"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorDataPendukung.bidang_usaha}
-                    isDisabled={true}
-                  />
-                  <Label value={"Tujuang Investasi"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorDataPendukung.tujuan_investasi}
-                    isDisabled={true}
-                  />
-                  <Label value={"Nomor SID"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formInvestor.investorDataPendukung.no_sid}
-                    isDisabled={true}
-                  />
-                  <Label value={"Tanggal Pembuatan SID"} />
-                  <Input
-                    variant={"disabled"}
-                    value={formatDate(
-                      formInvestor.investorDataPendukung.tanggal_pembuatan_sid
-                    )}
-                    isDisabled={true}
-                  />
-                </Tabs.Item>
-              </Tabs>
-            </Modal.Body>
+                    <Label value={"Tempat Lahir"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorBiodata.tempat_lahir}
+                      isDisabled={true}
+                    />
+                    <Label value={"Tanggal Lahir"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formatDate(
+                        formInvestor.investorBiodata.tanggal_lahir
+                      )}
+                      isDisabled={true}
+                    />
+                    <Label value={"Nomor Telepon"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorBiodata.no_hp}
+                      isDisabled={true}
+                    />
+                  </Tabs.Item>
+                  <Tabs.Item title="Alamat">
+                    <Label value={"Alamat sesuai KTP"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorAlamat.alamat}
+                      isDisabled={true}
+                    />
+                    <Label value={"Provinsi"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorAlamat.provinsi}
+                      isDisabled={true}
+                    />
+                    <Label value={"Kabupaten/Kota"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorAlamat.kota}
+                      isDisabled={true}
+                    />
+                    <Label value={"Kecamatan"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorAlamat.kecamatan}
+                      isDisabled={true}
+                    />
+                    <Label value={"Kelurahan"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorAlamat.kelurahan}
+                      isDisabled={true}
+                    />
+                    <Label value={"Kode Pos"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorAlamat.kode_pos}
+                      isDisabled={true}
+                    />
+                  </Tabs.Item>
+                  <Tabs.Item title="Identitas">
+                    <Label value={"Nomor KTP"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorIdentitas.no_ktp}
+                      isDisabled={true}
+                    />
+                    <Label value={"Foto KTP"} />
+                    <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
+                      <img
+                        src={formInvestor.investorIdentitas.foto_ktp}
+                        alt=""
+                        className="h-full w-[40%] object-cover rounded-lg"
+                      />
+                    </div>
+                    <Label value={"Nomor NPWP"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorIdentitas.no_npwp}
+                      isDisabled={true}
+                    />
+                    <Label value={"Foto NPWP"} />
+                    <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
+                      <img
+                        src={formInvestor.investorIdentitas.foto_npwp}
+                        alt=""
+                        className="h-full w-[40%] object-cover rounded-lg"
+                      />
+                    </div>
+                    <Label value={"Foto Selfi dengan KTP"} />
+                    <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
+                      <img
+                        src={formInvestor.investorIdentitas.selfie_ktp}
+                        alt=""
+                        className="h-full w-[40%] object-cover rounded-lg"
+                      />
+                    </div>
+                  </Tabs.Item>
+                  <Tabs.Item title="Pendukung">
+                    <Label value={"Latar Belakang Pendidikan"} />
+                    <Input
+                      variant={"disabled"}
+                      value={
+                        formInvestor.investorDataPendukung.latar_pendidikan
+                      }
+                      isDisabled={true}
+                    />
+                    <Label value={"Sumber Penghasilan"} />
+                    <Input
+                      variant={"disabled"}
+                      value={
+                        formInvestor.investorDataPendukung.sumber_penghasilan
+                      }
+                      isDisabled={true}
+                    />
+                    <Label value={"Jumlah Penghasilan"} />
+                    <Input
+                      variant={"disabled"}
+                      value={
+                        formInvestor.investorDataPendukung.jumlah_penghasilan
+                      }
+                      isDisabled={true}
+                    />
+                    <Label value={"Bidang Usaha"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorDataPendukung.bidang_usaha}
+                      isDisabled={true}
+                    />
+                    <Label value={"Tujuang Investasi"} />
+                    <Input
+                      variant={"disabled"}
+                      value={
+                        formInvestor.investorDataPendukung.tujuan_investasi
+                      }
+                      isDisabled={true}
+                    />
+                    <Label value={"Nomor SID"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formInvestor.investorDataPendukung.no_sid}
+                      isDisabled={true}
+                    />
+                    <Label value={"Tanggal Pembuatan SID"} />
+                    <Input
+                      variant={"disabled"}
+                      value={formatDate(
+                        formInvestor.investorDataPendukung.tanggal_pembuatan_sid
+                      )}
+                      isDisabled={true}
+                    />
+                  </Tabs.Item>
+                </Tabs>
+              </Modal.Body>
 
-            <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
-          </Modal>
-        )}
-        {/* END: Modal detail profil investor */}
+              <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
+            </>
+          )}
 
-        {modalType === "view_transactions" && (
-          <Modal open={isModalOpen} onClose={closeModal} size={"lg"}>
-            <Modal.Header
-              title={"Riwayat Transaksi Bennefit Christy Saragih"}
-              onClose={closeModal}
-            ></Modal.Header>
+          {modalType === "view_transactions" && (
+            <>
+              <Modal.Header
+                title={"Riwayat Transaksi Bennefit Christy Saragih"}
+                onClose={closeModal}
+              ></Modal.Header>
 
-            <Modal.Body className="md:pb-5">
-              <table className="w-full text-base text-left ">
-                <thead className="bg-white text-sm text-gray-800 uppercase border-b-2">
-                  <tr>
-                    <th scope="col" className="px-6 py-3">
-                      No
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Judul
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Jumlah Investasi
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Metode Pembayaran
-                    </th>
+              <Modal.Body className="md:pb-5">
+                <table className="w-full text-base text-left ">
+                  <thead className="bg-white text-sm text-gray-800 uppercase border-b-2">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        No
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Judul
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Jumlah Investasi
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Metode Pembayaran
+                      </th>
 
-                    <th scope="col" className="px-6 py-3">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Tanggal
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <tr
-                      key={i}
-                      className="bg-white font-medium text-gray-600 border-b hover:bg-gray-50"
-                    >
-                      <td scope="row" className="px-6 py-4 whitespace-nowrap ">
-                        {i}
-                      </td>
-                      <td className="px-6 py-4">Kloter {i}</td>
-                      <td className="px-6 py-4">Rp 5.800.000</td>
-                      <td className="px-6 py-4">
-                        <p>BCA</p>
-                        <p className="text-sm text-gray-500 font-normal">
-                          **** **** **** 6969
-                        </p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
-                          <LuCheck className="-ms-[3px] w-4 h-4" />
-                          <p className="font-medium">Sukses</p>
-                        </div>
-                        {/* <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
-                        <LuX className="-ms-[3px] w-4 h-4" />
-                        <p className="font-medium">Gagal</p>
-                      </div> */}
-                      </td>
-                      <td className="px-6 py-4">8 September 2024</td>
+                      <th scope="col" className="px-6 py-3">
+                        Status
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Tanggal
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Modal.Body>
+                  </thead>
+                  <tbody>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <tr
+                        key={i}
+                        className="bg-white font-medium text-gray-600 border-b hover:bg-gray-50"
+                      >
+                        <td
+                          scope="row"
+                          className="px-6 py-4 whitespace-nowrap "
+                        >
+                          {i}
+                        </td>
+                        <td className="px-6 py-4">Kloter {i}</td>
+                        <td className="px-6 py-4">Rp 5.800.000</td>
+                        <td className="px-6 py-4">
+                          <p>BCA</p>
+                          <p className="text-sm text-gray-500 font-normal">
+                            **** **** **** 6969
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+                            <LuCheck className="-ms-[3px] w-4 h-4" />
+                            <p className="font-medium">Sukses</p>
+                          </div>
+                          {/* <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+                      <LuX className="-ms-[3px] w-4 h-4" />
+                      <p className="font-medium">Gagal</p>
+                    </div> */}
+                        </td>
+                        <td className="px-6 py-4">8 September 2024</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Modal.Body>
 
-            <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
-          </Modal>
-        )}
+              <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
+            </>
+          )}
+        </Modal>
+        {/* END: Modal detail profil investor */}
       </div>
     </AdminLayout>
   );
