@@ -38,7 +38,7 @@ const Sidebar = (props) => {
     isSubMenuActive("/admin/halaman-depan/media-sosial") ||
     isSubMenuActive("/admin/halaman-depan/dokumentasi") ||
     isSubMenuActive("/admin/halaman-depan/dokumen") ||
-    isSubMenuActive("/admin/halaman-depan/faq") ;
+    isSubMenuActive("/admin/halaman-depan/faq");
 
   return (
     <aside
@@ -57,11 +57,7 @@ const Sidebar = (props) => {
             isHovered ? "ml-2" : ""
           }`}
         >
-          <img
-            src={LogoPutih}
-            className="h-12 w-12 ms-1"
-            alt="Logo Putih"
-          />
+          <img src={LogoPutih} className="h-12 w-12 ms-1" alt="Logo Putih" />
           <span
             className={`hidden group-hover:block self-center text-xl text-white font-semibold whitespace-nowrap transition-all duration-500 ease-in-out transform ${
               isHovered
@@ -102,7 +98,7 @@ const Sidebar = (props) => {
             <button
               type="button"
               className={`flex p-2 w-full items-center rounded-lg focus:outline-none ${
-                isDropdownOpen.halaman_depan
+                isActive || isDropdownOpen.halaman_depan
                   ? "text-gray-900 bg-[#ffffff1a]"
                   : "text-gray-900 hover:bg-[#ffffff1a]"
               }`}

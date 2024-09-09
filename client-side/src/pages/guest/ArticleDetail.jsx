@@ -42,11 +42,11 @@ const ArticleDetail = () => {
             <h2 className="font-bold text-3xl mb-6">{article.judul}</h2>
           </div>
 
-          <div className="flex justify-center gap-3">
+          <div className="flex justify-start lg:justify-center gap-3 overflow-auto">
             {article.Tags.map((tag) => (
               <div
                 key={tag.id}
-                className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-32 max-w-fit px-2 rounded-3xl"
+                className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-28 lg:min-w-32 max-w-fit px-2 rounded-3xl"
               >
                 #{tag.nama}
               </div>
@@ -54,7 +54,7 @@ const ArticleDetail = () => {
           </div>
         </div>
 
-        <div className="px-16 h-[30rem] mt-16 mb-8">
+        <div className="h-[14rem] lg:px-16 lg:h-[30rem] mt-16 mb-8">
           <img
             src={`http://localhost:3000/api/artikel/image/${article.gambar}`}
             alt="Artikel"

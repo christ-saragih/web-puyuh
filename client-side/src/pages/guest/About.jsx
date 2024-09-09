@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import ImageSlider from "../../components/guest/ImageSlider";
 import JumbotronAbout from "../../components/guest/JumbotronAbout";
 import DocumentIcon from "../../assets/images/icons/dokumen.svg";
-import { getAbouts, getAboutSejarahs, getFounder } from "../../services/about.service";
+import {
+  getAbouts,
+  getAboutSejarahs,
+  getFounder,
+} from "../../services/about.service";
 import GuestLayouts from "../../layouts/GuestLayouts";
 import { getDocument } from "../../services/document.service";
 import { Link } from "react-router-dom";
@@ -35,8 +39,6 @@ const About = () => {
 
   console.log("DATA TENTANG KAMI");
   console.log(abouts);
-  
-  
 
   if (!abouts || sejarah.length === 0) {
     return <div>Data tentang kami tidak ditemukan!</div>;
@@ -110,26 +112,31 @@ const About = () => {
           </h1>
 
           <div className="mx-4 md:mx-24 rounded-[2rem] bg-white">
-          {founder.data && founder.data.length > 0 ? (
+            {founder.data && founder.data.length > 0 ? (
               founder.data.map((founder) => (
-                <div key={founder.id} className="flex flex-col items-center mb-10">
-                  <div className="flex flex-col md:flex-row justify-center items-center">
-                    <div className="flex flex-col items-center md:mr-16 md:ml-28 w-[20%]">
+                <div
+                  key={founder.id}
+                  className="flex flex-col md:flex-row justify-center gap-8 py-12 px-16"
+                >
+                  <div className="flex flex-col items-start ">
+                    <div className="w-[150px] h-[150px] rounded-full overflow-hidden mt-2">
                       <img
                         src={`http://localhost:3000/api/founder/image/${founder.gambar}`}
                         alt={founder.nama}
-                        className="w-[150px] h-[150px] rounded-full"
+                        className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex flex-col md:mr-14 w-[80%] mt-4 md:mt-4">
-                      <h3 className="text-xl font-bold text-[#4B241A]">{founder.nama}</h3>
-                      <h4 className="mt-1 text-lg font-quicksand font-medium md:text-[24px]">
-                        {founder.jabatan}
-                      </h4>
-                      <p className="font-quicksand font-medium text-lg mr-0 md:mr-10 text-justify mb-10">
-                        {founder.deskripsi}
-                      </p>
-                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-2xl font-bold text-[#4B241A] uppercase">
+                      {founder.nama}
+                    </h3>
+                    <h4 className="mb-1 text-lg font-quicksand font-base md:text-xl">
+                      {founder.jabatan}
+                    </h4>
+                    <p className="font-quicksand font-medium text-lg">
+                      {founder.deskripsi}
+                    </p>
                   </div>
                 </div>
               ))
@@ -139,12 +146,10 @@ const About = () => {
           </div>
         </div>
       </section>
-      
 
       <GuestLayouts.Footer />
     </GuestLayouts>
   );
 };
-
 
 export default About;
