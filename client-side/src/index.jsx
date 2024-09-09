@@ -65,7 +65,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/investasi/:slug",
-        element: <DetailInvestasi />,
+        element: (
+            <AuthProvider>
+                <DetailInvestasi />
+            </AuthProvider>
+        ),
     },
     {
         path: "/artikel",
