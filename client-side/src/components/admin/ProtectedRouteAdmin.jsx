@@ -1,27 +1,22 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthAdmin from "../../hooks/useAuthAdmin";
-import useAuthInvestor from "../../hooks/useAuthInvestor";
+import { AuthAdminContext } from "../../contexts/AuthAdminProvider";
 
 const ProtectedRouteAdmin = ({ children }) => {
-    const { admin } = useAuthAdmin();
-    const { investor } = useAuthInvestor();
+    const { admin, role, loadingAdmin } = useContext(AuthAdminContext);
     const navigate = useNavigate();
 
-    // Jika investor sudah login, redirect ke halaman dashboard investor
-    if (investor) {
-        navigate("/investor"); // Ganti dengan rute dashboard investor yang sesuai
-        return null;
+    useEffect(() => {
+        if (!loadingAdmin && role !== "admin") {
+            navigate("/admin/masuk");
+        }
+    }, [role, loadingAdmin, navigate]);
+
+    if (loadingAdmin) {
+        return <div>Loading...</div>;
     }
 
-    // Jika admin belum login, redirect ke halaman login admin
-    if (!admin) {
-        navigate("/admin/masuk");
-        return null;
-    }
-
-    // Jika admin sudah login, render konten halaman yang di-protect
-    return children;
+    return role === "admin" ? children : null;
 };
 
 export default ProtectedRouteAdmin;

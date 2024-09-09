@@ -3,10 +3,10 @@ import "../../assets/style/index.css";
 import Logo from "../../assets/images/logo.svg";
 import GuestLayout from "../../layouts/GuestLayout";
 import { useNavigate } from "react-router-dom";
-import { AuthAdminContext } from "../../contexts/AuthAdminProvider";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const AdminMasuk = () => {
-    const { login } = useContext(AuthAdminContext);
+    const { login } = useContext(AuthContext);
     const [usernameOrEmail, setUsernameOrEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -17,7 +17,7 @@ const AdminMasuk = () => {
         e.preventDefault();
         setError("");
         try {
-            await login(usernameOrEmail, password);
+            await login(usernameOrEmail, password, "admin");
 
             navigate("/admin");
         } catch (error) {

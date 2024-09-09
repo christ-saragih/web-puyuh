@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthAdmin from "../../hooks/useAuthAdmin";
-import useAuthInvestor from "../../hooks/useAuthInvestor";
+// import { AuthAdminContext } from "../../contexts/AuthAdminProvider";
+import { AuthInvestorContext } from "../../contexts/AuthInvestorProvider";
 
 const PublicRouteInvestor = ({ children }) => {
-    const { admin } = useAuthAdmin();
-    const { investor } = useAuthInvestor();
+    // const { admin } = useContext(AuthAdminContext);
+    const { investor, role } = useContext(AuthInvestorContext);
     // const { admin, loading: loadingAdmin } = useAuthAdmin();
     // const { investor, loading: loadingInvestor } = useAuthInvestor();
     const navigate = useNavigate();
@@ -14,13 +14,13 @@ const PublicRouteInvestor = ({ children }) => {
     // if (loadingAdmin || loadingInvestor) return <div>Loading...</div>;
 
     // Jika admin sudah login, redirect ke halaman dashboard admin
-    if (admin) {
-        navigate("/admin"); // Ganti dengan rute dashboard admin yang sesuai
-        return null;
-    }
+    // if (admin) {
+    //     navigate("/admin"); // Ganti dengan rute dashboard admin yang sesuai
+    //     return null;
+    // }
 
     // Jika investor belum login, redirect ke halaman login investor
-    if (investor) {
+    if (role === "investor") {
         navigate("/investor");
         return null;
     }

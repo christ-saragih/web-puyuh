@@ -3,10 +3,10 @@ import GuestLayout from "../../layouts/GuestLayout.jsx";
 import { useNavigate } from "react-router-dom";
 import "../../assets/style/index.css";
 import Logo from "../../assets/images/logo.svg";
-import { AuthInvestorContext } from "../../contexts/AuthInvestorProvider";
+import { AuthContext } from "../../contexts/AuthProvider.jsx";
 
 const Masuk = () => {
-    const { login } = useContext(AuthInvestorContext);
+    const { login } = useContext(AuthContext);
     const [usernameOrEmail, setUsernameOrEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -17,7 +17,7 @@ const Masuk = () => {
         e.preventDefault();
         setError("");
         try {
-            await login(usernameOrEmail, password);
+            await login(usernameOrEmail, password, "investor");
             navigate("/investor");
         } catch (error) {
             setError("Username/Email atau password salah");
