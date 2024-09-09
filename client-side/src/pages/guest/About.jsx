@@ -55,10 +55,8 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
           {/* <!-- Column 1: Text --> */}
           <div className="flex flex-col">
-            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-950 mb-4 md:text-[36px]">
-              <span className="block text-amber-950 md:text-4xl mt-5">
-                SUKAHARJA SMART QUAIL FARM
-              </span>
+            <h2 className="font-bold text-3xl lg:text-4xl mb-2 lg:mb-4 tracking-wide">
+              SUKAHARJA SMART QUAIL FARM
             </h2>
             <p className="font-quicksand font-medium text-[#000000] md:text-lg">
               {abouts.deskripsi}
@@ -70,8 +68,8 @@ const About = () => {
       </section>
       <section className="bg-gradient-to-b from-white to-orange-100">
         {/* sejarah */}
-        <div className="w-[90%] mx-auto px-20 mt-12 lg:mt-32 text-center">
-          <h1 className="text-4xl font-bold text-[#4B241A] mb-4">
+        <div className="w-[90%] mx-auto  lg:px-20 mt-12 lg:mt-32 text-center">
+          <h1 className="font-bold text-3xl lg:text-4xl text-center tracking-wide mb-2 lg:mb-4">
             {sejarah.judul}
           </h1>
           <p className="text-lg font-quicksand font-medium text-[#000000]">
@@ -79,12 +77,12 @@ const About = () => {
           </p>
         </div>
         {/* dokumen */}
-        <div className="w-[90%] mx-auto mt-12 lg:mt-32">
-          <h1 className="text-4xl text-center font-bold text-[#4B241A] mb-10">
-            DOKUMEN
+        <div className="w-[90%] mx-auto mt-12 lg:mt-32 ">
+          <h1 className="font-bold text-3xl lg:text-4xl text-center tracking-wide mb-8 lg:mb-14">
+            Dokumen
           </h1>
 
-          <div className="flex justify-evenly">
+          <div className="flex flex-col items-center gap-6 lg:flex-row lg:gap-0 lg:items-start lg:justify-evenly">
             {documents.map((document) => (
               <Link
                 key={document.id}
@@ -95,31 +93,31 @@ const About = () => {
                 <img
                   src={DocumentIcon}
                   alt={document.file}
-                  className="block w-full"
+                  className="block w-44 lg:w-full "
                 />
 
-                <p className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-0 font-semibold text-2xl text-center">
-                  {document.nama}
+                <p className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-0 font-semibold text-2xl text-center px-2">
+                  {document.nama} dokumen
                 </p>
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="w-[90%] mx-auto mt-12 lg:mt-32 pb-16">
-          <h1 className="text-4xl font-bold text-[#4B241A] text-center mb-10">
-            FOUNDER
+        <div className="w-[90%] max-w-6xl mx-auto mt-12 lg:mt-32 pb-16">
+          <h1 className="font-bold text-3xl lg:text-4xl mb-4 lg:mb-12 text-center tracking-wide">
+            Founder
           </h1>
 
-          <div className="mx-4 md:mx-24 rounded-[2rem] bg-white">
+          <div className=" rounded-[2rem] bg-white">
             {founder.data && founder.data.length > 0 ? (
               founder.data.map((founder) => (
                 <div
                   key={founder.id}
-                  className="flex flex-col md:flex-row justify-center gap-8 py-12 px-16"
+                  className="flex flex-col md:flex-row justify-center gap-4 py-4 px-8 lg:gap-8 lg:py-12 lg:px-16"
                 >
-                  <div className="flex flex-col items-start ">
-                    <div className="w-[150px] h-[150px] rounded-full overflow-hidden mt-2">
+                  <div className="flex flex-col items-center lg:items-start">
+                    <div className="w-[120px] h-[120px] lg:w-[150px] lg:h-[150px] rounded-full  overflow-hidden mt-2">
                       <img
                         src={`http://localhost:3000/api/founder/image/${founder.gambar}`}
                         alt={founder.nama}
@@ -128,10 +126,10 @@ const About = () => {
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    <h3 className="text-2xl font-bold text-[#4B241A] uppercase">
+                    <h3 className="text-2xl text-center lg:text-start font-bold text-[#4B241A] uppercase">
                       {founder.nama}
                     </h3>
-                    <h4 className="mb-1 text-lg font-quicksand font-base md:text-xl">
+                    <h4 className="mb-1 text-lg text-center lg:text-start font-quicksand font-base md:text-xl">
                       {founder.jabatan}
                     </h4>
                     <p className="font-quicksand font-medium text-lg">
