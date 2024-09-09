@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { getTransaksi } from "../../services/transaksi.service";
 import { useParams } from "react-router-dom";
 import { formatRupiah } from "../../utils/formatRupiah";
+import InvestorLayout from "../../layouts/InvestorLayout";
 
 const InvestorTransaksi = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -47,11 +48,8 @@ const InvestorTransaksi = () => {
     };
 
     return (
-        <div className="bg-white w-dvw h-dvh overflow-y-auto py-5 pe-6">
-            <SidebarInvestor
-                isHovered={isHovered}
-                setIsHovered={setIsHovered}
-            />
+        <div className="bg-white w-dvw min-h-screen overflow-y-auto py-5 pe-6">
+            <InvestorLayout>
             <div
                 className={`px-8 pb-5 transition-all duration-300 ease-in-out ${
                     isHovered ? "md:ml-60" : "md:ml-28"
@@ -232,6 +230,7 @@ const InvestorTransaksi = () => {
                     </div>
                 )}
             </div>
+            </InvestorLayout>
         </div>
     );
 };
