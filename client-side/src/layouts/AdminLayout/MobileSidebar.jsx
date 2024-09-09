@@ -36,7 +36,7 @@ const Sidebar = () => {
     isMenuOpen ? "translate-x-0" : "-translate-x-full"
   } lg:hidden`}
 >
-  <div className="h-full overflow-y-auto py-10 px-3">
+  <div className="h-full overflow-y-auto overflow-x-hidden py-10 px-3 custom-scrollbar">
     {/* Konten Sidebar */}
     <NavLink
       to="/admin"
@@ -232,7 +232,7 @@ const Sidebar = () => {
             {/* Other main menu items */}
             <li>
               <NavLink
-                to="/admin/produk"
+                to="/admin/artikel"
                 className={({ isActive }) =>
                   isActive
                     ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
@@ -240,12 +240,12 @@ const Sidebar = () => {
                 }
               >
                 <PiArticleNyTimesBold className="w-7 h-7 text-white" />
-                <span className="text-white text-lg ms-3">Produk</span>
+                <span className="text-white text-lg ms-3">Artikel</span>
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/admin/laporan"
+                to="/admin/investasi"
                 className={({ isActive }) =>
                   isActive
                     ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
@@ -253,12 +253,12 @@ const Sidebar = () => {
                 }
               >
                 <PiChartLineUpBold className="w-7 h-7 text-white" />
-                <span className="text-white text-lg ms-3">Laporan</span>
+                <span className="text-white text-lg ms-3">Investasi</span>
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/admin/pengguna"
+                to="/admin/investor"
                 className={({ isActive }) =>
                   isActive
                     ? "flex p-2 items-center text-gray-900 rounded-lg bg-[#ffffff1a]"
@@ -266,7 +266,7 @@ const Sidebar = () => {
                 }
               >
                 <PiUsersBold className="w-7 h-7 text-white" />
-                <span className="text-white text-lg ms-3">Pengguna</span>
+                <span className="text-white text-lg ms-3">Investor</span>
               </NavLink>
             </li>
           </ul>
