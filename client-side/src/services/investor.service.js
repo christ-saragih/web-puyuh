@@ -1,8 +1,8 @@
-import { axiosInstance } from "../lib/axios";
+import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const getInvestors = (callback) => {
-  axiosInstance
-    .get("/investor")
+  apiAdmin
+    .get("/admin/investor")
     .then((res) => {
       callback(res.data.data);
     })
@@ -12,11 +12,10 @@ export const getInvestors = (callback) => {
 };
 
 export const getInvestorById = (id, callback) => {
-  axiosInstance
-    .get(`/investor/${id}`)
+  apiAdmin
+    .get(`/admin/investor/${id}`)
     .then((res) => {
       callback(res.data.data);
-      console.log(res.data.data);
     })
     .catch((err) => {
       console.log(err);

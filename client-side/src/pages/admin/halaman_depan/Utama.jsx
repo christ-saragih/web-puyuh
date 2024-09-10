@@ -77,7 +77,7 @@ const Utama = () => {
     setEditMode(true);
   };
 
-  const isDataEmpty = dashboardFrontpage.length === 0;
+  const isDataEmpty = !dashboardFrontpage;
 
   return (
     <AdminLayout title={"Halaman Depan / Utama"}>
