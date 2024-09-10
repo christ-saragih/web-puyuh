@@ -183,11 +183,13 @@ iframe {
 div[data-testid="flowbite-dropdown"] {
   @apply bg-white min-w-32 max-w-fit rounded-xl shadow font-semibold overflow-hidden;
 }
-li[role="menuitem"] button {
+li[role="menuitem"] button,
+li[role="menuitem"] a {
   @apply text-base text-slate-700;
 }
 
-li[role="menuitem"] button svg {
+li[role="menuitem"] button svg,
+li[role="menuitem"] a svg {
   @apply w-5 h-5 mr-3;
 }
 
