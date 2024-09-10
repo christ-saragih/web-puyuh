@@ -147,7 +147,7 @@ const Dokumentasi = () => {
             <Modal
               open={isModalOpen}
               onClose={closeModal}
-              className={"w-[35rem]"}
+              size={modalType === "delete_documentation" ? "sm" : ""}
             >
               {(modalType === "add_documentation" ||
                 modalType === "update_documentation") && (

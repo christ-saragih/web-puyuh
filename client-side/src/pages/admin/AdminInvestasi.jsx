@@ -279,7 +279,11 @@ const AdminInvestasi = () => {
             </button>
 
             {/* MODAL */}
-            <Modal open={isModalOpen} onClose={closeModal}>
+            <Modal
+              open={isModalOpen}
+              onClose={closeModal}
+              size={modalType === "delete_investment" ? "sm" : ""}
+            >
               {(modalType === "add_investment" ||
                 modalType === "update_investment") && (
                 <>
