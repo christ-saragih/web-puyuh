@@ -81,14 +81,15 @@ const Utama = () => {
 
   return (
     <AdminLayout title={"Halaman Depan / Utama"}>
-      <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-        <div className="flex justify-end">
+      <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md ml-3 md:ml-0 py-4 px-6 sm:px-4">
+        <div className="flex justify-end md:justify-end mb-4">
           <Button
             variant={isDataEmpty || editMode ? "primary" : "update"}
             value={isDataEmpty || editMode ? "Simpan" : "Ubah"}
             onClick={
               isDataEmpty || editMode ? handleInputSave : handleInputEdit
             }
+            className="w-full md:w-auto"
           />
         </div>
 
@@ -100,7 +101,7 @@ const Utama = () => {
         >
           {/* Preview gambar yang dipilih */}
           {previewImage && (
-            <div className={`w-80 h-56 rounded-md overflow-hidden`}>
+            <div className={`w-full sm:w-80 h-56 rounded-md overflow-hidden`}>
               <img
                 src={previewImage}
                 alt="Preview"
@@ -166,6 +167,7 @@ const Utama = () => {
           value={formData.nama_header}
           handleChange={handleTextChange}
           isDisabled={!isDataEmpty && !editMode}
+          className="w-full"
         />
         <Label htmlFor={"nama_subheader"} value={"Sub Judul"} />
         <Input
@@ -176,6 +178,7 @@ const Utama = () => {
           value={formData.nama_subheader}
           handleChange={handleTextChange}
           isDisabled={!isDataEmpty && !editMode}
+          className="w-full"
         />
       </div>
     </AdminLayout>
