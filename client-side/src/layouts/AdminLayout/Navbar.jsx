@@ -1,11 +1,12 @@
 import Admin from "../../assets/images/admin.svg";
 import { useEffect, useState, useContext, useRef } from "react";
 import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiAdmin } from "../../hooks/useAxiosConfig";
 import { AuthContext } from "../../contexts/AuthProvider";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { Dropdown } from "flowbite-react";
 
 const Navbar = (props) => {
     const { logout } = useContext(AuthContext);
@@ -16,26 +17,26 @@ const Navbar = (props) => {
     const navigate = useNavigate();
     const menuRef = useRef(null); // Ref untuk elemen modal pop-up
 
-    // Fungsi untuk memanggil API dan mengambil data admin
-    useEffect(() => {
-        const fetchAdminData = async () => {
-            try {
-                const response = await apiAdmin.get("/admin"); // Gunakan instance axios
+  // Fungsi untuk memanggil API dan mengambil data admin
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      try {
+        const response = await apiAdmin.get("/admin"); // Gunakan instance axios
 
-                setAdmin(response.data.data); // Simpan data admin ke state
-            } catch (error) {
-                console.error("Error fetching admin data:", error);
-                if (error.response?.status === 401) {
-                    navigate("/login"); // Redirect jika tidak otentikasi
-                }
-            } finally {
-                setLoading(false); // Selesai loading
-            }
-        };
+        setAdmin(response.data.data); // Simpan data admin ke state
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
+        if (error.response?.status === 401) {
+          navigate("/login"); // Redirect jika tidak otentikasi
+        }
+      } finally {
+        setLoading(false); // Selesai loading
+      }
+    };
 
-        fetchAdminData();
-    }, [navigate]);
-
+    fetchAdminData();
+  }, [navigate]);
+  
     const HandleLogout = async () => {
         try {
             await logout();
@@ -113,66 +114,37 @@ const Navbar = (props) => {
                         </div>
 
                         {/* Dropdown untuk desktop */}
-                        <Menu as="div" className="relative inline-block text-left">
-                            <Menu.Button className="inline-flex justify-center w-full text-gray-800">
-                                <svg
-                                    className="w-6 h-6 text-gray-800 dark:text-white"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="m19 9-7 7-7-7"
-                                    />
-                                </svg>
-                            </Menu.Button>
-                            <Transition
-                                as={Fragment}
-                                enter="transition ease-out duration-100"
-                                enterFrom="transform opacity-0 scale-95"
-                                enterTo="transform opacity-100 scale-100"
-                                leave="transition ease-in duration-75"
-                                leaveFrom="transform opacity-100 scale-100"
-                                leaveTo="transform opacity-0 scale-95"
-                            >
-                                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                    <div className="py-1">
-                                        <Menu.Item>
-                                            {({ active }) => (
-                                                <button
-                                                    className={`${
-                                                        active ? "bg-gray-100" : ""
-                                                    } group flex items-center w-full px-4 py-2 text-sm text-gray-700`}
-                                                >
-                                                    <PiUserBold className="mr-3" />
-                                                    Profil
-                                                </button>
-                                            )}
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                            {({ active }) => (
-                                                <button
-                                                    onClick={HandleLogout}
-                                                    className={`${
-                                                        active ? "bg-gray-100" : ""
-                                                    } group flex items-center w-full px-4 py-2 text-sm text-gray-700`}
-                                                >
-                                                    <PiBackspaceBold className="mr-3" />
-                                                    Keluar
-                                                </button>
-                                            )}
-                                        </Menu.Item>
-                                    </div>
-                                </Menu.Items>
-                            </Transition>
-                        </Menu>
+                        <Dropdown
+            label=""
+            dismissOnClick={false}
+            placement="bottom-start"
+            renderTrigger={() => (
+              <svg
+                className="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m19 9-7 7-7-7"
+                />
+              </svg>
+            )}
+          >
+            <Dropdown.Item icon={PiUserBold} as={Link} to={"/admin/profil"}>
+              Profil
+            </Dropdown.Item>
+            <Dropdown.Item icon={PiBackspaceBold} onClick={HandleLogout}>
+              Keluar
+            </Dropdown.Item>
+          </Dropdown>
                     </div>
 
                     {/* Pop-up menu kecil untuk mobile */}
