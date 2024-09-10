@@ -145,7 +145,7 @@ const Dokumen = () => {
             <Modal
               open={isModalOpen}
               onClose={closeModal}
-              className={"w-[35rem]"}
+              size={modalType === "delete_document" ? "sm" : ""}
             >
               {(modalType === "add_document" ||
                 modalType === "update_document") && (
