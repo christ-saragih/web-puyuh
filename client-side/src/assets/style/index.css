@@ -185,15 +185,15 @@ div[data-testid="flowbite-dropdown"] {
 }
 
 button[data-testid="flowbite-dropdown-target"] {
-  @apply text-gray-900 bg-gray-100 border border-gray-300 rounded-s-2xl rounded-e-none hover:bg-gray-200 focus:ring-1 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none  !important;
+  @apply text-gray-900 bg-gray-100 border border-gray-300 rounded-2xl sm:rounded-e-none hover:bg-gray-200 focus:ring-1 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none w-full shadow sm:shadow-none sm:w-fit   !important;
 }
 
 button[data-testid="flowbite-dropdown-target"] span {
-  @apply text-base !important;
+  @apply flex w-full justify-between text-base !important;
 }
 
 button[data-testid="flowbite-dropdown-target"] span svg {
-  @apply mt-1 !important;
+  @apply  mt-1 !important;
 }
 
 li[role="menuitem"] button,

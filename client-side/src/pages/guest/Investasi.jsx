@@ -71,14 +71,14 @@ const InvestorInvestasi = () => {
   return (
     <GuestLayouts>
       <div className="w-[90%] mx-auto my-12 lg:my-16 grow">
-        <h2 className="font-bold text-4xl mb-6 text-center">
+        <h2 className="font-bold text-center text-3xl lg:text-4xl mb-6 tracking-wide">
           Ayo berinvestasi sekarang di PT Sukaharja!
         </h2>
 
-        <div className="mb-16">
+        <div className="mb-10 sm:mb-14 lg:mb-16">
           <div className="max-w-lg mx-auto">
-            <div className="flex rounded-2xl shadow">
-              <div className="flex-shrink-0">
+            <div className="flex flex-col items-center rounded-2xl gap-y-3 sm:shadow sm:flex-row">
+              <div className="flex-shrink-0 w-full sm:w-fit ">
                 <Dropdown label={statusQuery} dismissOnClick={false}>
                   <Dropdown.Item
                     onClick={() => handleStatusChange("Semua Status")}
@@ -118,7 +118,7 @@ const InvestorInvestasi = () => {
 
                 <input
                   type="text"
-                  className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-e-2xl border-s-gray-50 border-s-2 border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
+                  className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl sm:rounded-s-none sm:border-s-gray-50 sm:border-s-2 border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none shadow sm:shadow-none"
                   placeholder="Masukkan judul investasi ..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e)}
