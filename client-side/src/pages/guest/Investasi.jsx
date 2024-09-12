@@ -31,7 +31,7 @@ const InvestorInvestasi = () => {
       );
     }
 
-    // Filter berdasarkan nama investasi
+    // Filter berdasarkan judul investasi
     if (searchQuery) {
       filtered = filtered.filter((batch) =>
         batch.judul.toLowerCase().includes(searchQuery.toLowerCase())
@@ -70,7 +70,7 @@ const InvestorInvestasi = () => {
 
   return (
     <GuestLayouts>
-      <div className="w-[90%] mx-auto my-12 lg:my-16">
+      <div className="w-[90%] mx-auto my-12 lg:my-16 grow">
         <h2 className="font-bold text-4xl mb-6 text-center">
           Ayo berinvestasi sekarang di PT Sukaharja!
         </h2>
@@ -119,7 +119,7 @@ const InvestorInvestasi = () => {
                 <input
                   type="text"
                   className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-e-2xl border-s-gray-50 border-s-2 border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
-                  placeholder="Masukkan nama investasi ..."
+                  placeholder="Masukkan judul investasi ..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e)}
                   required
