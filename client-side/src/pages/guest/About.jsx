@@ -35,11 +35,6 @@ const About = () => {
     });
   }, []);
 
-  console.log(founder);
-
-  console.log("DATA TENTANG KAMI");
-  console.log(abouts);
-
   if (!abouts || sejarah.length === 0) {
     return <div>Data tentang kami tidak ditemukan!</div>;
   }
@@ -83,24 +78,27 @@ const About = () => {
           </h1>
 
           <div className="flex flex-col items-center gap-6 lg:flex-row lg:gap-0 lg:items-start lg:justify-evenly">
-            {documents.map((document) => (
-              <Link
-                key={document.id}
-                to={`http://localhost:3000/api/dokumen-frontpage/file/${document.file}`}
-                target="_blank"
-                className="relative inline-block cursor-pointer"
-              >
-                <img
-                  src={DocumentIcon}
-                  alt={document.file}
-                  className="block w-44 lg:w-full "
-                />
+            {documents.map(
+              (document) =>
+                document.status === "aktif" && (
+                  <Link
+                    key={document.id}
+                    to={`http://localhost:3000/api/dokumen-frontpage/file/${document.file}`}
+                    target="_blank"
+                    className="relative inline-block cursor-pointer"
+                  >
+                    <img
+                      src={DocumentIcon}
+                      alt={document.file}
+                      className="block w-44 lg:w-full "
+                    />
 
-                <p className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-0 font-semibold text-2xl text-center px-2">
-                  {document.nama} dokumen
-                </p>
-              </Link>
-            ))}
+                    <p className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-0 font-semibold text-2xl text-center px-2">
+                      {document.nama}
+                    </p>
+                  </Link>
+                )
+            )}
           </div>
         </div>
 
