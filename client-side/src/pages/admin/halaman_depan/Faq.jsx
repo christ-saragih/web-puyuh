@@ -133,7 +133,7 @@ const FaqAdmin = () => {
             <Modal
               open={isModalOpen}
               onClose={closeModal}
-              className={"w-[35rem]"}
+              size={modalType === "delete_faq" ? "sm" : ""}
             >
               {(modalType === "add_faq" || modalType === "update_faq") && (
                 <>

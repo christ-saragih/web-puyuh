@@ -384,7 +384,7 @@ const handleSaveSejarah = async () => {
 
   return (
     <AdminLayout title={"Halaman Depan / Profil"}>
-      <div className="flex flex-col p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col -mt-10 md:ml-0 ml-7 p-4 md:p-6 lg:p-8">
         {/* Tentang Kami */}
         <Section
           title="Tentang Kami"

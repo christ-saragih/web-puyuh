@@ -63,7 +63,7 @@ const Kontak = () => {
 
     return (
         <AdminLayout title={"Halaman Depan / Kontak"}>
-            <div className="flex flex-col">
+            <div className="flex flex-col ml-5 md:ml-0">
                 <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
                     <div className="w-full flex justify-between mb-5">
                         <h3 className="font-bold text-[#572618] text-xl">

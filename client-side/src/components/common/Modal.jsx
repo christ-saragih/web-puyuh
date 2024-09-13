@@ -23,7 +23,7 @@ const Modal = (props) => {
   return (
     <div
       onClick={onClose}
-      className={`fixed z-50 inset-0 flex justify-center items-center transition-colors overflow-y-auto ${
+      className={`fixed z-50 inset-0 flex justify-center items-center transition-colors overflow-y-auto custom-scrollbar ${
         open ? "visible bg-black/40" : "invisible"
       }`}
     >
@@ -31,7 +31,7 @@ const Modal = (props) => {
       <div
         // kalo klik modalnya tidak ke close
         onClick={(e) => e.stopPropagation()}
-        className={`relative p-4 w-[52rem]  max-h-full transition-all ease-in-out duration-300 ${
+        className={`relative p-4  max-h-full transition-all ease-in-out duration-300 ${
           open ? "scale-100 opacity-100" : "scale-125 opacity-0"
         } ${sizeClass} ${className}`}
       >

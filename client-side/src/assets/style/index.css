@@ -183,11 +183,26 @@ iframe {
 div[data-testid="flowbite-dropdown"] {
   @apply bg-white min-w-32 max-w-fit rounded-xl shadow font-semibold overflow-hidden;
 }
-li[role="menuitem"] button {
+
+button[data-testid="flowbite-dropdown-target"] {
+  @apply text-gray-900 bg-gray-100 border border-gray-300 rounded-2xl sm:rounded-e-none hover:bg-gray-200 focus:ring-1 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none w-full shadow sm:shadow-none sm:w-fit   !important;
+}
+
+button[data-testid="flowbite-dropdown-target"] span {
+  @apply flex w-full justify-between text-base !important;
+}
+
+button[data-testid="flowbite-dropdown-target"] span svg {
+  @apply  mt-1 !important;
+}
+
+li[role="menuitem"] button,
+li[role="menuitem"] a {
   @apply text-base text-slate-700;
 }
 
-li[role="menuitem"] button svg {
+li[role="menuitem"] button svg,
+li[role="menuitem"] a svg {
   @apply w-5 h-5 mr-3;
 }
 

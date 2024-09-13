@@ -2,19 +2,21 @@ import TemukanStartup from "../../assets/images/temukan-startup.svg";
 import BeliSaham from "../../assets/images/beli-saham.svg";
 import JualSaham from "../../assets/images/jual-dipasar.svg";
 import BagiHasil from "../../assets/images/bagi-hasil.svg";
-import BatchList from "../../components/guest/BatchList";
 import ArticleList from "../../components/common/ArticleList";
-import { companyValues } from "../../components/guest/ValueCompanyList";
+import BatchList from "../../components/guest/BatchList";
 import ValueCompanyItem from "../../components/guest/ValueCompanyItem";
+import { companyValues } from "../../components/guest/ValueCompanyList";
 import GuestLayouts from "../../layouts/GuestLayouts";
 import { getDashboardFrontpage } from "../../services/dashboard-frontpage.service";
 import { getArticles } from "../../services/article.service";
-import { Link } from "react-router-dom";
+import { getBatchs } from "../../services/batch.service";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [dashboardFrontpage, setDashboardFrontpage] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [batchs, setBatchs] = useState([]);
 
   useEffect(() => {
     getDashboardFrontpage((data) => {
@@ -24,9 +26,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     getArticles((data) => {
-      // mengambil 4 artikel terbaru
-      const latestArticles = data.slice(-4).reverse();
-      setArticles(latestArticles);
+      // mengambil 4 artikel
+      setArticles(data.slice(0, 4));
+    });
+  }, []);
+
+  useEffect(() => {
+    getBatchs((data) => {
+      setBatchs(data);
     });
   }, []);
 
@@ -119,7 +126,7 @@ const Dashboard = () => {
             Lorem, ipsum dolor sit amet consectetur adipisicing elit.
           </p>
         </div>
-        <BatchList />
+        <BatchList batchs={batchs} />
 
         <div className="flex justify-center mt-10 mb-3">
           <Link
