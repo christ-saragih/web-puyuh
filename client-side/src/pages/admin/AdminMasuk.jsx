@@ -44,7 +44,7 @@ const AdminMasuk = () => {
               className="w-12 h-12 sm:w-14 sm:h-14 mr-4"
             />
             <h1 className="font-bold text-2xl sm:text-3xl text-gray-800">
-              Sukaharja Smart Quail Farm
+              PT Sukaharja Smart Quail Farm
             </h1>
           </div>
           <div className="font-quicksand font-bold text-xl sm:text-[1.5rem] mb-4">
