@@ -56,7 +56,7 @@ const InvestorTransaksi = () => {
                 }`}
             >
                 <div className="flex flex-col">
-                    <h1 className="font-quicksand font-bold text-4xl mb-4">
+                    <h1 className="font-quicksand font-bold text-4xl md:mt-1 mt-8 mb-4">
                         Transaksi
                     </h1>
                 </div>

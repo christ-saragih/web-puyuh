@@ -70,7 +70,7 @@ const InvestorDashboard = () => {
         </div>
 
         {/* Header untuk Mobile */}
-        <div className="bottom-0 left-0 right-0 bg-white z-40 md:hidden flex items-center justify-between p-4">
+        <div className="bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-between p-4">
           <form className="flex items-center w-full">
             <input
               type="search"

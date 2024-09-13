@@ -37,28 +37,29 @@ const InvestorProfil = () => {
                 }`}
             >
                 <div className="flex flex-col">
-                    <h1 className="font-quicksand text-2xl font-bold mb-5">
+                    <h1 className="font-quicksand text-2xl font-bold md:mt-1 mt-8 mb-5">
                         Profil Investor
                     </h1>
-                    <div className="w-full rounded-xl bg-[#F5F5F7] flex items-center mb-10">
+                    <div className="w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center mb-10 p-4 md:p-0">
                         <img
-                            className="w-20 h-20 rounded m-10"
+                            className="w-16 h-16 md:w-20 md:h-20 rounded mb-4  md:mb-6 md:mb-0 md:m-10"
                             src={profilePicture}
                             alt="Default avatar"
                         />
-                        <div className="flex flex-col items-center ml-10">
+                        <div className="flex flex-col items-center md:items-start ml-0 md:ml-10">
                             <button
                                 type="button"
-                                className="py-2.5 px-5 me-20 text-sm font-quicksand focus:outline-none bg-white rounded-full hover:bg-gray-100 dark:bg-[#D9D9D9] text-[#000] dark:hover:text-white dark:hover:bg-[#572618] mb-5"
+                                className="py-2 px-4 md:px-5 text-sm font-quicksand focus:outline-none bg-white rounded-full hover:bg-gray-100 dark:bg-[#D9D9D9] text-[#000] dark:hover:text-white dark:hover:bg-[#572618] mb-3 md:mb-5"
                             >
                                 Ganti Foto
                             </button>
-                            <h2 className="font-quicksand text-l text-[#000]">
+                            <h2 className="font-quicksand text-sm md:text-l text-[#000] text-center md:text-left">
                                 {investor?.email}
                             </h2>
                             {/* <h1>{investors.kategori_investor}</h1> */}
                         </div>
                     </div>
+
                     <div className="w-full rounded-xl bg-[#F5F5F7]">
                         {/* Pass data kategori investor ke VerticalTabProfil */}
                         <VerticalTabProfil
