@@ -26,6 +26,12 @@ const FaqAdmin = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
 
+  useEffect(() => {
+    getFaqs((data) => {
+      setFaqs(data);
+    });
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -67,6 +73,19 @@ const FaqAdmin = () => {
     });
   };
 
+  // Fungsi untuk mengubah status FAQ
+  const handleToggleStatus = (faqId, newStatus) => {
+    // Kirim request ke backend untuk update status FAQ
+    updateFaq(faqId, { status: newStatus }, (updatedFaq) => {
+      // Perbarui state dengan status baru
+      setFaqs((prevFaqs) =>
+        prevFaqs.map((faq) =>
+          faq.id === updatedFaq.id ? { ...faq, status: updatedFaq.status } : faq
+        )
+      );
+    });
+  };
+
   const openModal = (type, faq = null) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -94,16 +113,7 @@ const FaqAdmin = () => {
     });
     setSelectedFaq(null);
   };
-
-  // TODO: - Membuat status faq terupdate berdasarkan toggle button
-  // status: 'aktif' & 'tidak-aktif'
-  // isChecked-nya true, maka status aktif, sebaliknya..
-
-  useEffect(() => {
-    getFaqs((data) => {
-      setFaqs(data);
-    });
-  }, []);
+  
 
   return (
     <AdminLayout title={"Halaman Depan / Faq"}>
@@ -189,7 +199,7 @@ const FaqAdmin = () => {
           </div>
 
           {/* DocumentList */}
-          <FaqAdminList faqs={faqs} openModal={openModal} />
+          <FaqAdminList faqs={faqs} openModal={openModal} handleToggleStatus={handleToggleStatus} />
         </div>
       </div>
     </AdminLayout>
