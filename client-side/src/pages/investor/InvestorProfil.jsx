@@ -88,17 +88,17 @@ const InvestorProfil = () => {
                                 src={
                                     selectedPhoto
                                         ? URL.createObjectURL(selectedPhoto) // Preview sebelum disimpan
-                                        : `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata?.foto_profil}` // Foto dari data investor
+                                        : `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}` // Foto dari data investor
                                 }
                                 alt="Profile avatar"
                             />
                             <div className="flex flex-col items-center md:items-start ml-0 md:ml-10">
-                                <label
-                                    htmlFor="photoUpload"
-                                    className="py-2 px-4 md:px-5 text-sm font-quicksand focus:outline-none bg-white rounded-full hover:bg-gray-100 dark:bg-[#D9D9D9] text-[#000] dark:hover:text-white dark:hover:bg-[#572618] mb-3 md:mb-5 cursor-pointer"
-                                >
-                                    Ganti Foto
-                                </label>
+                            <label
+                                htmlFor="photoUpload"
+                                className="py-2 px-4 md:px-5 text-sm font-quicksand focus:outline-none bg-white rounded-full hover:bg-[#572618] hover:text-white dark:bg-[#D9D9D9] text-[#000] mb-3 md:mb-5 cursor-pointer"
+                            >
+                                Ganti Foto
+                            </label>
                                 <input
                                     id="photoUpload"
                                     type="file"
@@ -109,7 +109,7 @@ const InvestorProfil = () => {
                                 {selectedPhoto && (
                                     <button
                                         onClick={handleSavePhoto}
-                                        className="py-2 px-4 md:px-5 text-sm font-quicksand focus:outline-none bg-blue-500 text-white rounded-full hover:bg-blue-600 dark:bg-[#00509E] dark:hover:bg-[#00376B] mb-3 md:mb-5"
+                                        className="py-2 px-4 md:px-5 text-sm font-quicksand focus:outline-none bg-[#572618] text-white rounded-full hover:bg-blue-600 dark:bg-[#00509E] dark:hover:bg-[#00376B] mb-3 md:mb-5"
                                     >
                                         Simpan Foto
                                     </button>

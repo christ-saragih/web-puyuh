@@ -68,9 +68,9 @@ const Navbar = () => {
                   className="w-10 h-10 rounded-full"
                 />
               ) : user.role === "investor" && investor &&
-                investor.investorBiodata.profil ? (
+                investor.investorBiodata.foto_profil ? (
                 <img
-                  src={investor.investorBiodata.foto_profil}
+                  src={`http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
                   alt={investor.investorBiodata.foto_profil}
                   className="w-10 h-10 rounded-full"
                 />
