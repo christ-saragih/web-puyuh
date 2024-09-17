@@ -4,6 +4,9 @@ import FaqItem from "./FaqItem";
 const FaqList = (props) => {
   const { faqs } = props;
 
+  console.log(faqs);
+  
+
   const [openQuestionId, setOpenQuestionId] = useState(1);
 
   const handleToggle = (id) => {
@@ -15,9 +18,7 @@ const FaqList = (props) => {
       {faqs.map((faq) => (
         <FaqItem
           key={faq.id}
-          id={faq.id}
-          question={faq.pertanyaan}
-          answer={faq.jawaban}
+          {...faq}
           isOpen={openQuestionId === faq.id}
           onToggle={() => handleToggle(faq.id)}
         />

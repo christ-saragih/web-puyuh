@@ -32,6 +32,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         foto_npwp: null,
         selfie_ktp: null,
     });
+    const [noKtp, setNoKtp] = useState("");
+    const [fotoKtp, setFotoKtp] = useState(null);
+    const [fotoNpwp, setFotoNpwp] = useState(null);
+    const [selfieKtp, setSelfieKtp] = useState(null);
+    const [noNpwp, setNoNpwp] = useState("");
     const [fotoKtpPreview, setFotoKtpPreview] = useState(null);
     const [fotoNpwpPreview, setFotoNpwpPreview] = useState(null);
     const [selfieKtpPreview, setSelfieKtpPreview] = useState(null);
@@ -45,6 +50,13 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         no_sid: "",
         tanggal_pembuatan_sid: "",
     });
+    const [latarPendidikan, setLatarPendidikan] = useState("");
+    const [sumberPenghasilan, setSumberPenghasilan] = useState("");
+    const [jumlahPenghasilan, setJumlahPenghasilan] = useState("");
+    const [bidangUsaha, setBidangUsaha] = useState("");
+    const [tujuanInvestasi, setTujuanInvestasi] = useState("");
+    const [noSid, setNoSid] = useState("");
+    const [tanggalPembuatanSid, setTanggalPembuatanSid] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,6 +66,70 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
     useEffect(() => {
         console.log("Categories:", categories);
     }, [categories]);
+
+    useEffect(() => {
+        if (investors?.investorBiodata) {
+            const { nama_lengkap, jk, tempat_lahir, tanggal_lahir, no_hp } = investors.investorBiodata;
+
+            // Update state based on available data
+            if (nama_lengkap) setNamaLengkap(nama_lengkap);
+            if (jk) setJk(jk);
+            if (tempat_lahir) setTempatLahir(tempat_lahir);
+            if (tanggal_lahir) setTanggalLahir(tanggal_lahir);
+            if (no_hp) setNoHp(no_hp);
+        }
+    }, [investors]);
+
+    useEffect(() => {
+        if (investors?.kategori_investor) {
+            const {kategori_investor} = investors.kategori_investor;
+
+            if (kategori_investor) setCategories(kategori_investor);
+    }
+}, [investors]);
+
+    useEffect(() => {
+        if (investors?.investorAlamat) {
+            const { alamat, provinsi, kota, kecamatan, kelurahan, kode_pos } = investors.investorAlamat;
+
+            // Update state based on available data
+            if (alamat) setAlamat(alamat);
+            if (provinsi) setProvinsi(provinsi);
+            if (kota) setKota(kota);
+            if (kecamatan) setKecamatan(kecamatan);
+            if (kelurahan) setKelurahan(kelurahan);
+            if (kode_pos) setKodePos(kode_pos);
+        }
+    }, [investors]);
+
+    useEffect(() => {
+        if (investors?.investorIdentitas) {
+            const { no_ktp, foto_ktp, no_npwp, foto_npwp, selfie_ktp } = investors.investorIdentitas;
+
+            // Update state based on available data
+            if (no_ktp) setNoKtp(no_ktp);
+            if (foto_ktp) setFotoKtpPreview(foto_ktp);
+            if (no_npwp) setNoNpwp(no_npwp);
+            if (foto_npwp) setFotoNpwpPreview(foto_npwp);
+            if (selfie_ktp) setSelfieKtpPreview(selfie_ktp);
+        }
+    }, [investors]);
+
+    useEffect(() => {
+        if (investors?.investorDataPendukung) {
+            const { latar_pendidikan, sumber_penghasilan, jumlah_penghasilan, bidang_usaha, tujuan_investasi, no_sid, tanggal_pembuatan_sid } = investors.investorDataPendukung;
+
+            // Update state based on available data
+            if (latar_pendidikan) setLatarPendidikan(latar_pendidikan);
+            if (sumber_penghasilan) setSumberPenghasilan(sumber_penghasilan);
+            if (jumlah_penghasilan) setJumlahPenghasilan(jumlah_penghasilan);
+            if (bidang_usaha) setBidangUsaha(bidang_usaha);
+            if (tujuan_investasi) setTujuanInvestasi(tujuan_investasi);
+            if (no_sid) setNoSid(no_sid);
+            if (tanggal_pembuatan_sid) setTanggalPembuatanSid(tanggal_pembuatan_sid);
+        }
+    }, [investors]);
+    
 
     const handleGenderDropdownToggle = () => {
         setIsGenderDropdownOpen(!isGenderDropdownOpen);
@@ -201,65 +277,49 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
 
     const handleSubmitIdentitas = async (e) => {
         e.preventDefault();
+        try{
+            const dataIdentitasToSend = {
+                no_ktp: noKtp,
+                foto_ktp: fotoKtp,
+                no_npwp: noNpwp,
+                foto_npwp: fotoNpwp,
+                selfie_ktp: selfieKtp,
+            };
+            console.log(dataIdentitasToSend);
 
-        console.log(formDataIdentitas);
-
-        const form = new FormData();
-        form.append("no_ktp", formDataIdentitas.no_ktp);
-        form.append("foto_ktp", formDataIdentitas.foto_ktp);
-        form.append("no_npwp", formDataIdentitas.no_npwp);
-        form.append("foto_npwp", formDataIdentitas.foto_npwp);
-        form.append("selfie_ktp", formDataIdentitas.selfie_ktp);
-
-        // console.log(form);
-
-        try {
-            const { data } = await apiInvestor.post(
-                "/identitas-investor",
-                form
+            const response = await apiInvestor.post(
+                `/identitas-investor`,
+                dataIdentitasToSend
             );
-            console.log("Identitas Investor data:", data);
-        } catch (err) {
-            console.error(
-                "Error submitting data:",
-                err.response ? err.response.data : err.message
-            );
+            console.log(response.data);
+        }catch (error) {
+            console.error("Error submitting data:", error);
+            console.error("Error response:", error.response);
         }
     };
 
     const handleSubmitPendukung = async (e) => {
         e.preventDefault();
+        try{
+            const dataPendukungToSend = {
+                latar_pendidikan: latarPendidikan,
+                sumber_penghasilan: sumberPenghasilan,
+                jumlah_penghasilan: jumlahPenghasilan,
+                bidang_usaha: bidangUsaha,
+                tujuan_investasi: tujuanInvestasi,
+                no_sid: noSid,
+                tanggal_pembuatan_sid: tanggalPembuatanSid,
+            };
+            console.log(dataPendukungToSend);
 
-        console.log(formDataPendukung);
-
-        const form = new FormData();
-        form.append("latar_pendidikan", formDataPendukung.latar_pendidikan);
-        form.append("sumber_penghasilan", formDataPendukung.sumber_penghasilan);
-        form.append("jumlah_penghasilan", formDataPendukung.jumlah_penghasilan);
-        form.append("bidang_usaha", formDataPendukung.bidang_usaha);
-        form.append("tujuan_investasi", formDataPendukung.tujuan_investasi);
-        form.append("no_sid", formDataPendukung.no_sid);
-        form.append(
-            "tanggal_pembuatan_sid",
-            formDataPendukung.tanggal_pembuatan_sid
-        );
-
-        try {
             const response = await apiInvestor.post(
-                "/data-pendukung-investor",
-                form,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+                `/data-pendukung-investor`,
+                dataPendukungToSend
             );
-            console.log("Response:", response.data);
-        } catch (err) {
-            console.error(
-                "Error submitting data:",
-                err.response ? err.response.data : err.message
-            );
+            console.log(response.data);
+        }catch (error) {
+            console.error("Error submitting data:", error);
+            console.error("Error response:", error.response);
         }
     };
 
@@ -281,9 +341,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={
-                                    investors?.investorBiodata.nama_lengkap
-                                }
+                                placeholder={"Nama Lengkap"}
                                 value={namaLengkap}
                                 onChange={handleNamaLengkapChange}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -372,7 +430,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="base-input"
                                 placeholder={
-                                    investors?.investorBiodata.tempat_lahir
+                                    "Tempar Lahir"
                                 }
                                 value={tempatLahir}
                                 onChange={handleTempatLahirChange}
@@ -499,7 +557,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={investors?.investorAlamat.alamat}
+                                placeholder="Alamat"
                                 value={alamat}
                                 onChange={(e) => setAlamat(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -515,7 +573,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={investors?.investorAlamat.provinsi}
+                                placeholder="Provinsi"
                                 value={provinsi}
                                 onChange={(e) => setProvinsi(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -531,7 +589,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={investors?.investorAlamat.kota}
+                                placeholder="Kota/Kabupaten"
                                 value={kota}
                                 onChange={(e) => setKota(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -547,9 +605,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={
-                                    investors?.investorAlamat.kecamatan
-                                }
+                                placeholder="Kecamatan"
                                 value={kecamatan}
                                 onChange={(e) => setKecamatan(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -565,9 +621,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={
-                                    investors?.investorAlamat.kelurahan
-                                }
+                                placeholder="Kelurahan"
                                 value={kelurahan}
                                 onChange={(e) => setKelurahan(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -583,7 +637,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={investors?.investorAlamat.kode_pos}
+                                placeholder="Kode Pos"
                                 value={kodePos}
                                 onChange={(e) => setKodePos(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
@@ -617,11 +671,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="nomor-ktp-input"
                                 name="no_ktp"
-                                placeholder={
-                                    investors?.investorIdentitas.no_ktp
-                                }
-                                value={formDataIdentitas.no_ktp}
-                                onChange={handleChangeIdentitas}
+                                placeholder="Nomor KTP"
+                                value={noKtp}
+                                onChange={(e) => setNoKtp(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
                             />
                         </div>
@@ -695,11 +747,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="nomor-npwp-input"
                                 name="no_npwp"
-                                placeholder={
-                                    investors?.investorIdentitas.no_npwp
-                                }
-                                value={formDataIdentitas.no_npwp}
-                                onChange={handleChangeIdentitas}
+                                placeholder="Nomor NPWP"
+                                value={noNpwp}
+                                onChange={(e) => setNoNpwp(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
                             />
                         </div>
@@ -849,12 +899,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="latar-pendidikan-input"
                                 name="latar_pendidikan"
-                                placeholder={
-                                    investors?.investorDataPendukung
-                                        .latar_pendidikan
-                                }
-                                value={formDataPendukung.latar_pendidikan}
-                                onChange={handleChangePendukung}
+                                placeholder="Latar Pendidikan"
+                                value={latarPendidikan}
+                                onChange={(e) => setLatarPendidikan(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>
@@ -869,12 +916,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="sumber-penghasilan-input"
                                 name="sumber_penghasilan"
-                                placeholder={
-                                    investors?.investorDataPendukung
-                                        .sumber_penghasilan
-                                }
-                                value={formDataPendukung.sumber_penghasilan}
-                                onChange={handleChangePendukung}
+                                placeholder="Sumber Penghasilan"
+                                value={sumberPenghasilan}
+                                onChange={(e) => setSumberPenghasilan(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>
@@ -889,12 +933,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="jumlah-penghasilan-input"
                                 name="jumlah_penghasilan"
-                                placeholder={
-                                    investors?.investorDataPendukung
-                                        .jumlah_penghasilan
-                                }
-                                value={formDataPendukung.jumlah_penghasilan}
-                                onChange={handleChangePendukung}
+                                placeholder= "Jumlah Penghasilan"
+                                value={jumlahPenghasilan}
+                                onChange={(e) => setJumlahPenghasilan(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>
@@ -909,12 +950,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="bidang-usaha-input"
                                 name="bidang_usaha"
-                                placeholder={
-                                    investors?.investorDataPendukung
-                                        .bidang_usaha
-                                }
-                                value={formDataPendukung.bidang_usaha}
-                                onChange={handleChangePendukung}
+                                placeholder= "Bidang Usaha"
+                                value={bidangUsaha}
+                                onChange={(e) => setBidangUsaha(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>
@@ -929,12 +967,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="tujuan-investasi-input"
                                 name="tujuan_investasi"
-                                placeholder={
-                                    investors?.investorDataPendukung
-                                        .tujuan_investasi
-                                }
-                                value={formDataPendukung.tujuan_investasi}
-                                onChange={handleChangePendukung}
+                                placeholder= "Tujuan Investasi"
+                                value={tujuanInvestasi}
+                                onChange={(e) => setTujuanInvestasi(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>
@@ -949,11 +984,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="text"
                                 id="no-sid-input"
                                 name="no_sid"
-                                placeholder={
-                                    investors?.investorDataPendukung.no_sid
-                                }
-                                value={formDataPendukung.no_sid}
-                                onChange={handleChangePendukung}
+                                placeholder= "Nomor SID"
+                                value={noSid}
+                                onChange={(e) => setNoSid(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>
@@ -968,11 +1001,8 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 type="date"
                                 id="tanggal-pembuatan-sid-input"
                                 name="tanggal_pembuatan_sid"
-                                value={
-                                    formDataPendukung.tanggal_pembuatan_sid ||
-                                    ""
-                                }
-                                onChange={handleChangePendukung}
+                                value= {tanggalPembuatanSid}
+                                onChange={(e) => setTanggalPembuatanSid(e.target.value)}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
                             />
                         </div>

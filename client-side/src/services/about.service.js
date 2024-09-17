@@ -1,14 +1,10 @@
-import axios from "axios";
+import { axiosInstance } from "../lib/axios";
 
 export const getAbouts = (callback) => {
-  axios
-    .get("http://localhost:3000/api/tentang-kami")
+  axiosInstance
+    .get("/tentang-kami")
     .then((res) => {
       callback(res.data.data);
-      console.log("DATA TENTANG KAMI");
-      console.log(res.data.data);
-      
-      
     })
     .catch((err) => {
       console.log(err);
@@ -16,8 +12,8 @@ export const getAbouts = (callback) => {
 };
 
 export const getAboutSejarahs = (callback) => {
-  axios
-    .get("http://localhost:3000/api/sejarah")
+  axiosInstance
+    .get("/sejarah")
     .then((res) => {
       callback(res.data.data);
     })
@@ -27,8 +23,8 @@ export const getAboutSejarahs = (callback) => {
 };
 
 export const getFounder = (callback) => {
-  axios
-    .get("http://localhost:3000/api/founder")
+  axiosInstance
+    .get("/founder")
     .then((res) => {
       callback(res.data);
     })

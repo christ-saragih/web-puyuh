@@ -1,4 +1,15 @@
-import { apiAdmin } from "../hooks/useAxiosConfig";
+import { apiAdmin, apiInvestor } from "../hooks/useAxiosConfig";
+
+export const getInvestor = (callback) => {
+  apiInvestor
+    .get("/investor")
+    .then((res) => {
+      callback(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 export const getInvestors = (callback) => {
   apiAdmin
