@@ -213,7 +213,7 @@ const InvestorDashboard = () => {
 
                   <MdNotificationsActive className="w-8 h-8 text-gray-500" />
                   <img
-                  src={ `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}`}
+                  src={ `http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
                   alt="Default Profile"
                   className="w-10 h-10 rounded-full"
                 />
