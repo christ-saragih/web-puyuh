@@ -14,6 +14,11 @@ import { getTransaksi } from "../../services/transaksi.service";
 import BatchListInvestor from "../../components/investor/BatchListInvestor";
 import { getBatchs } from "../../services/batch.service";
 import InvestorLayout from "../../layouts/InvestorLayout";
+import { Dropdown } from "flowbite-react";
+import { LuChevronDown, LuHome, LuLogOut } from "react-icons/lu";
+import { Link} from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -22,6 +27,7 @@ const InvestorDashboard = () => {
   const [transaksi, setTransaksi] = useState([]);
   const navigate = useNavigate();
   const [batchs, setBatchs] = useState([]);
+  const { logout } = useContext(AuthContext);
 
   useEffect(() => {
     getBatchs((data) => {
@@ -39,6 +45,16 @@ const InvestorDashboard = () => {
   const totalInvestasi = transaksi.reduce((total, item) => {
     return total + item.total_investasi;
   }, 0);
+
+  const Logout = async () => {
+    try {
+      await logout();
+
+      navigate("/masuk");
+    } catch (error) {
+      console.log("Logout gagal", error);
+    }
+  };
 
   useEffect(() => {
     const fetchInvestorData = async () => {
@@ -196,8 +212,38 @@ const InvestorDashboard = () => {
                   </form>
 
                   <MdNotificationsActive className="w-8 h-8 text-gray-500" />
-
-                  <CgProfile className="w-8 h-8" />
+                  <img
+                  src={ `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}`}
+                  alt="Default Profile"
+                  className="w-10 h-10 rounded-full"
+                />
+                  <Dropdown
+                label=""
+                dismissOnClick={false}
+                placement="bottom-start"
+                renderTrigger={() => (
+                  <span className="cursor-pointer">
+                    <LuChevronDown className="w-5 h-5 -ml-4" />
+                  </span>
+                )}
+              >
+                <Dropdown.Header>
+                  <span className="block text-base">{investor?.username}</span>
+                  <span className="block truncate text-sm font-medium">
+                    {investor?.email}
+                  </span>
+                </Dropdown.Header>
+                <Dropdown.Item
+                  icon={LuHome}
+                  as={Link}
+                  to={"/"}
+                >
+                  Beranda
+                </Dropdown.Item>
+                <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                  Keluar
+                </Dropdown.Item>
+              </Dropdown>
                 </div>
                 <div className="relative w-full h-100 ml-3 md:h-auto md:overflow-hidden overflow-x-scroll">
                   <div className="w-[330px] h-[200px] md:w-full md:h-full">
