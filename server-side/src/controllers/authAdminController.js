@@ -115,7 +115,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "Strict",
-            // maxAge: 1 * 60 * 1000,
+            maxAge: 10 * 60 * 1000,
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
@@ -217,7 +217,7 @@ exports.refreshToken = async (req, res) => {
                     httpOnly: true,
                     secure: true,
                     sameSite: "Strict",
-                    // maxAge: 1 * 60 * 1000,
+                    maxAge: 10 * 60 * 1000,
                 });
 
                 res.status(200).json({ accessToken: newAccessToken });

@@ -51,12 +51,12 @@ module.exports = (sequelize, DataTypes) => {
             },
             total_investasi: DataTypes.BIGINT,
             status: {
-                type: DataTypes.ENUM("segera", "proses", "selesai"),
+                type: DataTypes.ENUM("gagal", "proses", "berhasil"),
                 allowNull: false,
                 validate: {
                     isIn: {
-                        args: [["segera", "proses", "selesai"]],
-                        msg: "Status harus salah satu dari 'segera', 'proses' atau 'selesai'",
+                        args: [["gagal", "proses", "berhasil"]],
+                        msg: "Status harus salah satu dari 'gagal', 'proses' atau 'berhasil'",
                     },
                 },
             },
