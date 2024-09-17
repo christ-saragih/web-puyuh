@@ -55,5 +55,5 @@ router.get("/:slug", investasiController.findDataBySlug);
 router.delete("/:id", authenticateToken("admin"), investasiController.delete);
 router.get("/image/:gambar", investasiController.getImageByName);
 router.get("/filter/status", investasiController.getInvestasiByStatus);
-
+router.get("/total/investment", investasiController.getTotalInvestment);
 module.exports = router;

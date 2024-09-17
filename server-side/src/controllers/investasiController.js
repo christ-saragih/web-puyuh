@@ -578,3 +578,19 @@ exports.getInvestasiByStatus = async (req, res) => {
         });
     }
 };
+
+exports.getTotalInvestment = async (req, res) => {
+    try {
+        const totalInvestment = await Investasi.count();
+
+        res.status(200).json({
+            message: "Total Invesment",
+            data: totalInvestment,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
