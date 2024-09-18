@@ -193,7 +193,7 @@ button[data-testid="flowbite-dropdown-target"] span {
 }
 
 button[data-testid="flowbite-dropdown-target"] span svg {
-  @apply  mt-1 !important;
+  @apply mt-1 !important;
 }
 
 li[role="menuitem"] button,
@@ -229,4 +229,28 @@ li[role="menuitem"] a svg {
 .quill > .ql-container > .ql-editor.ql-blank::before {
   @apply text-sm text-gray-500 not-italic content-['Masukkan_deskripsi..'] !important;
 }
+
+/* Calendar: Start */
+.calendar-admin .rs-calendar-body {
+  @apply px-0 !important;
+}
+
+.calendar-admin .rs-calendar-table-cell-content {
+  @apply h-fit py-2 hover:bg-[#ffe9dd] !important;
+}
+
+.calendar-admin .rs-calendar-table-cell-content span {
+  @apply mt-0 !important;
+}
+
+.calendar-admin .rs-calendar-table-cell.rs-calendar-table-cell-is-today span {
+  @apply bg-[#fc6a2f] !important;
+}
+
+.calendar-admin
+  .rs-calendar-table-cell.rs-calendar-table-cell-selected
+  .rs-calendar-table-cell-content {
+  @apply ring-1 ring-[#fc6a2f] ring-offset-0  !important;
+}
+/* Calendar: Start */
 /* ADMIN: End */
