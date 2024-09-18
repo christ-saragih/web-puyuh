@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notNull: { msg: "Nama lengkap tidak boleh null!" },
+                    // notNull: { msg: "Nama lengkap tidak boleh null!" },
                     notEmpty: { msg: "Nama lengkap tidak boleh kosong!" },
                 },
             },
