@@ -1,6 +1,7 @@
 const { InvestorBiodata, Investor } = require("../models");
 const fs = require("fs");
 const path = require("path");
+const { exit } = require("process");
 
 const ensureDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -228,9 +229,14 @@ exports.upsert = async (req, res) => {
             where: { investorId: req.user.id },
         });
 
+        console.log(investorBiodata);
+        // exit();
+
         const investor = await Investor.findOne({
             where: { id: req.user.id },
         });
+        // console.log(investor);
+        // exit();
 
         const foto_profil = req.file ? req.file.buffer : null;
 
@@ -250,7 +256,7 @@ exports.upsert = async (req, res) => {
                 fs.writeFileSync(path.join(dir, nama_foto), foto_profil);
             }
 
-            const investorId = req.investor.id;
+            const investorId = req.user.id;
             const investorBiodata = await InvestorBiodata.create({
                 investorId: investorId,
                 nama_lengkap,
