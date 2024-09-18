@@ -334,6 +334,7 @@ const DetailInvestasi = () => {
                 <ModalInvestasi
                     open={showModal}
                     closeModal={() => setShowModal(false)}
+                    investasiId={investasi.id}
                 />
             )}
         </GuestLayouts>
