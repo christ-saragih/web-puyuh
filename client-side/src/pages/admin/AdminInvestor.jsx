@@ -12,15 +12,7 @@ import {
 } from "../../services/investor.service.js";
 import { useEffect, useState } from "react";
 import { Tabs } from "flowbite-react";
-import {
-  PiCalendarCheck,
-  PiCheck,
-  PiNotePencilBold,
-  PiTrashBold,
-  PiUserBold,
-  PiUsersThreeBold,
-} from "react-icons/pi";
-import ActionButton from "../../components/common/ActionButton.jsx";
+import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 import { LuCheck, LuX } from "react-icons/lu";
 
 const AdminInvestor = () => {
@@ -29,14 +21,46 @@ const AdminInvestor = () => {
     username: "",
     email: "",
     kategori_investor: "",
-    investorBiodata: [],
-    investorAlamat: [],
-    investorIdentitas: [],
-    investorDataPendukung: [],
+    investorBiodata: {
+      jk: "",
+      tempat_lahir: "",
+      tanggal_lahir: "",
+      no_hp: "",
+    },
+    investorAlamat: {
+      alamat: "",
+      provinsi: "",
+      kota: "",
+      kecamatan: "",
+      kelurahan: "",
+      kode_pos: "",
+    },
+    investorIdentitas: {
+      no_ktp: "",
+      foto_ktp: "",
+      no_npwp: "",
+      foto_npwp: "",
+      selfie_ktp: "",
+    },
+    investorDataPendukung: {
+      latar_pendidikan: "",
+      sumber_penghasilan: "",
+      jumlah_penghasilan: "",
+      bidang_usaha: "",
+      tujuan_investasi: "",
+      no_sid: "",
+      tanggal_pembuatan_sid: "",
+    },
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
+
+  useEffect(() => {
+    getInvestors((data) => {
+      setInvestors(data);
+    });
+  }, []);
 
   // modal logic
   const openModal = (type, investor = null) => {
@@ -64,12 +88,6 @@ const AdminInvestor = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    getInvestors((data) => {
-      setInvestors(data);
-    });
-  }, []);
-
   return (
     <AdminLayout title={"Halaman Managemen Investor"}>
       <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
@@ -91,15 +109,19 @@ const AdminInvestor = () => {
         </div>
 
         {/* START: Modal detail profil investor */}
-        <Modal open={isModalOpen} onClose={closeModal} size={modalType === "view_transactions" ? "lg" : ""}>
+        <Modal
+          open={isModalOpen}
+          onClose={closeModal}
+          size={modalType === "view_transactions" ? "lg" : ""}
+        >
           {modalType === "detail_investor" && (
             <>
               <Modal.Header onClose={closeModal}>
                 <div className="flex items-center mx-auto mt-2 gap-4">
-                  {formInvestor.investorBiodata.foto_profil ? (
+                  {formInvestor.investorBiodata?.foto_profil ? (
                     <img
                       src={formInvestor.investorBiodata.foto_profil}
-                      alt={formInvestor.investorBiodata.nama_lengkap}
+                      alt={formInvestor.investorBiodata.foto_profil}
                       className="w-24 h-24 rounded-full"
                     />
                   ) : (
@@ -116,7 +138,7 @@ const AdminInvestor = () => {
 
                   <div>
                     <h3 className="text-2xl font-semibold text-[#572618]">
-                      {formInvestor.investorBiodata.nama_lengkap}
+                      {formInvestor.investorBiodata?.nama_lengkap}
                     </h3>
                     <p>{formInvestor.kategori_investor}</p>
                   </div>
@@ -141,27 +163,27 @@ const AdminInvestor = () => {
                     <Label value={"Jenis Kelamin"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorBiodata.jk}
+                      value={formInvestor.investorBiodata?.jk}
                       isDisabled={true}
                     />
                     <Label value={"Tempat Lahir"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorBiodata.tempat_lahir}
+                      value={formInvestor.investorBiodata?.tempat_lahir}
                       isDisabled={true}
                     />
                     <Label value={"Tanggal Lahir"} />
                     <Input
                       variant={"disabled"}
                       value={formatDate(
-                        formInvestor.investorBiodata.tanggal_lahir
+                        formInvestor.investorBiodata?.tanggal_lahir
                       )}
                       isDisabled={true}
                     />
                     <Label value={"Nomor Telepon"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorBiodata.no_hp}
+                      value={formInvestor.investorBiodata?.no_hp}
                       isDisabled={true}
                     />
                   </Tabs.Item>
@@ -169,37 +191,37 @@ const AdminInvestor = () => {
                     <Label value={"Alamat sesuai KTP"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.alamat}
+                      value={formInvestor.investorAlamat?.alamat}
                       isDisabled={true}
                     />
                     <Label value={"Provinsi"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.provinsi}
+                      value={formInvestor.investorAlamat?.provinsi}
                       isDisabled={true}
                     />
                     <Label value={"Kabupaten/Kota"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kota}
+                      value={formInvestor.investorAlamat?.kota}
                       isDisabled={true}
                     />
                     <Label value={"Kecamatan"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kecamatan}
+                      value={formInvestor.investorAlamat?.kecamatan}
                       isDisabled={true}
                     />
                     <Label value={"Kelurahan"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kelurahan}
+                      value={formInvestor.investorAlamat?.kelurahan}
                       isDisabled={true}
                     />
                     <Label value={"Kode Pos"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kode_pos}
+                      value={formInvestor.investorAlamat?.kode_pos}
                       isDisabled={true}
                     />
                   </Tabs.Item>
@@ -207,13 +229,13 @@ const AdminInvestor = () => {
                     <Label value={"Nomor KTP"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorIdentitas.no_ktp}
+                      value={formInvestor.investorIdentitas?.no_ktp}
                       isDisabled={true}
                     />
                     <Label value={"Foto KTP"} />
                     <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
                       <img
-                        src={formInvestor.investorIdentitas.foto_ktp}
+                        src={formInvestor.investorIdentitas?.foto_ktp}
                         alt=""
                         className="h-full w-[40%] object-cover rounded-lg"
                       />
@@ -221,13 +243,13 @@ const AdminInvestor = () => {
                     <Label value={"Nomor NPWP"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorIdentitas.no_npwp}
+                      value={formInvestor.investorIdentitas?.no_npwp}
                       isDisabled={true}
                     />
                     <Label value={"Foto NPWP"} />
                     <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
                       <img
-                        src={formInvestor.investorIdentitas.foto_npwp}
+                        src={formInvestor.investorIdentitas?.foto_npwp}
                         alt=""
                         className="h-full w-[40%] object-cover rounded-lg"
                       />
@@ -235,7 +257,7 @@ const AdminInvestor = () => {
                     <Label value={"Foto Selfi dengan KTP"} />
                     <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
                       <img
-                        src={formInvestor.investorIdentitas.selfie_ktp}
+                        src={formInvestor.investorIdentitas?.selfie_ktp}
                         alt=""
                         className="h-full w-[40%] object-cover rounded-lg"
                       />
@@ -246,7 +268,7 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.latar_pendidikan
+                        formInvestor.investorDataPendukung?.latar_pendidikan
                       }
                       isDisabled={true}
                     />
@@ -254,7 +276,7 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.sumber_penghasilan
+                        formInvestor.investorDataPendukung?.sumber_penghasilan
                       }
                       isDisabled={true}
                     />
@@ -262,35 +284,35 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.jumlah_penghasilan
+                        formInvestor.investorDataPendukung?.jumlah_penghasilan
                       }
                       isDisabled={true}
                     />
                     <Label value={"Bidang Usaha"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorDataPendukung.bidang_usaha}
+                      value={formInvestor.investorDataPendukung?.bidang_usaha}
                       isDisabled={true}
                     />
                     <Label value={"Tujuang Investasi"} />
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.tujuan_investasi
+                        formInvestor.investorDataPendukung?.tujuan_investasi
                       }
                       isDisabled={true}
                     />
                     <Label value={"Nomor SID"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorDataPendukung.no_sid}
+                      value={formInvestor.investorDataPendukung?.no_sid}
                       isDisabled={true}
                     />
                     <Label value={"Tanggal Pembuatan SID"} />
                     <Input
                       variant={"disabled"}
                       value={formatDate(
-                        formInvestor.investorDataPendukung.tanggal_pembuatan_sid
+                        formInvestor.investorDataPendukung?.tanggal_pembuatan_sid
                       )}
                       isDisabled={true}
                     />
