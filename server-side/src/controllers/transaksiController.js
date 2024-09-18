@@ -208,6 +208,10 @@ exports.getAllTransactionByInvestorId = async (req, res) => {
         const { investorId } = req.params;
         const transaksi = await Transaksi.findAll({
             where: { investorId: investorId },
+            include: {
+                model: Investasi,
+                as: "investasi",
+            },
         });
         res.status(200).json({
             message: "Data Transaksi!",
