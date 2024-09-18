@@ -241,15 +241,9 @@ exports.upsert = async (req, res) => {
         const foto_profil = req.file ? req.file.buffer : null;
 
         if (!investorBiodata) {
-            if (
-                foto_profil &&
-                nama_lengkap &&
-                jk &&
-                tempat_lahir &&
-                tanggal_lahir &&
-                no_hp &&
-                kategori_investor
-            ) {
+            nama_foto = null;
+
+            if (foto_profil) {
                 const dir = "public/images/investors/profile";
                 ensureDir(dir);
                 nama_foto = `${Date.now()}-${req.file.originalname}`;
@@ -267,7 +261,7 @@ exports.upsert = async (req, res) => {
                 foto_profil: nama_foto,
             });
 
-            const investor = await Investor.update({
+            await investor.update({
                 kategori_investor,
             });
 
