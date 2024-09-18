@@ -12,15 +12,7 @@ import {
 } from "../../services/investor.service.js";
 import { useEffect, useState } from "react";
 import { Tabs } from "flowbite-react";
-import {
-  PiCalendarCheck,
-  PiCheck,
-  PiNotePencilBold,
-  PiTrashBold,
-  PiUserBold,
-  PiUsersThreeBold,
-} from "react-icons/pi";
-import ActionButton from "../../components/common/ActionButton.jsx";
+import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 import { LuCheck, LuX } from "react-icons/lu";
 
 const AdminInvestor = () => {
@@ -29,10 +21,36 @@ const AdminInvestor = () => {
     username: "",
     email: "",
     kategori_investor: "",
-    investorBiodata: [],
-    investorAlamat: [],
-    investorIdentitas: [],
-    investorDataPendukung: [],
+    investorBiodata: {
+      jk: "",
+      tempat_lahir: "",
+      tanggal_lahir: "",
+      no_hp: "",
+    },
+    investorAlamat: {
+      alamat: "",
+      provinsi: "",
+      kota: "",
+      kecamatan: "",
+      kelurahan: "",
+      kode_pos: "",
+    },
+    investorIdentitas: {
+      no_ktp: "",
+      foto_ktp: "",
+      no_npwp: "",
+      foto_npwp: "",
+      selfie_ktp: "",
+    },
+    investorDataPendukung: {
+      latar_pendidikan: "",
+      sumber_penghasilan: "",
+      jumlah_penghasilan: "",
+      bidang_usaha: "",
+      tujuan_investasi: "",
+      no_sid: "",
+      tanggal_pembuatan_sid: "",
+    },
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -91,7 +109,11 @@ const AdminInvestor = () => {
         </div>
 
         {/* START: Modal detail profil investor */}
-        <Modal open={isModalOpen} onClose={closeModal} size={modalType === "view_transactions" ? "lg" : ""}>
+        <Modal
+          open={isModalOpen}
+          onClose={closeModal}
+          size={modalType === "view_transactions" ? "lg" : ""}
+        >
           {modalType === "detail_investor" && (
             <>
               <Modal.Header onClose={closeModal}>
