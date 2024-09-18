@@ -1,6 +1,9 @@
-import { PiPlusCircle } from "react-icons/pi";
-import Dropdown from "../../../components/common/Dropdown.jsx";
+import Label from "../../../components/common/Label.jsx";
+import Input from "../../../components/common/Input.jsx";
 import InputSearch from "../../../components/common/InputSearch.jsx";
+import FileInput from "../../../components/common/FileInput.jsx";
+import Modal from "../../../components/common/Modal.jsx";
+import Dropdown from "../../../components/common/Dropdown.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
 import DocumentList from "../../../components/admin/DocumentList.jsx";
 import {
@@ -10,10 +13,7 @@ import {
   deleteDocument,
 } from "../../../services/document.service.js";
 import { useEffect, useState } from "react";
-import Modal from "../../../components/common/Modal.jsx";
-import Label from "../../../components/common/Label.jsx";
-import Input from "../../../components/common/Input.jsx";
-import FileInput from "../../../components/common/FileInput.jsx";
+import { PiPlusCircle } from "react-icons/pi";
 
 const Dokumen = () => {
   const [documents, setDocuments] = useState([]);
@@ -29,15 +29,21 @@ const Dokumen = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData({ ...formData, file: file });
-    setSelectedFile(e.target.files[0].name);
-  };
+  useEffect(() => {
+    getDocument((data) => {
+      setDocuments(data);
+    });
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, file: file });
+    setSelectedFile(e.target.files[0].name);
   };
 
   const handleAddDocument = () => {
@@ -80,11 +86,17 @@ const Dokumen = () => {
     });
   };
 
-  useEffect(() => {
-    getDocument((data) => {
-      setDocuments(data);
+  const handleToggleStatus = (documentId, newStatus) => {
+    updateDocument(documentId, { status: newStatus }, (updateDocument) => {
+      setDocuments((prevDocuments) =>
+        prevDocuments.map((document) =>
+          document.id === updateDocument.id
+            ? { ...document, status: updateDocument.status }
+            : document
+        )
+      );
     });
-  }, []);
+  };
 
   const openModal = (type, document = null) => {
     setModalType(type);
@@ -206,7 +218,7 @@ const Dokumen = () => {
           </div>
 
           {/* DocumentList */}
-          <DocumentList documents={documents} openModal={openModal} />
+          <DocumentList documents={documents} openModal={openModal} handleToggleStatus={handleToggleStatus}/>
         </div>
       </div>
     </AdminLayout>
