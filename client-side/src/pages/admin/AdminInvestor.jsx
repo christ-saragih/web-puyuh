@@ -1,4 +1,3 @@
-import Dropdown from "../../components/common/Dropdown";
 import Modal from "../../components/common/Modal";
 import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
@@ -14,6 +13,8 @@ import { useEffect, useState } from "react";
 import { Tabs } from "flowbite-react";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 import { LuCheck, LuX } from "react-icons/lu";
+import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
+import { formatRupiah } from "../../utils/formatRupiah.js";
 
 const AdminInvestor = () => {
   const [investors, setInvestors] = useState([]);
@@ -53,6 +54,8 @@ const AdminInvestor = () => {
     },
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
 
@@ -81,6 +84,14 @@ const AdminInvestor = () => {
         });
       });
     }
+
+    if (type === "view_transactions" && investor) {
+      setSelectedInvestor(investor);
+
+      getTransactionsByInvestor(investor.id, (transaction) => {
+        setTransactions(transaction);
+      });
+    }
   };
 
   const closeModal = () => {
@@ -92,12 +103,6 @@ const AdminInvestor = () => {
     <AdminLayout title={"Halaman Managemen Investor"}>
       <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
         <div className="flex gap-5 mb-6">
-          <Dropdown
-            options={["1", "2", "3"]}
-            label="Tampilkan"
-            onOptionSelect={"1"}
-          />
-
           {/* FITUR SEARCHING */}
           <InputSearch />
 
@@ -312,7 +317,8 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={formatDate(
-                        formInvestor.investorDataPendukung?.tanggal_pembuatan_sid
+                        formInvestor.investorDataPendukung
+                          ?.tanggal_pembuatan_sid
                       )}
                       isDisabled={true}
                     />
@@ -327,7 +333,11 @@ const AdminInvestor = () => {
           {modalType === "view_transactions" && (
             <>
               <Modal.Header
-                title={"Riwayat Transaksi Bennefit Christy Saragih"}
+                title={`Riwayat Transaksi ${
+                  transactions[0]?.investor?.investorBiodata?.nama_lengkap
+                    ? transactions[0].investor.investorBiodata.nama_lengkap
+                    : ""
+                }`}
                 onClose={closeModal}
               ></Modal.Header>
 
@@ -357,19 +367,23 @@ const AdminInvestor = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2, 3, 4, 5].map((i) => (
+                    {transactions.map((transaction, index) => (
                       <tr
-                        key={i}
+                        key={transaction.id}
                         className="bg-white font-medium text-gray-600 border-b hover:bg-gray-50"
                       >
                         <td
                           scope="row"
                           className="px-6 py-4 whitespace-nowrap "
                         >
-                          {i}
+                          {1 + index++}
                         </td>
-                        <td className="px-6 py-4">Kloter {i}</td>
-                        <td className="px-6 py-4">Rp 5.800.000</td>
+                        <td className="px-6 py-4">
+                          {transaction.investasi.judul}
+                        </td>
+                        <td className="px-6 py-4">
+                          {formatRupiah(transaction.total_investasi)}
+                        </td>
                         <td className="px-6 py-4">
                           <p>BCA</p>
                           <p className="text-sm text-gray-500 font-normal">
@@ -379,14 +393,16 @@ const AdminInvestor = () => {
                         <td className="px-6 py-4">
                           <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
                             <LuCheck className="-ms-[3px] w-4 h-4" />
-                            <p className="font-medium">Sukses</p>
+                            <p className="font-medium">{transaction.status}</p>
                           </div>
                           {/* <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
                       <LuX className="-ms-[3px] w-4 h-4" />
                       <p className="font-medium">Gagal</p>
                     </div> */}
                         </td>
-                        <td className="px-6 py-4">8 September 2024</td>
+                        <td className="px-6 py-4">
+                          {formatDate(transaction.tanggal_transaksi)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
