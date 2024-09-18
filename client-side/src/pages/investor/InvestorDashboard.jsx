@@ -16,9 +16,10 @@ import { getBatchs } from "../../services/batch.service";
 import InvestorLayout from "../../layouts/InvestorLayout";
 import { Dropdown } from "flowbite-react";
 import { LuChevronDown, LuHome, LuLogOut } from "react-icons/lu";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthProvider";
+import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -82,8 +83,7 @@ const InvestorDashboard = () => {
     <div className="bg-white w-dvw min-h-screen overflow-y-auto md:py-5 py-14 pe-6 relative">
       <InvestorLayout>
         {/* Sidebar untuk tampilan mobile */}
-        <div className="fixed top-0 left-0 bottom-0 z-50 md:hidden">
-        </div>
+        <div className="fixed top-0 left-0 bottom-0 z-50 md:hidden"></div>
 
         {/* Header untuk Mobile */}
         <div className="bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-between p-4">
@@ -96,38 +96,44 @@ const InvestorDashboard = () => {
           </form>
           <div className="flex items-center space-x-4">
             <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" />
-            <img
-                  src={ `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}`}
-                  alt="Default Profile"
-                  className="w-10 h-10 rounded-full"
-                />
+            {investor?.investorBiodata?.foto_profil ? (
+              <img
+                src={investor.investorBiodata.foto_profil}
+                alt={investor.investorBiodata.foto_profil}
+                className="w-10 h-10 rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 p-2">
+                {investor?.kategori_investor === "organisasi" ? (
+                  <PiUsersThreeBold className="w-full h-full" />
+                ) : (
+                  <PiUserBold className="w-full h-full" />
+                )}
+              </div>
+            )}
             <Dropdown
-                  label=""
-                  dismissOnClick={false}
-                  placement="bottom-start"
-                  renderTrigger={() => (
-                    <span className="cursor-pointer">
-                      <LuChevronDown className="w-5 h-5 -ml-4" />
-                    </span>
-                  )}
-                >
-                  <Dropdown.Header>
-                    <span className="block text-base">{investor?.username}</span>
-                    <span className="block truncate text-sm font-medium">
-                      {investor?.email}
-                    </span>
-                  </Dropdown.Header>
-                  <Dropdown.Item
-                    icon={LuHome}
-                    as={Link}
-                    to={"/"}
-                  >
-                    Beranda
-                  </Dropdown.Item>
-                  <Dropdown.Item icon={LuLogOut} onClick={Logout}>
-                    Keluar
-                  </Dropdown.Item>
-                </Dropdown>
+              label=""
+              dismissOnClick={false}
+              placement="bottom-start"
+              renderTrigger={() => (
+                <span className="cursor-pointer">
+                  <LuChevronDown className="w-5 h-5 -ml-4" />
+                </span>
+              )}
+            >
+              <Dropdown.Header>
+                <span className="block text-base">{investor?.username}</span>
+                <span className="block truncate text-sm font-medium">
+                  {investor?.email}
+                </span>
+              </Dropdown.Header>
+              <Dropdown.Item icon={LuHome} as={Link} to={"/"}>
+                Beranda
+              </Dropdown.Item>
+              <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                Keluar
+              </Dropdown.Item>
+            </Dropdown>
           </div>
         </div>
 
@@ -214,7 +220,7 @@ const InvestorDashboard = () => {
 
               {/* Calendar and Notification Section */}
               <div className="md:col-span-1 relative">
-                <div className="hidden md:flex items-center justify-between gap-5 mb-4">
+                <div className="hidden md:flex items-center justify-between  mb-4">
                   <form className="w-full md:w-[63%]">
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
@@ -243,38 +249,46 @@ const InvestorDashboard = () => {
                   </form>
 
                   <MdNotificationsActive className="w-8 h-8 text-gray-500" />
-                <img
-                  src={ `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}`}
-                  alt="Default Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-                <Dropdown
-                  label=""
-                  dismissOnClick={false}
-                  placement="bottom-start"
-                  renderTrigger={() => (
-                    <span className="cursor-pointer">
-                      <LuChevronDown className="w-5 h-5 -ml-4" />
-                    </span>
+                  {investor?.investorBiodata?.foto_profil ? (
+                    <img
+                      src={investor.investorBiodata.foto_profil}
+                      alt={investor.investorBiodata.foto_profil}
+                      className="w-10 h-10 rounded-full"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 p-2">
+                      {investor?.kategori_investor === "organisasi" ? (
+                        <PiUsersThreeBold className="w-full h-full" />
+                      ) : (
+                        <PiUserBold className="w-full h-full" />
+                      )}
+                    </div>
                   )}
-                >
-                  <Dropdown.Header>
-                    <span className="block text-base">{investor?.username}</span>
-                    <span className="block truncate text-sm font-medium">
-                      {investor?.email}
-                    </span>
-                  </Dropdown.Header>
-                  <Dropdown.Item
-                    icon={LuHome}
-                    as={Link}
-                    to={"/"}
+                  <Dropdown
+                    label=""
+                    dismissOnClick={false}
+                    placement="bottom-start"
+                    renderTrigger={() => (
+                      <span className="cursor-pointer">
+                        <LuChevronDown className="w-5 h-5 -ml-4" />
+                      </span>
+                    )}
                   >
-                    Beranda
-                  </Dropdown.Item>
-                  <Dropdown.Item icon={LuLogOut} onClick={Logout}>
-                    Keluar
-                  </Dropdown.Item>
-                </Dropdown>
+                    <Dropdown.Header>
+                      <span className="block text-base">
+                        {investor?.username}
+                      </span>
+                      <span className="block truncate text-sm font-medium">
+                        {investor?.email}
+                      </span>
+                    </Dropdown.Header>
+                    <Dropdown.Item icon={LuHome} as={Link} to={"/"}>
+                      Beranda
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                      Keluar
+                    </Dropdown.Item>
+                  </Dropdown>
                 </div>
                 <div className="relative w-full h-100 ml-3 md:h-auto md:overflow-hidden overflow-x-scroll">
                   <div className="w-[330px] h-[200px] md:w-full md:h-full">
@@ -282,8 +296,8 @@ const InvestorDashboard = () => {
                   </div>
                 </div>
                 <p className="bg-[#572618] absolute bottom-0 right-7 text-xs text-zinc-50 rounded-xl md:hidden pr-3 pl-3">
-                    Gulir untuk melihat keseluruhan kalender 
-                  </p>
+                  Gulir untuk melihat keseluruhan kalender
+                </p>
               </div>
             </div>
           </div>
