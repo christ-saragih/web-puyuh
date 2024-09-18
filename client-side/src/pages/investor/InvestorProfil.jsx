@@ -88,7 +88,7 @@ const InvestorProfil = () => {
                                 src={
                                     selectedPhoto
                                         ? URL.createObjectURL(selectedPhoto) // Preview sebelum disimpan
-                                        : `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}` // Foto dari data investor
+                                        : `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata?.foto_profil}` // Foto dari data investor
                                 }
                                 alt="Profile avatar"
                             />
