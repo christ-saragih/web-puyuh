@@ -87,7 +87,7 @@ const InvestorDashboard = () => {
 
         {/* Header untuk Mobile */}
         <div className="bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-between p-4">
-          <form className="flex items-center w-full">
+          <form className="flex items-center w-[70%]">
             <input
               type="search"
               className="block w-full p-2 pl-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
@@ -96,7 +96,38 @@ const InvestorDashboard = () => {
           </form>
           <div className="flex items-center space-x-4">
             <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" />
-            <CgProfile className="w-8 h-8" />
+            <img
+                  src={ `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}`}
+                  alt="Default Profile"
+                  className="w-10 h-10 rounded-full"
+                />
+            <Dropdown
+                  label=""
+                  dismissOnClick={false}
+                  placement="bottom-start"
+                  renderTrigger={() => (
+                    <span className="cursor-pointer">
+                      <LuChevronDown className="w-5 h-5 -ml-4" />
+                    </span>
+                  )}
+                >
+                  <Dropdown.Header>
+                    <span className="block text-base">{investor?.username}</span>
+                    <span className="block truncate text-sm font-medium">
+                      {investor?.email}
+                    </span>
+                  </Dropdown.Header>
+                  <Dropdown.Item
+                    icon={LuHome}
+                    as={Link}
+                    to={"/"}
+                  >
+                    Beranda
+                  </Dropdown.Item>
+                  <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                    Keluar
+                  </Dropdown.Item>
+                </Dropdown>
           </div>
         </div>
 
@@ -212,38 +243,38 @@ const InvestorDashboard = () => {
                   </form>
 
                   <MdNotificationsActive className="w-8 h-8 text-gray-500" />
-                  <img
-                  src={ `http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
+                <img
+                  src={ `http://localhost:3000/api/biodata-investor/images/${investor?.investorBiodata.foto_profil}`}
                   alt="Default Profile"
                   className="w-10 h-10 rounded-full"
                 />
-                  <Dropdown
-                label=""
-                dismissOnClick={false}
-                placement="bottom-start"
-                renderTrigger={() => (
-                  <span className="cursor-pointer">
-                    <LuChevronDown className="w-5 h-5 -ml-4" />
-                  </span>
-                )}
-              >
-                <Dropdown.Header>
-                  <span className="block text-base">{investor?.username}</span>
-                  <span className="block truncate text-sm font-medium">
-                    {investor?.email}
-                  </span>
-                </Dropdown.Header>
-                <Dropdown.Item
-                  icon={LuHome}
-                  as={Link}
-                  to={"/"}
+                <Dropdown
+                  label=""
+                  dismissOnClick={false}
+                  placement="bottom-start"
+                  renderTrigger={() => (
+                    <span className="cursor-pointer">
+                      <LuChevronDown className="w-5 h-5 -ml-4" />
+                    </span>
+                  )}
                 >
-                  Beranda
-                </Dropdown.Item>
-                <Dropdown.Item icon={LuLogOut} onClick={Logout}>
-                  Keluar
-                </Dropdown.Item>
-              </Dropdown>
+                  <Dropdown.Header>
+                    <span className="block text-base">{investor?.username}</span>
+                    <span className="block truncate text-sm font-medium">
+                      {investor?.email}
+                    </span>
+                  </Dropdown.Header>
+                  <Dropdown.Item
+                    icon={LuHome}
+                    as={Link}
+                    to={"/"}
+                  >
+                    Beranda
+                  </Dropdown.Item>
+                  <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                    Keluar
+                  </Dropdown.Item>
+                </Dropdown>
                 </div>
                 <div className="relative w-full h-100 ml-3 md:h-auto md:overflow-hidden overflow-x-scroll">
                   <div className="w-[330px] h-[200px] md:w-full md:h-full">
