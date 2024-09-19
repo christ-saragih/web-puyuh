@@ -357,10 +357,6 @@ const AdminInvestor = () => {
                       <th scope="col" className="px-6 py-3">
                         Metode Pembayaran
                       </th>
-
-                      <th scope="col" className="px-6 py-3">
-                        Status
-                      </th>
                       <th scope="col" className="px-6 py-3">
                         Tanggal
                       </th>
@@ -390,16 +386,16 @@ const AdminInvestor = () => {
                             **** **** **** 6969
                           </p>
                         </td>
-                        <td className="px-6 py-4">
+                        {/* <td className="px-6 py-4">
                           <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
                             <LuCheck className="-ms-[3px] w-4 h-4" />
                             <p className="font-medium">{transaction.status}</p>
                           </div>
-                          {/* <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
-                      <LuX className="-ms-[3px] w-4 h-4" />
-                      <p className="font-medium">Gagal</p>
-                    </div> */}
-                        </td>
+                          <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+                            <LuX className="-ms-[3px] w-4 h-4" />
+                            <p className="font-medium">Gagal</p>
+                          </div>
+                        </td> */}
                         <td className="px-6 py-4">
                           {formatDate(transaction.tanggal_transaksi)}
                         </td>
