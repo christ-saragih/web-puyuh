@@ -25,7 +25,7 @@ const InvestorInvestasi = () => {
       if (!batch) return false;
 
       const matchesStatus =
-        statusQuery === "Semua" || 
+        statusQuery === "Semua" ||
         batch.status.toLowerCase() === statusQuery.toLowerCase();
 
       const matchesSearch =
@@ -74,7 +74,8 @@ const InvestorInvestasi = () => {
             </h2>
 
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-              <form className="w-full md:max-w-sm grow">
+              {/* Input Search */}
+              <form className="w-full md:max-w-sm grow flex-1">
                 <label
                   htmlFor="search-investment"
                   className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -92,54 +93,71 @@ const InvestorInvestasi = () => {
                 />
               </form>
 
-              <div className="flex gap-2 md:gap-3 justify-center">
-                <button
-                  type="button"
-                  className={`${
-                    statusQuery === "Semua"
-                      ? "bg-[#B87817] text-white"
-                      : "bg-white text-[#B87817] border-2 border-[#B87817]"
-                  } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#B87817] hover:text-white transition-all duration-300`}
-                  onClick={() => handleStatusChange("Semua")}
-                >
-                  Semua
-                </button>
-                <button
-                  type="button"
-                  className={`${
-                    statusQuery === "Segera"
-                      ? "bg-[#B87817] text-white"
-                      : "text-[#B87817] border-2 border-[#B87817]"
-                  } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#B87817] hover:text-white hover:font-semibold transition-all duration-300`}
-                  onClick={() => handleStatusChange("Segera")}
-                >
-                  Segera
-                </button>
-                <button
-                  type="button"
-                  className={`${
-                    statusQuery === "Proses"
-                      ? "bg-[#B87817] text-white"
-                      : "text-[#B87817] border-2 border-[#B87817]"
-                  } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#B87817] hover:text-white hover:font-semibold transition-all duration-300`}
-                  onClick={() => handleStatusChange("Proses")}
-                >
-                  Proses
-                </button>
-                <button
-                  type="button"
-                  className={`${
-                    statusQuery === "Selesai"
-                      ? "bg-[#138a36] text-white"
-                      : "text-[#138a36] border-2 border-[#138a36]"
-                  } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#138a36] hover:text-white hover:font-semibold transition-all duration-300`}
-                  onClick={() => handleStatusChange("Selesai")}
-                >
-                  Selesai
-                </button>
+              {/* Filter by Status */}
+              <div className="flex gap-2 justify-center w-full md:w-auto">
+                {/* Dropdown di mobile */}
+                <div className="w-full md:hidden">
+                  <select
+                    className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    value={statusQuery}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                  >
+                    <option value="Semua">Semua</option>
+                    <option value="Segera">Segera</option>
+                    <option value="Proses">Proses</option>
+                    <option value="Selesai">Selesai</option>
+                  </select>
+                </div>
+
+                {/* Tombol filter di desktop */}
+                <div className="hidden md:flex gap-2 md:gap-3">
+                  <button
+                    type="button"
+                    className={`${
+                      statusQuery === "Semua"
+                        ? "bg-[#B87817] text-white"
+                        : "bg-white text-[#B87817] border-2 border-[#B87817]"
+                    } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#B87817] hover:text-white transition-all duration-300`}
+                    onClick={() => handleStatusChange("Semua")}
+                  >
+                    Semua
+                  </button>
+                  <button
+                    type="button"
+                    className={`${
+                      statusQuery === "Segera"
+                        ? "bg-[#5766CE] text-white"
+                        : "text-[#5766CE] border-2 border-[#5766CE]"
+                    } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#5766CE] hover:text-white hover:font-semibold transition-all duration-300`}
+                    onClick={() => handleStatusChange("Segera")}
+                  >
+                    Segera
+                  </button>
+                  <button
+                    type="button"
+                    className={`${
+                      statusQuery === "Proses"
+                        ? "bg-[#B87817] text-white"
+                        : "text-[#B87817] border-2 border-[#B87817]"
+                    } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#B87817] hover:text-white hover:font-semibold transition-all duration-300`}
+                    onClick={() => handleStatusChange("Proses")}
+                  >
+                    Proses
+                  </button>
+                  <button
+                    type="button"
+                    className={`${
+                      statusQuery === "Selesai"
+                        ? "bg-[#138a36] text-white"
+                        : "text-[#138a36] border-2 border-[#138a36]"
+                    } font-medium rounded-2xl text-sm w-24 py-2 hover:bg-[#138a36] hover:text-white hover:font-semibold transition-all duration-300`}
+                    onClick={() => handleStatusChange("Selesai")}
+                  >
+                    Selesai
+                  </button>
+                </div>
               </div>
             </div>
-
             <BatchList batchs={filteredBatchs} />
           </GuestLayout>
         </div>
