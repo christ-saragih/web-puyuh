@@ -9,6 +9,7 @@ import {
   updateArticleTag,
 } from "../../../services/article-tag.service";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PiNotePencilBold, PiPlusCircle, PiTrashBold } from "react-icons/pi";
 import { LuBadgeInfo } from "react-icons/lu";
 
@@ -16,6 +17,8 @@ const TagArtikel = () => {
   const [articleTags, setArticleTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [newTag, setNewTag] = useState("");
+  const [filteredArticleTags, setFilteredArticleTags] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -23,9 +26,9 @@ const TagArtikel = () => {
   useEffect(() => {
     getArticleTags((data) => {
       setArticleTags(data);
+      setFilteredArticleTags(data);
     });
   }, []);
-
 
   //   CRUD: Start
   const handleInputChange = (e) => {
@@ -78,7 +81,36 @@ const TagArtikel = () => {
   const resetForm = () => {
     setNewTag("");
   };
-  // End: Start
+  // Modal: End
+
+  // Search: Start
+  const searchQuery = searchParams.get("search") || "";
+  const currentTab = searchParams.get("tab") || "tag-artikel";
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = articleTags.filter((articleTag) =>
+        articleTag.nama.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredArticleTags(filtered);
+    } else {
+      setFilteredArticleTags(articleTags);
+    }
+  }, [searchQuery, articleTags]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    // Pastikan parameter 'tab' tetap ada di URL saat melakukan pencarian
+    const params = {};
+    if (currentTab) params.tab = currentTab;
+    if (value) {
+      params.search = value;
+    } else {
+      params.search = ""; // Hapus search jika input kosong
+    }
+    setSearchParams(params);
+  };
+  // Search: End
 
   return (
     <>
@@ -108,8 +140,8 @@ const TagArtikel = () => {
                 type="text"
                 className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
                 placeholder="Masukkan nama tag artikel ..."
-                // value={searchQuery}
-                // onChange={(e) => handleSearchChange(e)}
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e)}
                 required
               />
             </div>
@@ -205,9 +237,9 @@ const TagArtikel = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(articleTags) &&
-            articleTags.length > 0 ? (
-              articleTags.map((articleTag, index) => (
+            {Array.isArray(filteredArticleTags) &&
+            filteredArticleTags.length > 0 ? (
+              filteredArticleTags.map((articleTag, index) => (
                 <tr
                   key={articleTag.id}
                   className="bg-white border-b hover:bg-gray-50"
@@ -254,8 +286,8 @@ const TagArtikel = () => {
 
                       <span className="sr-only">Info</span>
                       <div>
-                        <span className="font-medium">Pemberitahuan!</span>{" "}
-                        Nama tag artikel tidak ditemukan.
+                        <span className="font-medium">Pemberitahuan!</span> Nama
+                        tag artikel tidak ditemukan.
                       </div>
                     </div>
                   </div>
