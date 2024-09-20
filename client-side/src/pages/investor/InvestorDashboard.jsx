@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import SidebarInvestor from "../../components/common/SidebarInvestor";
+// import SidebarInvestor from "../../components/common/SidebarInvestor";
 import CalendarInvestor from "../../components/common/CalendarInvestor";
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
-import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
+// import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
 import WavingIllustration from "../../assets/images/Illustration waving.svg";
 import GrowingMoney from "../../assets/images/Growing Money.svg";
 import { MdNotificationsActive } from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
+// import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { apiInvestor } from "../../hooks/useAxiosConfig";
 import { formatRupiah } from "../../utils/formatRupiah";
@@ -28,24 +28,66 @@ const InvestorDashboard = () => {
   const [transaksi, setTransaksi] = useState([]);
   const navigate = useNavigate();
   const [batchs, setBatchs] = useState([]);
+  const [investasi, setInvestasi] = useState([]);
   const { logout } = useContext(AuthContext);
 
   useEffect(() => {
-    getBatchs((data) => {
-      setBatchs(data);
-    });
-  }, []);
+    const fetchData = async () => {
+      try {
+        const [investorResponse, transaksiData, batchsData, investasiResponse] = await Promise.all([
+          apiInvestor.get("/investor"),
+          new Promise(resolve => getTransaksi(resolve)),
+          new Promise(resolve => getBatchs(resolve)),
+          apiInvestor.get("/investasi")
+        ]);
 
-  useEffect(() => {
-    getTransaksi((data) => {
-      setTransaksi(data);
-      setLoading(false);
-    });
+        setInvestor(investorResponse.data.data);
+        setTransaksi(transaksiData);
+        setBatchs(batchsData);
+        setInvestasi(investasiResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        if (error.response?.status === 401) {
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [navigate]);
 
   const totalInvestasi = transaksi.reduce((total, item) => {
     return total + item.total_investasi;
   }, 0);
+
+  const calculateProfit = (totalInvestasi, percentage) => {
+    return totalInvestasi * (percentage / 100);
+  };
+
+  const getInvestasiByBatch = () => {
+    const investasiByBatch = {};
+    transaksi.forEach(t => {
+      if (!investasiByBatch[t.investasiId]) {
+        investasiByBatch[t.investasiId] = {
+          total_investasi: 0,
+          batch_id: t.investasiId,
+          status: t.status
+        };
+      }
+      investasiByBatch[t.investasiId].total_investasi += t.total_investasi;
+    });
+    return Object.values(investasiByBatch);
+  };
+
+  const investasiByBatch = getInvestasiByBatch();
+
+   // Fungsi untuk mendapatkan judul batch
+   const getBatchTitle = (batchId) => {
+    const batch = batchs.find(b => b.id === batchId);
+    return batch ? batch.judul : `${batchId}`;
+  };
 
   const Logout = async () => {
     try {
@@ -98,7 +140,7 @@ const InvestorDashboard = () => {
             <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" />
             {investor?.investorBiodata?.foto_profil ? (
               <img
-                src={`http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
+                src={`http://locaxlhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
                 alt={investor.investorBiodata.foto_profil}
                 className="w-10 h-10 rounded-full"
               />
@@ -190,16 +232,19 @@ const InvestorDashboard = () => {
                       Bagi Hasil
                     </h1>
                     <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 ml-1">
-                      <CardBagiHasil
-                        batch="Batch 1"
-                        profit="Rp2.000.000"
-                        percentage="2.7%"
-                      />
-                      <CardBagiHasil
-                        batch="Batch 2"
-                        profit="Rp1.500.000"
-                        percentage="2.5%"
-                      />
+                    {investasiByBatch.map((inv, index) => {
+                      const batchInfo = investasi.find(i => i.id === inv.batch_id);
+                      const batchTitle = getBatchTitle(inv.batch_id);
+                        return (
+                          <CardBagiHasil
+                            key={index}
+                            batch={batchTitle}
+                            profit={formatRupiah(calculateProfit(inv.total_investasi, batchInfo?.bagi_hasil || 0))}
+                            percentage={`${batchInfo?.bagi_hasil || 0}%`}
+                            status={inv.status}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
