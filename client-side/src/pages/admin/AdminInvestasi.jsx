@@ -29,6 +29,7 @@ import {
   PiUsersThreeBold,
 } from "react-icons/pi";
 import { Dropdown, Tabs } from "flowbite-react";
+import { FaPercent } from "react-icons/fa";
 
 const AdminInvestasi = () => {
   const [investments, setInvestments] = useState([]);
@@ -560,15 +561,20 @@ const AdminInvestasi = () => {
                         />
                       </div>
                       <div>
-                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil"} />
-                        <Input
-                          type={"text"}
-                          name={"bagi_hasil"}
-                          placeholder={"Masukkan bagi hasil.."}
-                          variant={"primary-outline"}
-                          value={formInvestment.bagi_hasil}
-                          handleChange={handleInvestmentTextChange}
-                        />
+                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil (masukkan angka saja)"} />
+                        <div className="relative">
+                          <Input
+                            type={"text"}
+                            name={"bagi_hasil"}
+                            placeholder={"Masukkan bagi hasil.."}
+                            variant={"primary-outline"}
+                            value={formInvestment.bagi_hasil}
+                            handleChange={handleInvestmentTextChange}
+                          />
+                          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <FaPercent className="text-gray-400 w-3 h-3" />
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <Label
