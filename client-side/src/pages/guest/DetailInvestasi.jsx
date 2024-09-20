@@ -50,6 +50,28 @@ const DetailInvestasi = () => {
             ? "#FFA90B"
             : "#138a36";
 
+    const getButtonText = () => {
+        switch (investasi.status) {
+            case "selesai":
+                return "Investasi Selesai";
+            case "segera":
+                return "Investasi Segera Dibuka";
+            default:
+                return "Investasi Sekarang";
+        }
+    };
+
+    const handleButtonClick = () => {
+        if (investasi.status === "proses") {
+            if (user) {
+                setShowModal(true);
+            } else {
+                navigate("/masuk");
+            }
+        }
+        // For "selesai" and "segera" statuses, the button doesn't do anything
+    };
+
     return (
         <GuestLayouts>
             <div className="w-[90%] max-w-3xl mx-auto mt-12 lg:mt-16">
@@ -319,12 +341,17 @@ const DetailInvestasi = () => {
                 <div className="fixed bottom-0 left-0 w-full bg-white border-t-2">
                     <div className="flex justify-center py-5">
                         <button
-                            onClick={() => {
-                                user ? setShowModal(true) : navigate("/masuk");
-                            }}
-                            className="w-11/12 max-w-md py-2 px-4 text-lg font-semibold text-center text-white bg-[#4B241A] rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]"
+                            onClick={handleButtonClick}
+                            className={`w-11/12 max-w-md py-2 px-4 text-lg font-semibold text-center text-white rounded-3xl shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] ${
+                                investasi.status === "selesai" 
+                                    ? "bg-gray-500 cursor-not-allowed" 
+                                    : investasi.status === "segera" 
+                                        ? "bg-[#5766CE] cursor-not-allowed"
+                                        : "bg-[#4B241A]"
+                            }`}
+                            disabled={investasi.status !== "proses"}
                         >
-                            Investasi Sekarang
+                            {getButtonText()}
                         </button>
                     </div>
                 </div>
