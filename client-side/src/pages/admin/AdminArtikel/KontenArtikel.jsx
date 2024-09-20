@@ -13,6 +13,7 @@ import {
   updateArticle,
 } from "../../../services/article.service";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { PiPlusCircle } from "react-icons/pi";
@@ -31,6 +32,8 @@ const KontenArtikel = () => {
   });
   const [previewImage, setPreviewImage] = useState("");
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [filteredArticles, setFilteredArticles] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -132,6 +135,35 @@ const KontenArtikel = () => {
   };
   //   CRUD: End
 
+  // Search: Start
+  const searchQuery = searchParams.get("search") || "";
+  const currentTab = searchParams.get("tab") || "konten-artikel";
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = articles.filter((article) =>
+        article.judul.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredArticles(filtered);
+    } else {
+      setFilteredArticles(articles);
+    }
+  }, [searchQuery, articles]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    const params = {};
+    if (currentTab) params.tab = currentTab;
+    if (value) {
+      params.search = value;
+    } else {
+      params.search = "";
+    }
+    setSearchParams(params);
+  };
+  // Search: End
+
+  // Modal: Start
   const openModal = (type, article = null) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -187,6 +219,7 @@ const KontenArtikel = () => {
     setPreviewImage("");
     setSelectedArticle(null);
   };
+  // Modal: End
 
   return (
     <>
@@ -216,8 +249,8 @@ const KontenArtikel = () => {
                 type="text"
                 className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
                 placeholder="Masukkan nama tag artikel ..."
-                // value={searchQuery}
-                // onChange={(e) => handleSearchChange(e)}
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e)}
                 required
               />
             </div>
@@ -440,7 +473,11 @@ const KontenArtikel = () => {
           )}
         </Modal>
       </div>
-      <ArticleList articles={articles} role="admin" openModal={openModal} />
+      <ArticleList
+        articles={filteredArticles}
+        role="admin"
+        openModal={openModal}
+      />
     </>
   );
 };
