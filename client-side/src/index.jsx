@@ -30,7 +30,7 @@ import MediaSosial from "./pages/admin/halaman_depan/MediaSosial";
 import Dokumentasi from "./pages/admin/halaman_depan/Dokumentasi";
 import Dokumen from "./pages/admin/halaman_depan/Dokumen";
 import FaqAdmin from "./pages/admin/halaman_depan/Faq";
-import AdminArtikel from "./pages/admin/AdminArtikel";
+import AdminArtikel from "./pages/admin/AdminArtikel/Index";
 import AdminInvestasi from "./pages/admin/AdminInvestasi";
 import AdminInvestor from "./pages/admin/AdminInvestor";
 

@@ -1,15 +1,10 @@
-import axios from "axios";
+import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const getArticleTags = (callback) => {
-  axios
-    .get("http://localhost:3000/api/tag-artikel")
+  apiAdmin
+    .get("/tag-artikel")
     .then((res) => {
-      if (res.data && Array.isArray(res.data.data)) {
-        callback(res.data.data);
-      } else {
-        console.error("Data is not an array:", res.data);
-        callback([]);
-      }
+      callback(res.data.data.reverse());
     })
     .catch((err) => {
       console.log(err);
@@ -17,9 +12,9 @@ export const getArticleTags = (callback) => {
     });
 };
 
-export const addArticleTag = (tag, callback) => {
-  axios
-    .post("http://localhost:3000/api/tag-artikel", tag)
+export const addArticleTag = (data, callback) => {
+  apiAdmin
+    .post("/tag-artikel", data)
     .then((res) => {
       callback(res.data.data);
     })
@@ -28,9 +23,9 @@ export const addArticleTag = (tag, callback) => {
     });
 };
 
-export const updateArticleTag = (id, updatedTag, callback) => {
-  axios
-    .put(`http://localhost:3000/api/tag-artikel/${id}`, updatedTag)
+export const updateArticleTag = (id, data, callback) => {
+  apiAdmin
+    .put(`/tag-artikel/${id}`, data)
     .then((res) => {
       callback(res.data.data);
     })
@@ -40,8 +35,8 @@ export const updateArticleTag = (id, updatedTag, callback) => {
 };
 
 export const deleteArticleTag = (id, callback) => {
-  axios
-    .delete(`http://localhost:3000/api/tag-artikel/${id}`)
+  apiAdmin
+    .delete(`/tag-artikel/${id}`)
     .then(() => {
       callback();
     })
