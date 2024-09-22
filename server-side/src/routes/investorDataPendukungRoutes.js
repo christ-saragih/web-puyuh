@@ -6,30 +6,18 @@ const { authenticateToken } = require("../middleware/authenticateToken");
 
 const validate = require("../middleware/validationMiddleware");
 const {
-    createSchema,
-    updateSchema,
+    upsertSchema,
 } = require("../validators/investorDataPendukungValidation");
 
-// router.post(
-//     "/",
-//     authenticateInvestorToken,
-//     validate(createSchema),
-//     investorDataPendukungController.create
-// );
-router.put(
-    "/:id",
-    authenticateToken("investor"),
-    validate(updateSchema),
-    investorDataPendukungController.update
-);
-router.get("/", investorDataPendukungController.findAll);
-router.get("/:id", investorDataPendukungController.findOne);
-router.delete("/:id", investorDataPendukungController.delete);
+// Create atau Update Data Investor Data Pendukung
 router.post(
     "/",
     authenticateToken("investor"),
-    validate(updateSchema),
+    validate(upsertSchema),
     investorDataPendukungController.upsert
 );
+
+// Get Data Pendukung Investor Berdasarkan Id
+router.get("/:id", investorDataPendukungController.findOne);
 
 module.exports = router;
