@@ -15,6 +15,5 @@ router.post(
     sejarahController.upsert
 );
 router.get("/", sejarahController.findData);
-// router.delete("/:id", sejarahController.delete);
 
 module.exports = router;
