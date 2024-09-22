@@ -1,4 +1,3 @@
-import Dropdown from "../../components/common/Dropdown";
 import Modal from "../../components/common/Modal";
 import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
@@ -12,16 +11,10 @@ import {
 } from "../../services/investor.service.js";
 import { useEffect, useState } from "react";
 import { Tabs } from "flowbite-react";
-import {
-  PiCalendarCheck,
-  PiCheck,
-  PiNotePencilBold,
-  PiTrashBold,
-  PiUserBold,
-  PiUsersThreeBold,
-} from "react-icons/pi";
-import ActionButton from "../../components/common/ActionButton.jsx";
+import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 import { LuCheck, LuX } from "react-icons/lu";
+import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
+import { formatRupiah } from "../../utils/formatRupiah.js";
 
 const AdminInvestor = () => {
   const [investors, setInvestors] = useState([]);
@@ -29,14 +22,48 @@ const AdminInvestor = () => {
     username: "",
     email: "",
     kategori_investor: "",
-    investorBiodata: [],
-    investorAlamat: [],
-    investorIdentitas: [],
-    investorDataPendukung: [],
+    investorBiodata: {
+      jk: "",
+      tempat_lahir: "",
+      tanggal_lahir: "",
+      no_hp: "",
+    },
+    investorAlamat: {
+      alamat: "",
+      provinsi: "",
+      kota: "",
+      kecamatan: "",
+      kelurahan: "",
+      kode_pos: "",
+    },
+    investorIdentitas: {
+      no_ktp: "",
+      foto_ktp: "",
+      no_npwp: "",
+      foto_npwp: "",
+      selfie_ktp: "",
+    },
+    investorDataPendukung: {
+      latar_pendidikan: "",
+      sumber_penghasilan: "",
+      jumlah_penghasilan: "",
+      bidang_usaha: "",
+      tujuan_investasi: "",
+      no_sid: "",
+      tanggal_pembuatan_sid: "",
+    },
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
+
+  useEffect(() => {
+    getInvestors((data) => {
+      setInvestors(data);
+    });
+  }, []);
 
   // modal logic
   const openModal = (type, investor = null) => {
@@ -57,6 +84,14 @@ const AdminInvestor = () => {
         });
       });
     }
+
+    if (type === "view_transactions" && investor) {
+      setSelectedInvestor(investor);
+
+      getTransactionsByInvestor(investor.id, (transaction) => {
+        setTransactions(transaction);
+      });
+    }
   };
 
   const closeModal = () => {
@@ -64,22 +99,10 @@ const AdminInvestor = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    getInvestors((data) => {
-      setInvestors(data);
-    });
-  }, []);
-
   return (
     <AdminLayout title={"Halaman Managemen Investor"}>
       <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
         <div className="flex gap-5 mb-6">
-          <Dropdown
-            options={["1", "2", "3"]}
-            label="Tampilkan"
-            onOptionSelect={"1"}
-          />
-
           {/* FITUR SEARCHING */}
           <InputSearch />
 
@@ -91,15 +114,19 @@ const AdminInvestor = () => {
         </div>
 
         {/* START: Modal detail profil investor */}
-        <Modal open={isModalOpen} onClose={closeModal} size={modalType === "view_transactions" ? "lg" : ""}>
+        <Modal
+          open={isModalOpen}
+          onClose={closeModal}
+          size={modalType === "view_transactions" ? "lg" : ""}
+        >
           {modalType === "detail_investor" && (
             <>
               <Modal.Header onClose={closeModal}>
                 <div className="flex items-center mx-auto mt-2 gap-4">
-                  {formInvestor.investorBiodata.foto_profil ? (
+                  {formInvestor.investorBiodata?.foto_profil ? (
                     <img
                       src={formInvestor.investorBiodata.foto_profil}
-                      alt={formInvestor.investorBiodata.nama_lengkap}
+                      alt={formInvestor.investorBiodata.foto_profil}
                       className="w-24 h-24 rounded-full"
                     />
                   ) : (
@@ -116,7 +143,7 @@ const AdminInvestor = () => {
 
                   <div>
                     <h3 className="text-2xl font-semibold text-[#572618]">
-                      {formInvestor.investorBiodata.nama_lengkap}
+                      {formInvestor.investorBiodata?.nama_lengkap}
                     </h3>
                     <p>{formInvestor.kategori_investor}</p>
                   </div>
@@ -141,27 +168,27 @@ const AdminInvestor = () => {
                     <Label value={"Jenis Kelamin"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorBiodata.jk}
+                      value={formInvestor.investorBiodata?.jk}
                       isDisabled={true}
                     />
                     <Label value={"Tempat Lahir"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorBiodata.tempat_lahir}
+                      value={formInvestor.investorBiodata?.tempat_lahir}
                       isDisabled={true}
                     />
                     <Label value={"Tanggal Lahir"} />
                     <Input
                       variant={"disabled"}
                       value={formatDate(
-                        formInvestor.investorBiodata.tanggal_lahir
+                        formInvestor.investorBiodata?.tanggal_lahir
                       )}
                       isDisabled={true}
                     />
                     <Label value={"Nomor Telepon"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorBiodata.no_hp}
+                      value={formInvestor.investorBiodata?.no_hp}
                       isDisabled={true}
                     />
                   </Tabs.Item>
@@ -169,37 +196,37 @@ const AdminInvestor = () => {
                     <Label value={"Alamat sesuai KTP"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.alamat}
+                      value={formInvestor.investorAlamat?.alamat}
                       isDisabled={true}
                     />
                     <Label value={"Provinsi"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.provinsi}
+                      value={formInvestor.investorAlamat?.provinsi}
                       isDisabled={true}
                     />
                     <Label value={"Kabupaten/Kota"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kota}
+                      value={formInvestor.investorAlamat?.kota}
                       isDisabled={true}
                     />
                     <Label value={"Kecamatan"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kecamatan}
+                      value={formInvestor.investorAlamat?.kecamatan}
                       isDisabled={true}
                     />
                     <Label value={"Kelurahan"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kelurahan}
+                      value={formInvestor.investorAlamat?.kelurahan}
                       isDisabled={true}
                     />
                     <Label value={"Kode Pos"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorAlamat.kode_pos}
+                      value={formInvestor.investorAlamat?.kode_pos}
                       isDisabled={true}
                     />
                   </Tabs.Item>
@@ -207,13 +234,13 @@ const AdminInvestor = () => {
                     <Label value={"Nomor KTP"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorIdentitas.no_ktp}
+                      value={formInvestor.investorIdentitas?.no_ktp}
                       isDisabled={true}
                     />
                     <Label value={"Foto KTP"} />
                     <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
                       <img
-                        src={formInvestor.investorIdentitas.foto_ktp}
+                        src={formInvestor.investorIdentitas?.foto_ktp}
                         alt=""
                         className="h-full w-[40%] object-cover rounded-lg"
                       />
@@ -221,13 +248,13 @@ const AdminInvestor = () => {
                     <Label value={"Nomor NPWP"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorIdentitas.no_npwp}
+                      value={formInvestor.investorIdentitas?.no_npwp}
                       isDisabled={true}
                     />
                     <Label value={"Foto NPWP"} />
                     <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
                       <img
-                        src={formInvestor.investorIdentitas.foto_npwp}
+                        src={formInvestor.investorIdentitas?.foto_npwp}
                         alt=""
                         className="h-full w-[40%] object-cover rounded-lg"
                       />
@@ -235,7 +262,7 @@ const AdminInvestor = () => {
                     <Label value={"Foto Selfi dengan KTP"} />
                     <div className="flex justify-center w-full h-48 mt-2 mb-4 py-2 border-gray-50 border-2 bg-gray-50 rounded-2xl shadow overflow-hidden">
                       <img
-                        src={formInvestor.investorIdentitas.selfie_ktp}
+                        src={formInvestor.investorIdentitas?.selfie_ktp}
                         alt=""
                         className="h-full w-[40%] object-cover rounded-lg"
                       />
@@ -246,7 +273,7 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.latar_pendidikan
+                        formInvestor.investorDataPendukung?.latar_pendidikan
                       }
                       isDisabled={true}
                     />
@@ -254,7 +281,7 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.sumber_penghasilan
+                        formInvestor.investorDataPendukung?.sumber_penghasilan
                       }
                       isDisabled={true}
                     />
@@ -262,35 +289,36 @@ const AdminInvestor = () => {
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.jumlah_penghasilan
+                        formInvestor.investorDataPendukung?.jumlah_penghasilan
                       }
                       isDisabled={true}
                     />
                     <Label value={"Bidang Usaha"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorDataPendukung.bidang_usaha}
+                      value={formInvestor.investorDataPendukung?.bidang_usaha}
                       isDisabled={true}
                     />
                     <Label value={"Tujuang Investasi"} />
                     <Input
                       variant={"disabled"}
                       value={
-                        formInvestor.investorDataPendukung.tujuan_investasi
+                        formInvestor.investorDataPendukung?.tujuan_investasi
                       }
                       isDisabled={true}
                     />
                     <Label value={"Nomor SID"} />
                     <Input
                       variant={"disabled"}
-                      value={formInvestor.investorDataPendukung.no_sid}
+                      value={formInvestor.investorDataPendukung?.no_sid}
                       isDisabled={true}
                     />
                     <Label value={"Tanggal Pembuatan SID"} />
                     <Input
                       variant={"disabled"}
                       value={formatDate(
-                        formInvestor.investorDataPendukung.tanggal_pembuatan_sid
+                        formInvestor.investorDataPendukung
+                          ?.tanggal_pembuatan_sid
                       )}
                       isDisabled={true}
                     />
@@ -305,7 +333,11 @@ const AdminInvestor = () => {
           {modalType === "view_transactions" && (
             <>
               <Modal.Header
-                title={"Riwayat Transaksi Bennefit Christy Saragih"}
+                title={`Riwayat Transaksi ${
+                  transactions[0]?.investor?.investorBiodata?.nama_lengkap
+                    ? transactions[0].investor.investorBiodata.nama_lengkap
+                    : ""
+                }`}
                 onClose={closeModal}
               ></Modal.Header>
 
@@ -325,46 +357,48 @@ const AdminInvestor = () => {
                       <th scope="col" className="px-6 py-3">
                         Metode Pembayaran
                       </th>
-
-                      <th scope="col" className="px-6 py-3">
-                        Status
-                      </th>
                       <th scope="col" className="px-6 py-3">
                         Tanggal
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2, 3, 4, 5].map((i) => (
+                    {transactions.map((transaction, index) => (
                       <tr
-                        key={i}
+                        key={transaction.id}
                         className="bg-white font-medium text-gray-600 border-b hover:bg-gray-50"
                       >
                         <td
                           scope="row"
                           className="px-6 py-4 whitespace-nowrap "
                         >
-                          {i}
+                          {1 + index++}
                         </td>
-                        <td className="px-6 py-4">Kloter {i}</td>
-                        <td className="px-6 py-4">Rp 5.800.000</td>
+                        <td className="px-6 py-4">
+                          {transaction.investasi.judul}
+                        </td>
+                        <td className="px-6 py-4">
+                          {formatRupiah(transaction.total_investasi)}
+                        </td>
                         <td className="px-6 py-4">
                           <p>BCA</p>
                           <p className="text-sm text-gray-500 font-normal">
                             **** **** **** 6969
                           </p>
                         </td>
-                        <td className="px-6 py-4">
+                        {/* <td className="px-6 py-4">
                           <div className="bg-[#e7f3ea] text-[#138A36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
                             <LuCheck className="-ms-[3px] w-4 h-4" />
-                            <p className="font-medium">Sukses</p>
+                            <p className="font-medium">{transaction.status}</p>
                           </div>
-                          {/* <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
-                      <LuX className="-ms-[3px] w-4 h-4" />
-                      <p className="font-medium">Gagal</p>
-                    </div> */}
+                          <div className="bg-[#FCE8EA] text-[#E71D36] items-center justify-center rounded-3xl py-1 px-3 flex gap-1">
+                            <LuX className="-ms-[3px] w-4 h-4" />
+                            <p className="font-medium">Gagal</p>
+                          </div>
+                        </td> */}
+                        <td className="px-6 py-4">
+                          {formatDate(transaction.tanggal_transaksi)}
                         </td>
-                        <td className="px-6 py-4">8 September 2024</td>
                       </tr>
                     ))}
                   </tbody>

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import SidebarInvestor from "../../components/common/SidebarInvestor";
+// import SidebarInvestor from "../../components/common/SidebarInvestor";
 import CalendarInvestor from "../../components/common/CalendarInvestor";
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
-import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
+// import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
 import WavingIllustration from "../../assets/images/Illustration waving.svg";
 import GrowingMoney from "../../assets/images/Growing Money.svg";
 import { MdNotificationsActive } from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
+// import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { apiInvestor } from "../../hooks/useAxiosConfig";
 import { formatRupiah } from "../../utils/formatRupiah";
@@ -14,6 +14,12 @@ import { getTransaksi } from "../../services/transaksi.service";
 import BatchListInvestor from "../../components/investor/BatchListInvestor";
 import { getBatchs } from "../../services/batch.service";
 import InvestorLayout from "../../layouts/InvestorLayout";
+import { Dropdown } from "flowbite-react";
+import { LuChevronDown, LuHome, LuLogOut } from "react-icons/lu";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthProvider";
+import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -22,23 +28,76 @@ const InvestorDashboard = () => {
   const [transaksi, setTransaksi] = useState([]);
   const navigate = useNavigate();
   const [batchs, setBatchs] = useState([]);
+  const [investasi, setInvestasi] = useState([]);
+  const { logout } = useContext(AuthContext);
 
   useEffect(() => {
-    getBatchs((data) => {
-      setBatchs(data);
-    });
-  }, []);
+    const fetchData = async () => {
+      try {
+        const [investorResponse, transaksiData, batchsData, investasiResponse] = await Promise.all([
+          apiInvestor.get("/investor"),
+          new Promise(resolve => getTransaksi(resolve)),
+          new Promise(resolve => getBatchs(resolve)),
+          apiInvestor.get("/investasi")
+        ]);
 
-  useEffect(() => {
-    getTransaksi((data) => {
-      setTransaksi(data);
-      setLoading(false);
-    });
+        setInvestor(investorResponse.data.data);
+        setTransaksi(transaksiData);
+        setBatchs(batchsData);
+        setInvestasi(investasiResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        if (error.response?.status === 401) {
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [navigate]);
 
   const totalInvestasi = transaksi.reduce((total, item) => {
     return total + item.total_investasi;
   }, 0);
+
+  const calculateProfit = (totalInvestasi, percentage) => {
+    return totalInvestasi * (percentage / 100);
+  };
+
+  const getInvestasiByBatch = () => {
+    const investasiByBatch = {};
+    transaksi.forEach(t => {
+      if (!investasiByBatch[t.investasiId]) {
+        investasiByBatch[t.investasiId] = {
+          total_investasi: 0,
+          batch_id: t.investasiId,
+          status: t.status
+        };
+      }
+      investasiByBatch[t.investasiId].total_investasi += t.total_investasi;
+    });
+    return Object.values(investasiByBatch);
+  };
+
+  const investasiByBatch = getInvestasiByBatch();
+
+   // Fungsi untuk mendapatkan judul batch
+   const getBatchTitle = (batchId) => {
+    const batch = batchs.find(b => b.id === batchId);
+    return batch ? batch.judul : `${batchId}`;
+  };
+
+  const Logout = async () => {
+    try {
+      await logout();
+
+      navigate("/masuk");
+    } catch (error) {
+      console.log("Logout gagal", error);
+    }
+  };
 
   useEffect(() => {
     const fetchInvestorData = async () => {
@@ -66,12 +125,11 @@ const InvestorDashboard = () => {
     <div className="bg-white w-dvw min-h-screen overflow-y-auto md:py-5 py-14 pe-6 relative">
       <InvestorLayout>
         {/* Sidebar untuk tampilan mobile */}
-        <div className="fixed top-0 left-0 bottom-0 z-50 md:hidden">
-        </div>
+        <div className="fixed top-0 left-0 bottom-0 z-50 md:hidden"></div>
 
         {/* Header untuk Mobile */}
         <div className="bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-between p-4">
-          <form className="flex items-center w-full">
+          <form className="flex items-center w-[70%]">
             <input
               type="search"
               className="block w-full p-2 pl-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
@@ -80,7 +138,44 @@ const InvestorDashboard = () => {
           </form>
           <div className="flex items-center space-x-4">
             <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" />
-            <CgProfile className="w-8 h-8" />
+            {investor?.investorBiodata?.foto_profil ? (
+              <img
+                src={`http://locaxlhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
+                alt={investor.investorBiodata.foto_profil}
+                className="w-10 h-10 rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 p-2">
+                {investor?.kategori_investor === "organisasi" ? (
+                  <PiUsersThreeBold className="w-full h-full" />
+                ) : (
+                  <PiUserBold className="w-full h-full" />
+                )}
+              </div>
+            )}
+            <Dropdown
+              label=""
+              dismissOnClick={false}
+              placement="bottom-start"
+              renderTrigger={() => (
+                <span className="cursor-pointer">
+                  <LuChevronDown className="w-5 h-5 -ml-4" />
+                </span>
+              )}
+            >
+              <Dropdown.Header>
+                <span className="block text-base">{investor?.username}</span>
+                <span className="block truncate text-sm font-medium">
+                  {investor?.email}
+                </span>
+              </Dropdown.Header>
+              <Dropdown.Item icon={LuHome} as={Link} to={"/"}>
+                Beranda
+              </Dropdown.Item>
+              <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                Keluar
+              </Dropdown.Item>
+            </Dropdown>
           </div>
         </div>
 
@@ -137,16 +232,19 @@ const InvestorDashboard = () => {
                       Bagi Hasil
                     </h1>
                     <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 ml-1">
-                      <CardBagiHasil
-                        batch="Batch 1"
-                        profit="Rp2.000.000"
-                        percentage="2.7%"
-                      />
-                      <CardBagiHasil
-                        batch="Batch 2"
-                        profit="Rp1.500.000"
-                        percentage="2.5%"
-                      />
+                    {investasiByBatch.map((inv, index) => {
+                      const batchInfo = investasi.find(i => i.id === inv.batch_id);
+                      const batchTitle = getBatchTitle(inv.batch_id);
+                        return (
+                          <CardBagiHasil
+                            key={index}
+                            batch={batchTitle}
+                            profit={formatRupiah(calculateProfit(inv.total_investasi, batchInfo?.bagi_hasil || 0))}
+                            percentage={`${batchInfo?.bagi_hasil || 0}%`}
+                            status={inv.status}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -167,7 +265,7 @@ const InvestorDashboard = () => {
 
               {/* Calendar and Notification Section */}
               <div className="md:col-span-1 relative">
-                <div className="hidden md:flex items-center justify-between gap-5 mb-4">
+                <div className="hidden md:flex items-center justify-between  mb-4">
                   <form className="w-full md:w-[63%]">
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
@@ -196,8 +294,46 @@ const InvestorDashboard = () => {
                   </form>
 
                   <MdNotificationsActive className="w-8 h-8 text-gray-500" />
-
-                  <CgProfile className="w-8 h-8" />
+                  {investor?.investorBiodata?.foto_profil ? (
+                    <img
+                      src={`http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
+                      alt={investor.investorBiodata.foto_profil}
+                      className="w-10 h-10 rounded-full"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 p-2">
+                      {investor?.kategori_investor === "organisasi" ? (
+                        <PiUsersThreeBold className="w-full h-full" />
+                      ) : (
+                        <PiUserBold className="w-full h-full" />
+                      )}
+                    </div>
+                  )}
+                  <Dropdown
+                    label=""
+                    dismissOnClick={false}
+                    placement="bottom-start"
+                    renderTrigger={() => (
+                      <span className="cursor-pointer">
+                        <LuChevronDown className="w-5 h-5 -ml-4" />
+                      </span>
+                    )}
+                  >
+                    <Dropdown.Header>
+                      <span className="block text-base">
+                        {investor?.username}
+                      </span>
+                      <span className="block truncate text-sm font-medium">
+                        {investor?.email}
+                      </span>
+                    </Dropdown.Header>
+                    <Dropdown.Item icon={LuHome} as={Link} to={"/"}>
+                      Beranda
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={LuLogOut} onClick={Logout}>
+                      Keluar
+                    </Dropdown.Item>
+                  </Dropdown>
                 </div>
                 <div className="relative w-full h-100 ml-3 md:h-auto md:overflow-hidden overflow-x-scroll">
                   <div className="w-[330px] h-[200px] md:w-full md:h-full">
@@ -205,8 +341,8 @@ const InvestorDashboard = () => {
                   </div>
                 </div>
                 <p className="bg-[#572618] absolute bottom-0 right-7 text-xs text-zinc-50 rounded-xl md:hidden pr-3 pl-3">
-                    Gulir untuk melihat keseluruhan kalender 
-                  </p>
+                  Gulir untuk melihat keseluruhan kalender
+                </p>
               </div>
             </div>
           </div>

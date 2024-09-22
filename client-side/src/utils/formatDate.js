@@ -1,6 +1,6 @@
 export function formatDate(isoDate) {
   if (!isoDate) {
-    return "Tanggal tidak tersedia";
+    return "";
   }
 
   const date = new Date(isoDate);

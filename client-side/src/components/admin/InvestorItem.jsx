@@ -1,14 +1,14 @@
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 
 const InvestorItem = (props) => {
-  const { id, kategori_investor, investorBiodata, openModal } = props;
+  const { id, username, kategori_investor, investorBiodata, openModal } = props;
 
   return (
     <div className="bg-white flex flex-col items-center xl:flex-row px-5 py-6 gap-4 rounded-2xl shadow-lg">
-      {investorBiodata.foto_profil ? (
+      {investorBiodata?.foto_profil ? (
         <img
           src={investorBiodata.foto_profil}
-          alt={investorBiodata.nama_lengkap}
+          alt={investorBiodata.foto_profil}
           className="w-20 h-20 rounded-full "
         />
       ) : (
@@ -25,7 +25,7 @@ const InvestorItem = (props) => {
 
       <div className="flex flex-col items-center xl:inline truncate">
         <h4 className="font-semibold truncate">
-          {investorBiodata.nama_lengkap}
+          {username}
         </h4>
         <p className="text-gray-600 mb-2">{kategori_investor}</p>
         <button

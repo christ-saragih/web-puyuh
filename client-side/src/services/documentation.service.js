@@ -1,7 +1,7 @@
-import { axiosInstance } from "../lib/axios";
+import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const getDocumentation = (callback) => {
-  axiosInstance
+  apiAdmin
     .get("/dokumentasi-frontpage")
     .then((res) => {
       callback(res.data.data);
@@ -12,7 +12,7 @@ export const getDocumentation = (callback) => {
 };
 
 export const addDocumentation = (data, callback) => {
-  axiosInstance
+  apiAdmin
     .post("/dokumentasi-frontpage", data)
     .then((res) => {
       callback(res.data.data);
@@ -23,7 +23,7 @@ export const addDocumentation = (data, callback) => {
 };
 
 export const updateDocumentation = (id, data, callback) => {
-  axiosInstance
+  apiAdmin
     .put(`/dokumentasi-frontpage/${id}`, data)
     .then((res) => {
       callback(res.data.data);
@@ -34,7 +34,7 @@ export const updateDocumentation = (id, data, callback) => {
 };
 
 export const deleteDocumentation = (id, callback) => {
-  axiosInstance
+  apiAdmin
     .delete(`/dokumentasi-frontpage/${id}`)
     .then(() => {
       callback();

@@ -1,7 +1,7 @@
-import { PiPlusCircle } from "react-icons/pi";
-import Button from "../../../components/common/Button.jsx";
-import Dropdown from "../../../components/common/Dropdown.jsx";
-import InputSearch from "../../../components/common/InputSearch.jsx";
+import Label from "../../../components/common/Label.jsx";
+import Input from "../../../components/common/Input.jsx";
+import Modal from "../../../components/common/Modal.jsx";
+import DocumentationList from "../../../components/admin/DocumentationList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
 import {
   getDocumentation,
@@ -10,10 +10,8 @@ import {
   deleteDocumentation,
 } from "../../../services/documentation.service.js";
 import { useEffect, useState } from "react";
-import DocumentationList from "../../../components/admin/DocumentationList.jsx";
-import Modal from "../../../components/common/Modal.jsx";
-import Label from "../../../components/common/Label.jsx";
-import Input from "../../../components/common/Input.jsx";
+import { useSearchParams } from "react-router-dom";
+import { PiPlusCircle } from "react-icons/pi";
 
 const Dokumentasi = () => {
   const [documentations, setDocumentations] = useState([]);
@@ -21,11 +19,22 @@ const Dokumentasi = () => {
     nama: "",
     image: null,
   });
+  const [selectedDocumentation, setSelectedDocumentation] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
+  const [filteredDocumentations, setFilteredDocumentations] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
-  const [previewImage, setPreviewImage] = useState("");
-  const [selectedDocumentation, setSelectedDocumentation] = useState(null);
 
+  useEffect(() => {
+    getDocumentation((data) => {
+      setDocumentations(data);
+      setFilteredDocumentations(data);
+    });
+  }, []);
+
+  // CRUD: Start
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFormData({ ...formData, image: file });
@@ -42,11 +51,9 @@ const Dokumentasi = () => {
     form.append("nama", formData.nama);
     form.append("image", formData.image);
 
-    // add documentation api
     addDocumentation(form, (response) => {
       setDocumentations([...documentations, response]);
       closeModal();
-      resetForm();
     });
   };
 
@@ -57,7 +64,6 @@ const Dokumentasi = () => {
       form.append("image", formData.image);
     }
 
-    // update documentation api
     updateDocumentation(selectedDocumentation.id, form, (updateData) => {
       setDocumentations((prevDocumentations) =>
         prevDocumentations.map((item) =>
@@ -65,12 +71,10 @@ const Dokumentasi = () => {
         )
       );
       closeModal();
-      resetForm();
     });
   };
 
   const handleDeleteDocumentation = () => {
-    // delete documentation api
     deleteDocumentation(selectedDocumentation.id, () => {
       setDocumentations(
         documentations.filter(
@@ -80,16 +84,33 @@ const Dokumentasi = () => {
       closeModal();
     });
   };
+  // CRUD: End
 
-  const resetForm = () => {
-    setFormData({
-      nama: "",
-      image: null,
-    });
-    setPreviewImage("");
-    setSelectedDocumentation(null);
+  // Search: Start
+  const searchQuery = searchParams.get("search") || "";
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = documentations.filter((documentation) =>
+        documentation.nama.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredDocumentations(filtered);
+    } else {
+      setFilteredDocumentations(documentations);
+    }
+  }, [searchQuery, documentations]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    if (value) {
+      setSearchParams({ search: value });
+    } else {
+      setSearchParams({});
+    }
   };
+  // Search: End
 
+  // Modal: Start
   const openModal = (type, documentation = null) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -103,7 +124,7 @@ const Dokumentasi = () => {
         `http://localhost:3000/api/dokumentasi-frontpage/image/${documentation.image}`
       );
     } else if (type === "delete_documentation" && documentation) {
-        setSelectedDocumentation(documentation)
+      setSelectedDocumentation(documentation);
     }
   };
 
@@ -113,27 +134,53 @@ const Dokumentasi = () => {
     resetForm();
   };
 
-  useEffect(() => {
-    getDocumentation((data) => {
-      setDocumentations(data);
+  const resetForm = () => {
+    setFormData({
+      nama: "",
+      image: null,
     });
-  }, []);
+    setPreviewImage("");
+    setSelectedDocumentation(null);
+  };
+  // Modal: End
 
   return (
     <AdminLayout title={"Halaman Depan / Dokumentasi"}>
       <div className="flex flex-col">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-          <div className="flex gap-5 mb-6">
-            <Dropdown
-              options={[1, 2, 3, 4]}
-              label="Tampilkan"
-              // onOptionSelect={handleOptionSelect}
-            />
+          <div className="flex mb-6 justify-between">
+            <div className="max-w-lg grow">
+              <div className="flex rounded-2xl shadow">
+                <div className="relative w-full">
+                  <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </div>
 
-            {/* FITUR SEARCHING */}
-            <InputSearch
-            // handleChange={(e) => setSearch(e.target.value)}
-            />
+                  <input
+                    type="text"
+                    className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
+                    placeholder="Masukkan nama tag artikel ..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
 
             <button
               className="flex items-center py-2 px-6 bg-green-800 text-white font-medium rounded-2xl"
@@ -258,7 +305,7 @@ const Dokumentasi = () => {
           </div>
 
           <DocumentationList
-            documentations={documentations}
+            documentations={filteredDocumentations}
             openModal={openModal}
           />
         </div>

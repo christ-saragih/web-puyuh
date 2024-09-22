@@ -449,7 +449,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 id="tanggal_lahir"
                                 name="tanggal_lahir"
                                 placeholder={
-                                    investors?.investorBiodata.tanggal_lahir
+                                    investors?.investorBiodata?.tanggal_lahir
                                 }
                                 value={tanggalLahir}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
@@ -468,7 +468,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                             <input
                                 type="text"
                                 id="base-input"
-                                placeholder={investors?.investorBiodata.no_hp}
+                                placeholder={investors?.investorBiodata?.no_hp}
                                 value={noHp}
                                 onChange={handleNoHpChange}
                                 className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"

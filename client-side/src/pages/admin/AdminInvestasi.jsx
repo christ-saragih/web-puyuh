@@ -1,9 +1,20 @@
 import Input from "../../components/common/Input.jsx";
-import InputSearch from "../../components/common/InputSearch.jsx";
 import Label from "../../components/common/Label.jsx";
 import Modal from "../../components/common/Modal.jsx";
 import AdminLayout from "../../layouts/AdminLayout";
+import BatchList from "../../components/admin/BatchList.jsx";
+import {
+  getBatchs,
+  getDetailInvestasiBySlug,
+  addInvestment,
+  updateInvestment,
+  deleteInvestment,
+} from "../../services/batch.service.js";
+import { formatDate } from "../../utils/formatDate.js";
+import { formatRupiah } from "../../utils/formatRupiah.js";
+import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining.js";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -17,18 +28,8 @@ import {
   PiUserBold,
   PiUsersThreeBold,
 } from "react-icons/pi";
-import {
-  getBatchs,
-  getDetailInvestasiBySlug,
-  addInvestment,
-  updateInvestment,
-  deleteInvestment,
-} from "../../services/batch.service.js";
-import BatchList from "../../components/admin/BatchList.jsx";
-import { Tabs } from "flowbite-react";
-import { formatDate } from "../../utils/formatDate.js";
-import { formatRupiah } from "../../utils/formatRupiah.js";
-import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining.js";
+import { Dropdown, Tabs } from "flowbite-react";
+import { FaPercent } from "react-icons/fa";
 
 const AdminInvestasi = () => {
   const [investments, setInvestments] = useState([]);
@@ -52,18 +53,22 @@ const AdminInvestasi = () => {
     status: "",
     transaksi: [],
   });
-
+  const [filteredInvestments, setFilteredInvestments] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedInvestment, setSelectedInvestment] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("");
 
   useEffect(() => {
     getBatchs((data) => {
       setInvestments(data);
+      setFilteredInvestments(data);
     });
   }, []);
 
-  console.log(investments);
-
+  // CRUD: Start
   const handleInvestmentImageChange = (e) => {
     const file = e.target.files[0];
     setFormInvestment({ ...formInvestment, gambar: file });
@@ -148,8 +153,6 @@ const AdminInvestasi = () => {
           item.id === updateData.id ? updateData : item
         )
       );
-      console.log("=== DATA INVESTASI UPDATE ===");
-      console.log(investments);
 
       closeModal();
       resetForm();
@@ -166,11 +169,63 @@ const AdminInvestasi = () => {
       closeModal();
     });
   };
+  // CRUD: End
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("");
+  // Search Investment: Start
+  // Ambil parameter pencarian dan status dari URL
+  const searchQuery = searchParams.get("search") || "";
+  const statusQuery = searchParams.get("status") || "Semua Status";
 
-  // fungsi modal
+  useEffect(() => {
+    let filtered = investments;
+
+    // Filter berdasarkan status
+    if (statusQuery && statusQuery !== "Semua Status") {
+      filtered = filtered.filter(
+        (investment) =>
+          investment.status.toLowerCase() === statusQuery.toLowerCase()
+      );
+    }
+
+    // Filter berdasarkan judul investasi
+    if (searchQuery) {
+      filtered = filtered.filter((investment) =>
+        investment.judul.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredInvestments(filtered);
+  }, [searchQuery, statusQuery, investments]);
+
+  // Fungsi untuk mengubah parameter pencarian di URL
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchParams((prevParams) => {
+      const newParams = new URLSearchParams(prevParams);
+      if (value) {
+        newParams.set("search", value);
+      } else {
+        newParams.delete("search");
+      }
+      return newParams;
+    });
+  };
+
+  // Fungsi untuk mengubah kategori status di URL
+  const handleStatusChange = (status) => {
+    setSearchParams((prevParams) => {
+      const newParams = new URLSearchParams(prevParams);
+      if (status !== "Semua Status") {
+        newParams.set("status", status);
+      } else {
+        newParams.delete("status");
+      }
+      return newParams;
+    });
+  };
+  // Search Investment: End
+
+  // Modal: Start
   const openModal = (type, investment = null) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -259,16 +314,66 @@ const AdminInvestasi = () => {
     setPreviewImage("");
     setSelectedInvestment(null);
   };
+  // Modal: End
 
   return (
     <AdminLayout title={"Halaman Managemen Investasi"}>
       <div className="flex flex-col">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-          <div className="flex gap-5 mb-6">
-            {/* FITUR SEARCHING */}
-            <InputSearch
-            // handleChange={(e) => setSearch(e.target.value)}
-            />
+          <div className="flex mb-6 justify-between">
+            <div className="max-w-lg grow ">
+              <div className="flex flex-col items-center rounded-2xl gap-y-3 sm:shadow sm:flex-row">
+                <div className="flex-shrink-0 w-full sm:w-fit ">
+                  <Dropdown label={statusQuery} dismissOnClick={false}>
+                    <Dropdown.Item
+                      onClick={() => handleStatusChange("Semua Status")}
+                    >
+                      Semua Status
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleStatusChange("Segera")}>
+                      Segera
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleStatusChange("Proses")}>
+                      Proses
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => handleStatusChange("Selesai")}
+                    >
+                      Selesai
+                    </Dropdown.Item>
+                  </Dropdown>
+                </div>
+
+                <div className="relative w-full">
+                  <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </div>
+
+                  <input
+                    type="text"
+                    className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl sm:rounded-s-none sm:border-s-gray-50 sm:border-s-2 border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none shadow sm:shadow-none"
+                    placeholder="Masukkan judul investasi ..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
 
             <button
               className="flex items-center py-2 px-6 bg-green-800 text-white font-medium rounded-2xl"
@@ -278,7 +383,6 @@ const AdminInvestasi = () => {
               <p>Tambah</p>
             </button>
 
-            {/* MODAL */}
             <Modal
               open={isModalOpen}
               onClose={closeModal}
@@ -457,15 +561,20 @@ const AdminInvestasi = () => {
                         />
                       </div>
                       <div>
-                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil"} />
-                        <Input
-                          type={"text"}
-                          name={"bagi_hasil"}
-                          placeholder={"Masukkan bagi hasil.."}
-                          variant={"primary-outline"}
-                          value={formInvestment.bagi_hasil}
-                          handleChange={handleInvestmentTextChange}
-                        />
+                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil (masukkan angka saja)"} />
+                        <div className="relative">
+                          <Input
+                            type={"text"}
+                            name={"bagi_hasil"}
+                            placeholder={"Masukkan bagi hasil.."}
+                            variant={"primary-outline"}
+                            value={formInvestment.bagi_hasil}
+                            handleChange={handleInvestmentTextChange}
+                          />
+                          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <FaPercent className="text-gray-400 w-3 h-3" />
+                          </div>
+                        </div>
                       </div>
                       <div>
                         <Label
@@ -817,7 +926,7 @@ const AdminInvestasi = () => {
           </div>
 
           {/* List */}
-          <BatchList investments={investments} openModal={openModal} />
+          <BatchList investments={filteredInvestments} openModal={openModal} />
         </div>
       </div>
     </AdminLayout>
