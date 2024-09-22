@@ -5,54 +5,14 @@ const investorIndentitasController = require("../controllers/investorIdentitasCo
 const { authenticateToken } = require("../middleware/authenticateToken");
 
 const validate = require("../middleware/validationMiddleware");
-const {
-    createSchema,
-    updateSchema,
-} = require("../validators/investorIdentitasValidation");
+const { upsertSchema } = require("../validators/investorIdentitasValidation");
 
 const upload = require("../middleware/uploadFileMiddleware");
 const {
     validateUploadMultipleFile,
 } = require("../middleware/validationUploadMultipleFileMiddleware");
 
-// router.post(
-//     "/",
-//     authenticateInvestorToken,
-//     upload.fields([
-//         { name: "foto_ktp", maxCount: 1 },
-//         { name: "foto_npwp", maxCount: 1 },
-//         { name: "selfie_ktp", maxCount: 1 },
-//     ]),
-//     validateUploadMultipleFile({
-//         fieldName: "foto_ktp",
-//     }),
-//     validateUploadMultipleFile({
-//         fieldName: "foto_npwp",
-//     }),
-//     validateUploadMultipleFile({
-//         fieldName: "selfie_ktp",
-//     }),
-//     validate(createSchema),
-//     investorIndentitasController.create
-// );
-router.put(
-    "/:id",
-    authenticateToken("investor"),
-    upload.fields([
-        { name: "foto_ktp", maxCount: 1 },
-        { name: "foto_npwp", maxCount: 1 },
-        { name: "selfie_ktp", maxCount: 1 },
-    ]),
-    validateUploadMultipleFile({ fieldName: "foto_ktp", required: false }),
-    validateUploadMultipleFile({ fieldName: "foto_npwp", required: false }),
-    validateUploadMultipleFile({ fieldName: "selfie_ktp", required: false }),
-    validate(updateSchema),
-    investorIndentitasController.update
-);
-router.get("/", investorIndentitasController.findAll);
-router.get("/:id", investorIndentitasController.findOne);
-router.delete("/:id", investorIndentitasController.delete);
-router.get("/image/:imageName", investorIndentitasController.getImageByName);
+// Create atau Update Data Investor Indentitas
 router.post(
     "/",
     authenticateToken("investor"),
@@ -64,7 +24,13 @@ router.post(
     validateUploadMultipleFile({ fieldName: "foto_ktp", required: false }),
     validateUploadMultipleFile({ fieldName: "foto_npwp", required: false }),
     validateUploadMultipleFile({ fieldName: "selfie_ktp", required: false }),
-    validate(updateSchema),
+    validate(upsertSchema),
     investorIndentitasController.upsert
 );
+
+// Get Data Investor Identitas Berdasarkan ID
+router.get("/:id", investorIndentitasController.findOne);
+
+// Get Data Gambar Identitas Investor Identitas Berdasarkan Nama Gambar
+router.get("/image/:imageName", investorIndentitasController.getImageByName);
 module.exports = router;

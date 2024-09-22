@@ -3,15 +3,7 @@ const router = express.Router();
 const investorBiodataController = require("../controllers/investorBiodataController");
 const validate = require("../middleware/validationMiddleware");
 
-const {
-    createSchema,
-    updateSchema,
-} = require("../validators/investorBiodataValidation");
-
-const {
-    authenticateInvestorToken,
-} = require("../middleware/authenticateInvestorToken");
-const authorizeRole = require("../middleware/authorizeRole");
+const { upsertSchema } = require("../validators/investorBiodataValidation");
 
 const upload = require("../middleware/uploadFileMiddleware");
 const {
@@ -19,34 +11,7 @@ const {
 } = require("../middleware/validationUploadFileMiddleware");
 const { authenticateToken } = require("../middleware/authenticateToken");
 
-// router.post(
-//     "/",
-//     authenticateInvestorToken,
-//     authorizeRole("investor"),
-//     upload.single("foto_profil"),
-//     validateUploadFile({
-//         fieldName: "foto_profil",
-//     }),
-//     validate(createSchema),
-//     investorBiodataController.create
-// );
-router.put(
-    "/:id",
-    authenticateInvestorToken,
-    authorizeRole("investor"),
-    validate(updateSchema),
-    upload.single("foto_profil"),
-    validateUploadFile({
-        fieldName: "foto_profil",
-        required: false,
-    }),
-    investorBiodataController.update
-);
-router.get("/", investorBiodataController.findAll);
-router.get("/:id", investorBiodataController.findOne);
-router.delete("/:id", investorBiodataController.delete);
-router.get("/images/:gambar", investorBiodataController.getImageByName);
-
+// Create atau Update Investor Biodata
 router.post(
     "/",
     authenticateToken("investor"),
@@ -55,8 +20,14 @@ router.post(
         fieldName: "foto_profil",
         required: false,
     }),
-    validate(updateSchema),
+    validate(upsertSchema),
     investorBiodataController.upsert
 );
+
+// Get Data Investor Biodata Berdasarkan Id
+router.get("/:id", investorBiodataController.findOne);
+
+// Get Foto Profile Investor Berdasarkan Nama Gambar
+router.get("/images/:gambar", investorBiodataController.getImageByName);
 
 module.exports = router;

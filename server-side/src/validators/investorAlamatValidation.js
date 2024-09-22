@@ -1,39 +1,6 @@
 const { check } = require("express-validator");
 
-const createSchema = [
-    check("alamat")
-        .notEmpty()
-        .withMessage("Alamat tidak boleh kosong!")
-        .isString()
-        .withMessage("Alamat harus berupa string!"),
-    check("provinsi")
-        .notEmpty()
-        .withMessage("Provinsi tidak boleh kosong!")
-        .isString()
-        .withMessage("Provinsi harus berupa string!"),
-    check("kota")
-        .notEmpty()
-        .withMessage("Kota tidak boleh kosong!")
-        .isString()
-        .withMessage("Kota harus berupa string!"),
-    check("kecamatan")
-        .notEmpty()
-        .withMessage("Kecamatan tidak boleh kosong!")
-        .isString()
-        .withMessage("Kecamatan harus berupa string!"),
-    check("kelurahan")
-        .notEmpty()
-        .withMessage("Kelurahan tidak boleh kosong!")
-        .isString()
-        .withMessage("Kelurahan harus berupa string!"),
-    check("kode_pos")
-        .notEmpty()
-        .withMessage("Kode pos tidak boleh kosong!")
-        .isString()
-        .withMessage("Kode pos harus berupa string!"),
-];
-
-const updateSchema = [
+const upsertSchema = [
     check("alamat")
         .optional()
         .isString()
@@ -61,6 +28,5 @@ const updateSchema = [
 ];
 
 module.exports = {
-    createSchema,
-    updateSchema,
+    upsertSchema,
 };
