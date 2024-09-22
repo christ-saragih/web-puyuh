@@ -111,40 +111,6 @@ exports.findData = async (req, res) => {
     }
 };
 
-// Delete
-// exports.delete = async (req, res) => {
-//     try {
-//         const tentangkami = await TentangKami.findByPk(req.params.id);
-//         if (!tentangkami) {
-//             return res.status(404).json({ message: "Tentang Kami Tidak Ada!" });
-//         }
-
-//         // Delete image file
-//         if (tentangkami.image_background) {
-//             const imagePath = path.resolve(
-//                 `public/images/tentang-kami/${tentangkami.image_background}`
-//             );
-//             if (fs.existsSync(imagePath)) {
-//                 fs.unlink(imagePath, (err) => {
-//                     if (err) console.error(err);
-//                 });
-//             }
-//         }
-
-//         await tentangkami.destroy();
-
-//         res.status(200).json({
-//             message: "Tentang Kami Berhasil Dihapus!",
-//             data: tentangkami,
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Internal server error",
-//             error: error.message,
-//         });
-//     }
-// };
-
 // Get Image by Name
 exports.getImageByName = (req, res) => {
     const { gambar } = req.params;

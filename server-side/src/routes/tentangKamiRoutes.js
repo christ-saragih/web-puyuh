@@ -25,7 +25,6 @@ router.post(
     tentangKamiContoller.upsert
 );
 router.get("/", tentangKamiContoller.findData);
-// router.delete("/:id", tentangKamiContoller.delete);
 router.get("/image/:gambar", tentangKamiContoller.getImageByName);
 
 module.exports = router;
