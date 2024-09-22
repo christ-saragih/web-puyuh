@@ -5,32 +5,17 @@ const investorAlamatController = require("../controllers/investorAlamatControlle
 const { authenticateToken } = require("../middleware/authenticateToken");
 
 const validate = require("../middleware/validationMiddleware");
-const {
-    createSchema,
-    updateSchema,
-} = require("../validators/investorAlamatValidation");
+const { upsertSchema } = require("../validators/investorAlamatValidation");
 
-// router.post(
-//     "/",
-//     authenticateInvestorToken,
-//     validate(createSchema),
-//     investorAlamatController.create
-// );
-router.put(
-    "/:id",
-    authenticateToken("investor"),
-    validate(updateSchema),
-    investorAlamatController.update
-);
-router.get("/", investorAlamatController.findAll);
-router.get("/:id", investorAlamatController.findOne);
-router.delete("/:id", investorAlamatController.delete);
-
+// Create atau Update data Investor Alamat
 router.post(
     "/",
     authenticateToken("investor"),
-    validate(updateSchema),
+    validate(upsertSchema),
     investorAlamatController.upsert
 );
+
+// Get Data Investor Alamat Berdasarkan ID
+router.get("/:id", investorAlamatController.findOne);
 
 module.exports = router;
