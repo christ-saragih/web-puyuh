@@ -29,7 +29,6 @@ router.post(
     berandaController.upsert
 );
 router.get("/", berandaController.findData);
-// router.delete("/:id", berandaController.delete);
 router.get("/image/:gambar", berandaController.getImageByName);
 
 module.exports = router;
