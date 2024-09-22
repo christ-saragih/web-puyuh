@@ -1,19 +1,6 @@
 const { check } = require("express-validator");
 
-const createSchema = [
-    check("no_ktp")
-        .notEmpty()
-        .withMessage("No KTP tidak boleh kosong!")
-        .isNumeric()
-        .withMessage("No KTP harus berupa numerik!"),
-    check("no_npwp")
-        .notEmpty()
-        .withMessage("No NPWP tidak boleh kosong!")
-        .isNumeric()
-        .withMessage("No NPWP harus berupa numerik!"),
-];
-
-const updateSchema = [
+const upsertSchema = [
     check("no_ktp")
         .optional()
         .isNumeric()
@@ -25,6 +12,5 @@ const updateSchema = [
 ];
 
 module.exports = {
-    createSchema,
-    updateSchema,
+    upsertSchema,
 };
