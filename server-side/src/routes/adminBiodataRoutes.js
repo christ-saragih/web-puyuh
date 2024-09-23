@@ -3,10 +3,7 @@ const router = express.Router();
 const adminBiodataController = require("../controllers/adminBiodataController");
 const validate = require("../middleware/validationMiddleware");
 
-const {
-    createSchema,
-    updateSchema,
-} = require("../validators/adminBiodataValidation");
+const { upsertSchema } = require("../validators/adminBiodataValidation");
 
 const { authenticateToken } = require("../middleware/authenticateToken");
 
@@ -15,28 +12,23 @@ const {
     validateUploadFile,
 } = require("../middleware/validationUploadFileMiddleware");
 
+// Create Atau Update Data Admin Biodata
 router.post(
     "/",
     authenticateToken("admin"),
     upload.single("foto_profil"),
     validateUploadFile({
         fieldName: "foto_profil",
+        required: false,
     }),
-    validate(createSchema),
-    adminBiodataController.create
+    validate(upsertSchema),
+    adminBiodataController.upsert
 );
-router.put(
-    "/:id",
-    authenticateToken("admin"),
-    upload.single("foto_profil"),
-    validateUploadFile({
-        fieldName: "foto_profil",
-    }),
-    adminBiodataController.update
-);
-router.get("/", adminBiodataController.findAll);
+
+// Get Data Admin Biodata Berdasarkan Id
 router.get("/:id", adminBiodataController.findOne);
-router.delete("/:id", adminBiodataController.delete);
+
+// Get Foto Profile Admin Berdasarkan Nama Gambar
 router.get("/images/:gambar", adminBiodataController.getImageByName);
 
 module.exports = router;
