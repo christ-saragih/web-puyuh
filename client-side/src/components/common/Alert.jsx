@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 
 const Alert = (props) => {
-  const { Icon, message, variant } = props;
+  const { Icon, message, type } = props;
 
-  // Tentukan warna berdasarkan variant
+  // Tentukan warna berdasarkan type
   let color;
-  switch (variant) {
+  switch (type) {
     case "success":
       color = "#138A36";
       break;
@@ -38,6 +38,8 @@ const Alert = (props) => {
           <Icon className="w-full h-full text-white object-cover" />
         </div>
 
+        <span className="sr-only">{type}</span>
+
         <div>
           <span className="font-medium">Pemberitahuan!</span> {message}
         </div>
@@ -49,11 +51,11 @@ const Alert = (props) => {
 Alert.propTypes = {
   Icon: PropTypes.elementType.isRequired,
   message: PropTypes.string.isRequired,
-  variant: PropTypes.oneOf(["success", "danger", "warning", "info"]).isRequired,
+  type: PropTypes.oneOf(["success", "danger", "warning", "info"]).isRequired,
 };
 
 Alert.defaultProps = {
-  variant: "info",
+  type: "info",
 };
 
 export default Alert;

@@ -21,7 +21,7 @@ const DocumentationList = (props) => {
         <Alert
           Icon={LuBadgeInfo}
           message={"Tidak ada dokumentasi yang tersedia."}
-          variant={"info"}
+          type={"info"}
         />
       )}
     </>
