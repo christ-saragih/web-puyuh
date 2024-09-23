@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
         } = req.body;
-        const adminId = req.admin.id;
+        const adminId = req.user.id;
 
         const gambar = req.file ? req.file.buffer : null;
 
