@@ -1,8 +1,9 @@
-import { PiPlusCircle } from "react-icons/pi";
-import Dropdown from "../../../components/common/Dropdown";
-import InputSearch from "../../../components/common/InputSearch.jsx";
-import AdminLayout from "../../../layouts/AdminLayout";
+import Label from "../../../components/common/Label.jsx";
+import Input from "../../../components/common/Input.jsx";
+import Modal from "../../../components/common/Modal.jsx";
+import Textarea from "../../../components/common/Textarea.jsx";
 import FaqAdminList from "../../../components/admin/FaqList.jsx";
+import AdminLayout from "../../../layouts/AdminLayout";
 import {
   getFaqs,
   addFaq,
@@ -10,10 +11,8 @@ import {
   deleteFaq,
 } from "../../../services/faq.service.js";
 import { useEffect, useState } from "react";
-import Modal from "../../../components/common/Modal.jsx";
-import Label from "../../../components/common/Label.jsx";
-import Input from "../../../components/common/Input.jsx";
-import Textarea from "../../../components/common/Textarea.jsx";
+import { PiPlusCircle } from "react-icons/pi";
+import { useSearchParams } from "react-router-dom";
 
 const FaqAdmin = () => {
   const [faqs, setFaqs] = useState([]);
@@ -23,6 +22,9 @@ const FaqAdmin = () => {
     status: "",
   });
   const [selectedFaq, setSelectedFaq] = useState(null);
+  const [filteredFaqs, setFilteredFaqs] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -32,6 +34,7 @@ const FaqAdmin = () => {
     });
   }, []);
 
+  // CRUD: Start
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -47,7 +50,6 @@ const FaqAdmin = () => {
     addFaq(dataToSend, (newData) => {
       setFaqs([...faqs, newData]);
       closeModal();
-      resetForm();
     });
   };
 
@@ -62,7 +64,6 @@ const FaqAdmin = () => {
         prevFaqs.map((item) => (item.id === updateData.id ? updateData : item))
       );
       closeModal();
-      resetForm();
     });
   };
 
@@ -85,7 +86,33 @@ const FaqAdmin = () => {
       );
     });
   };
+  // CRUD: End
 
+  // Search: Start
+  const searchQuery = searchParams.get("search") || "";
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = faqs.filter((faq) =>
+        faq.pertanyaan.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredFaqs(filtered);
+    } else {
+      setFilteredFaqs(faqs);
+    }
+  }, [searchQuery, faqs]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    if (value) {
+      setSearchParams({ search: value });
+    } else {
+      setSearchParams({});
+    }
+  };
+  // Search: End
+
+  // Modal: Start
   const openModal = (type, faq = null) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -113,23 +140,45 @@ const FaqAdmin = () => {
     });
     setSelectedFaq(null);
   };
-  
+  // Modal: End
 
   return (
     <AdminLayout title={"Halaman Depan / Faq"}>
       <div className="flex flex-col">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-          <div className="flex gap-5 mb-6">
-            <Dropdown
-              options={[1, 2, 3, 4]}
-              label="Tampilkan"
-              // onOptionSelect={handleOptionSelect}
-            />
+          <div className="flex mb-6 justify-between">
+            <div className="max-w-lg grow">
+              <div className="flex rounded-2xl shadow">
+                <div className="relative w-full">
+                  <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </div>
 
-            {/* FITUR SEARCHING */}
-            <InputSearch
-            // handleChange={(e) => setSearch(e.target.value)}
-            />
+                  <input
+                    type="text"
+                    className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
+                    placeholder="Masukkan nama tag artikel ..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
 
             <button
               className="flex items-center py-2 px-6 bg-green-800 text-white font-medium rounded-2xl"
@@ -199,7 +248,11 @@ const FaqAdmin = () => {
           </div>
 
           {/* DocumentList */}
-          <FaqAdminList faqs={faqs} openModal={openModal} handleToggleStatus={handleToggleStatus} />
+          <FaqAdminList
+            faqs={filteredFaqs}
+            openModal={openModal}
+            handleToggleStatus={handleToggleStatus}
+          />
         </div>
       </div>
     </AdminLayout>
