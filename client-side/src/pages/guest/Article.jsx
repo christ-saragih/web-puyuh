@@ -42,7 +42,7 @@ const Article = () => {
   return (
     <GuestLayouts>
       <div className="w-[90%] mx-auto my-12 lg:my-16 grow">
-        <h2 className="font-bold text-center text-3xl lg:text-4xl mb-6 tracking-wide">
+        <h2 className="font-bold text-center text-3xl lg:text-4xl mb-6 tracking-wide lg:leading-normal">
           Ingin Tahu Lebih Banyak? <br /> Jelajahi Artikel Terbaik Kami!
         </h2>
 
