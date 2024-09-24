@@ -123,7 +123,7 @@ exports.findOne = async (req, res) => {
 exports.ubahPassword = async (req, res) => {
     try {
         const { newPassword } = req.body;
-        const investor = await Investor.findByPk(req.investor.id);
+        const investor = await Investor.findByPk(req.user.id);
 
         if (!investor) {
             return res.status(404).json({ message: "Investor tidak ada!" });
