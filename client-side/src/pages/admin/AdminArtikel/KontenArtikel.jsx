@@ -248,7 +248,7 @@ const KontenArtikel = () => {
               <input
                 type="text"
                 className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
-                placeholder="Masukkan nama tag artikel ..."
+                placeholder="Masukkan judul artikel ..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e)}
                 required
