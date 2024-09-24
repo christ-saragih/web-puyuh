@@ -24,7 +24,7 @@ exports.transaction = async (req, res) => {
         const { total_investasi } = req.body;
 
         const investor = await Investor.findOne({
-            where: { id: req.investor.id },
+            where: { id: req.user.id },
             attributes: ["id", "email"],
             include: {
                 model: InvestorBiodata,
@@ -43,7 +43,7 @@ exports.transaction = async (req, res) => {
         console.log(investasi.id);
 
         const transaksi = await Transaksi.create({
-            investorId: req.investor.id,
+            investorId: req.user.id,
             investasiId: investasi.id,
             tanggal_transaksi: new Date(),
             total_investasi,
