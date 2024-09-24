@@ -184,7 +184,7 @@ const ResetPassword = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Password reset successful:', data);
-        setSuccessMessage('Password has been successfully reset');
+        setSuccessMessage('Password has been successfully reset. You will directed to login');
         setErrorMessage('');
         setTimeout(() => {
           navigate('/masuk');
