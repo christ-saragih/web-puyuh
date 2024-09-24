@@ -130,7 +130,7 @@ const AdminInvestor = () => {
     <AdminLayout title={"Halaman Managemen Investor"}>
       <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
         <div className="flex mb-6">
-          <div className="max-w-lg grow">
+          <div className="max-w-md grow">
             <div className="flex rounded-2xl shadow">
               <div className="relative w-full">
                 <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">

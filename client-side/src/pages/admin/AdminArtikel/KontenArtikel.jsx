@@ -224,7 +224,7 @@ const KontenArtikel = () => {
   return (
     <>
       <div className="flex mb-6 justify-between">
-        <div className="max-w-lg grow">
+        <div className="max-w-md grow">
           <div className="flex rounded-2xl shadow">
             <div className="relative w-full">
               <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
