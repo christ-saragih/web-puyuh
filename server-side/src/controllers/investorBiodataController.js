@@ -19,6 +19,7 @@ exports.upsert = async (req, res) => {
             tanggal_lahir,
             no_hp,
             kategori_investor,
+            email,
         } = req.body;
 
         const investorBiodata = await InvestorBiodata.findOne({
@@ -59,6 +60,7 @@ exports.upsert = async (req, res) => {
 
             await investor.update({
                 kategori_investor,
+                email,
             });
 
             res.status(201).json({
@@ -95,6 +97,7 @@ exports.upsert = async (req, res) => {
 
             await investor.update({
                 kategori_investor,
+                email,
             });
 
             res.status(200).json({
