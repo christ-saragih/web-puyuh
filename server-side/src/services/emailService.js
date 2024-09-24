@@ -30,7 +30,7 @@ const sendVerificationEmail = async (to, token) => {
 };
 
 const sendResetPasswordEmail = async (to, token) => {
-    const resetPasswordLink = `http://localhost:3000/api/auth/investor/reset-password?token=${token}`;
+    const resetPasswordLink = `http://localhost:5173/reset-password?token=${token}`;
 
     const mailOptions = {
         from: "iqbalfadhila35@gmail.com",
