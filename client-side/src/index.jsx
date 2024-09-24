@@ -51,6 +51,7 @@ import Verifikasi from "./pages/investor/Verifikasi";
 import PublicRouteAdmin from "./components/admin/PublicRouteAdmin";
 import ProtectedRoute from "./components/protectedRoute";
 import { AuthProvider } from "./contexts/AuthProvider";
+import ResetPassword from "./pages/investor/ResetPassword";
 // END: Investor
 
 const router = createBrowserRouter([
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
   {
     path: "/lupa-password",
     element: <LupaPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/investor",
