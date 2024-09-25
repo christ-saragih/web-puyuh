@@ -57,9 +57,17 @@ exports.upsert = async (req, res) => {
                 email,
             });
 
+            const bioAdmin = await AdminBiodata.findOne({
+                where: { id: adminBiodata.id },
+                include: {
+                    model: Admin,
+                    as: "admin",
+                },
+            });
+
             res.status(201).json({
                 message: "Biodata Berhasil Ditambahkan!",
-                data: { adminBiodata, admin },
+                data: bioAdmin,
             });
         } else {
             let nama_foto = adminBiodata.foto_profil;
@@ -93,9 +101,17 @@ exports.upsert = async (req, res) => {
                 email,
             });
 
+            const bioAdmin = await AdminBiodata.findOne({
+                where: { id: adminBiodata.id },
+                include: {
+                    model: Admin,
+                    as: "admin",
+                },
+            });
+
             res.status(200).json({
                 message: "Biodata Admin berhasil diperbaharui",
-                data: { adminBiodata, admin },
+                data: bioAdmin,
             });
         }
     } catch (error) {
