@@ -1,4 +1,4 @@
-const { AdminBiodata } = require("../models");
+const { AdminBiodata, Admin } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
@@ -12,12 +12,17 @@ const ensureDir = (dir) => {
 // Create atau Update Admin Biodata
 exports.upsert = async (req, res) => {
     try {
-        const { nama_lengkap, jk, tempat_lahir, tanggal_lahir, no_hp } =
+        const { nama_lengkap, jk, tempat_lahir, tanggal_lahir, no_hp, email } =
             req.body;
 
         const adminBiodata = await AdminBiodata.findOne({
             where: { adminId: req.user.id },
         });
+
+        const admin = await Admin.findByPk(req.user.id);
+
+        // console.log(admin);
+        // exit();
 
         const foto_profil = req.file ? req.file.buffer : null;
 
@@ -48,9 +53,13 @@ exports.upsert = async (req, res) => {
                 foto_profil: nama_foto,
             });
 
+            await admin.update({
+                email,
+            });
+
             res.status(201).json({
                 message: "Biodata Berhasil Ditambahkan!",
-                data: adminBiodata,
+                data: { adminBiodata, admin },
             });
         } else {
             let nama_foto = adminBiodata.foto_profil;
@@ -80,9 +89,13 @@ exports.upsert = async (req, res) => {
                 foto_profil: nama_foto,
             });
 
+            await admin.update({
+                email,
+            });
+
             res.status(200).json({
                 message: "Biodata Admin berhasil diperbaharui",
-                data: adminBiodata,
+                data: { adminBiodata, admin },
             });
         }
     } catch (error) {

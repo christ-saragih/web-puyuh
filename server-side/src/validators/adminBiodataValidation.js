@@ -23,6 +23,7 @@ const upsertSchema = [
         .optional()
         .isNumeric()
         .withMessage("Nomor handphone harus numerik!"),
+    check("email").optional().isEmail().withMessage("Email harus valid"),
 ];
 
 module.exports = {

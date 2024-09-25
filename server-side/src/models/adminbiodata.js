@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             tanggal_lahir: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY,
                 validate: {
                     notEmpty: { msg: "Tanggal tidak boleh kosong!" },
                 },
