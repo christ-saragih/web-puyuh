@@ -2,6 +2,7 @@ const { InvestorBiodata, Investor } = require("../models");
 const fs = require("fs");
 const path = require("path");
 const { exit } = require("process");
+const { where } = require("sequelize");
 
 const ensureDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -124,7 +125,13 @@ exports.upsert = async (req, res) => {
 // Read One
 exports.findOne = async (req, res) => {
     try {
-        const investorBiodata = await InvestorBiodata.findByPk(req.params.id);
+        const investorBiodata = await InvestorBiodata.findOne({
+            where: { id: req.params.id },
+            include: {
+                model: Investor,
+                as: "investor",
+            },
+        });
         if (!investorBiodata) {
             return res
                 .status(404)
