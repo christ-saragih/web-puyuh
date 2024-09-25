@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             // define association
             AdminBiodata.belongsTo(models.Admin, {
                 foreignKey: "adminId",
+                as: "admin",
             });
         }
     }

@@ -117,7 +117,13 @@ exports.upsert = async (req, res) => {
 // Get Data  Admin Berdasarkan Id
 exports.findOne = async (req, res) => {
     try {
-        const adminBiodata = await AdminBiodata.findByPk(req.params.id);
+        const adminBiodata = await AdminBiodata.findOne({
+            where: { id: req.params.id },
+            include: {
+                model: Admin,
+                as: "admin",
+            },
+        });
         if (!adminBiodata) {
             return res
                 .status(404)

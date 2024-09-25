@@ -4,7 +4,6 @@ const investorController = require("../controllers/investorController");
 
 const { authenticateToken } = require("../middleware/authenticateToken");
 
-// router.get("/", investorController.findAll);
 router.get(
     "/",
     authenticateToken("investor"),
