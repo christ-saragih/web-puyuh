@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Calendar, Badge } from "rsuite";
+import 'rsuite/Calendar/styles/index.css';
 
 // Komponen untuk menampilkan badge di tanggal yang ditandai
 const HighlightedDateBadge = ({ date, markedDates }) => {
