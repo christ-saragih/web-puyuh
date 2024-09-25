@@ -97,7 +97,7 @@ exports.getDetailDataInvestor = async (req, res) => {
 exports.ubahPassword = async (req, res) => {
     try {
         const { newPassword } = req.body;
-        const admin = await Admin.findByPk(req.admin.id);
+        const admin = await Admin.findByPk(req.user.id);
 
         if (!admin) {
             return res.status(404).json({ message: "Admin tidak ada!" });
