@@ -64,9 +64,17 @@ exports.upsert = async (req, res) => {
                 email,
             });
 
+            const bioInvestor = await InvestorBiodata.findOne({
+                where: { id: investorBiodata.id },
+                include: {
+                    model: Investor,
+                    as: "investor",
+                },
+            });
+
             res.status(201).json({
                 message: "Biodata Berhasil Ditambahkan!",
-                data: [investorBiodata, investor],
+                data: bioInvestor,
             });
         } else {
             let nama_foto = investorBiodata.foto_profil;
@@ -101,9 +109,17 @@ exports.upsert = async (req, res) => {
                 email,
             });
 
+            const bioInvestor = await InvestorBiodata.findOne({
+                where: { id: investorBiodata.id },
+                include: {
+                    model: Investor,
+                    as: "investor",
+                },
+            });
+
             res.status(200).json({
                 message: "Biodata investor berhasil diperbaharui",
-                data: { investorBiodata, investor },
+                data: bioInvestor,
             });
         }
     } catch (error) {
