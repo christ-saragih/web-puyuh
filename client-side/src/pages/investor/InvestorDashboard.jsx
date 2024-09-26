@@ -37,6 +37,7 @@ const InvestorDashboard = () => {
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [notes, setNotes] = useState({});
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const { logout } = useContext(AuthContext);
 
   useEffect(() => {
@@ -162,6 +163,10 @@ const InvestorDashboard = () => {
       }));
       setShowNoteModal(false);
     }
+  };
+
+  const toggleNotificationModal = () => {
+    setShowNotificationModal(!showNotificationModal);
   };
 
   return (
@@ -393,22 +398,32 @@ const InvestorDashboard = () => {
                   <h3 className="font-semibold text-xl mb-4">Pemberitahuan</h3>
 
                   {filteredInvestments.length > 0 ? (
-                    filteredInvestments.map((investment) => (
-                      <div
-                        key={investment.id}
-                        className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
-                      >
-                        <div className="flex justify-between items-center mb-2">
-                          <h4 className="font-semibold text-lg truncate">
-                            {investment.judul}
-                          </h4>
-                          <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
-                            {formatDate(investment.tanggal_berakhir_penawaran)}
-                          </p>
+                    <>
+                      {filteredInvestments.slice(0, 2).map((investment) => (
+                        <div
+                          key={investment.id}
+                          className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
+                        >
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold text-lg truncate">
+                              {investment.judul}
+                            </h4>
+                            <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
+                              {formatDate(investment.tanggal_berakhir_penawaran)}
+                            </p>
+                          </div>
+                          <p>{investment.deskripsi.substring(3, 70)}...</p>
                         </div>
-                        <p>{investment.deskripsi.substring(3,70)}...</p>
-                      </div>
-                    ))
+                      ))}
+                      {filteredInvestments.length > 2 && (
+                        <button
+                          onClick={toggleNotificationModal}
+                          className="w-full text-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                        >
+                          Lihat Semua
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <p>Tidak ada pemberitahuan saat ini.</p>
                   )}
@@ -417,6 +432,35 @@ const InvestorDashboard = () => {
             </div>
           </div>
         </div>
+
+         {/* Notification Modal */}
+         <Modal show={showNotificationModal} onClose={toggleNotificationModal} size="xl">
+          <Modal.Header>Semua Pemberitahuan</Modal.Header>
+          <Modal.Body>
+            <div className="max-h-[70vh] overflow-y-auto">
+              {filteredInvestments.map((investment) => (
+                <div
+                  key={investment.id}
+                  className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-lg truncate">
+                      {investment.judul}
+                    </h4>
+                    <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
+                      {formatDate(investment.tanggal_berakhir_penawaran)}
+                    </p>
+                  </div>
+                  <p>{investment.deskripsi}</p>
+                </div>
+              ))}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className="bg-[#572618]" onClick={toggleNotificationModal}>Tutup</Button>
+          </Modal.Footer>
+        </Modal>
+
 
         {/* Note Modal */}
         <Modal show={showNoteModal} onClose={() => setShowNoteModal(false)}>
