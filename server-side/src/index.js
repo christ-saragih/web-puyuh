@@ -55,6 +55,7 @@ const investasiRoutes = require("./routes/investasiRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const investorRoutes = require("./routes/investorRoutes");
 const transaksiRoutes = require("./routes/transaksiRoutes");
+const notifikasiRoutes = require("./routes/notifikasiRoutes");
 
 app.use("/api/beranda", berandaRoutes);
 app.use("/api/sosial-media", sosialMediaRoutes);
@@ -78,6 +79,7 @@ app.use("/api/investasi", investasiRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/investor", investorRoutes);
 app.use("/api/transaksi", transaksiRoutes);
+app.use("/api/notifikasi", notifikasiRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
