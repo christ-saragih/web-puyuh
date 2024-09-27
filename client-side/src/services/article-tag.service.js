@@ -34,13 +34,18 @@ export const updateArticleTag = (id, data, callback) => {
     });
 };
 
-export const deleteArticleTag = (id, callback) => {
+export const deleteArticleTag = (id, successCallback, errorCallback) => {
   apiAdmin
     .delete(`/tag-artikel/${id}`)
     .then(() => {
-      callback();
+      successCallback();
     })
     .catch((err) => {
       console.log(err);
+      if (err.response && err.response.data && err.response.data.message) {
+        errorCallback(err.response.data.message);
+      } else {
+        errorCallback("Terjadi kesalahan saat menghapus tag artikel.");
+      }
     });
 };
