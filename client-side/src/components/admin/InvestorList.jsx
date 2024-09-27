@@ -1,6 +1,5 @@
 import Alert from "../common/Alert";
 import InvestorItem from "./InvestorItem";
-import { LuBadgeInfo } from "react-icons/lu";
 
 const InvestorList = (props) => {
   const { investors, openModal } = props;
@@ -17,11 +16,9 @@ const InvestorList = (props) => {
           ))}
         </div>
       ) : (
-        <Alert
-          Icon={LuBadgeInfo}
-          message={"Tidak ada investor yang tersedia."}
-          type={"info"}
-        />
+        <div className="flex justify-center">
+          <Alert message={"Tidak ada investor yang tersedia."} type={"info"} />
+        </div>
       )}
     </>
   );

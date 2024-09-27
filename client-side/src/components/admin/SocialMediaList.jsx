@@ -1,6 +1,5 @@
 import Alert from "../common/Alert";
-import SocialMediaItem from "./SocialMediaItem";
-import { LuBadgeInfo } from "react-icons/lu";
+import SocialMediaItem from "./SocialMediaItem";  
 
 const SocialMediaList = (props) => {
   const { socialMedias, openModal } = props;
@@ -17,11 +16,12 @@ const SocialMediaList = (props) => {
           ))}
         </div>
       ) : (
-        <Alert
-          Icon={LuBadgeInfo}
-          message={"Tidak ada media sosial yang tersedia."}
-          type={"info"}
-        />
+        <div className="flex justify-center">
+          <Alert
+            message={"Tidak ada media sosial yang tersedia."}
+            type={"info"}
+          />
+        </div>
       )}
     </>
   );
