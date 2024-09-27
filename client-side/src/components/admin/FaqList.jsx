@@ -1,6 +1,5 @@
 import Alert from "../common/Alert";
 import FaqAdminItem from "./FaqItem";
-import { LuBadgeInfo } from "react-icons/lu";
 
 const FaqAdminList = (props) => {
   const { faqs, openModal, handleToggleStatus } = props;
@@ -19,11 +18,9 @@ const FaqAdminList = (props) => {
           ))}
         </div>
       ) : (
-        <Alert
-          Icon={LuBadgeInfo}
-          message={"Tidak ada FAQ yang tersedia."}
-          type={"info"}
-        />
+        <div className="flex justify-center">
+          <Alert message={"Tidak ada FAQ yang tersedia."} type={"info"} />
+        </div>
       )}
     </>
   );

@@ -16,6 +16,7 @@ const Input = (props) => {
     placeholder,
     isError,
     isDisabled,
+    errorMessage,
   } = props;
 
   const input = useRef();
@@ -27,22 +28,27 @@ const Input = (props) => {
   }, []);
 
   return (
-    <input
-      type={type}
-      name={name}
-      id={name}
-      value={value}
-      defaultValue={defaultValue}
-      className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl shadow ${
-        isError && "input-error"
-      } input-${variant} ${className}`}
-      ref={input}
-      autoComplete={autoComplete}
-      required={required}
-      onChange={(e) => handleChange(e)}
-      placeholder={placeholder}
-      disabled={isDisabled}
-    />
+    <div className="mb-4">
+      <input
+        type={type}
+        name={name}
+        id={name}
+        value={value}
+        defaultValue={defaultValue}
+        className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl shadow ${
+          isError ? "input-error" : `input-${variant}`
+        }  ${className}`}
+        ref={input}
+        autoComplete={autoComplete}
+        required={required}
+        onChange={(e) => handleChange(e)}
+        placeholder={placeholder}
+        disabled={isDisabled}
+      />
+      {isError && errorMessage && (
+        <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
+      )}
+    </div>
   );
 };
 
@@ -68,6 +74,7 @@ Input.propTypes = {
   handleChange: PropTypes.func,
   placeholder: PropTypes.string,
   isError: PropTypes.bool,
+  errorMessage: PropTypes.string,
   isDisabled: PropTypes.bool,
 };
 

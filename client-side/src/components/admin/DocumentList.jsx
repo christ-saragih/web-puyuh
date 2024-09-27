@@ -1,6 +1,5 @@
 import Alert from "../common/Alert";
 import DocumentItem from "./DocumentItem";
-import { LuBadgeInfo } from "react-icons/lu";
 
 const DocumentList = (props) => {
   const { documents, openModal, handleToggleStatus } = props;
@@ -19,11 +18,9 @@ const DocumentList = (props) => {
           ))}
         </div>
       ) : (
-        <Alert
-          Icon={LuBadgeInfo}
-          message={"Tidak ada dokumen yang tersedia."}
-          type={"info"}
-        />
+        <div className="flex justify-center">
+          <Alert message={"Tidak ada dokumen yang tersedia."} type={"info"} />
+        </div>
       )}
     </>
   );

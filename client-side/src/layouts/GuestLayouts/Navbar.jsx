@@ -46,13 +46,15 @@ const Navbar = () => {
 
   const UserProfileImage = () => (
     <>
-      {user.role === "admin" && admin && admin.adminBiodata.foto_profil ? (
+      {user.role === "admin" && admin && admin.adminBiodata?.foto_profil ? (
         <img
           src={admin.adminBiodata.foto_profil}
           alt={admin.adminBiodata.foto_profil}
           className="w-10 h-10 rounded-full"
         />
-      ) : user.role === "investor" && investor && investor.investorBiodata.foto_profil ? (
+      ) : user.role === "investor" &&
+        investor &&
+        investor.investorBiodata?.foto_profil ? (
         <img
           src={`http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
           alt={investor.investorBiodata.foto_profil}
