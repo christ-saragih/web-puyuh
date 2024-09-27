@@ -1,7 +1,7 @@
-import { axiosInstance } from "../lib/axios";
+import { apiAdmin } from "../hooks/useAxiosConfig";
 
 export const getSocialMedia = (callback) => {
-  axiosInstance
+  apiAdmin
     .get("/sosial-media")
     .then((res) => {
       callback(res.data.data);
@@ -12,7 +12,7 @@ export const getSocialMedia = (callback) => {
 };
 
 export const addSocialMedia = (data, callback) => {
-  axiosInstance
+  apiAdmin
     .post("/sosial-media", data)
     .then((res) => {
       callback(res.data.data);
@@ -23,7 +23,7 @@ export const addSocialMedia = (data, callback) => {
 };
 
 export const updateSocialMedia = (id, data, callback) => {
-  axiosInstance
+  apiAdmin
     .put(`/sosial-media/${id}`, data)
     .then((res) => {
       callback(res.data.data);
@@ -34,7 +34,7 @@ export const updateSocialMedia = (id, data, callback) => {
 };
 
 export const deleteSocialMedia = (id, callback) => {
-  axiosInstance
+  apiAdmin
     .delete(`/sosial-media/${id}`)
     .then(() => {
       callback();
