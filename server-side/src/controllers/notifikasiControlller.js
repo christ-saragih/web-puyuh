@@ -1,120 +1,135 @@
-const { Notifikasi } = require("../models");
+const { Investasi, Notifikasi } = require("../models");
 
-// Create
-exports.create = async (req, res) => {
-    try {
-        const { judul, tanggal } = req.body;
-        console.log("asadada");
+// exports.sendNotificationInvestasi = async (req, res) => {
+//     try {
+//         const investasi = await Investasi.findAll();
 
-        const notifikasi = await Notifikasi.create({
-            judul,
-            tanggal,
-        });
+//         return res.status(200).json({
+//             message: "Send Notifikasi Berhasil",
+//             data: investasi,
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Internal server error",
+//             error: error.message,
+//         });
+//     }
+// };
+// // Create
+// exports.create = async (req, res) => {
+//     try {
+//         const { judul, tanggal } = req.body;
+//         console.log("asadada");
 
-        res.status(201).json({
-            message: "Notifikasi Berhasil ditambahkan!",
-            data: notifikasi,
-        });
-    } catch (error) {
-        if (error.name === "SequelizeValidationError") {
-            const messages = error.errors.map((err) => err.message);
-            res.status(400).json({
-                message: "Validation error",
-                errors: messages,
-            });
-        } else {
-            res.status(500).json({
-                message: "Internal server error",
-                error: error.message,
-            });
-        }
-    }
-};
+//         const notifikasi = await Notifikasi.create({
+//             judul,
+//             tanggal,
+//         });
 
-// Read All
-exports.findAll = async (req, res) => {
-    try {
-        const notifikasi = await Notifikasi.findAll();
-        res.status(200).json({
-            message: "Notifikasi berhasil diambil!",
-            data: notifikasi,
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
+//         res.status(201).json({
+//             message: "Notifikasi Berhasil ditambahkan!",
+//             data: notifikasi,
+//         });
+//     } catch (error) {
+//         if (error.name === "SequelizeValidationError") {
+//             const messages = error.errors.map((err) => err.message);
+//             res.status(400).json({
+//                 message: "Validation error",
+//                 errors: messages,
+//             });
+//         } else {
+//             res.status(500).json({
+//                 message: "Internal server error",
+//                 error: error.message,
+//             });
+//         }
+//     }
+// };
 
-// Read One
-exports.findOne = async (req, res) => {
-    try {
-        const notifikasi = await Notifikasi.findByPk(req.params.id);
-        if (!notifikasi) {
-            return res.status(404).json({ message: "Notifikasi tidak ada!" });
-        }
-        res.status(200).json({
-            message: "Notifikasi berhasil diambil",
-            data: notifikasi,
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
+// // Read All
+// exports.findAll = async (req, res) => {
+//     try {
+//         const notifikasi = await Notifikasi.findAll();
+//         res.status(200).json({
+//             message: "Notifikasi berhasil diambil!",
+//             data: notifikasi,
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Internal server error",
+//             error: error.message,
+//         });
+//     }
+// };
 
-// Update
-exports.update = async (req, res) => {
-    try {
-        const { judul, tanggal } = req.body;
+// // Read One
+// exports.findOne = async (req, res) => {
+//     try {
+//         const notifikasi = await Notifikasi.findByPk(req.params.id);
+//         if (!notifikasi) {
+//             return res.status(404).json({ message: "Notifikasi tidak ada!" });
+//         }
+//         res.status(200).json({
+//             message: "Notifikasi berhasil diambil",
+//             data: notifikasi,
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Internal server error",
+//             error: error.message,
+//         });
+//     }
+// };
 
-        const notifikasi = await Notifikasi.findByPk(req.params.id);
+// // Update
+// exports.update = async (req, res) => {
+//     try {
+//         const { judul, tanggal } = req.body;
 
-        await notifikasi.update({
-            judul,
-            tanggal,
-        });
+//         const notifikasi = await Notifikasi.findByPk(req.params.id);
 
-        res.status(200).json({
-            message: "Notifikasi berhasil diperbaharui!",
-            data: notifikasi,
-        });
-    } catch (error) {
-        if (error.name === "SequelizeValidationError") {
-            const messages = error.errors.map((err) => err.message);
-            res.status(400).json({
-                message: "Validation error",
-                errors: messages,
-            });
-        } else {
-            res.status(500).json({
-                message: "Internal server error",
-                error: error.message,
-            });
-        }
-    }
-};
+//         await notifikasi.update({
+//             judul,
+//             tanggal,
+//         });
 
-// Delete
-exports.delete = async (req, res) => {
-    try {
-        const notifikasi = await Notifikasi.findByPk(req.params.id);
-        if (!notifikasi) {
-            return res.status(404).json({ message: "Notifikasi tidak ada!" });
-        }
+//         res.status(200).json({
+//             message: "Notifikasi berhasil diperbaharui!",
+//             data: notifikasi,
+//         });
+//     } catch (error) {
+//         if (error.name === "SequelizeValidationError") {
+//             const messages = error.errors.map((err) => err.message);
+//             res.status(400).json({
+//                 message: "Validation error",
+//                 errors: messages,
+//             });
+//         } else {
+//             res.status(500).json({
+//                 message: "Internal server error",
+//                 error: error.message,
+//             });
+//         }
+//     }
+// };
 
-        await notifikasi.destroy();
-        res.status(200).json({
-            message: "Notifikasi berhasil dihapus",
-            data: notifikasi,
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
+// // Delete
+// exports.delete = async (req, res) => {
+//     try {
+//         const notifikasi = await Notifikasi.findByPk(req.params.id);
+//         if (!notifikasi) {
+//             return res.status(404).json({ message: "Notifikasi tidak ada!" });
+//         }
+
+//         await notifikasi.destroy();
+//         res.status(200).json({
+//             message: "Notifikasi berhasil dihapus",
+//             data: notifikasi,
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Internal server error",
+//             error: error.message,
+//         });
+//     }
+// };
