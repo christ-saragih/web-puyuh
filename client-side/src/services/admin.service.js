@@ -10,3 +10,14 @@ export const getAdmin = (callback) => {
       console.log(err);
     });
 };
+
+export const saveProfileAdmin = (data, callback) => {
+  apiAdmin
+    .post("/biodata-admin", data)
+    .then((res) => {
+      callback(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { getBatchs } from "../../services/batch.service";
 import { getInvestors } from "../../services/investor.service";
 import { getArticles } from "../../services/article.service";
+import { formatDate } from "../../utils/formatDate";
 
 // Register Chart.js components
 ChartJS.register(
@@ -42,12 +43,26 @@ const AdminDashboard = () => {
   const [investors, setInvestors] = useState([]);
   const [articles, setArticles] = useState([]);
   const [investments, setInvestments] = useState([]);
+  const [markedDates, setMarkedDates] = useState([]);
 
   useEffect(() => {
     getBatchs((data) => {
       setInvestments(data);
+      
+      // Filter investasi yang sedang "proses" dan simpan tanggalnya
+      const dates = data
+        .filter((investment) => investment.status === "proses")
+        .map((investment) => new Date(investment.tanggal_berakhir_penawaran)); // Konversi tanggal ke Date object
+
+      setMarkedDates(dates); // Set array tanggal yang ditandai
+
     });
   }, []);
+
+  // Fungsi untuk mendapatkan investasi yang status-nya "proses"
+  const filteredInvestments = investments.filter(
+    (investment) => investment.status === "proses"
+  );
 
   useEffect(() => {
     getInvestors((data) => {
@@ -59,19 +74,6 @@ const AdminDashboard = () => {
     getArticles((data) => {
       setArticles(data);
     });
-  }, []);
-
-  const [markedDate, setMarkedDate] = useState(null);
-
-  // Fungsi untuk mendapatkan tanggal dari database (simulasi API)
-  useEffect(() => {
-    const fetchMarkedDate = async () => {
-      // Simulasi API call, misalnya tanggal yang ditandai adalah 25 September 2024
-      const fetchedDate = new Date('2024-09-25');
-      setMarkedDate(fetchedDate);
-    };
-
-    fetchMarkedDate();
   }, []);
 
   const data = {
@@ -209,27 +211,34 @@ const AdminDashboard = () => {
         <div className="w-[35%]">
           <div className="bg-[#F5F5F7] rounded-xl py-4 px-6 shadow-md">
             <h1 className="text-3xl font-semibold">Kalender</h1>
-            <CalendarAdmin markedDate={markedDate} />
+            <CalendarAdmin markedDates={markedDates} />
           </div>
 
           <div className="bg-[#F5F5F7] rounded-xl py-4 px-6 shadow-md mt-5">
             <h3 className="font-semibold text-xl mb-4">Pemberitahuan</h3>
-            <div className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4">
-              <div className="flex justify-between items-center mb-2">
-                <h4 className="font-semibold text-lg">Lorem ipsum dolor sit</h4>
-                <p className="text-sm bg-white px-2 py-1 rounded">
-                  25 September 2024
-                </p>
-              </div>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia,
-                eius repudiandae saepe dolores cumque voluptatibus?
-              </p>
-            </div>
+
+            {filteredInvestments.length > 0 ? (
+              filteredInvestments.map((investment) => (
+                <div
+                  key={investment.id}
+                  className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-lg truncate">
+                      {investment.judul}
+                    </h4>
+                    <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
+                      {formatDate(investment.tanggal_berakhir_penawaran)}
+                    </p>
+                  </div>
+                  <p>{investment.deskripsi.substring(3,90)}...</p>
+                </div>
+              ))
+            ) : (
+              <p>Tidak ada pemberitahuan saat ini.</p>
+            )}
           </div>
         </div>
-
-
       </div>
     </AdminLayout>
   );

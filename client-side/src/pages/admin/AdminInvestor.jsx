@@ -1,20 +1,20 @@
-import Modal from "../../components/common/Modal";
 import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
-import InputSearch from "../../components/common/InputSearch";
-import AdminLayout from "../../layouts/AdminLayout";
+import Modal from "../../components/common/Modal";
 import InvestorList from "../../components/admin/InvestorList.jsx";
-import { formatDate } from "../../utils/formatDate.js";
+import AdminLayout from "../../layouts/AdminLayout";
 import {
   getInvestors,
   getInvestorById,
 } from "../../services/investor.service.js";
+import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
+import { formatDate } from "../../utils/formatDate.js";
+import { formatRupiah } from "../../utils/formatRupiah.js";
 import { useEffect, useState } from "react";
-import { Tabs } from "flowbite-react";
+import { useSearchParams } from "react-router-dom";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 import { LuCheck, LuX } from "react-icons/lu";
-import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
-import { formatRupiah } from "../../utils/formatRupiah.js";
+import { Tabs } from "flowbite-react";
 
 const AdminInvestor = () => {
   const [investors, setInvestors] = useState([]);
@@ -55,6 +55,8 @@ const AdminInvestor = () => {
   });
   const [selectedInvestor, setSelectedInvestor] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [filteredInvestors, setFilteredInvestors] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -65,7 +67,31 @@ const AdminInvestor = () => {
     });
   }, []);
 
-  // modal logic
+  // Search: Start
+  const searchQuery = searchParams.get("search") || "";
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = investors.filter((investor) =>
+        investor.username.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredInvestors(filtered);
+    } else {
+      setFilteredInvestors(investors);
+    }
+  }, [searchQuery, investors]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    if (value) {
+      setSearchParams({ search: value });
+    } else {
+      setSearchParams({});
+    }
+  };
+  // Search: End
+
+  // Modal: Start
   const openModal = (type, investor = null) => {
     setModalType(type);
     setIsModalOpen(true);
@@ -98,19 +124,48 @@ const AdminInvestor = () => {
     setModalType("");
     setIsModalOpen(false);
   };
+  // Modal: End
 
   return (
     <AdminLayout title={"Halaman Managemen Investor"}>
       <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-        <div className="flex gap-5 mb-6">
-          {/* FITUR SEARCHING */}
-          <InputSearch />
+        <div className="flex mb-6">
+          <div className="max-w-md grow">
+            <div className="flex rounded-2xl shadow">
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-gray-500"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </div>
 
-          {/*  */}
+                <input
+                  type="text"
+                  className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
+                  placeholder="Masukkan username investor ..."
+                  value={searchQuery}
+                   onChange={(e) => handleSearchChange(e)}
+                  required
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col gap-8">
-          <InvestorList investors={investors} openModal={openModal} />
+          <InvestorList investors={filteredInvestors} openModal={openModal} />
         </div>
 
         {/* START: Modal detail profil investor */}

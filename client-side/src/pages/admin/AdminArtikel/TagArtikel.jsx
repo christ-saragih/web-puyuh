@@ -1,5 +1,6 @@
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
+import Alert from "../../../components/common/Alert";
 import ActionButton from "../../../components/common/ActionButton";
 import Modal from "../../../components/common/Modal";
 import {
@@ -11,12 +12,13 @@ import {
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiNotePencilBold, PiPlusCircle, PiTrashBold } from "react-icons/pi";
-import { LuBadgeInfo } from "react-icons/lu";
 
 const TagArtikel = () => {
   const [articleTags, setArticleTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [newTag, setNewTag] = useState("");
+  const [errors, setErrors] = useState({});
+  const [deleteError, setDeleteError] = useState(null);
   const [filteredArticleTags, setFilteredArticleTags] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -30,39 +32,70 @@ const TagArtikel = () => {
     });
   }, []);
 
-  //   CRUD: Start
+  // Validation function
+  const validateTag = (tag) => {
+    if (!tag.trim()) {
+      setErrors({ nama: "Nama tag wajib diisi" });
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
+  // CRUD: Start
   const handleInputChange = (e) => {
-    setNewTag(e.target.value);
+    const { value } = e.target;
+    setNewTag(value);
+    if (!value.trim()) {
+      setErrors({ nama: "Nama tag wajib diisi" });
+    } else {
+      setErrors({});
+    }
   };
 
   const handleAddTag = () => {
-    addArticleTag({ nama: newTag }, (data) => {
-      setArticleTags([...articleTags, data]);
-      closeModal();
-    });
+    if (validateTag(newTag)) {
+      addArticleTag({ nama: newTag }, (data) => {
+        setArticleTags([...articleTags, data]);
+        closeModal();
+      });
+    }
   };
 
   const handleUpdateTag = () => {
-    updateArticleTag(selectedTag.id, { nama: newTag }, (updatedTag) => {
-      setArticleTags(
-        articleTags.map((tag) => (tag.id === selectedTag.id ? updatedTag : tag))
-      );
-      closeModal();
-    });
+    if (validateTag(newTag)) {
+      updateArticleTag(selectedTag.id, { nama: newTag }, (updatedTag) => {
+        setArticleTags(
+          articleTags.map((tag) =>
+            tag.id === selectedTag.id ? updatedTag : tag
+          )
+        );
+        closeModal();
+      });
+    }
   };
 
   const handleDeleteTag = () => {
-    deleteArticleTag(selectedTag.id, () => {
-      setArticleTags(articleTags.filter((tag) => tag.id !== selectedTag.id));
-      closeModal();
-    });
+    deleteArticleTag(
+      selectedTag.id,
+      () => {
+        setArticleTags(articleTags.filter((tag) => tag.id !== selectedTag.id));
+        closeModal();
+      },
+      (error) => {
+        setDeleteError(
+          "Tag ini tidak dapat dihapus karena masih terkait dengan konten artikel."
+        );
+      }
+    );
   };
-  //   CRUD: End
+  // CRUD: End
 
   // Modal: Start
   const openModal = (type, tag = null) => {
     setModalType(type);
     setIsModalOpen(true);
+    setErrors({});
     if (type === "update_article_tag") {
       setSelectedTag(tag);
       setNewTag(tag.nama);
@@ -76,10 +109,12 @@ const TagArtikel = () => {
     setModalType("");
     setIsModalOpen(false);
     resetForm();
+    setDeleteError(null);
   };
 
   const resetForm = () => {
     setNewTag("");
+    setErrors({});
   };
   // Modal: End
 
@@ -115,7 +150,7 @@ const TagArtikel = () => {
   return (
     <>
       <div className="flex mb-6 justify-between">
-        <div className="max-w-lg grow">
+        <div className="max-w-md grow">
           <div className="flex rounded-2xl shadow">
             <div className="relative w-full">
               <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
@@ -170,9 +205,10 @@ const TagArtikel = () => {
                   name={"article_tags"}
                   placeholder={"Masukkan nama tag artikel.."}
                   variant={"primary-outline"}
-                  className={"mt-1 mb-4"}
                   value={newTag}
                   handleChange={handleInputChange}
+                  isError={!!errors.nama}
+                  errorMessage={errors.nama}
                 />
               </Modal.Body>
               <Modal.Footer
@@ -191,10 +227,12 @@ const TagArtikel = () => {
                 <Input
                   type="text"
                   name="article_tags"
+                  placeholder={"Masukkan nama tag artikel.."}
                   variant="primary-outline"
-                  className="mt-1 mb-4"
                   value={newTag}
                   handleChange={handleInputChange}
+                  isError={!!errors.nama}
+                  errorMessage={errors.nama}
                 />
               </Modal.Body>
               <Modal.Footer
@@ -210,6 +248,7 @@ const TagArtikel = () => {
               <Modal.Header title="Hapus Tag Artikel" onClose={closeModal} />
               <Modal.Body>
                 <p>Apakah Anda yakin ingin menghapus tag artikel ini?</p>
+                {deleteError && <Alert message={deleteError} type="danger" />}
               </Modal.Body>
               <Modal.Footer
                 action="Hapus"
@@ -275,21 +314,11 @@ const TagArtikel = () => {
             ) : (
               <tr>
                 <td scope="col" colSpan={3}>
-                  <div className="flex justify-center mt-3">
-                    <div
-                      className="flex items-center w-full max-w-xl px-4 py-3 mb-4 text-sm sm:text-base text-[#5766CE] rounded-2xl bg-[#EEEFFA] border border-[#ccd1f0] shadow"
-                      role="alert"
-                    >
-                      <div className="bg-[#5766CE] rounded-xl w-9 h-9 p-[6px] me-2 ">
-                        <LuBadgeInfo className="w-full h-full text-white object-cover" />
-                      </div>
-
-                      <span className="sr-only">Info</span>
-                      <div>
-                        <span className="font-medium">Pemberitahuan!</span> Nama
-                        tag artikel tidak ditemukan.
-                      </div>
-                    </div>
+                  <div className="flex justify-center">
+                    <Alert
+                      message={"Tidak ada tag yang tersedia."}
+                      type={"info"}
+                    />
                   </div>
                 </td>
               </tr>
