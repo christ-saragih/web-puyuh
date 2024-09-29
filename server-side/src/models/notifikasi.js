@@ -13,6 +13,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     Notifikasi.init(
         {
+            investor_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Investor Id tidak boleh null!" },
+                    notEmpty: { msg: "Investor Id tidak boleh kosong!" },
+                },
+            },
             judul: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -28,6 +36,15 @@ module.exports = (sequelize, DataTypes) => {
                     notNull: { msg: "Tanggal tidak boleh null!" },
                     notEmpty: { msg: "Tanggal tidak boleh kosong!" },
                     isDate: { msg: "Tanggal harus berupa tanggal!" },
+                },
+            },
+            status: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: 0,
+                allowNull: false,
+                validate: {
+                    notNull: { msg: "Status tidak boleh null!" },
+                    notEmpty: { msg: "Status tidak boleh kosong!" },
                 },
             },
         },

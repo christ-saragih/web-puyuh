@@ -7,12 +7,9 @@ const { authenticateToken } = require("../middleware/authenticateToken");
 
 router.post(
     "/notifikasiInvestasi/",
+    authenticateToken("investor"),
     notifikasiControlller.sendNotificationInvestasi
 );
-// router.post("/", authenticateToken("admin"), notifikasiControlller.create);
-// router.put("/:id", authenticateToken("admin"), notifikasiControlller.update);
 router.get("/", notifikasiControlller.findAll);
-// router.get("/:id", notifikasiControlller.findOne);
-// router.delete("/:id", authenticateToken("admin"), notifikasiControlller.delete);
 
 module.exports = router;
