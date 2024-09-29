@@ -149,7 +149,7 @@ const Dokumentasi = () => {
       <div className="flex flex-col">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
           <div className="flex mb-6 justify-between">
-            <div className="max-w-lg grow">
+            <div className="max-w-md grow">
               <div className="flex rounded-2xl shadow">
                 <div className="relative w-full">
                   <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
@@ -173,7 +173,7 @@ const Dokumentasi = () => {
                   <input
                     type="text"
                     className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
-                    placeholder="Masukkan nama tag artikel ..."
+                    placeholder="Masukkan nama dokumentasi ..."
                     value={searchQuery}
                     onChange={(e) => handleSearchChange(e)}
                     required

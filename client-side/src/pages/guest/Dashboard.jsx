@@ -37,18 +37,24 @@ const Dashboard = () => {
     });
   }, []);
 
+  // String yang diambil dari database
+  const headerText = dashboardFrontpage.nama_header || "";
+
+  // Memodifikasi string untuk menambahkan span dengan style berbeda
+  const modifiedHeaderText = headerText
+    .replace("Besar", '<span class="text-[#B87817]">Besar</span>')
+    .replace("Kecil", '<span class="text-[#B87817]">Kecil</span>');
+
   return (
     <GuestLayouts>
       <div className="w-[90%] mx-auto mt-12 lg:mt-16">
         <div className="flex flex-col items-center gap-10 mb-20 md:flex-row lg:mb-0">
           <div className="w-full lg:w-1/2 flex flex-col">
-            <h1 className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px] tracking-wide">
-              {dashboardFrontpage.nama_header}
-              {/* <span className="text-[#B87817]"> Investasi</span> yang Inklusif &
-            Berdampak
-            <span className="text-[#B87817]"> Nyata</span> */}
-            </h1>
-            <p className="text-[#2B2B2B] text-xl lg:text-2xl mt-6 mb-12">
+            <h1
+              className="font-bold text-4xl lg:text-5xl text-[#2B2B2B] lg:leading-[60px] tracking-wide"
+              dangerouslySetInnerHTML={{ __html: modifiedHeaderText }}
+            />
+            <p className="text-[#2B2B2B] text-xl lg:text-2xl mt-6 mb-12 lg:leading-normal">
               {dashboardFrontpage.nama_subheader}
             </p>
             <div className="hidden lg:flex justify-center lg:gap-10">

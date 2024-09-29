@@ -1,7 +1,7 @@
 const CardBagiHasil = ({ batch, profit, percentage }) => {
     return (
         <div className="w-100 md:w-64 rounded-xl bg-white shadow-lg overflow-hidden">
-            <div className="bg-brown-500 text-[#000] p-2">
+            <div className="bg-brown-500 text-[#000] p-6">
                 <span className="text-sm font-semibold">{batch}</span>
             </div>
             <div className="p-4">

@@ -1,6 +1,5 @@
 import Alert from "../common/Alert";
 import DocumentationItem from "./DocumentationItem";
-import { LuBadgeInfo } from "react-icons/lu";
 
 const DocumentationList = (props) => {
   const { documentations, openModal } = props;
@@ -18,11 +17,12 @@ const DocumentationList = (props) => {
           ))}
         </div>
       ) : (
-        <Alert
-          Icon={LuBadgeInfo}
-          message={"Tidak ada dokumentasi yang tersedia."}
-          variant={"info"}
-        />
+        <div className="flex justify-center">
+          <Alert
+            message={"Tidak ada dokumentasi yang tersedia."}
+            type={"info"}
+          />
+        </div>
       )}
     </>
   );

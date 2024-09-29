@@ -17,12 +17,12 @@ const customStyles = {
 };
 
 const MultiSelect = (props) => {
-  const { name, options, defaultValue, placeholder, handleChange } = props;
+  const { name, options, defaultValue, placeholder, handleChange, isError } = props;
   return (
     <Select
       id={name}
       name={name}
-      className="mt-2"
+      className={`mt-2 ${isError ? "input-error" : "input"}`}
       closeMenuOnSelect={false}
       components={animatedComponents}
       isMulti

@@ -30,6 +30,8 @@ const KontenArtikel = () => {
     tanggal: "",
     gambar: null,
   });
+  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+  const [errors, setErrors] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [filteredArticles, setFilteredArticles] = useState([]);
@@ -55,16 +57,67 @@ const KontenArtikel = () => {
     label: articleTag.nama,
   }));
 
+  // Input Validation: Start
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formArticle.judul.trim()) {
+      newErrors.judul = "Judul artikel wajib diisi";
+    }
+    if (!formArticle.penulis.trim()) {
+      newErrors.penulis = "Nama penulis wajib diisi";
+    }
+    if (
+      !formArticle.deskripsi.trim() ||
+      formArticle.deskripsi.replace(/<[^>]*>/g, "").trim() === ""
+    ) {
+      newErrors.deskripsi = "Isi artikel wajib diisi";
+    }
+    if (formArticle.tags.length === 0) {
+      newErrors.tags = "Pilih setidaknya satu tag";
+    }
+    if (!formArticle.tanggal) {
+      newErrors.tanggal = "Tanggal wajib diisi";
+    }
+    if (!formArticle.gambar && modalType === "add_article") {
+      newErrors.gambar = "Gambar wajib diunggah";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validation: End
+
   //   CRUD: Start
-  const articleTagSelected = formArticle.tags.map((articleTag) => ({
-    value: articleTag.id,
-    label: articleTag.nama,
-  }));
 
   const handleArticleImageChange = (e) => {
     const file = e.target.files[0];
-    setFormArticle({ ...formArticle, gambar: file });
-    setPreviewImage(URL.createObjectURL(file));
+    if (file) {
+      const validTypes = [
+        "image/svg+xml",
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+      ];
+      if (validTypes.includes(file.type)) {
+        setFormArticle({ ...formArticle, gambar: file });
+        setPreviewImage(URL.createObjectURL(file));
+        clearError("gambar");
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          gambar: "File harus berupa SVG, PNG, JPG, atau JPEG",
+        }));
+        // Clear the file input
+        e.target.value = null;
+      }
+    }
   };
 
   const handleArticleInputChange = (e) => {
@@ -73,6 +126,16 @@ const KontenArtikel = () => {
       ...formArticle,
       [name]: value,
     });
+
+    // Validasi input setiap kali ada perubahan
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} wajib diisi`,
+      }));
+    } else {
+      clearError(name);
+    }
   };
 
   const handleArticleDescriptionChange = (value) => {
@@ -80,49 +143,90 @@ const KontenArtikel = () => {
       ...formArticle,
       deskripsi: value,
     });
+
+    // Check if the content is empty or just contains empty paragraphs
+    if (!value.trim() || value.replace(/<[^>]*>/g, "").trim() === "") {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        deskripsi: "Isi artikel wajib diisi",
+      }));
+    } else {
+      clearError("deskripsi");
+    }
+  };
+
+  const articleTagSelected = formArticle.tags.map((articleTag) => ({
+    value: articleTag.id,
+    label: articleTag.nama,
+  }));
+
+  // Modifikasi MultiSelect untuk menangani perubahan
+  const handleTagChange = (selectedOptions) => {
+    setFormArticle({
+      ...formArticle,
+      tags: selectedOptions.map((option) => ({
+        id: option.value,
+        nama: option.label,
+      })),
+    });
+
+    if (selectedOptions.length === 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        tags: "Pilih setidaknya satu tag",
+      }));
+    } else {
+      clearError("tags");
+    }
   };
 
   const handleAddArticle = () => {
-    const form = new FormData();
-    form.append("judul", formArticle.judul);
-    form.append("penulis", formArticle.penulis);
-    form.append(
-      "tags",
-      formArticle.tags.map((articleTag) => articleTag.id)
-    );
-    form.append("deskripsi", formArticle.deskripsi);
-    form.append("gambar", formArticle.gambar);
-    form.append("tanggal", formArticle.tanggal);
+    setIsDescriptionFocused(false);
 
-    addArticle(form, (response) => {
-      setArticles([response, ...articles]);
-      closeModal();
-    });
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("judul", formArticle.judul);
+      form.append("penulis", formArticle.penulis);
+      form.append(
+        "tags",
+        formArticle.tags.map((articleTag) => articleTag.id)
+      );
+      form.append("deskripsi", formArticle.deskripsi);
+      form.append("gambar", formArticle.gambar);
+      form.append("tanggal", formArticle.tanggal);
+
+      addArticle(form, (response) => {
+        setArticles([response, ...articles]);
+        closeModal();
+      });
+    }
   };
 
   const handleUpdateArticle = () => {
-    const form = new FormData();
-    form.append("judul", formArticle.judul);
-    form.append("penulis", formArticle.penulis);
-    form.append(
-      "tags",
-      formArticle.tags.map((articleTag) => articleTag.id)
-    );
-    form.append("deskripsi", formArticle.deskripsi);
-    form.append("tanggal", formArticle.tanggal);
-
-    if (formArticle.gambar instanceof File) {
-      form.append("gambar", formArticle.gambar);
-    }
-
-    updateArticle(selectedArticle.id, form, (updateData) => {
-      setArticles((prevArticles) =>
-        prevArticles.map((item) =>
-          item.id === updateData.id ? updateData : item
-        )
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("judul", formArticle.judul);
+      form.append("penulis", formArticle.penulis);
+      form.append(
+        "tags",
+        formArticle.tags.map((articleTag) => articleTag.id)
       );
-      closeModal();
-    });
+      form.append("deskripsi", formArticle.deskripsi);
+      form.append("tanggal", formArticle.tanggal);
+
+      if (formArticle.gambar instanceof File) {
+        form.append("gambar", formArticle.gambar);
+      }
+
+      updateArticle(selectedArticle.id, form, (updateData) => {
+        setArticles((prevArticles) =>
+          prevArticles.map((item) =>
+            item.id === updateData.id ? updateData : item
+          )
+        );
+        closeModal();
+      });
+    }
   };
 
   const handleDeleteArticle = () => {
@@ -167,6 +271,7 @@ const KontenArtikel = () => {
   const openModal = (type, article = null) => {
     setModalType(type);
     setIsModalOpen(true);
+    setErrors({}); // Reset errors when opening modal
     if (type === "update_article" && article) {
       setSelectedArticle(article);
       setFormArticle({
@@ -177,17 +282,13 @@ const KontenArtikel = () => {
         tanggal: article.tanggal,
         gambar: article.gambar,
       });
-
       setPreviewImage(
         `http://localhost:3000/api/artikel/image/${article.gambar}`
       );
-    }
-    if (type === "delete_article" && article) {
+    } else if (type === "delete_article" && article) {
       setSelectedArticle(article);
-    }
-    if (type === "detail_article" && article) {
+    } else if (type === "detail_article" && article) {
       setSelectedArticle(article);
-
       getArticleBySlug(article.slug, (article) => {
         setFormArticle({
           judul: article.judul,
@@ -198,6 +299,8 @@ const KontenArtikel = () => {
           gambar: article.gambar,
         });
       });
+    } else {
+      resetForm(); // Reset form for add_article
     }
   };
 
@@ -205,6 +308,7 @@ const KontenArtikel = () => {
     setModalType("");
     setIsModalOpen(false);
     resetForm();
+    setErrors({}); // Reset errors when closing modal
   };
 
   const resetForm = () => {
@@ -224,7 +328,7 @@ const KontenArtikel = () => {
   return (
     <>
       <div className="flex mb-6 justify-between">
-        <div className="max-w-lg grow">
+        <div className="max-w-md grow">
           <div className="flex rounded-2xl shadow">
             <div className="relative w-full">
               <div className="absolute inset-y-0 start-1 flex items-center ps-3 pointer-events-none">
@@ -248,10 +352,10 @@ const KontenArtikel = () => {
               <input
                 type="text"
                 className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
-                placeholder="Masukkan nama tag artikel ..."
+                placeholder="Masukkan judul artikel ..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e)}
-                required
+                accept=".svg,.png,.jpg,.jpeg"
               />
             </div>
           </div>
@@ -347,6 +451,9 @@ const KontenArtikel = () => {
                   variant={"primary-outline"}
                   value={formArticle.judul}
                   handleChange={handleArticleInputChange}
+                  isError={!!errors.judul}
+                  errorMessage={errors.judul}
+                  clearError={clearError}
                 />
                 <Label htmlFor={"penulis"} value={"Nama Penulis"} />
                 <Input
@@ -356,31 +463,51 @@ const KontenArtikel = () => {
                   variant={"primary-outline"}
                   value={formArticle.penulis}
                   handleChange={handleArticleInputChange}
+                  isError={!!errors.penulis}
+                  errorMessage={errors.penulis}
+                  clearError={clearError}
                 />
                 <Label htmlFor={"deskripsi"} value={"Isi Artikel"} />
-                <ReactQuill
-                  theme="snow"
-                  value={formArticle.deskripsi}
-                  onChange={handleArticleDescriptionChange}
-                />
+                <div className="mb-4">
+                  <div
+                    onFocus={() => setIsDescriptionFocused(true)}
+                    onBlur={() => setIsDescriptionFocused(false)}
+                    className={`react-quill-container ${
+                      isDescriptionFocused ? "focus" : ""
+                    } ${
+                      errors.deskripsi ? "border-red-500" : "border-gray-300"
+                    }`}
+                  >
+                    <ReactQuill
+                      theme="snow"
+                      value={formArticle.deskripsi}
+                      onChange={handleArticleDescriptionChange}
+                    />
+                  </div>
+                  {errors.deskripsi && (
+                    <p className="mt-1 text-sm text-red-500 mb-4">
+                      {errors.deskripsi}
+                    </p>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor={"tags"} value={"Tag Artikel"} />
-                    <MultiSelect
-                      name={"tags"}
-                      options={articleTagsOption}
-                      defaultValue={articleTagSelected}
-                      placeholder={"Pilih tag artikel.."}
-                      handleChange={(selectedOptions) =>
-                        setFormArticle({
-                          ...formArticle,
-                          tags: selectedOptions.map((option) => ({
-                            id: option.value,
-                            nama: option.label,
-                          })),
-                        })
-                      }
-                    />
+                    <div className="mb-4">
+                      <MultiSelect
+                        name={"tags"}
+                        options={articleTagsOption}
+                        defaultValue={articleTagSelected}
+                        placeholder={"Pilih tag artikel.."}
+                        isError={errors.tags}
+                        handleChange={handleTagChange}
+                      />
+                      {errors.tags && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.tags}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor={"tanggal"} value={"Tanggal"} />
@@ -390,60 +517,72 @@ const KontenArtikel = () => {
                       variant={"primary-outline"}
                       value={formArticle.tanggal}
                       handleChange={handleArticleInputChange}
+                      isError={!!errors.tanggal}
+                      errorMessage={errors.tanggal}
+                      clearError={clearError}
                     />
                   </div>
                 </div>
 
                 <Label htmlFor={"image"} value={"Gambar"} />
-                <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
-                  {previewImage && (
-                    <img
-                      src={previewImage}
-                      alt="Preview"
-                      className="object-top w-56 h-52 mb-4 object-cover rounded-xl border-2 border-gray-300"
-                    />
-                  )}
-
-                  <label
-                    htmlFor="image"
-                    className={`flex flex-col items-center justify-center w-full cursor-pointer ${
-                      !previewImage && "h-32"
+                <div className="mb-4">
+                  <div
+                    className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                      errors.gambar ? "border-red-500" : "border-gray-300"
                     }`}
                   >
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="flex items-center gap-2 mb-2">
-                        <svg
-                          className="w-8 h-8 text-gray-500 dark:text-gray-400"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 20 16"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                          />
-                        </svg>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold">
-                            Unggah gambar di sini
-                          </span>
+                    {previewImage && (
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="object-top w-56 h-52 mb-4 object-cover rounded-xl border-2 border-gray-300"
+                      />
+                    )}
+
+                    <label
+                      htmlFor="image"
+                      className={`flex flex-col items-center justify-center w-full cursor-pointer ${
+                        !previewImage && "h-32"
+                      }`}
+                    >
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="flex items-center gap-2 mb-2">
+                          <svg
+                            className="w-8 h-8 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 16"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            />
+                          </svg>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold">
+                              Unggah gambar di sini
+                            </span>
+                          </p>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG atau JPEG
                         </p>
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
-                      </p>
-                    </div>
-                    <input
-                      id="image"
-                      type="file"
-                      className="hidden"
-                      onChange={handleArticleImageChange}
-                    />
-                  </label>
+                      <input
+                        id="image"
+                        type="file"
+                        className="hidden"
+                        onChange={handleArticleImageChange}
+                      />
+                    </label>
+                  </div>
+                  {errors.gambar && (
+                    <p className="mt-1 text-sm text-red-500">{errors.gambar}</p>
+                  )}
                 </div>
               </Modal.Body>
               <Modal.Footer

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+
+
 // import SidebarInvestor from "../../components/common/SidebarInvestor";
-import CalendarInvestor from "../../components/common/CalendarInvestor";
 import CardBagiHasil from "../../components/investor/CardBagiHasil";
+import CalendarInvestor from "../../components/common/CalendarInvestor";
 // import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
 import WavingIllustration from "../../assets/images/Illustration waving.svg";
 import GrowingMoney from "../../assets/images/Growing Money.svg";
@@ -14,12 +16,13 @@ import { getTransaksi } from "../../services/transaksi.service";
 import BatchListInvestor from "../../components/investor/BatchListInvestor";
 import { getBatchs } from "../../services/batch.service";
 import InvestorLayout from "../../layouts/InvestorLayout";
-import { Dropdown } from "flowbite-react";
+import { Dropdown, Modal, Button, TextInput } from "flowbite-react";
 import { LuChevronDown, LuHome, LuLogOut } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthProvider";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
+import { formatDate } from "../../utils/formatDate";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -29,6 +32,12 @@ const InvestorDashboard = () => {
   const navigate = useNavigate();
   const [batchs, setBatchs] = useState([]);
   const [investasi, setInvestasi] = useState([]);
+  const [markedDates, setMarkedDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [noteText, setNoteText] = useState("");
+  const [notes, setNotes] = useState({});
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const { logout } = useContext(AuthContext);
 
   useEffect(() => {
@@ -45,6 +54,13 @@ const InvestorDashboard = () => {
         setTransaksi(transaksiData);
         setBatchs(batchsData);
         setInvestasi(investasiResponse.data.data);
+
+        // Filter investasi yang sedang "proses" dan simpan tanggalnya
+        const dates = investasiResponse.data.data
+          .filter((investment) => investment.status === "proses")
+          .map((investment) => new Date(investment.tanggal_berakhir_penawaran));
+
+        setMarkedDates(dates); // Set array tanggal yang ditandai
       } catch (error) {
         console.error("Error fetching data:", error);
         if (error.response?.status === 401) {
@@ -57,6 +73,8 @@ const InvestorDashboard = () => {
 
     fetchData();
   }, [navigate]);
+
+
 
   const totalInvestasi = transaksi.reduce((total, item) => {
     return total + item.total_investasi;
@@ -82,6 +100,13 @@ const InvestorDashboard = () => {
   };
 
   const investasiByBatch = getInvestasiByBatch();
+
+  // Fungsi untuk mendapatkan investasi yang status-nya "proses"
+  const filteredInvestments = investasi.filter(
+    (data) => data.status === "proses"
+  );
+
+  const convertedMarkedDates = markedDates.map(dateString => new Date(dateString));
 
    // Fungsi untuk mendapatkan judul batch
    const getBatchTitle = (batchId) => {
@@ -120,6 +145,29 @@ const InvestorDashboard = () => {
   if (loading) {
     return <p>Loading...</p>; // Tampilkan pesan loading saat data sedang diambil
   }
+
+  const handleDateClick = (date) => {
+    console.log("Date clicked:", date);
+    const dateString = date.toISOString().split('T')[0]; // Mengonversi Date ke string format 'YYYY-MM-DD'
+    setSelectedDate(dateString);
+    setShowNoteModal(true);
+    console.log("showNoteModal set to true");
+    setNoteText(notes[dateString] || "");
+  };
+
+  const handleSaveNote = () => {
+    if (selectedDate) {
+      setNotes(prevNotes => ({
+        ...prevNotes,
+        [selectedDate]: noteText
+      }));
+      setShowNoteModal(false);
+    }
+  };
+
+  const toggleNotificationModal = () => {
+    setShowNotificationModal(!showNotificationModal);
+  };
 
   return (
     <div className="bg-white w-dvw min-h-screen overflow-y-auto md:py-5 py-14 pe-6 relative">
@@ -335,18 +383,103 @@ const InvestorDashboard = () => {
                     </Dropdown.Item>
                   </Dropdown>
                 </div>
-                <div className="relative w-full h-100 ml-3 md:h-auto md:overflow-hidden overflow-x-scroll">
-                  <div className="w-[330px] h-[200px] md:w-full md:h-full">
-                    <CalendarInvestor />
-                  </div>
+                <div className="bg-[#F5F5F7] rounded-xl py-4 px-6 shadow-md">
+           
+                   <CalendarInvestor 
+                   markedDates={convertedMarkedDates} 
+                   onDateClick={handleDateClick}
+                   />
+                    
                 </div>
-                <p className="bg-[#572618] absolute bottom-0 right-7 text-xs text-zinc-50 rounded-xl md:hidden pr-3 pl-3">
+                {/* <p className="bg-[#572618] absolute bottom-0 right-7 text-xs text-zinc-50 rounded-xl md:hidden pr-3 pl-3">
                   Gulir untuk melihat keseluruhan kalender
-                </p>
+                </p> */}
+                <div className="bg-[#F5F5F7] rounded-xl py-4 px-6 shadow-md mt-5">
+                  <h3 className="font-semibold text-xl mb-4">Pemberitahuan</h3>
+
+                  {filteredInvestments.length > 0 ? (
+                    <>
+                      {filteredInvestments.slice(0, 2).map((investment) => (
+                        <div
+                          key={investment.id}
+                          className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
+                        >
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold text-lg truncate">
+                              {investment.judul}
+                            </h4>
+                            <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
+                              {formatDate(investment.tanggal_berakhir_penawaran)}
+                            </p>
+                          </div>
+                          <p>{investment.deskripsi.substring(3, 70)}...</p>
+                        </div>
+                      ))}
+                      {filteredInvestments.length > 2 && (
+                        <button
+                          onClick={toggleNotificationModal}
+                          className="w-full text-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                        >
+                          Lihat Semua
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <p>Tidak ada pemberitahuan saat ini.</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+         {/* Notification Modal */}
+         <Modal show={showNotificationModal} onClose={toggleNotificationModal} size="xl">
+          <Modal.Header>Semua Pemberitahuan</Modal.Header>
+          <Modal.Body>
+            <div className="max-h-[70vh] overflow-y-auto">
+              {filteredInvestments.map((investment) => (
+                <div
+                  key={investment.id}
+                  className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-lg truncate">
+                      {investment.judul}
+                    </h4>
+                    <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
+                      {formatDate(investment.tanggal_berakhir_penawaran)}
+                    </p>
+                  </div>
+                  <p>{investment.deskripsi}</p>
+                </div>
+              ))}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className="bg-[#572618]" onClick={toggleNotificationModal}>Tutup</Button>
+          </Modal.Footer>
+        </Modal>
+
+
+        {/* Note Modal */}
+        <Modal show={showNoteModal} onClose={() => setShowNoteModal(false)}>
+          <Modal.Header>Add Note for {selectedDate}</Modal.Header>
+          <Modal.Body>
+            <TextInput
+              type="text"
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              placeholder="Enter your note here"
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={handleSaveNote}>Save Note</Button>
+            <Button color="gray" onClick={() => setShowNoteModal(false)}>
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </InvestorLayout>
     </div>
   );

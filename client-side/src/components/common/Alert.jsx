@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
+import { LuBadgeAlert } from "react-icons/lu";
 
 const Alert = (props) => {
-  const { Icon, message, variant } = props;
+  const { message, type } = props;
 
-  // Tentukan warna berdasarkan variant
+  // Tentukan warna berdasarkan type
   let color;
-  switch (variant) {
+  switch (type) {
     case "success":
       color = "#138A36";
       break;
@@ -20,40 +21,39 @@ const Alert = (props) => {
   }
 
   return (
-    <div className="flex justify-center mt-3">
+    <div
+      className="flex items-center w-full max-w-xl px-4 py-3 mt-3 mb-4 text-sm sm:text-base rounded-2xl shadow"
+      role="alert"
+      style={{
+        color: color,
+        backgroundColor: `${color}1A`,
+        borderColor: `${color}4D`,
+        borderWidth: "1px",
+      }}
+    >
       <div
-        className="flex items-center w-full max-w-xl px-4 py-3 mb-4 text-sm sm:text-base rounded-2xl shadow"
-        role="alert"
-        style={{
-          color: color,
-          backgroundColor: `${color}1A`,
-          borderColor: `${color}4D`,
-          borderWidth: "1px",
-        }}
+        className="rounded-xl w-9 h-9 p-[6px] me-2 flex items-center justify-center shrink-0"
+        style={{ backgroundColor: color }}
       >
-        <div
-          className="rounded-xl w-9 h-9 p-[6px] me-2 flex items-center justify-center"
-          style={{ backgroundColor: color }}
-        >
-          <Icon className="w-full h-full text-white object-cover" />
-        </div>
+        <LuBadgeAlert className="w-full h-full text-white object-cover" />
+      </div>
 
-        <div>
-          <span className="font-medium">Pemberitahuan!</span> {message}
-        </div>
+      <span className="sr-only">{type}</span>
+
+      <div>
+        <span className="font-medium">Pemberitahuan!</span> {message}
       </div>
     </div>
   );
 };
 
 Alert.propTypes = {
-  Icon: PropTypes.elementType.isRequired,
   message: PropTypes.string.isRequired,
-  variant: PropTypes.oneOf(["success", "danger", "warning", "info"]).isRequired,
+  type: PropTypes.oneOf(["success", "danger", "warning", "info"]).isRequired,
 };
 
 Alert.defaultProps = {
-  variant: "info",
+  type: "info",
 };
 
 export default Alert;
