@@ -13,26 +13,22 @@ module.exports = (sequelize, DataTypes) => {
     }
     BerandaFrontpage.init(
         {
-            nama_header: {
+            judul: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Nama Header tidak boleh kosong!" },
+                    notEmpty: { msg: "Judul tidak boleh kosong!" },
                 },
             },
-            nama_subheader: {
+            subJudul: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Nama sub header tidak boleh kosong!" },
+                    notEmpty: { msg: "Sub Judul tidak boleh kosong!" },
                 },
             },
-            image_header: {
+            gambar: {
                 type: DataTypes.STRING,
-                // allowNull: false,
-                // validate: {
-                //     notNull: { msg: "Gambar tidak boleh!" },
-                // },
             },
         },
         {

@@ -9,13 +9,13 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            nama_header: {
+            judul: {
                 type: Sequelize.STRING,
             },
-            nama_subheader: {
+            subJudul: {
                 type: Sequelize.STRING,
             },
-            image_header: {
+            gambar: {
                 type: Sequelize.STRING,
             },
             createdAt: {

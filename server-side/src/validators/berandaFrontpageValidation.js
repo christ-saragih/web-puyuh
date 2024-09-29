@@ -1,16 +1,16 @@
 const { check } = require("express-validator");
 
 const upsertSchema = [
-    check("nama_header")
+    check("judul")
         .notEmpty()
-        .withMessage("Nama Header tidak boleh kosong!")
+        .withMessage("Judul tidak boleh kosong!")
         .isString()
-        .withMessage("Nama Header harus berupa string!"),
-    check("nama_subheader")
+        .withMessage("Judul harus berupa string!"),
+    check("subJudul")
         .notEmpty()
-        .withMessage("Nama Sub Header tidak boleh kosong!")
+        .withMessage("Sub Judul tidak boleh kosong!")
         .isString()
-        .withMessage("Nama Sub Header harus berupa string!"),
+        .withMessage("Sub Judul harus berupa string!"),
 ];
 
 module.exports = {

@@ -20,9 +20,9 @@ const { authenticateToken } = require("../middleware/authenticateToken");
 router.post(
     "/",
     authenticateToken("admin"),
-    upload.single("image_header"),
+    upload.single("gambar"),
     validateUploadFile({
-        fieldName: "image_header",
+        fieldName: "gambar",
         required: false,
     }),
     validate(upsertSchema),
