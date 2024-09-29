@@ -1,6 +1,7 @@
 const { BerandaFrontpage } = require("../models");
 const fs = require("fs");
 const path = require("path");
+const { exit } = require("process");
 
 const ensureDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -23,28 +24,24 @@ const deleteOldImage = (imagePath) => {
 // Upsert
 exports.upsert = async (req, res) => {
     try {
-        const { nama_header, nama_subheader } = req.body;
-        const image_header = req.file ? req.file.buffer : null;
+        const { judul, subJudul } = req.body;
+        const gambar = req.file ? req.file.buffer : null;
         const dir = "public/images/berandaFrontpage";
 
         let beranda = await BerandaFrontpage.findOne();
 
         if (!beranda) {
-            let nama_image_header = null;
+            let nama_gambar = null;
 
-            if (image_header) {
+            if (gambar) {
                 ensureDir(dir);
-                nama_image_header = saveImage(
-                    image_header,
-                    req.file.originalname,
-                    dir
-                );
+                nama_gambar = saveImage(gambar, req.file.originalname, dir);
             }
 
             beranda = await BerandaFrontpage.create({
-                nama_header,
-                nama_subheader,
-                image_header: nama_image_header,
+                judul,
+                subJudul,
+                gambar: nama_gambar,
             });
 
             return res.status(201).json({
@@ -52,22 +49,18 @@ exports.upsert = async (req, res) => {
                 data: beranda,
             });
         } else {
-            let nama_image_header = beranda.image_header;
+            let nama_gambar = beranda.gambar;
 
-            if (image_header) {
+            if (gambar) {
                 ensureDir(dir);
-                nama_image_header = saveImage(
-                    image_header,
-                    req.file.originalname,
-                    dir
-                );
-                deleteOldImage(path.join(dir, beranda.image_header));
+                nama_gambar = saveImage(gambar, req.file.originalname, dir);
+                deleteOldImage(path.join(dir, beranda.gambar));
             }
 
             await beranda.update({
-                nama_header,
-                nama_subheader,
-                image_header: nama_image_header,
+                judul,
+                subJudul,
+                gambar: nama_gambar,
             });
 
             res.status(200).json({
@@ -108,16 +101,25 @@ exports.findData = async (req, res) => {
 };
 
 // Get Image by Name
-exports.getImageByName = (req, res) => {
+exports.getImageByName = async (req, res) => {
     const { gambar } = req.params;
-    const dir = "public/images/berandaFrontpage";
-    const imagePath = path.join(dir, gambar);
 
-    if (fs.existsSync(imagePath)) {
-        res.sendFile(path.resolve(imagePath));
+    const beranda = await BerandaFrontpage.findOne();
+
+    if (gambar == beranda.gambar) {
+        const dir = "public/images/berandaFrontpage";
+        const imagePath = path.join(dir, gambar);
+
+        if (fs.existsSync(imagePath)) {
+            res.sendFile(path.resolve(imagePath));
+        } else {
+            res.status(404).json({
+                message: "Gambar tidak ditemukan",
+            });
+        }
     } else {
         res.status(404).json({
-            message: "Gambar tidak ditemukan",
+            message: "Gambar tidak ditemukan!",
         });
     }
 };

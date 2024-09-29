@@ -3,8 +3,7 @@ require("dotenv").config();
 
 const sendNotification = async (judul, tanggal) => {
     try {
-        const newJudul = `Investasi ${judul} Telah Dibuka`;
-        await Notifikasi.create({ judul: newJudul, tanggal });
+        await Notifikasi.create({ judul, tanggal });
         console.log(
             `Notifikasi Berhasil di kirim dengan judul ${judul} dan tanggal ${tanggal}`
         );

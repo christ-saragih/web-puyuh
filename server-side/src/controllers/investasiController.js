@@ -99,7 +99,7 @@ exports.create = async (req, res) => {
             status: statusPenawaran,
         });
 
-        await sendNotification(judul, tanggal_pembukaan_penawaran);
+        // await sendNotification(judul, tanggal_pembukaan_penawaran);
 
         res.status(201).json({
             message: "Data  Berhasil Ditambahkan!",

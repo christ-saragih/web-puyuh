@@ -5,6 +5,10 @@ const notifikasiControlller = require("../controllers/notifikasiControlller");
 // auth
 const { authenticateToken } = require("../middleware/authenticateToken");
 
+router.post(
+    "/notifikasiInvestasi/",
+    notifikasiControlller.sendNotificationInvestasi
+);
 // router.post("/", authenticateToken("admin"), notifikasiControlller.create);
 // router.put("/:id", authenticateToken("admin"), notifikasiControlller.update);
 router.get("/", notifikasiControlller.findAll);
