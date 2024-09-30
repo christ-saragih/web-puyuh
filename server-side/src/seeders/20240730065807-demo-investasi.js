@@ -22,7 +22,7 @@ module.exports = {
                 slug: faker.helpers.slugify(judul).toLowerCase(),
                 penerbit: faker.person.fullName(),
                 penggunaan_dana: faker.lorem.paragraph(),
-                bagi_hasil: faker.lorem.word(),
+                bagi_hasil: faker.number.int(),
                 minimum_investasi: faker.number.bigInt(),
                 maksimum_investasi: faker.number.bigInt(),
                 tenor: faker.lorem.word(),
