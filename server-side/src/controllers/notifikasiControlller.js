@@ -10,7 +10,10 @@ const sendNotificationIfNotExists = async (
     notifikasis
 ) => {
     // Cek apakah notifikasi dengan judul yang sama sudah ada
-    const exists = notifikasis.some((notifikasi) => notifikasi.judul === judul);
+    const exists = notifikasis.some(
+        (notifikasi) =>
+            notifikasi.judul === judul && notifikasi.investor_id === user
+    );
 
     if (!exists) {
         await sendNotification(user, judul, tanggal);
@@ -34,6 +37,17 @@ exports.sendNotificationInvestasi = async (req, res) => {
         });
 
         const today = new Date().toISOString().split("T")[0];
+
+        for (let i = 0; i < investors.length; i++) {
+            const investor = investors[i];
+
+            await sendNotificationIfNotExists(
+                user,
+                `Selamat Datang ${investor.username} , Selamat Berinvestasi!`,
+                investor.createdAt,
+                notifikasis
+            );
+        }
 
         for (let i = 0; i < investasis.length; i++) {
             const investasi = investasis[i];
