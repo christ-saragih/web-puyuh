@@ -355,7 +355,6 @@ const KontenArtikel = () => {
                 placeholder="Masukkan judul artikel ..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e)}
-                accept=".svg,.png,.jpg,.jpeg"
               />
             </div>
           </div>
@@ -453,7 +452,7 @@ const KontenArtikel = () => {
                   handleChange={handleArticleInputChange}
                   isError={!!errors.judul}
                   errorMessage={errors.judul}
-                  clearError={clearError}
+                  
                 />
                 <Label htmlFor={"penulis"} value={"Nama Penulis"} />
                 <Input
@@ -577,6 +576,7 @@ const KontenArtikel = () => {
                         type="file"
                         className="hidden"
                         onChange={handleArticleImageChange}
+                        accept=".svg,.png,.jpg,.jpeg"
                       />
                     </label>
                   </div>
