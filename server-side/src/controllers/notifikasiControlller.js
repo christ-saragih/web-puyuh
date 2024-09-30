@@ -1,4 +1,4 @@
-const { Investasi, Notifikasi } = require("../models");
+const { Investasi, Investor, Notifikasi } = require("../models");
 
 const { exit } = require("process");
 const { sendNotification } = require("../services/notifikasiService");
@@ -28,6 +28,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
     try {
         const user = req.user.id;
         const investasis = await Investasi.findAll();
+        const investors = await Investor.findAll();
         const notifikasis = await Notifikasi.findAll({
             where: { investor_id: user },
         });
@@ -153,7 +154,41 @@ exports.sendNotificationInvestasi = async (req, res) => {
 // Read All
 exports.findAll = async (req, res) => {
     try {
-        const notifikasi = await Notifikasi.findAll();
+        const notifikasi = await Notifikasi.findAll({
+            where: { investor_id: req.user.id },
+        });
+        res.status(200).json({
+            message: "Notifikasi berhasil diambil!",
+            data: notifikasi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Update Status
+exports.changeStatus = async (req, res) => {
+    try {
+        const notifikasiId = req.params.id;
+        const userId = req.user.id;
+
+        const notifikasi = await Notifikasi.findOne({
+            where: { id: notifikasiId, investor_id: userId },
+        });
+
+        if (!notifikasi) {
+            return res.status(404).json({
+                message: "Notifikasi tidak ditemukan",
+            });
+        }
+
+        await notifikasi.update({
+            status: true,
+        });
+
         res.status(200).json({
             message: "Notifikasi berhasil diambil!",
             data: notifikasi,

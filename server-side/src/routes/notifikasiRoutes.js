@@ -10,6 +10,15 @@ router.post(
     authenticateToken("investor"),
     notifikasiControlller.sendNotificationInvestasi
 );
-router.get("/", notifikasiControlller.findAll);
+router.put(
+    "/notifikasiInvestasi/:id",
+    authenticateToken("investor"),
+    notifikasiControlller.changeStatus
+);
+router.get(
+    "/notifikasiInvestasi/",
+    authenticateToken("investor"),
+    notifikasiControlller.findAll
+);
 
 module.exports = router;
