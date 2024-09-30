@@ -25,6 +25,7 @@ const Dokumen = () => {
   const [selectedFile, setSelectedFile] = useState("Silahkan pilih file..");
   const [filteredDocuments, setFilteredDocuments] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [errors, setErrors] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -35,46 +36,96 @@ const Dokumen = () => {
     });
   }, []);
 
+  // Input Validations: Start
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formData.nama.trim()) {
+      newErrors.nama = "Nama dokumen wajib diisi";
+    }
+    if (!formData.file) {
+      newErrors.file = "File dokumen wajib dinggah";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validations: End
+
+  // CRUD: Start
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `${
+          name.charAt(0).toUpperCase() + name.slice(1)
+        } dokumen wajib diisi`,
+      }));
+    } else {
+      clearError(name);
+    }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, file: file });
-    setSelectedFile(e.target.files[0].name);
+
+    if (file) {
+      if (file.type === "application/pdf") {
+        setFormData({ ...formData, file: file });
+        setSelectedFile(e.target.files[0].name);
+        clearError("file");
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          file: "File dokumen harus berupa PDF",
+        }));
+        e.target.value = null;
+      }
+    }
   };
 
   const handleAddDocument = () => {
-    const form = new FormData();
-    form.append("nama", formData.nama);
-    form.append("file", formData.file);
-    form.append("status", "tidak-aktif");
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("nama", formData.nama);
+      form.append("file", formData.file);
+      form.append("status", "tidak-aktif");
 
-    addDocument(form, (response) => {
-      setDocuments([...documents, response]);
-      closeModal();
-      resetForm();
-    });
+      addDocument(form, (response) => {
+        setDocuments([...documents, response]);
+        closeModal();
+        resetForm();
+      });
+    }
   };
 
   const handleUpdateDocument = () => {
-    const form = new FormData();
-    form.append("nama", formData.nama);
-    if (formData.file instanceof File) {
-      form.append("file", formData.file);
-    }
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("nama", formData.nama);
+      if (formData.file instanceof File) {
+        form.append("file", formData.file);
+      }
 
-    updateDocument(selectedDocument.id, form, (updateData) => {
-      setDocuments((prevDocuments) =>
-        prevDocuments.map((item) =>
-          item.id === updateData.id ? updateData : item
-        )
-      );
-      closeModal();
-      resetForm();
-    });
+      updateDocument(selectedDocument.id, form, (updateData) => {
+        setDocuments((prevDocuments) =>
+          prevDocuments.map((item) =>
+            item.id === updateData.id ? updateData : item
+          )
+        );
+        closeModal();
+        resetForm();
+      });
+    }
   };
 
   const handleDeleteDocument = () => {
@@ -97,6 +148,7 @@ const Dokumen = () => {
       );
     });
   };
+  // CRUD: End
 
   // Search: Start
   const searchQuery = searchParams.get("search") || "";
@@ -143,6 +195,7 @@ const Dokumen = () => {
     setModalType("");
     setIsModalOpen(false);
     resetForm();
+    setErrors({});
   };
 
   const resetForm = () => {
@@ -225,9 +278,10 @@ const Dokumen = () => {
                       name={"nama"}
                       placeholder={"Masukkan nama file.."}
                       variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
                       value={formData.nama}
                       handleChange={handleInputChange}
+                      isError={!!errors.nama}
+                      errorMessage={errors.nama}
                     />
 
                     <Label htmlFor={"file"} value={"File"} />
@@ -235,6 +289,8 @@ const Dokumen = () => {
                       inputId={"file"}
                       selectedFile={selectedFile}
                       handleChange={handleFileChange}
+                      isError={!!errors.file}
+                      errorMessage={errors.file}
                     />
                   </Modal.Body>
                   <Modal.Footer
