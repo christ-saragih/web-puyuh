@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("BerandaFrontpages", {
+        await queryInterface.createTable("notifikasis", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -12,11 +12,8 @@ module.exports = {
             judul: {
                 type: Sequelize.STRING,
             },
-            subJudul: {
-                type: Sequelize.STRING,
-            },
-            gambar: {
-                type: Sequelize.STRING,
+            tanggal: {
+                type: Sequelize.DATE,
             },
             createdAt: {
                 allowNull: false,
@@ -29,6 +26,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("BerandaFrontpages");
+        await queryInterface.dropTable("notifikasis");
     },
 };

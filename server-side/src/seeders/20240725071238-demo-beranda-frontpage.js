@@ -18,9 +18,9 @@ module.exports = {
 
         for (let i = 0; i < 1; i++) {
             const dashboard = {
-                nama_header: faker.lorem.sentence(),
-                nama_subheader: faker.lorem.sentence(),
-                image_header: faker.image.url(),
+                judul: faker.lorem.sentence(),
+                subJudul: faker.lorem.sentence(),
+                gambar: faker.image.url(),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };

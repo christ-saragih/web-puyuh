@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class BerandaFrontpage extends Model {
+    class Notifikasi extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -11,30 +11,30 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
         }
     }
-    BerandaFrontpage.init(
+    Notifikasi.init(
         {
             judul: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
+                    notNull: { msg: "Judul tidak boleh null!" },
                     notEmpty: { msg: "Judul tidak boleh kosong!" },
                 },
             },
-            subJudul: {
-                type: DataTypes.STRING,
+            tanggal: {
+                type: DataTypes.DATE,
                 allowNull: false,
                 validate: {
-                    notEmpty: { msg: "Sub Judul tidak boleh kosong!" },
+                    notNull: { msg: "Tanggal tidak boleh null!" },
+                    notEmpty: { msg: "Tanggal tidak boleh kosong!" },
+                    isDate: { msg: "Tanggal harus berupa tanggal!" },
                 },
-            },
-            gambar: {
-                type: DataTypes.STRING,
             },
         },
         {
             sequelize,
-            modelName: "BerandaFrontpage",
+            modelName: "Notifikasi",
         }
     );
-    return BerandaFrontpage;
+    return Notifikasi;
 };

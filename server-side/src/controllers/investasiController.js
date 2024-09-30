@@ -9,6 +9,7 @@ const path = require("path");
 const { exit } = require("process");
 const { Op } = require("sequelize");
 const { default: slugify } = require("slugify");
+const { sendNotification } = require("../services/notifikasiService");
 
 const ensureDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -97,6 +98,8 @@ exports.create = async (req, res) => {
             tanggal_berakhir_penawaran,
             status: statusPenawaran,
         });
+
+        // await sendNotification(judul, tanggal_pembukaan_penawaran);
 
         res.status(201).json({
             message: "Data  Berhasil Ditambahkan!",
