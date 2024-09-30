@@ -23,7 +23,8 @@
   @apply mt-2 mb-4 text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
 }
 
-.input-error {
+.input-error,
+.textarea-error {
   @apply mt-2 text-gray-900 bg-gray-50 border-red-500 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
 }
 
