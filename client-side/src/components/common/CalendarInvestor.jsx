@@ -41,7 +41,7 @@ const CalendarInvestor = ({ markedDates, onDateClick }) => {
       renderCell={(date) => renderCell(date, markedDates)}
       onSelect={handleSelect}
       value={date}
-      className="calendar-investor"
+      className="calendar-investor -mb-7"
     />
   );
 };
