@@ -41,12 +41,14 @@ exports.sendNotificationInvestasi = async (req, res) => {
         for (let i = 0; i < investors.length; i++) {
             const investor = investors[i];
 
-            await sendNotificationIfNotExists(
-                user,
-                `Selamat Datang ${investor.username} , Selamat Berinvestasi!`,
-                investor.createdAt,
-                notifikasis
-            );
+            if (investor.id === user) {
+                await sendNotificationIfNotExists(
+                    user,
+                    `Selamat Datang ${investor.username} , Selamat Berinvestasi!`,
+                    investor.createdAt,
+                    notifikasis
+                );
+            }
         }
 
         for (let i = 0; i < investasis.length; i++) {
