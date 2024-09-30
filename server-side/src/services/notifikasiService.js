@@ -1,9 +1,9 @@
 const { Notifikasi } = require("../models");
 require("dotenv").config();
 
-const sendNotification = async (judul, tanggal) => {
+const sendNotification = async (user, judul, tanggal) => {
     try {
-        await Notifikasi.create({ judul, tanggal });
+        await Notifikasi.create({ investor_id: user, judul, tanggal });
         console.log(
             `Notifikasi Berhasil di kirim dengan judul ${judul} dan tanggal ${tanggal}`
         );

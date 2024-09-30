@@ -9,11 +9,17 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
+            investor_id: {
+                type: Sequelize.INTEGER,
+            },
             judul: {
                 type: Sequelize.STRING,
             },
             tanggal: {
                 type: Sequelize.DATE,
+            },
+            status: {
+                type: Sequelize.BOOLEAN,
             },
             createdAt: {
                 allowNull: false,

@@ -1,14 +1,19 @@
-const { Investasi, Notifikasi } = require("../models");
+const { Investasi, Investor, Notifikasi } = require("../models");
 
 const { exit } = require("process");
 const { sendNotification } = require("../services/notifikasiService");
 
-const sendNotificationIfNotExists = async (judul, tanggal, notifikasis) => {
+const sendNotificationIfNotExists = async (
+    user,
+    judul,
+    tanggal,
+    notifikasis
+) => {
     // Cek apakah notifikasi dengan judul yang sama sudah ada
     const exists = notifikasis.some((notifikasi) => notifikasi.judul === judul);
 
     if (!exists) {
-        await sendNotification(judul, tanggal);
+        await sendNotification(user, judul, tanggal);
     }
 };
 
@@ -16,13 +21,17 @@ const sendNotificationIfNotExists = async (judul, tanggal, notifikasis) => {
 const calculateDaysBefore = (date, daysBefore) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() - daysBefore);
-    return newDate.toISOString().split("T")[0]; // Format ke YYYY-MM-DD
+    return newDate.toISOString().split("T")[0];
 };
 
 exports.sendNotificationInvestasi = async (req, res) => {
     try {
+        const user = req.user.id;
         const investasis = await Investasi.findAll();
-        const notifikasis = await Notifikasi.findAll();
+        const investors = await Investor.findAll();
+        const notifikasis = await Notifikasi.findAll({
+            where: { investor_id: user },
+        });
 
         const today = new Date().toISOString().split("T")[0];
 
@@ -40,6 +49,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === tanggalPembukaan) {
                     await sendNotificationIfNotExists(
+                        user,
                         `TELAH DIBUKA: ${judulPembukaan}`,
                         tanggalPembukaan,
                         notifikasis
@@ -49,6 +59,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === h7Pembukaan) {
                     await sendNotificationIfNotExists(
+                        user,
                         `H-7: ${judulPembukaan} Segera dibuka!`,
                         tanggalPembukaan,
                         notifikasis
@@ -58,6 +69,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === h3Pembukaan) {
                     await sendNotificationIfNotExists(
+                        user,
                         `H-3: ${judulPembukaan} Segera dibuka!`,
                         tanggalPembukaan,
                         notifikasis
@@ -67,6 +79,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === h1Pembukaan) {
                     await sendNotificationIfNotExists(
+                        user,
                         `H-1: ${judulPembukaan} Segera dibuka!`,
                         tanggalPembukaan,
                         notifikasis
@@ -86,6 +99,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === tanggalBerakhir) {
                     await sendNotificationIfNotExists(
+                        user,
                         `TELAH BERAKHIR: ${judulBerakhir}`,
                         tanggalBerakhir,
                         notifikasis
@@ -95,6 +109,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === h7Berakhir) {
                     await sendNotificationIfNotExists(
+                        user,
                         `H-7: ${judulBerakhir} segera berakhir!`,
                         tanggalBerakhir,
                         notifikasis
@@ -104,6 +119,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === h3Berakhir) {
                     await sendNotificationIfNotExists(
+                        user,
                         `H-3: ${judulBerakhir} segera berakhir!`,
                         tanggalBerakhir,
                         notifikasis
@@ -113,6 +129,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
 
                 if (today === h1Berakhir) {
                     await sendNotificationIfNotExists(
+                        user,
                         `H-1: ${judulBerakhir} segera berakhir!`,
                         tanggalBerakhir,
                         notifikasis
@@ -134,41 +151,12 @@ exports.sendNotificationInvestasi = async (req, res) => {
     }
 };
 
-// // Create
-// exports.create = async (req, res) => {
-//     try {
-//         const { judul, tanggal } = req.body;
-//         console.log("asadada");
-
-//         const notifikasi = await Notifikasi.create({
-//             judul,
-//             tanggal,
-//         });
-
-//         res.status(201).json({
-//             message: "Notifikasi Berhasil ditambahkan!",
-//             data: notifikasi,
-//         });
-//     } catch (error) {
-//         if (error.name === "SequelizeValidationError") {
-//             const messages = error.errors.map((err) => err.message);
-//             res.status(400).json({
-//                 message: "Validation error",
-//                 errors: messages,
-//             });
-//         } else {
-//             res.status(500).json({
-//                 message: "Internal server error",
-//                 error: error.message,
-//             });
-//         }
-//     }
-// };
-
 // Read All
 exports.findAll = async (req, res) => {
     try {
-        const notifikasi = await Notifikasi.findAll();
+        const notifikasi = await Notifikasi.findAll({
+            where: { investor_id: req.user.id },
+        });
         res.status(200).json({
             message: "Notifikasi berhasil diambil!",
             data: notifikasi,
@@ -181,74 +169,34 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// // Read One
-// exports.findOne = async (req, res) => {
-//     try {
-//         const notifikasi = await Notifikasi.findByPk(req.params.id);
-//         if (!notifikasi) {
-//             return res.status(404).json({ message: "Notifikasi tidak ada!" });
-//         }
-//         res.status(200).json({
-//             message: "Notifikasi berhasil diambil",
-//             data: notifikasi,
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Internal server error",
-//             error: error.message,
-//         });
-//     }
-// };
+// Update Status
+exports.changeStatus = async (req, res) => {
+    try {
+        const notifikasiId = req.params.id;
+        const userId = req.user.id;
 
-// // Update
-// exports.update = async (req, res) => {
-//     try {
-//         const { judul, tanggal } = req.body;
+        const notifikasi = await Notifikasi.findOne({
+            where: { id: notifikasiId, investor_id: userId },
+        });
 
-//         const notifikasi = await Notifikasi.findByPk(req.params.id);
+        if (!notifikasi) {
+            return res.status(404).json({
+                message: "Notifikasi tidak ditemukan",
+            });
+        }
 
-//         await notifikasi.update({
-//             judul,
-//             tanggal,
-//         });
+        await notifikasi.update({
+            status: true,
+        });
 
-//         res.status(200).json({
-//             message: "Notifikasi berhasil diperbaharui!",
-//             data: notifikasi,
-//         });
-//     } catch (error) {
-//         if (error.name === "SequelizeValidationError") {
-//             const messages = error.errors.map((err) => err.message);
-//             res.status(400).json({
-//                 message: "Validation error",
-//                 errors: messages,
-//             });
-//         } else {
-//             res.status(500).json({
-//                 message: "Internal server error",
-//                 error: error.message,
-//             });
-//         }
-//     }
-// };
-
-// // Delete
-// exports.delete = async (req, res) => {
-//     try {
-//         const notifikasi = await Notifikasi.findByPk(req.params.id);
-//         if (!notifikasi) {
-//             return res.status(404).json({ message: "Notifikasi tidak ada!" });
-//         }
-
-//         await notifikasi.destroy();
-//         res.status(200).json({
-//             message: "Notifikasi berhasil dihapus",
-//             data: notifikasi,
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Internal server error",
-//             error: error.message,
-//         });
-//     }
-// };
+        res.status(200).json({
+            message: "Notifikasi berhasil diambil!",
+            data: notifikasi,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
