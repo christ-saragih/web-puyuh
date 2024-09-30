@@ -34,8 +34,8 @@ const createSchema = [
     check("bagi_hasil")
         .notEmpty()
         .withMessage("Bagi Hasil tidak boleh kosong!")
-        .isString()
-        .withMessage("Bagi Hasil harus berupa string!"),
+        .isInt()
+        .withMessage("Bagi Hasil harus berupa integer!"),
     check("minimum_investasi")
         .notEmpty()
         .withMessage("Minimum Investasi tidak boleh kosong!")
@@ -82,9 +82,7 @@ const updateSchema = [
     check("penggunaan_dana")
         .isString()
         .withMessage("Penggunaan Dana harus berupa string!"),
-    check("bagi_hasil")
-        .isString()
-        .withMessage("Bagi Hasil harus berupa string!"),
+    check("bagi_hasil").isInt().withMessage("Bagi Hasil harus berupa integer!"),
     check("minimum_investasi")
         .isInt()
         .withMessage("Minimum Investasi harus berupa integer!"),

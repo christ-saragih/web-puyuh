@@ -41,7 +41,7 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             bagi_hasil: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
             },
             minimum_investasi: {
                 type: Sequelize.BIGINT,
