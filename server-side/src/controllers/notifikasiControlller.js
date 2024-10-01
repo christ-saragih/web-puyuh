@@ -2,6 +2,7 @@ const { Investasi, Investor, Notifikasi } = require("../models");
 
 const { exit } = require("process");
 const { sendNotification } = require("../services/notifikasiService");
+const cron = require("node-cron");
 
 const sendNotificationIfNotExists = async (
     user,
@@ -166,6 +167,131 @@ exports.sendNotificationInvestasi = async (req, res) => {
         });
     }
 };
+
+cron.schedule("* * * * *", async () => {
+    try {
+        const investasis = await Investasi.findAll();
+        const investors = await Investor.findAll();
+        const today = new Date().toISOString().split("T")[0];
+
+        // Loop semua investor dan proses investasinya
+        for (let i = 0; i < investors.length; i++) {
+            const investor = investors[i];
+            const notifikasis = await Notifikasi.findAll({
+                where: { investor_id: investor.id },
+            });
+
+            await sendNotificationIfNotExists(
+                investor.id,
+                `Selamat Datang ${investor.username} , Selamat Berinvestasi!`,
+                investor.createdAt,
+                notifikasis
+            );
+
+            // Proses setiap investasi
+            for (let j = 0; j < investasis.length; j++) {
+                const investasi = investasis[j];
+
+                const tanggalPembukaan = investasi.tanggal_pembukaan_penawaran;
+                const tanggalBerakhir = investasi.tanggal_berakhir_penawaran;
+
+                const judulPembukaan = `Investasi ${investasi.judul}`;
+                const judulBerakhir = `Investasi ${investasi.judul}`;
+
+                if (tanggalPembukaan) {
+                    const h7Pembukaan = calculateDaysBefore(
+                        tanggalPembukaan,
+                        7
+                    );
+                    const h3Pembukaan = calculateDaysBefore(
+                        tanggalPembukaan,
+                        3
+                    );
+                    const h1Pembukaan = calculateDaysBefore(
+                        tanggalPembukaan,
+                        1
+                    );
+
+                    if (today === tanggalPembukaan) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `TELAH DIBUKA: ${judulPembukaan}`,
+                            tanggalPembukaan,
+                            notifikasis
+                        );
+                    }
+                    if (today === h7Pembukaan) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `H-7: ${judulPembukaan} Segera dibuka!`,
+                            tanggalPembukaan,
+                            notifikasis
+                        );
+                    }
+                    if (today === h3Pembukaan) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `H-3: ${judulPembukaan} Segera dibuka!`,
+                            tanggalPembukaan,
+                            notifikasis
+                        );
+                    }
+                    if (today === h1Pembukaan) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `H-1: ${judulPembukaan} Segera dibuka!`,
+                            tanggalPembukaan,
+                            notifikasis
+                        );
+                    }
+                }
+
+                if (tanggalBerakhir) {
+                    const h7Berakhir = calculateDaysBefore(tanggalBerakhir, 7);
+                    const h3Berakhir = calculateDaysBefore(tanggalBerakhir, 3);
+                    const h1Berakhir = calculateDaysBefore(tanggalBerakhir, 1);
+
+                    if (today === tanggalBerakhir) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `TELAH BERAKHIR: ${judulBerakhir}`,
+                            tanggalBerakhir,
+                            notifikasis
+                        );
+                    }
+                    if (today === h7Berakhir) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `H-7: ${judulBerakhir} segera berakhir!`,
+                            tanggalBerakhir,
+                            notifikasis
+                        );
+                    }
+                    if (today === h3Berakhir) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `H-3: ${judulBerakhir} segera berakhir!`,
+                            tanggalBerakhir,
+                            notifikasis
+                        );
+                    }
+                    if (today === h1Berakhir) {
+                        await sendNotificationIfNotExists(
+                            investor.id,
+                            `H-1: ${judulBerakhir} segera berakhir!`,
+                            tanggalBerakhir,
+                            notifikasis
+                        );
+                    }
+                }
+            }
+        }
+
+        console.log("Notifikasi sudah diproses.");
+    } catch (error) {
+        console.error("Error dalam mengirim notifikasi: ", error.message);
+    }
+});
 
 // Read All
 exports.findAll = async (req, res) => {
