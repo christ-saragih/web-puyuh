@@ -23,6 +23,7 @@ const Dokumentasi = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [filteredDocumentations, setFilteredDocumentations] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [errors, setErrors] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -34,44 +35,100 @@ const Dokumentasi = () => {
     });
   }, []);
 
+  // Input Validation: Start
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formData.image && modalType === "add_documentation") {
+      newErrors.image = "Gambar dokumentasi wajib diunggah";
+    }
+    if (!formData.nama.trim()) {
+      newErrors.nama = "Nama dokumentasi wajib diisi";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validation: End
+
   // CRUD: Start
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, image: file });
-    setPreviewImage(URL.createObjectURL(file));
+
+    if (file) {
+      const validTypes = [
+        "image/svg+xml",
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+      ];
+      if (validTypes.includes(file.type)) {
+        setFormData({ ...formData, image: file });
+        setPreviewImage(URL.createObjectURL(file));
+        clearError("image");
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          image: "Gambar dokumentasi harus berupa SVG, PNG, JPG, atau JPEG",
+        }));
+
+        e.target.value = null;
+      }
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `${
+          name.charAt(0).toUpperCase() + name.slice(1)
+        } dokumentasi wajib diisi`,
+      }));
+    } else {
+      clearError(name);
+    }
   };
 
   const handleAddDocumentation = () => {
-    const form = new FormData();
-    form.append("nama", formData.nama);
-    form.append("image", formData.image);
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("nama", formData.nama);
+      form.append("image", formData.image);
 
-    addDocumentation(form, (response) => {
-      setDocumentations([...documentations, response]);
-      closeModal();
-    });
+      addDocumentation(form, (response) => {
+        setDocumentations([...documentations, response]);
+        closeModal();
+      });
+    }
   };
 
   const handleUpdateDocumentation = () => {
-    const form = new FormData();
-    form.append("nama", formData.nama);
-    if (formData.image instanceof File) {
-      form.append("image", formData.image);
-    }
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("nama", formData.nama);
+      if (formData.image instanceof File) {
+        form.append("image", formData.image);
+      }
 
-    updateDocumentation(selectedDocumentation.id, form, (updateData) => {
-      setDocumentations((prevDocumentations) =>
-        prevDocumentations.map((item) =>
-          item.id === updateData.id ? updateData : item
-        )
-      );
-      closeModal();
-    });
+      updateDocumentation(selectedDocumentation.id, form, (updateData) => {
+        setDocumentations((prevDocumentations) =>
+          prevDocumentations.map((item) =>
+            item.id === updateData.id ? updateData : item
+          )
+        );
+        closeModal();
+      });
+    }
   };
 
   const handleDeleteDocumentation = () => {
@@ -132,6 +189,7 @@ const Dokumentasi = () => {
     setModalType("");
     setIsModalOpen(false);
     resetForm();
+    setErrors({});
   };
 
   const resetForm = () => {
@@ -209,55 +267,67 @@ const Dokumentasi = () => {
                   />
                   <Modal.Body>
                     <Label htmlFor={"image"} value={"Gambar"} />
-                    <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
-                      {previewImage && (
-                        <img
-                          src={previewImage}
-                          alt="Preview"
-                          className="object-top w-56 h-52 mb-4 object-cover rounded-xl border-2 border-gray-300"
-                        />
-                      )}
-
-                      <label
-                        htmlFor="image"
-                        className={`flex flex-col items-center justify-center w-full cursor-pointer ${
-                          !previewImage && "h-32"
+                    <div className="mb-4">
+                      <div
+                        className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                          errors.image ? "border-red-500" : "border-gray-300"
                         }`}
                       >
-                        <div className="flex flex-col items-center justify-center">
-                          <div className="flex items-center gap-2 mb-2">
-                            <svg
-                              className="w-8 h-8 text-gray-500 dark:text-gray-400"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 20 16"
-                            >
-                              <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                              />
-                            </svg>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              <span className="font-semibold">
-                                Unggah gambar di sini
-                              </span>
+                        {previewImage && (
+                          <img
+                            src={previewImage}
+                            alt="Preview"
+                            className="object-top w-56 h-52 mb-4 object-cover rounded-xl border-2 border-gray-300"
+                          />
+                        )}
+
+                        <label
+                          htmlFor="image"
+                          className={`flex flex-col items-center justify-center w-full cursor-pointer ${
+                            !previewImage && "h-32"
+                          }`}
+                        >
+                          <div className="flex flex-col items-center justify-center">
+                            <div className="flex items-center gap-2 mb-2">
+                              <svg
+                                className="w-8 h-8 text-gray-500 dark:text-gray-400"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 16"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                />
+                              </svg>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Unggah gambar di sini
+                                </span>
+                              </p>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              SVG, PNG, JPG atau JPEG
                             </p>
                           </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (MAX. 800x400px)
-                          </p>
-                        </div>
-                        <input
-                          id="image"
-                          type="file"
-                          className="hidden"
-                          onChange={handleFileChange}
-                        />
-                      </label>
+                          <input
+                            id="image"
+                            type="file"
+                            className="hidden"
+                            onChange={handleFileChange}
+                            accept=".svg,.png,.jpg,.jpeg"
+                          />
+                        </label>
+                      </div>
+                      {errors.image && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.image}
+                        </p>
+                      )}
                     </div>
 
                     <Label htmlFor={"nama"} value={"Nama"} />
@@ -266,9 +336,10 @@ const Dokumentasi = () => {
                       name={"nama"}
                       placeholder={"Masukkan nama gambar.."}
                       variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
                       value={formData.nama}
                       handleChange={handleInputChange}
+                      isError={!!errors.nama}
+                      errorMessage={errors.nama}
                     />
                   </Modal.Body>
                   <Modal.Footer
