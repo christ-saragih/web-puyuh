@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Calendar, Badge } from "rsuite";
+import { Calendar, Badge, Modal, Button } from "rsuite";
 import 'rsuite/Calendar/styles/index.css';
+import 'rsuite/Modal/styles/index.css';
+import 'rsuite/Button/styles/index.css';
 
-// Komponen untuk menampilkan badge di tanggal yang ditandai
 const HighlightedDateBadge = ({ date, markedDates }) => {
   const isMarked = markedDates.some(
     (markedDate) =>
@@ -16,7 +17,6 @@ const HighlightedDateBadge = ({ date, markedDates }) => {
   ) : null;
 };
 
-// Fungsi untuk render setiap cell kalender
 const renderCell = (date, markedDates) => {
   return (
     <div style={{ position: "relative" }}>
@@ -25,24 +25,59 @@ const renderCell = (date, markedDates) => {
   );
 };
 
-// Komponen Kalender Custom
 const CalendarInvestor = ({ markedDates, onDateClick }) => {
   const [date, setDate] = useState(new Date());
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const handleSelect = (date) => {
     console.log("Date clicked:", date);
     setDate(date);
+    
+    const isMarked = markedDates.some(
+      (markedDate) =>
+        markedDate.getFullYear() === date.getFullYear() &&
+        markedDate.getMonth() === date.getMonth() &&
+        markedDate.getDate() === date.getDate()
+    );
+
+    if (isMarked) {
+      setSelectedDate(date);
+      setShowModal(true);
+    }
+
     onDateClick(date);
   };
 
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
-    <Calendar
-      compact
-      renderCell={(date) => renderCell(date, markedDates)}
-      onSelect={handleSelect}
-      value={date}
-      className="calendar-investor -mb-7"
-    />
+    <>
+      <Calendar
+        compact
+        renderCell={(date) => renderCell(date, markedDates)}
+        onSelect={handleSelect}
+        value={date}
+        className="calendar-investor -mb-7"
+      />
+      <Modal open={showModal} onClose={closeModal}>
+        <Modal.Header>
+          <Modal.Title>Tanggal Penutupan</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Tanggal {selectedDate?.toLocaleDateString()} adalah tanggal penutupan untuk investasi .
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeModal} appearance="primary">
+            Tutup
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

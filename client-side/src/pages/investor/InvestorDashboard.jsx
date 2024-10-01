@@ -7,7 +7,7 @@ import CalendarInvestor from "../../components/common/CalendarInvestor";
 // import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
 import WavingIllustration from "../../assets/images/Illustration waving.svg";
 import GrowingMoney from "../../assets/images/Growing Money.svg";
-import { MdNotificationsActive } from "react-icons/md";
+import { MdNotifications } from "react-icons/md";
 // import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { apiInvestor } from "../../hooks/useAxiosConfig";
@@ -35,32 +35,43 @@ const InvestorDashboard = () => {
   const [markedDates, setMarkedDates] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const { logout } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        apiInvestor.post("/notifikasi/notifikasiInvestasi")
-        const [investorResponse, transaksiData, batchsData, investasiResponse, notificationsResponse] = await Promise.all([
+        // apiInvestor.post("/notifikasi/notifikasiInvestasi");
+        const [
+          investorResponse, 
+          transaksiData, 
+          batchsData, 
+          investasiResponse, 
+          notificationsResponse
+        ] = await Promise.all([
           apiInvestor.get("/investor"),
           new Promise(resolve => getTransaksi(resolve)),
           new Promise(resolve => getBatchs(resolve)),
           apiInvestor.get("/investasi"),
           apiInvestor.get("/notifikasi/notifikasiInvestasi")
         ]);
-
+  
         setInvestor(investorResponse.data.data);
         setTransaksi(transaksiData);
         setBatchs(batchsData);
         setInvestasi(investasiResponse.data.data);
-        setNotifications(notificationsResponse.data.data); 
-
+        setNotifications(notificationsResponse.data.data);
+  
+        // Hitung notifikasi yang belum dibaca
+        const unreadCount = notificationsResponse.data.data.filter(notif => !notif.isRead).length;
+        setUnreadNotifications(unreadCount);
+  
         // Filter investasi yang sedang "proses" dan simpan tanggalnya
         const dates = investasiResponse.data.data
           .filter((investment) => investment.status === "proses")
           .map((investment) => new Date(investment.tanggal_berakhir_penawaran));
-
-        setMarkedDates(dates); // Set array tanggal yang ditandai
+  
+        setMarkedDates(dates);
       } catch (error) {
         console.error("Error fetching data:", error);
         if (error.response?.status === 401) {
@@ -70,9 +81,16 @@ const InvestorDashboard = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [navigate]);
+
+  const handleNotificationClick = () => {
+    setShowNotificationModal(true);
+    // Mark all notifications as read when opening the modal
+    setUnreadNotifications(0);
+    // You might want to call an API here to update the read status on the server
+  };
   
   const totalInvestasi = transaksi.reduce((total, item) => {
     return total + item.total_investasi;
@@ -163,7 +181,7 @@ const InvestorDashboard = () => {
             />
           </form>
           <div className="flex items-center space-x-4">
-            <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" onClick={() => setShowNotificationModal(true)} />
+            <MdNotifications className="ml-4 w-8 h-8 text-gray-500" onClick={() => setShowNotificationModal(true)} />
             {investor?.investorBiodata?.foto_profil ? (
               <img
                 src={`http://locaxlhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
@@ -322,7 +340,17 @@ const InvestorDashboard = () => {
                     </div>
                   </form>
 
-                  <MdNotificationsActive className="w-8 h-8 text-gray-500" onClick={() => setShowNotificationModal(true)} />
+                  <div className="relative">
+                    <MdNotifications 
+                      className="w-8 h-8 text-gray-500 cursor-pointer" 
+                      onClick={handleNotificationClick} 
+                    />
+                    {unreadNotifications > 0 && (
+                      <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                        {unreadNotifications}
+                      </span>
+                    )}
+                  </div>
                   {investor?.investorBiodata?.foto_profil ? (
                     <img
                       src={`http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
@@ -386,14 +414,14 @@ const InvestorDashboard = () => {
                             className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4"
                           >
                             <div className="flex justify-between items-center mb-2">
-                              <h4 className="font-semibold text-lg truncate">
+                              <h4 className="font-semibold text-lg">
                                 {notification.judul}
                               </h4>
                               <p className="text-sm font-medium bg-gray-100 px-2 py-1 rounded shrink-0">
                                 {formatDate(notification.createdAt)}
                               </p>
                             </div>
-                            <p>{`Tanggal Pembukaan ${formatDate(notification.tanggal)}`}</p>
+                            {/* <p>{`Tanggal Pembukaan ${formatDate(notification.tanggal)}`}</p> */}
                           </div>
                         ))
                       ) : (
