@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { Investor } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -7,8 +8,25 @@ const {
     sendResetPasswordEmail,
 } = require("../services/emailService");
 const { Op } = require("sequelize");
-const { exit } = require("process");
-require("dotenv").config();
+
+const { sendNotification } = require("../services/notifikasiService");
+
+const sendNotificationIfNotExists = async (
+    user,
+    judul,
+    tanggal,
+    notifikasis
+) => {
+    // Cek apakah notifikasi dengan judul yang sama sudah ada
+    const exists = notifikasis.some(
+        (notifikasi) =>
+            notifikasi.judul === judul && notifikasi.investor_id === user
+    );
+
+    if (!exists) {
+        await sendNotification(user, judul, tanggal);
+    }
+};
 
 // Membuat access token
 const generateAccessToken = (investor) => {
@@ -130,6 +148,10 @@ exports.verifyEmail = async (req, res) => {
         investor.verificationToken = null;
         investor.verificationTokenExpiry = null;
         await investor.save();
+
+        const judul = `Selamat Datang ${investor.username} , Selamat Berinvestasi!`;
+
+        await sendNotification(investor.id, judul, investor.createdAt);
 
         res.status(200).json({
             message: "Email successfully verified!",
