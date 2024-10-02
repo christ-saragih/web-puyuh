@@ -1,6 +1,7 @@
 import TagArtikel from "./TagArtikel";
 import KontenArtikel from "./KontenArtikel";
 import AdminLayout from "../../../layouts/AdminLayout";
+import useArticleTags from "./useArticleTags";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiBookOpenTextFill, PiTagFill } from "react-icons/pi";
@@ -17,6 +18,9 @@ const AdminArtikel = () => {
   const [activeTab, setActiveTab] = useState(
     initialTab === "konten-artikel" ? 1 : 0
   );
+
+  const { articleTags, fetchArticleTags, addTag, updateTag, deleteTag } =
+    useArticleTags();
 
   // Gunakan useEffect untuk mengubah tab berdasarkan URL
   useEffect(() => {
@@ -54,7 +58,13 @@ const AdminArtikel = () => {
               title="Tag Artikel"
               icon={PiTagFill}
             >
-              <TagArtikel />
+              <TagArtikel
+                articleTags={articleTags}
+                addTag={addTag}
+                updateTag={updateTag}
+                deleteTag={deleteTag}
+                fetchArticleTags={fetchArticleTags}
+              />
             </Tabs.Item>
 
             <Tabs.Item
@@ -62,7 +72,7 @@ const AdminArtikel = () => {
               title="Konten Artikel"
               icon={PiBookOpenTextFill}
             >
-              <KontenArtikel />
+              <KontenArtikel articleTags={articleTags} />
             </Tabs.Item>
           </Tabs>
         </div>
