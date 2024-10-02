@@ -120,16 +120,13 @@ exports.getImageByName = async (req, res) => {
             });
         }
 
-        // Lokasi direktori gambar
-        const dir = path.join(__dirname, "../public/images/berandaFrontpage");
+        const dir = "public/images/berandaFrontpage";
         const imagePath = path.join(dir, gambar);
 
-        // Cek apakah file gambar ada di sistem
         if (fs.existsSync(imagePath)) {
-            // Kirimkan file gambar
-            return res.sendFile(path.resolve(imagePath));
+            res.sendFile(path.resolve(imagePath));
         } else {
-            return res.status(404).json({
+            res.status(404).json({
                 message: "Gambar tidak ditemukan!",
             });
         }
