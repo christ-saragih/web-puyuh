@@ -102,24 +102,42 @@ exports.findData = async (req, res) => {
 
 // Get Image by Name
 exports.getImageByName = async (req, res) => {
-    const { gambar } = req.params;
+    try {
+        const { gambar } = req.params;
 
-    const beranda = await BerandaFrontpage.findOne();
-
-    if (gambar == beranda.gambar) {
-        const dir = "public/images/berandaFrontpage";
-        const imagePath = path.join(dir, gambar);
-
-        if (fs.existsSync(imagePath)) {
-            res.sendFile(path.resolve(imagePath));
-        } else {
-            res.status(404).json({
-                message: "Gambar tidak ditemukan",
+        // Cari data gambar di database
+        const beranda = await BerandaFrontpage.findOne();
+        if (!beranda) {
+            return res.status(404).json({
+                message: "Data beranda tidak ditemukan!",
             });
         }
-    } else {
-        res.status(404).json({
-            message: "Gambar tidak ditemukan!",
+
+        // Validasi apakah gambar yang diminta sama dengan yang ada di database
+        if (gambar !== beranda.gambar) {
+            return res.status(404).json({
+                message: "Gambar tidak ditemukan!",
+            });
+        }
+
+        // Lokasi direktori gambar
+        const dir = path.join(__dirname, "../public/images/berandaFrontpage");
+        const imagePath = path.join(dir, gambar);
+
+        // Cek apakah file gambar ada di sistem
+        if (fs.existsSync(imagePath)) {
+            // Kirimkan file gambar
+            return res.sendFile(path.resolve(imagePath));
+        } else {
+            return res.status(404).json({
+                message: "Gambar tidak ditemukan!",
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error.message);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message,
         });
     }
 };
