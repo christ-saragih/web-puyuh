@@ -4,7 +4,6 @@ import Modal from "../../../components/common/Modal";
 import MultiSelect from "../../../components/common/MultiSelect";
 import ArticleList from "../../../components/common/ArticleList";
 import { formatDate } from "../../../utils/formatDate";
-import { getArticleTags } from "../../../services/article-tag.service";
 import {
   addArticle,
   deleteArticle,
@@ -19,8 +18,8 @@ import ReactQuill from "react-quill";
 import { PiPlusCircle } from "react-icons/pi";
 import { LiaUserEditSolid } from "react-icons/lia";
 
-const KontenArtikel = () => {
-  const [articleTags, setArticleTags] = useState([]);
+const KontenArtikel = (props) => {
+  const { articleTags } = props;
   const [articles, setArticles] = useState([]);
   const [formArticle, setFormArticle] = useState({
     judul: "",
@@ -41,16 +40,22 @@ const KontenArtikel = () => {
   const [modalType, setModalType] = useState("");
 
   useEffect(() => {
-    getArticleTags((data) => {
-      setArticleTags(data);
-    });
-  }, []);
-
-  useEffect(() => {
     getArticles((data) => {
       setArticles(data);
     });
   }, []);
+
+  useEffect(() => {
+    // Update local articles when articleTags change
+    setArticles((prevArticles) =>
+      prevArticles.map((article) => ({
+        ...article,
+        Tags: article.Tags.map(
+          (tag) => articleTags.find((t) => t.id === tag.id) || tag
+        ),
+      }))
+    );
+  }, [articleTags]);
 
   const articleTagsOption = articleTags.map((articleTag) => ({
     value: articleTag.id,
@@ -452,7 +457,6 @@ const KontenArtikel = () => {
                   handleChange={handleArticleInputChange}
                   isError={!!errors.judul}
                   errorMessage={errors.judul}
-                  
                 />
                 <Label htmlFor={"penulis"} value={"Nama Penulis"} />
                 <Input
