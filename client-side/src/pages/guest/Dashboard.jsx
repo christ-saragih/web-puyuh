@@ -38,7 +38,7 @@ const Dashboard = () => {
   }, []);
 
   // String yang diambil dari database
-  const headerText = dashboardFrontpage.judul || "";
+  const headerText = dashboardFrontpage?.judul || "";
 
   // Memodifikasi string untuk menambahkan span dengan style berbeda
   const modifiedHeaderText = headerText
@@ -55,7 +55,7 @@ const Dashboard = () => {
               dangerouslySetInnerHTML={{ __html: modifiedHeaderText }}
             />
             <p className="text-[#2B2B2B] text-xl lg:text-2xl mt-6 mb-12 lg:leading-normal">
-              {dashboardFrontpage.subJudul}
+              {dashboardFrontpage?.subJudul}
             </p>
             <div className="hidden lg:flex justify-center lg:gap-10">
               <Link to={"/investasi"} className="btn-primary-large w-full">
@@ -68,7 +68,7 @@ const Dashboard = () => {
           </div>
           <div className="w-full lg:w-1/2 flex justify-center">
             <img
-              src={`http://localhost:3000/api/beranda/image/${dashboardFrontpage.gambar}`}
+              src={`http://localhost:3000/api/beranda/image/${dashboardFrontpage?.gambar}`}
               alt=""
               className="w-[26rem]"
             />
