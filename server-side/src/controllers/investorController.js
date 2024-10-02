@@ -9,6 +9,7 @@ const {
 } = require("../models");
 const bcrypt = require("bcrypt");
 
+const { sendNotification } = require("../services/notifikasiService");
 // Read All
 exports.findInvestorByAuth = async (req, res) => {
     try {
@@ -134,6 +135,10 @@ exports.ubahPassword = async (req, res) => {
         await investor.update({
             password: hashedPassword,
         });
+
+        const judul = "Password Berhasil Diubah";
+
+        await sendNotification(investor.id, judul, investor.updatedAt);
 
         res.status(200).json({
             message: "Password berhasil diperbaharui!",
