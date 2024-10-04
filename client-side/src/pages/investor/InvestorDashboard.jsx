@@ -247,8 +247,8 @@ const InvestorDashboard = () => {
                 {/* Flash Message */}
                 {/* Urgent Flash Messages */}
                   {flashMessages.urgent.length > 0 && (
-                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-                      <p className="font-bold">Pengingat Penting</p>
+                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 md:ml-4" role="alert">
+                      <p className="font-bold">Pengingat</p>
                       {flashMessages.urgent.map((message, index) => (
                         <p key={index}>{message}</p>
                       ))}
@@ -257,7 +257,7 @@ const InvestorDashboard = () => {
 
                   {/* Upcoming Flash Messages */}
                   {flashMessages.upcoming.length > 0 && (
-                    <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+                    <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 md:ml-4" role="alert">
                       <p className="font-bold">Pengingat</p>
                       {flashMessages.upcoming.map((message, index) => (
                         <p key={index}>{message}</p>
