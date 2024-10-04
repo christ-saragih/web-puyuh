@@ -6,8 +6,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
     const [activeTab, setActiveTab] = useState("Biodata");
     const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
-    // const [selectedGender, setSelectedGender] = useState('Pilih Kelamin');
-    const [selectedCategory, setSelectedCategory] = useState("Pilih Kategori");
+    const [selectedCategory, setSelectedCategory] = useState("");
     const [categories, setCategories] = useState(["organisasi", "individu"]);
     const genderDropdownRef = useRef(null);
     const categoryDropdownRef = useRef(null);
@@ -29,6 +28,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         no_ktp: "",
         foto_ktp: null,
         no_npwp: "",
+        foto_npwp: null,
+        selfie_ktp: null,
+    });
+    const [previews, setPreviews] = useState({
+        foto_ktp: null,
         foto_npwp: null,
         selfie_ktp: null,
     });
@@ -58,6 +62,13 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
     const [noSid, setNoSid] = useState("");
     const [tanggalPembuatanSid, setTanggalPembuatanSid] = useState("");
     const navigate = useNavigate();
+    // 
+    const [errors, setErrors] = useState({});
+    const [errorsAlamat, setErrorsAlamat] = useState({});
+    const [errorsIdentitas, setErrorsIdentitas] = useState({});
+    const [errorsDataPendukung, setErrorsDataPendukung] = useState({});
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
 
     useEffect(() => {
         console.log("Selected category:", selectedCategory);
@@ -68,7 +79,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
     }, [categories]);
 
     useEffect(() => {
-        if (investors?.investorBiodata) {
+        console.log("formDataIdentitas updated:", formDataIdentitas);
+    }, [formDataIdentitas]);
+
+    useEffect(() => {
+        if (investors && investors.investorBiodata && investors.kategori_investor) {
             const { nama_lengkap, jk, tempat_lahir, tanggal_lahir, no_hp } = investors.investorBiodata;
 
             // Update state based on available data
@@ -77,16 +92,20 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
             if (tempat_lahir) setTempatLahir(tempat_lahir);
             if (tanggal_lahir) setTanggalLahir(tanggal_lahir);
             if (no_hp) setNoHp(no_hp);
+
+            const {kategori_investor} = investors.kategori_investor;
+
+            if (kategori_investor) setSelectedCategory(kategori_investor);
         }
     }, [investors]);
 
-    useEffect(() => {
-        if (investors?.kategori_investor) {
-            const {kategori_investor} = investors.kategori_investor;
+    // useEffect(() => {
+    //     if (investors?.kategori_investor) {
+    //         const {kategori_investor} = investors.kategori_investor;
 
-            if (kategori_investor) setCategories(kategori_investor);
-    }
-}, [investors]);
+    //         if (kategori_investor) setCategories(kategori_investor);
+    // }
+    // }, [investors]);
 
     useEffect(() => {
         if (investors?.investorAlamat) {
@@ -104,14 +123,20 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
 
     useEffect(() => {
         if (investors?.investorIdentitas) {
+            console.log("Investor data received:", investors.investorIdentitas);
             const { no_ktp, foto_ktp, no_npwp, foto_npwp, selfie_ktp } = investors.investorIdentitas;
+            setFormDataIdentitas(prevState => ({
+                ...prevState,
+                no_ktp: no_ktp || "",
+                no_npwp: no_npwp || "",
+            }));
 
-            // Update state based on available data
-            if (no_ktp) setNoKtp(no_ktp);
-            if (foto_ktp) setFotoKtpPreview(foto_ktp);
-            if (no_npwp) setNoNpwp(no_npwp);
-            if (foto_npwp) setFotoNpwpPreview(foto_npwp);
-            if (selfie_ktp) setSelfieKtpPreview(selfie_ktp);
+            // Set preview images if available
+            setPreviews({
+                foto_ktp: foto_ktp ? `http://localhost:3000/api/identitas-investor/image/${foto_ktp}` : null,
+                foto_npwp: foto_npwp ? `http://localhost:3000/api/identitas-investor/image/${foto_npwp}` : null,
+                selfie_ktp: selfie_ktp ? `http://localhost:3000/api/identitas-investor/image/${selfie_ktp}` : null,
+            });
         }
     }, [investors]);
 
@@ -202,24 +227,35 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
 
     const handleChangeIdentitas = (e) => {
         const { name, value, files } = e.target;
-
+        
         if (files && files[0]) {
-            setFormDataIdentitas({ ...formDataIdentitas, [name]: files[0] });
-
+            const file = files[0];
+            setFormDataIdentitas(prev => ({ ...prev, [name]: file }));
+            
             const reader = new FileReader();
             reader.onload = () => {
-                if (name === "foto_ktp") {
-                    setFotoKtpPreview(reader.result);
-                } else if (name === "foto_npwp") {
-                    setFotoNpwpPreview(reader.result);
-                } else if (name === "selfie_ktp") {
-                    setSelfieKtpPreview(reader.result);
-                }
+                setPreviews(prev => ({ ...prev, [name]: reader.result }));
             };
-            reader.readAsDataURL(files[0]);
+            reader.readAsDataURL(file);
+    
+            // Validasi file
+            const fileErrors = validateFile(name, file);
+            setErrorsIdentitas(prev => ({ ...prev, [name]: fileErrors[name] || null }));
         } else {
-            setFormDataIdentitas({ ...formDataIdentitas, [name]: value });
+            setFormDataIdentitas(prev => ({ ...prev, [name]: value }));
+    
+            // Validasi input teks
+            let error = null;
+            if (!value.trim()) {
+                error = `${name.replace('_', ' ').toUpperCase()} harus diisi`;
+            }
+            setErrorsIdentitas(prev => ({ ...prev, [name]: error }));
         }
+    
+        // Jalankan validasi keseluruhan setelah state diperbarui
+        setTimeout(() => {
+            validateIdentitas();
+        }, 0);
     };
 
     const handleChangePendukung = (e) => {
@@ -227,79 +263,193 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         setFormDataPendukung({ ...formDataPendukung, [name]: value });
     };
 
+    const validateBiodata = () => {
+        let newErrors = {};
+        if (!namaLengkap.trim()) newErrors.namaLengkap = "Nama Lengkap harus diisi";
+        if (!jk) newErrors.jk = "Jenis Kelamin harus dipilih";
+        if (!tempatLahir.trim()) newErrors.tempatLahir = "Tempat Lahir harus diisi";
+        if (!tanggalLahir) newErrors.tanggalLahir = "Tanggal Lahir harus diisi";
+        if (!noHp.trim()) newErrors.noHp = "Nomor Handphone harus diisi";
+        if (selectedCategory === "Pilih Kategori") newErrors.kategoriInvestor = "Kategori Investor harus dipilih";
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const validateAlamat = () => {
+        let newErrors = {};
+        if (!alamat.trim()) newErrors.alamat = "Alamat harus diisi";
+        if (!provinsi.trim()) newErrors.provinsi = "Provinsi harus diisi";
+        if (!kota.trim()) newErrors.kota = "Kota/Kabupaten harus diisi";
+        if (!kecamatan.trim()) newErrors.kecamatan = "Kecamatan harus diisi";
+        if (!kelurahan.trim()) newErrors.kelurahan = "Kelurahan harus diisi";
+        if (!kodePos.trim()) newErrors.kodePos = "Kode Pos harus diisi";
+        
+        setErrorsAlamat(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const validateFile = (fieldName, file) => {
+        if (!file) return { [fieldName]: `${fieldName.replace('_', ' ').toUpperCase()} harus diunggah` };
+    
+        const errors = {};
+        
+        // Validasi ukuran file (contoh: maksimum 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            errors[fieldName] = "Ukuran file tidak boleh lebih dari 5MB";
+        }
+        
+        // Validasi tipe file
+        const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            errors[fieldName] = "Tipe file tidak didukung. Gunakan SVG, PNG, JPG, atau GIF";
+        }
+    
+        return errors;
+    };
+
+    const validateIdentitas = () => {
+        let newErrors = {};
+    
+        // Validasi input teks
+        if (!formDataIdentitas.no_ktp?.trim()) newErrors.no_ktp = "Nomor KTP harus diisi";
+        if (!formDataIdentitas.no_npwp?.trim()) newErrors.no_npwp = "Nomor NPWP harus diisi";
+    
+        // Validasi file
+        ['foto_ktp', 'foto_npwp', 'selfie_ktp'].forEach(fieldName => {
+            if (!formDataIdentitas[fieldName] && !previews[fieldName]) {
+                newErrors[fieldName] = `${fieldName.replace('_', ' ').toUpperCase()} harus diunggah`;
+            } else if (formDataIdentitas[fieldName]) {
+                const fileErrors = validateFile(fieldName, formDataIdentitas[fieldName]);
+                if (Object.keys(fileErrors).length > 0) {
+                    newErrors = { ...newErrors, ...fileErrors };
+                }
+            }
+        });
+    
+        setErrorsIdentitas(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const validateDataPendukung = () => {
+        let newErrors = {};
+        if (!latarPendidikan.trim()) newErrors.latarPendidikan = "Latar pendidikan harus diisi";
+        if (!sumberPenghasilan.trim()) newErrors.sumberPenghasilan = "Sumber penghasilan harus diisi";
+        if (!jumlahPenghasilan.trim()) newErrors.jumlahPenghasilan = "Jumlah penghasilan harus diisi";
+        if (!bidangUsaha.trim()) newErrors.bidangUsaha = "Bidang usaha harus diisi";
+        if (!tujuanInvestasi.trim()) newErrors.tujuanInvestasi = "Tujuan investasi harus diisi";
+        if (!noSid.trim()) newErrors.noSid = "Nomor SID harus diisi";
+        if (!tanggalPembuatanSid.trim()) newErrors.tanggalPembuatanSid = "Tanggal pembuatan SID harus diisi";
+        
+        setErrorsDataPendukung(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const showNotification = (message) => {
+        setPopupMessage(message);
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 3000); // Hide after 3 seconds
+    };
+    
+
     const handleSubmitBiodata = async (e) => {
         e.preventDefault();
-        try {
-            const dataBiodataToSend = {
-                nama_lengkap: namaLengkap,
-                jk: jk,
-                tempat_lahir: tempatLahir,
-                tanggal_lahir: tanggalLahir,
-                no_hp: noHp,
-                kategori_investor: kategoriInvestor,
-            };
-            console.log(dataBiodataToSend);
+        if (validateBiodata()) {
+            try {
+                const dataBiodataToSend = {
+                    nama_lengkap: namaLengkap,
+                    jk: jk,
+                    tempat_lahir: tempatLahir,
+                    tanggal_lahir: tanggalLahir,
+                    no_hp: noHp,
+                    // kategori_investor: kategoriInvestor,
+                    kategori_investor: selectedCategory,
+                };
+                console.log(dataBiodataToSend);
 
-            const response = await apiInvestor.post(
-                `/biodata-investor`,
-                dataBiodataToSend
-            );
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error submitting data:", error);
-            console.error("Error response:", error.response);
+                const response = await apiInvestor.post(
+                    `/biodata-investor`,
+                    dataBiodataToSend
+                );
+                console.log(response.data);
+                showNotification("Data berhasil disimpan!");
+            } catch (error) {
+                console.error("Error submitting data:", error);
+                console.error("Error response:", error.response);
+                showNotification("Gagal menyimpan data. Silakan coba lagi.");
+            }
+        } else {
+            console.log("Form validation failed");
+            showNotification("Gagal menyimpan data. Periksa kembali isian Anda.");
         }
     };
 
     const handleSubmitAlamat = async (e) => {
         e.preventDefault();
-        try {
-            const dataAlamatToSend = {
-                alamat: alamat,
-                provinsi: provinsi,
-                kota: kota,
-                kecamatan: kecamatan,
-                kelurahan: kelurahan,
-                kode_pos: kodePos,
-            };
-            console.log(dataAlamatToSend);
-
-            const response = await apiInvestor.post(
-                `/alamat-investor`,
-                dataAlamatToSend
-            );
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error submitting data:", error);
-            console.error("Error response:", error.response);
+        if (validateAlamat()) {
+            try {
+                const dataAlamatToSend = {
+                    alamat: alamat,
+                    provinsi: provinsi,
+                    kota: kota,
+                    kecamatan: kecamatan,
+                    kelurahan: kelurahan,
+                    kode_pos: kodePos,
+                };
+                console.log(dataAlamatToSend);
+    
+                const response = await apiInvestor.post(
+                    `/alamat-investor`,
+                    dataAlamatToSend
+                );
+                console.log(response.data);
+                showNotification("Data alamat berhasil disimpan!");
+            } catch (error) {
+                console.error("Error submitting data:", error);
+                console.error("Error response:", error.response);
+                showNotification("Gagal menyimpan data alamat. Silakan coba lagi.");
+            }
+        } else {
+            console.log("Form validation failed");
+            showNotification("Gagal menyimpan data alamat. Periksa kembali isian Anda.");
         }
     };
 
     const handleSubmitIdentitas = async (e) => {
         e.preventDefault();
-        try{
-            const dataIdentitasToSend = {
-                no_ktp: noKtp,
-                foto_ktp: fotoKtp,
-                no_npwp: noNpwp,
-                foto_npwp: fotoNpwp,
-                selfie_ktp: selfieKtp,
-            };
-            console.log(dataIdentitasToSend);
+        if (validateIdentitas()) {
+            try {
+                const formData = new FormData();
+                for (const key in formDataIdentitas) {
+                    if (formDataIdentitas[key] instanceof File) {
+                        formData.append(key, formDataIdentitas[key]);
+                    } else if (formDataIdentitas[key] !== null) {
+                        formData.append(key, formDataIdentitas[key]);
+                    }
+                }
 
-            const response = await apiInvestor.post(
-                `/identitas-investor`,
-                dataIdentitasToSend
-            );
-            console.log(response.data);
-        }catch (error) {
-            console.error("Error submitting data:", error);
-            console.error("Error response:", error.response);
+                const response = await apiInvestor.post('/identitas-investor', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+                console.log("Response:", response.data);
+                showNotification("Data identitas berhasil disimpan!");
+                
+                if (typeof getInvestors === 'function') {
+                    getInvestors();
+                }
+            } catch (error) {
+                console.error("Error submitting data:", error);
+                showNotification("Gagal menyimpan data identitas. Periksa kembali isian Anda.");
+            }
+        } else {
+            showNotification("Gagal menyimpan data identitas. Periksa kembali isian Anda.");
         }
     };
 
     const handleSubmitPendukung = async (e) => {
         e.preventDefault();
+        if (validateDataPendukung()) {
         try{
             const dataPendukungToSend = {
                 latar_pendidikan: latarPendidikan,
@@ -317,17 +467,86 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                 dataPendukungToSend
             );
             console.log(response.data);
+            showNotification("Data pendukung berhasil disimpan!");
         }catch (error) {
             console.error("Error submitting data:", error);
             console.error("Error response:", error.response);
         }
+        } else {
+            showNotification("Gagal menyimpan data pendukung. Periksa kembali isian Anda.");
+        }
     };
+
+    const renderImagePreview = (fieldName, label) => (
+        <div className="mb-5">
+            <label
+                htmlFor={`${fieldName}-input`}
+                className="block mb-2 text-sm font-medium text-gray-900"
+            >
+                {label}
+            </label>
+            <div className="flex items-center justify-center w-full">
+                <label
+                    htmlFor={`${fieldName}-input`}
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        {previews[fieldName] ? (
+                            <img
+                                src={previews[fieldName]}
+                                alt="Pratinjau"
+                                className="max-h-40 mb-2"
+                            />
+                        ) : (
+                            <>
+                                <svg
+                                    className="w-8 h-8 mb-4 text-gray-500"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 16"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                    />
+                                </svg>
+                                <p className="mb-2 text-sm text-gray-500">
+                                    <span className="font-semibold">Klik untuk mengunggah</span> atau seret dan jatuhkan
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                    SVG, PNG, JPG atau GIF (MAKS. 800x400px)
+                                </p>
+                            </>
+                        )}
+                    </div>
+                    <input
+                        id={`${fieldName}-input`}
+                        name={fieldName}
+                        onChange={handleChangeIdentitas}
+                        type="file"
+                        className="hidden"
+                    />
+                </label>
+            </div>
+            {errorsIdentitas[fieldName] && <p className="text-red-500 text-xs mt-1">{errorsIdentitas[fieldName]}</p>}
+        </div>
+    );
+    
 
     const renderTabContent = () => {
         switch (activeTab) {
             case "Biodata":
                 return (
                     <div>
+                         {showPopup && (
+                            <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-md shadow-lg z-50 transition-opacity duration-300">
+                                {popupMessage}
+                            </div>
+                        )}
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                             Biodata
                         </h3>
@@ -344,8 +563,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder={"Nama Lengkap"}
                                 value={namaLengkap}
                                 onChange={handleNamaLengkapChange}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errors.namaLengkap ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errors.namaLengkap && <p className="text-red-500 text-xs mt-1">{errors.namaLengkap}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -359,7 +581,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 onClick={handleGenderDropdownToggle}
                                 className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${
                                     isGenderDropdownOpen ? "border-black" : ""
-                                }`}
+                                } ${errors.jk ? 'border-red-500' : ''}`}
                                 type="button"
                             >
                                 <span className="flex-1">{jk}</span>
@@ -379,6 +601,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                     />
                                 </svg>
                             </button>
+                            {errors.jk && <p className="text-red-500 text-xs mt-1">{errors.jk}</p>}
                             {isGenderDropdownOpen && (
                                 <div
                                     ref={genderDropdownRef}
@@ -434,8 +657,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 }
                                 value={tempatLahir}
                                 onChange={handleTempatLahirChange}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errors.tempatLahir ? 'border-red-500' : ''
+                                }`}
                             />
+                             {errors.tempatLahir && <p className="text-red-500 text-xs mt-1">{errors.tempatLahir}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -452,11 +678,14 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                     investors?.investorBiodata?.tanggal_lahir
                                 }
                                 value={tanggalLahir}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errors.tanggalLahir ? 'border-red-500' : ''
+                                }`}
                                 onChange={(e) =>
                                     setTanggalLahir(e.target.value)
                                 }
                             />
+                            {errors.tanggalLahir && <p className="text-red-500 text-xs mt-1">{errors.tanggalLahir}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -471,8 +700,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder={investors?.investorBiodata?.no_hp}
                                 value={noHp}
                                 onChange={handleNoHpChange}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errors.noHp ? 'border-red-500' : ''
+                                }`}
                             />
+                             {errors.noHp && <p className="text-red-500 text-xs mt-1">{errors.noHp}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -486,7 +718,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 onClick={handleCategoryDropdownToggle}
                                 className={`bg-[#F5F5F7] text-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center w-full ${
                                     isCategoryDropdownOpen ? "border-black" : ""
-                                }`}
+                                } ${errors.kategoriInvestor ? 'border-red-500' : ''}`}
                                 type="button"
                             >
                                 <span className="flex-1">
@@ -508,6 +740,7 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                     />
                                 </svg>
                             </button>
+                            {errors.kategoriInvestor && <p className="text-red-500 text-xs mt-1">{errors.kategoriInvestor}</p>}
                             {isCategoryDropdownOpen && (
                                 <div className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
@@ -544,6 +777,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
             case "Alamat":
                 return (
                     <div>
+                        {showPopup && (
+                            <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-md shadow-lg z-50 transition-opacity duration-300">
+                                {popupMessage}
+                            </div>
+                        )}
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                             Alamat
                         </h3>
@@ -560,8 +798,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Alamat"
                                 value={alamat}
                                 onChange={(e) => setAlamat(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsAlamat.alamat ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsAlamat.alamat && <p className="text-red-500 text-xs mt-1">{errorsAlamat.alamat}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -576,8 +817,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Provinsi"
                                 value={provinsi}
                                 onChange={(e) => setProvinsi(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsAlamat.provinsi ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsAlamat.provinsi && <p className="text-red-500 text-xs mt-1">{errorsAlamat.provinsi}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -592,8 +836,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Kota/Kabupaten"
                                 value={kota}
                                 onChange={(e) => setKota(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsAlamat.kota ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsAlamat.kota && <p className="text-red-500 text-xs mt-1">{errorsAlamat.kota}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -608,8 +855,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Kecamatan"
                                 value={kecamatan}
                                 onChange={(e) => setKecamatan(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsAlamat.kecamatan ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsAlamat.kecamatan && <p className="text-red-500 text-xs mt-1">{errorsAlamat.kecamatan}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -624,8 +874,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Kelurahan"
                                 value={kelurahan}
                                 onChange={(e) => setKelurahan(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsAlamat.kelurahan ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsAlamat.kelurahan && <p className="text-red-500 text-xs mt-1">{errorsAlamat.kelurahan}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -640,8 +893,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Kode Pos"
                                 value={kodePos}
                                 onChange={(e) => setKodePos(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsAlamat.kodePos ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsAlamat.kodePos && <p className="text-red-500 text-xs mt-1">{errorsAlamat.kodePos}</p>}
                         </div>
                         <div className="flex justify-end">
                             <button
@@ -657,6 +913,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
             case "Identitas":
                 return (
                     <div>
+                        {showPopup && (
+                            <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-md shadow-lg z-50 transition-opacity duration-300">
+                                {popupMessage}
+                            </div>
+                        )}
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                             Identitas
                         </h3>
@@ -672,70 +933,15 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 id="nomor-ktp-input"
                                 name="no_ktp"
                                 placeholder="Nomor KTP"
-                                value={noKtp}
-                                onChange={(e) => setNoKtp(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                value={formDataIdentitas.no_ktp}
+                                onChange={handleChangeIdentitas}
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsIdentitas.noKtp ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsIdentitas.noKtp && <p className="text-red-500 text-xs mt-1">{errorsIdentitas.noKtp}</p>}
                         </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="foto-ktp-input"
-                                className="block mb-2 text-sm font-medium text-gray-900"
-                            >
-                                Foto KTP
-                            </label>
-                            <div className="flex items-center justify-center w-full">
-                                <label
-                                    htmlFor="foto-ktp-input"
-                                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                                >
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg
-                                            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 20 16"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                            />
-                                        </svg>
-                                        {fotoKtpPreview ? (
-                                            <img
-                                                src={fotoKtpPreview}
-                                                alt="Pratinjau"
-                                                className="max-h-40 mb-2"
-                                            />
-                                        ) : (
-                                            <>
-                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                    <span className="font-semibold">
-                                                        Klik untuk mengunggah
-                                                    </span>{" "}
-                                                    atau seret dan jatuhkan
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    SVG, PNG, JPG atau GIF
-                                                    (MAKS. 800x400px)
-                                                </p>
-                                            </>
-                                        )}
-                                    </div>
-                                    <input
-                                        id="foto-ktp-input"
-                                        name="foto_ktp"
-                                        type="file"
-                                        onChange={handleChangeIdentitas}
-                                        className="hidden"
-                                    />
-                                </label>
-                            </div>
-                        </div>
+                        {renderImagePreview("foto_ktp", "Foto KTP")}
                         <div className="mb-5">
                             <label
                                 htmlFor="base-input"
@@ -748,129 +954,16 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 id="nomor-npwp-input"
                                 name="no_npwp"
                                 placeholder="Nomor NPWP"
-                                value={noNpwp}
-                                onChange={(e) => setNoNpwp(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 "
+                                value={formDataIdentitas.no_npwp}
+                                onChange={handleChangeIdentitas}
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsIdentitas.noNpwp ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsIdentitas.noNpwp && <p className="text-red-500 text-xs mt-1">{errorsIdentitas.noNpwp}</p>}
                         </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="foto-npwp-input"
-                                className="block mb-2 text-sm font-medium text-gray-900"
-                            >
-                                Foto NPWP
-                            </label>
-                            <div className="flex items-center justify-center w-full">
-                                <label
-                                    htmlFor="foto-npwp-input"
-                                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                                >
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg
-                                            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 20 16"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                            />
-                                        </svg>
-                                        {fotoNpwpPreview ? (
-                                            <img
-                                                src={fotoNpwpPreview}
-                                                alt="Pratinjau"
-                                                className="max-h-40 mb-2"
-                                            />
-                                        ) : (
-                                            <>
-                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                    <span className="font-semibold">
-                                                        Klik untuk mengunggah
-                                                    </span>{" "}
-                                                    atau seret dan jatuhkan
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    SVG, PNG, JPG atau GIF
-                                                    (MAKS. 800x400px)
-                                                </p>
-                                            </>
-                                        )}
-                                    </div>
-                                    <input
-                                        id="foto-npwp-input"
-                                        name="foto_npwp"
-                                        onChange={handleChangeIdentitas}
-                                        type="file"
-                                        className="hidden"
-                                    />
-                                </label>
-                            </div>
-                        </div>
-                        <div className="mb-5">
-                            <label
-                                htmlFor="selfie-ktp-input"
-                                className="block mb-2 text-sm font-medium text-gray-900"
-                            >
-                                Foto Selfie dengan KTP
-                            </label>
-                            <div className="flex items-center justify-center w-full">
-                                <label
-                                    htmlFor="selfie-ktp-input"
-                                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                                >
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg
-                                            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 20 16"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                            />
-                                        </svg>
-                                        {selfieKtpPreview ? (
-                                            <img
-                                                src={selfieKtpPreview}
-                                                alt="Pratinjau"
-                                                className="max-h-40 mb-2"
-                                            />
-                                        ) : (
-                                            <>
-                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                    <span className="font-semibold">
-                                                        Klik untuk mengunggah
-                                                    </span>{" "}
-                                                    atau seret dan jatuhkan
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    SVG, PNG, JPG atau GIF
-                                                    (MAKS. 800x400px)
-                                                </p>
-                                            </>
-                                        )}
-                                    </div>
-                                    <input
-                                        id="selfie-ktp-input"
-                                        name="selfie_ktp"
-                                        onChange={handleChangeIdentitas}
-                                        type="file"
-                                        className="hidden"
-                                    />
-                                </label>
-                            </div>
-                        </div>
+                        {renderImagePreview("foto_npwp", "Foto NPWP")}
+                        {renderImagePreview("selfie_ktp", "Foto Selfie dengan KTP")}
                         <div className="flex justify-end">
                             <button
                                 type="button"
@@ -885,6 +978,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
             case "Pendukung":
                 return (
                     <div>
+                        {showPopup && (
+                            <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-md shadow-lg z-50 transition-opacity duration-300">
+                                {popupMessage}
+                            </div>
+                        )}
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                             Pendukung
                         </h3>
@@ -902,8 +1000,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Latar Pendidikan"
                                 value={latarPendidikan}
                                 onChange={(e) => setLatarPendidikan(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.latarPendidikan ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.latarPendidikan && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.latarPendidikan}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -919,8 +1020,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder="Sumber Penghasilan"
                                 value={sumberPenghasilan}
                                 onChange={(e) => setSumberPenghasilan(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.sumberPenghasilan ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.sumberPenghasilan && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.sumberPenghasilan}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -936,8 +1040,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder= "Jumlah Penghasilan"
                                 value={jumlahPenghasilan}
                                 onChange={(e) => setJumlahPenghasilan(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.jumlahPenghasilan ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.jumlahPenghasilan && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.jumlahPenghasilan}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -953,8 +1060,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder= "Bidang Usaha"
                                 value={bidangUsaha}
                                 onChange={(e) => setBidangUsaha(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.bidangUsaha ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.bidangUsaha && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.bidangUsaha}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -970,8 +1080,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder= "Tujuan Investasi"
                                 value={tujuanInvestasi}
                                 onChange={(e) => setTujuanInvestasi(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.tujuanInvestasi ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.tujuanInvestasi && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.tujuanInvestasi}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -987,8 +1100,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 placeholder= "Nomor SID"
                                 value={noSid}
                                 onChange={(e) => setNoSid(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.noSid ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.noSid && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.noSid}</p>}
                         </div>
                         <div className="mb-5">
                             <label
@@ -1003,8 +1119,11 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
                                 name="tanggal_pembuatan_sid"
                                 value= {tanggalPembuatanSid}
                                 onChange={(e) => setTanggalPembuatanSid(e.target.value)}
-                                className="bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900"
+                                className={`bg-[#F5F5F7] text-gray-900 text-sm rounded-lg w-full p-2.5 border-none focus:ring-orange-900 ${
+                                    errorsDataPendukung.tanggalPembuatanSid ? 'border-red-500' : ''
+                                }`}
                             />
+                            {errorsDataPendukung.tanggalPembuatanSid && <p className="text-red-500 text-xs mt-1">{errorsDataPendukung.tanggalPembuatanSid}</p>}
                         </div>
                         <div className="flex justify-end">
                             <button
