@@ -291,7 +291,7 @@ const DetailInvestasi = () => {
 
                     <div className={tab === 3 ? "block" : "hidden"}>
                         <div
-                            className="w-full mb-3"
+                            className="w-full h-[400px] mb-3"
                             dangerouslySetInnerHTML={{
                                 __html: investasi.url_map,
                             }}
