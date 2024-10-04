@@ -1,21 +1,34 @@
-import { useEffect, useState } from "react";
-import ImageSlider from "../../components/guest/ImageSlider";
-import JumbotronAbout from "../../components/guest/JumbotronAbout";
 import DocumentIcon from "../../assets/images/icons/dokumen.svg";
+import Input from "../../components/common/Input";
+import Label from "../../components/common/Label";
+import Button from "../../components/common/Button";
+import JumbotronAbout from "../../components/guest/JumbotronAbout";
+import ImageSlider from "../../components/guest/ImageSlider";
+import GuestLayouts from "../../layouts/GuestLayouts";
 import {
   getAbouts,
   getAboutSejarahs,
   getFounder,
 } from "../../services/about.service";
-import GuestLayouts from "../../layouts/GuestLayouts";
 import { getDocument } from "../../services/document.service";
+import { getContactFrontpage } from "../../services/contact-frontpage.service";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  PiMapPinLine,
+  PiMapPinLineFill,
+  PiPaperPlaneTilt,
+  PiPaperPlaneTiltFill,
+  PiPhoneCall,
+  PiPhoneCallFill,
+} from "react-icons/pi";
 
 const About = () => {
   const [abouts, setAbouts] = useState(null);
   const [sejarah, setSejarah] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [founder, setFounder] = useState([]);
+  const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
     getAbouts((data) => {
@@ -32,6 +45,10 @@ const About = () => {
 
     getFounder((data) => {
       setFounder(data);
+    });
+
+    getContactFrontpage((data) => {
+      setContacts(data);
     });
   }, []);
 
@@ -101,7 +118,7 @@ const About = () => {
             )}
           </div>
         </div>
-
+        {/* founder */}
         <div className="w-[90%] max-w-6xl mx-auto mt-12 lg:mt-32 pb-16">
           <h1 className="font-bold text-3xl lg:text-4xl mb-4 lg:mb-12 text-center tracking-wide">
             Founder
@@ -139,6 +156,114 @@ const About = () => {
             ) : (
               <div className="text-center">Data founder tidak ditemukan</div>
             )}
+          </div>
+        </div>
+        {/* kontak */}
+        <div className="w-[90%] mx-auto mt-12 lg:mt-16 mb-20">
+          <div className="grid grid-cols-2 gap-20">
+            <div>
+              <h1 className="font-bold text-3xl lg:text-4xl tracking-wide mb-1">
+                Hubungi Kami
+              </h1>
+              <p className="mb-8">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rerum
+                nisi, esse
+              </p>
+
+              <div className="mb-4 space-y-3">
+                <div className="flex items-center gap-2 group w-fit cursor-pointer text-[#572618]">
+                  <div className="relative w-5 h-5">
+                    <PiPaperPlaneTilt className="absolute w-5 h-5 transition-opacity duration-200 group-hover:opacity-0" />
+                    <PiPaperPlaneTiltFill className="absolute w-5 h-5 transition-opacity duration-200 opacity-0 group-hover:opacity-100" />
+                  </div>
+                  <Link
+                    to={`https://mail.google.com/mail/?view=cm&fs=1&to=${contacts.email}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium transition-all duration-300 group-hover:underline"
+                  >
+                    Kirimkan pesan via email
+                  </Link>
+                </div>
+                <div className="flex items-center gap-2 group w-fit cursor-pointer text-[#572618]">
+                  <div className="relative w-5 h-5">
+                    <PiPhoneCall className="absolute w-5 h-5 transition-opacity duration-200 group-hover:opacity-0" />
+                    <PiPhoneCallFill className="absolute w-5 h-5 transition-opacity duration-200 opacity-0 group-hover:opacity-100" />
+                  </div>
+                  <Link
+                    to={`tel:${contacts.no_phone}`}
+                    className="font-medium transition-all duration-300 group-hover:underline"
+                  >
+                    Hubungi kami lewat telepon
+                  </Link>
+                </div>
+                <div className="flex items-center gap-2 group w-fit cursor-pointer text-[#572618]">
+                  <div className="relative w-5 h-5">
+                    <PiMapPinLine className="absolute w-5 h-5 transition-opacity duration-200 group-hover:opacity-0" />
+                    <PiMapPinLineFill className="absolute w-5 h-5 transition-opacity duration-200 opacity-0 group-hover:opacity-100" />
+                  </div>
+                  <Link
+                    to={"https://maps.app.goo.gl/w6PRFZiHvueU15P8A"}
+                    target="_blank"
+                    className="font-medium transition-all duration-300 group-hover:underline"
+                  >
+                    {contacts.alamat}
+                  </Link>
+                </div>
+              </div>
+
+              <div>
+                <div className="grid grid-cols-2 gap-8 pb-2">
+                  <div>
+                    <Label htmlFor={"nama_depan"} value={"Nama depan"} />
+                    <Input
+                      type={"text"}
+                      name={"nama_depan"}
+                      placeholder={"Masukkan nama depan.."}
+                      variant={"primary-outline"}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={"nama_belakang"} value={"Nama belakang"} />
+                    <Input
+                      type={"text"}
+                      name={"nama_belakang"}
+                      placeholder={"Masukkan nama belakang.."}
+                      variant={"primary-outline"}
+                    />
+                  </div>
+                </div>
+                <div className="pb-2">
+                  <Label htmlFor={"email"} value={"Alamat email"} />
+                  <Input
+                    type={"text"}
+                    name={"email"}
+                    placeholder={"Masukkan alamat email.."}
+                    variant={"primary-outline"}
+                  />
+                </div>
+                <div className="pb-2">
+                  <Label htmlFor={"nomor_telepon"} value={"Nomor telepon"} />
+                  <Input
+                    type={"text"}
+                    name={"nomor_telepon"}
+                    placeholder={"Masukkan alamat nomor telepon.."}
+                    variant={"primary-outline"}
+                  />
+                </div>
+                <Button
+                  value="Kirim pesan"
+                  className="w-full mt-6 font-semibold "
+                />
+              </div>
+            </div>
+
+            <div
+              className="w-full h-full"
+              dangerouslySetInnerHTML={{
+                __html: contacts.url_map,
+              }}
+            />
           </div>
         </div>
       </section>
