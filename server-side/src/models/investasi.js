@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             bagi_hasil: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Bagi Hasil tidak boleh null!" },
