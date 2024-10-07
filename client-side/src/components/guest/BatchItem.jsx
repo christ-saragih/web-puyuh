@@ -59,7 +59,7 @@ const BatchItem = ({
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden h-fit">
       <BatchItemImage gambar={gambar} />
       <BatchItemBody>
         <BatchItemBody.BatchItemTitle

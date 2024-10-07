@@ -7,7 +7,7 @@ import CalendarInvestor from "../../components/common/CalendarInvestor";
 // import CardBatchInvestor from "../../components/investor/CardBatchInvestor";
 import WavingIllustration from "../../assets/images/Illustration waving.svg";
 import GrowingMoney from "../../assets/images/Growing Money.svg";
-import { MdNotificationsActive } from "react-icons/md";
+import { MdNotifications } from "react-icons/md";
 // import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { apiInvestor } from "../../hooks/useAxiosConfig";
@@ -15,52 +15,76 @@ import { formatRupiah } from "../../utils/formatRupiah";
 import { getTransaksi } from "../../services/transaksi.service";
 import BatchListInvestor from "../../components/investor/BatchListInvestor";
 import { getBatchs } from "../../services/batch.service";
+import { formatDate } from "../../utils/formatDate";
 import InvestorLayout from "../../layouts/InvestorLayout";
-import { Dropdown, Modal, Button, TextInput } from "flowbite-react";
+import { Dropdown, Modal } from "flowbite-react";
 import { LuChevronDown, LuHome, LuLogOut } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthProvider";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
-import { formatDate } from "../../utils/formatDate";
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [investor, setInvestor] = useState(null); // State untuk menyimpan data investor
-  const [loading, setLoading] = useState(true); // State untuk loading
+  const [investor, setInvestor] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [transaksi, setTransaksi] = useState([]);
   const navigate = useNavigate();
   const [batchs, setBatchs] = useState([]);
   const [investasi, setInvestasi] = useState([]);
   const [markedDates, setMarkedDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showNoteModal, setShowNoteModal] = useState(false);
-  const [noteText, setNoteText] = useState("");
-  const [notes, setNotes] = useState({});
+  const [notifications, setNotifications] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const { logout } = useContext(AuthContext);
+  const [markedDatesInfo, setMarkedDatesInfo] = useState([]);
+  const [flashMessages, setFlashMessages] = useState({
+    urgent: [],
+    upcoming: []
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [investorResponse, transaksiData, batchsData, investasiResponse] = await Promise.all([
+        const [
+          investorResponse, 
+          transaksiData, 
+          batchsData, 
+          investasiResponse, 
+          notificationsResponse
+        ] = await Promise.all([
           apiInvestor.get("/investor"),
           new Promise(resolve => getTransaksi(resolve)),
           new Promise(resolve => getBatchs(resolve)),
-          apiInvestor.get("/investasi")
+          apiInvestor.get("/investasi"),
+          apiInvestor.get("/notifikasi/notifikasiInvestasi")
         ]);
-
+  
         setInvestor(investorResponse.data.data);
         setTransaksi(transaksiData);
         setBatchs(batchsData);
         setInvestasi(investasiResponse.data.data);
-
-        // Filter investasi yang sedang "proses" dan simpan tanggalnya
+        setNotifications(notificationsResponse.data.data);
+  
+        const unreadCount = notificationsResponse.data.data.filter(notif => !notif.isRead).length;
+        setUnreadNotifications(unreadCount);
+  
         const dates = investasiResponse.data.data
           .filter((investment) => investment.status === "proses")
           .map((investment) => new Date(investment.tanggal_berakhir_penawaran));
+  
+        setMarkedDates(dates);
 
-        setMarkedDates(dates); // Set array tanggal yang ditandai
+        const investmentInfo = investasiResponse.data.data
+          .filter((investment) => investment.status === "proses")
+          .map((investment) => ({
+            date: new Date(investment.tanggal_berakhir_penawaran),
+            batchTitle: getBatchTitle(investment.judul)
+          }));
+
+        setMarkedDatesInfo(investmentInfo);
+
+        checkUpcomingInvestments(investasiResponse.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
         if (error.response?.status === 401) {
@@ -70,12 +94,44 @@ const InvestorDashboard = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
+
+    const intervalId = setInterval(() => {
+      checkUpcomingInvestments(investasi);
+    }, 3600000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
   }, [navigate]);
 
+  const checkUpcomingInvestments = (investments) => {
+    const now = new Date();
+    const urgentMessages = [];
+    const upcomingMessages = [];
+    
+    investments.forEach(investment => {
+      const openingDate = new Date(investment.tanggal_pembukaan_penawaran);
+      const daysUntilOpening = Math.ceil((openingDate - now) / (1000 * 60 * 60 * 24));
+      
+      if (daysUntilOpening === 1) {
+        upcomingMessages.push(`Investasi ${investment.judul} akan dibuka dalam 1 hari.`);
+      } else if (daysUntilOpening >= 3 && daysUntilOpening <= 7) {
+        upcomingMessages.push(`Investasi ${investment.judul} akan dibuka dalam ${daysUntilOpening} hari.`);
+      }
+    });
+  
+    setFlashMessages({
+      urgent: urgentMessages,
+      upcoming: upcomingMessages
+    });
+  };
 
-
+  const handleNotificationClick = () => {
+    setShowNotificationModal(true);
+    setUnreadNotifications(0);
+  };
+  
   const totalInvestasi = transaksi.reduce((total, item) => {
     return total + item.total_investasi;
   }, 0);
@@ -101,15 +157,7 @@ const InvestorDashboard = () => {
 
   const investasiByBatch = getInvestasiByBatch();
 
-  // Fungsi untuk mendapatkan investasi yang status-nya "proses"
-  const filteredInvestments = investasi.filter(
-    (data) => data.status === "proses"
-  );
-
-  const convertedMarkedDates = markedDates.map(dateString => new Date(dateString));
-
-   // Fungsi untuk mendapatkan judul batch
-   const getBatchTitle = (batchId) => {
+  const getBatchTitle = (batchId) => {
     const batch = batchs.find(b => b.id === batchId);
     return batch ? batch.judul : `${batchId}`;
   };
@@ -117,57 +165,16 @@ const InvestorDashboard = () => {
   const Logout = async () => {
     try {
       await logout();
-
       navigate("/masuk");
     } catch (error) {
       console.log("Logout gagal", error);
     }
   };
 
-  useEffect(() => {
-    const fetchInvestorData = async () => {
-      try {
-        const response = await apiInvestor.get("/investor"); // Gunakan instance axios
-        setInvestor(response.data.data); // Simpan data investor ke state
-      } catch (error) {
-        console.error("Error fetching investor data:", error);
-        if (error.response?.status === 401) {
-          navigate("/login"); // Redirect jika tidak otentikasi
-        }
-      } finally {
-        setLoading(false); // Selesai loading
-      }
-    };
-
-    fetchInvestorData();
-  }, [navigate]);
-
   if (loading) {
-    return <p>Loading...</p>; // Tampilkan pesan loading saat data sedang diambil
+    return <p>Loading...</p>;
   }
 
-  const handleDateClick = (date) => {
-    console.log("Date clicked:", date);
-    const dateString = date.toISOString().split('T')[0]; // Mengonversi Date ke string format 'YYYY-MM-DD'
-    setSelectedDate(dateString);
-    setShowNoteModal(true);
-    console.log("showNoteModal set to true");
-    setNoteText(notes[dateString] || "");
-  };
-
-  const handleSaveNote = () => {
-    if (selectedDate) {
-      setNotes(prevNotes => ({
-        ...prevNotes,
-        [selectedDate]: noteText
-      }));
-      setShowNoteModal(false);
-    }
-  };
-
-  const toggleNotificationModal = () => {
-    setShowNotificationModal(!showNotificationModal);
-  };
 
   return (
     <div className="bg-white w-dvw min-h-screen overflow-y-auto md:py-5 py-14 pe-6 relative">
@@ -185,7 +192,7 @@ const InvestorDashboard = () => {
             />
           </form>
           <div className="flex items-center space-x-4">
-            <MdNotificationsActive className="ml-4 w-8 h-8 text-gray-500" />
+            <MdNotifications className="ml-4 w-8 h-8 text-gray-500" onClick={() => setShowNotificationModal(true)} />
             {investor?.investorBiodata?.foto_profil ? (
               <img
                 src={`http://locaxlhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
@@ -237,6 +244,26 @@ const InvestorDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               <div className="md:col-span-2 space-y-7">
                 {/* Welcome Section */}
+                {/* Flash Message */}
+                {/* Urgent Flash Messages */}
+                  {flashMessages.urgent.length > 0 && (
+                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 md:ml-4" role="alert">
+                      <p className="font-bold">Pengingat</p>
+                      {flashMessages.urgent.map((message, index) => (
+                        <p key={index}>{message}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Upcoming Flash Messages */}
+                  {flashMessages.upcoming.length > 0 && (
+                    <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 md:ml-4" role="alert">
+                      <p className="font-bold">Pengingat</p>
+                      {flashMessages.upcoming.map((message, index) => (
+                        <p key={index}>{message}</p>
+                      ))}
+                    </div>
+                  )}
                 <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center px-4 py-3 md:px-10">
                   <div className="w-full md:w-[70%] mb-4 md:mb-0">
                     <h1 className="text-2xl md:text-[2.5rem] font-bold mb-2 md:mb-3 text-[#000] leading-none">
@@ -255,7 +282,7 @@ const InvestorDashboard = () => {
                 </div>
 
                 {/* Total Investasi Section */}
-                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8">
+                <div className="w-[100%] ml-3 md:w-full h-[25%] rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8">
                   <div className="flex flex-col w-full">
                     <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
                       Total Investasi
@@ -273,39 +300,42 @@ const InvestorDashboard = () => {
                   </div>
                 </div>
 
-                {/* Bagi Hasil Section */}
-                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8">
-                  <div className="flex flex-col w-full">
+                {/* Grid for Bagi Hasil and Investasi yang Sedang Berlangsung */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-[150%] ml-3 mt-7">
+                  {/* Bagi Hasil Section */}
+                  <div className="w-full rounded-xl bg-[#F5F5F7] flex flex-col p-4 md:p-8">
                     <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
                       Bagi Hasil
                     </h1>
-                    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 ml-1">
-                    {investasiByBatch.map((inv, index) => {
-                      const batchInfo = investasi.find(i => i.id === inv.batch_id);
-                      const batchTitle = getBatchTitle(inv.batch_id);
-                        return (
-                          <CardBagiHasil
-                            key={index}
-                            batch={batchTitle}
-                            profit={formatRupiah(calculateProfit(inv.total_investasi, batchInfo?.bagi_hasil || 0))}
-                            percentage={`${batchInfo?.bagi_hasil || 0}%`}
-                            status={inv.status}
-                          />
-                        );
-                      })}
+                    <div className="relative">
+                      <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
+                        {investasiByBatch.map((inv, index) => {
+                          const batchInfo = investasi.find(i => i.id === inv.batch_id);
+                          const batchTitle = getBatchTitle(inv.batch_id);
+                          return (
+                            <div key={index} className="flex-shrink-0 w-64">
+                              <CardBagiHasil
+                                batch={batchTitle}
+                                profit={formatRupiah(calculateProfit(inv.total_investasi, batchInfo?.bagi_hasil || 0))}
+                                percentage={`${batchInfo?.bagi_hasil || 0}%`}
+                                status={inv.status}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Investasi yang Sedang Berlangsung Section */}
-                <div className="w-[100%] ml-3 md:w-[151%] md:rounded-xl rounded-xl bg-[#F5F5F7] p-4 md:p-8 relative">
-                  <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
-                    Investasi yang Sedang Berlangsung
-                  </h1>
-
-                  <div className="relative flex items-center">
-                    <div className="flex overflow-x-auto gap-4 md:gap-10 w-full scrollbar-hide">
-                      <BatchListInvestor batchs={batchs} />
+                  {/* Investasi yang Sedang Berlangsung Section */}
+                  <div className="w-full rounded-xl bg-[#F5F5F7] p-4 md:p-8 relative">
+                    <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
+                      Investasi yang Sedang Berlangsung
+                    </h1>
+                    <div className="relative flex items-center">
+                      <div className="flex overflow-x-auto gap-4 md:gap-10 w-full scrollbar-hide">
+                        <BatchListInvestor batchs={batchs} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -341,7 +371,17 @@ const InvestorDashboard = () => {
                     </div>
                   </form>
 
-                  <MdNotificationsActive className="w-8 h-8 text-gray-500" />
+                  <div className="relative">
+                    <MdNotifications 
+                      className="w-8 h-8 text-gray-500 cursor-pointer" 
+                      onClick={handleNotificationClick} 
+                    />
+                    {unreadNotifications > 0 && (
+                      <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                        {unreadNotifications}
+                      </span>
+                    )}
+                  </div>
                   {investor?.investorBiodata?.foto_profil ? (
                     <img
                       src={`http://localhost:3000/api/biodata-investor/images/${investor.investorBiodata.foto_profil}`}
@@ -383,103 +423,47 @@ const InvestorDashboard = () => {
                     </Dropdown.Item>
                   </Dropdown>
                 </div>
-                <div className="bg-[#F5F5F7] rounded-xl py-4 px-6 shadow-md">
-           
+                <div className="bg-[#F5F5F7] rounded-xl py-2 px-6 mb-7 shadow-md">
                    <CalendarInvestor 
-                   markedDates={convertedMarkedDates} 
-                   onDateClick={handleDateClick}
-                   />
-                    
+                   markedDatesInfo={markedDatesInfo} 
+                   />  
                 </div>
                 {/* <p className="bg-[#572618] absolute bottom-0 right-7 text-xs text-zinc-50 rounded-xl md:hidden pr-3 pl-3">
                   Gulir untuk melihat keseluruhan kalender
                 </p> */}
-                <div className="bg-[#F5F5F7] rounded-xl py-4 px-6 shadow-md mt-5">
-                  <h3 className="font-semibold text-xl mb-4">Pemberitahuan</h3>
-
-                  {filteredInvestments.length > 0 ? (
-                    <>
-                      {filteredInvestments.slice(0, 2).map((investment) => (
-                        <div
-                          key={investment.id}
-                          className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
-                        >
-                          <div className="flex justify-between items-center mb-2">
-                            <h4 className="font-semibold text-lg truncate">
-                              {investment.judul}
-                            </h4>
-                            <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
-                              {formatDate(investment.tanggal_berakhir_penawaran)}
-                            </p>
-                          </div>
-                          <p>{investment.deskripsi.substring(3, 70)}...</p>
-                        </div>
-                      ))}
-                      {filteredInvestments.length > 2 && (
-                        <button
-                          onClick={toggleNotificationModal}
-                          className="w-full text-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
-                        >
-                          Lihat Semua
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <p>Tidak ada pemberitahuan saat ini.</p>
-                  )}
-                </div>
               </div>
+
+              {/* Notification Modal */}
+                <Modal show={showNotificationModal} onClose={() => setShowNotificationModal(false)}>
+                  <Modal.Header>Pemberitahuan</Modal.Header>
+                  <Modal.Body>
+                    <div className="space-y-4">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4"
+                          >
+                            <div className="flex justify-between items-center mb-2">
+                              <h4 className="font-semibold text-lg">
+                                {notification.judul}
+                              </h4>
+                              <p className="text-sm font-medium bg-gray-100 px-2 py-1 rounded shrink-0">
+                                {formatDate(notification.createdAt)}
+                              </p>
+                            </div>
+                            {/* <p>{`Tanggal Pembukaan ${formatDate(notification.tanggal)}`}</p> */}
+                          </div>
+                        ))
+                      ) : (
+                        <p>Tidak ada pemberitahuan saat ini.</p>
+                      )}
+                    </div>
+                  </Modal.Body>
+                </Modal>
             </div>
           </div>
         </div>
-
-         {/* Notification Modal */}
-         <Modal show={showNotificationModal} onClose={toggleNotificationModal} size="xl">
-          <Modal.Header>Semua Pemberitahuan</Modal.Header>
-          <Modal.Body>
-            <div className="max-h-[70vh] overflow-y-auto">
-              {filteredInvestments.map((investment) => (
-                <div
-                  key={investment.id}
-                  className="rounded-lg border border-t-4 border-gray-300 border-t-[#fc6a2f] py-2 px-4 mb-4"
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <h4 className="font-semibold text-lg truncate">
-                      {investment.judul}
-                    </h4>
-                    <p className="text-sm font-medium bg-white px-2 py-1 rounded shrink-0">
-                      {formatDate(investment.tanggal_berakhir_penawaran)}
-                    </p>
-                  </div>
-                  <p>{investment.deskripsi}</p>
-                </div>
-              ))}
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button className="bg-[#572618]" onClick={toggleNotificationModal}>Tutup</Button>
-          </Modal.Footer>
-        </Modal>
-
-
-        {/* Note Modal */}
-        <Modal show={showNoteModal} onClose={() => setShowNoteModal(false)}>
-          <Modal.Header>Add Note for {selectedDate}</Modal.Header>
-          <Modal.Body>
-            <TextInput
-              type="text"
-              value={noteText}
-              onChange={(e) => setNoteText(e.target.value)}
-              placeholder="Enter your note here"
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={handleSaveNote}>Save Note</Button>
-            <Button color="gray" onClick={() => setShowNoteModal(false)}>
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </InvestorLayout>
     </div>
   );

@@ -3,18 +3,12 @@ import Input from "../../../components/common/Input";
 import Alert from "../../../components/common/Alert";
 import ActionButton from "../../../components/common/ActionButton";
 import Modal from "../../../components/common/Modal";
-import {
-  addArticleTag,
-  deleteArticleTag,
-  getArticleTags,
-  updateArticleTag,
-} from "../../../services/article-tag.service";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiNotePencilBold, PiPlusCircle, PiTrashBold } from "react-icons/pi";
 
-const TagArtikel = () => {
-  const [articleTags, setArticleTags] = useState([]);
+const TagArtikel = (props) => {
+  const { articleTags, addTag, updateTag, deleteTag, fetchArticleTags } = props;
   const [selectedTag, setSelectedTag] = useState(null);
   const [newTag, setNewTag] = useState("");
   const [errors, setErrors] = useState({});
@@ -26,11 +20,8 @@ const TagArtikel = () => {
   const [modalType, setModalType] = useState("");
 
   useEffect(() => {
-    getArticleTags((data) => {
-      setArticleTags(data);
-      setFilteredArticleTags(data);
-    });
-  }, []);
+    fetchArticleTags();
+  }, [fetchArticleTags]);
 
   // Validation function
   const validateTag = (tag) => {
@@ -55,8 +46,7 @@ const TagArtikel = () => {
 
   const handleAddTag = () => {
     if (validateTag(newTag)) {
-      addArticleTag({ nama: newTag }, (data) => {
-        setArticleTags([...articleTags, data]);
+      addTag({ nama: newTag }, () => {
         closeModal();
       });
     }
@@ -64,22 +54,16 @@ const TagArtikel = () => {
 
   const handleUpdateTag = () => {
     if (validateTag(newTag)) {
-      updateArticleTag(selectedTag.id, { nama: newTag }, (updatedTag) => {
-        setArticleTags(
-          articleTags.map((tag) =>
-            tag.id === selectedTag.id ? updatedTag : tag
-          )
-        );
+      updateTag(selectedTag.id, { nama: newTag }, () => {
         closeModal();
       });
     }
   };
 
   const handleDeleteTag = () => {
-    deleteArticleTag(
+    deleteTag(
       selectedTag.id,
       () => {
-        setArticleTags(articleTags.filter((tag) => tag.id !== selectedTag.id));
         closeModal();
       },
       (error) => {

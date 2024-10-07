@@ -24,6 +24,7 @@ const FaqAdmin = () => {
   const [selectedFaq, setSelectedFaq] = useState(null);
   const [filteredFaqs, setFilteredFaqs] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [errors, setErrors] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -34,23 +35,56 @@ const FaqAdmin = () => {
     });
   }, []);
 
+  // Input Validations: Start
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formData.pertanyaan.trim()) {
+      newErrors.pertanyaan = "Pertanyaan wajib di isi";
+    }
+    if (!formData.jawaban.trim()) {
+      newErrors.jawaban = "Jawaban wajib di isi";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validations: End
+
   // CRUD: Start
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} wajib diisi`,
+      }));
+    } else {
+      clearError(name);
+    }
   };
 
   const handleAddFaq = () => {
-    const dataToSend = {
-      pertanyaan: formData.pertanyaan,
-      jawaban: formData.jawaban,
-      status: "tidak-aktif",
-    };
+    if (validateForm()) {
+      const dataToSend = {
+        pertanyaan: formData.pertanyaan,
+        jawaban: formData.jawaban,
+        status: "tidak-aktif",
+      };
 
-    addFaq(dataToSend, (newData) => {
-      setFaqs([...faqs, newData]);
-      closeModal();
-    });
+      addFaq(dataToSend, (newData) => {
+        setFaqs([...faqs, newData]);
+        closeModal();
+      });
+    }
   };
 
   const handleUpdateFaq = () => {
@@ -131,6 +165,7 @@ const FaqAdmin = () => {
     setModalType("");
     setIsModalOpen(false);
     resetForm();
+    setErrors({});
   };
 
   const resetForm = () => {
@@ -207,9 +242,10 @@ const FaqAdmin = () => {
                       name={"pertanyaan"}
                       placeholder={"Masukkan pertanyaan.."}
                       variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
                       value={formData.pertanyaan}
                       handleChange={handleInputChange}
+                      isError={!!errors.pertanyaan}
+                      errorMessage={errors.pertanyaan}
                     />
                     <Label htmlFor={"jawaban"} value={"Jawaban"} />
                     <Textarea
@@ -219,6 +255,8 @@ const FaqAdmin = () => {
                       variant={"primary-outline"}
                       value={formData.jawaban}
                       handleChange={handleInputChange}
+                      isError={!!errors.jawaban}
+                      errorMessage={errors.jawaban}
                     />
                   </Modal.Body>
                   <Modal.Footer

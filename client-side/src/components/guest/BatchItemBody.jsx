@@ -8,7 +8,7 @@ const BatchItemBody = (props) => {
 
 const BatchItemTitle = (props) => {
   const { judul, penerbit, status } = props;
-  
+
   const statusInfo =
     status === "segera"
       ? "#5766CE"
@@ -18,7 +18,7 @@ const BatchItemTitle = (props) => {
 
   return (
     <div className="relative">
-      <h5 className=" text-xl xl:text-2xl font-bold tracking-tight text-gray-900">
+      <h5 className="text-xl xl:text-2xl font-bold tracking-tight text-gray-900 pr-24 truncate hover:text-clip hover:text-wrap">
         {judul}
       </h5>
       <p className="mb-4 font-normal text-gray-700">{penerbit}</p>
@@ -77,12 +77,12 @@ const BatchItemStatistics = ({ statistics = [] }) => {
           key={`${i}-${statistic.title}`}
           className="flex gap-1 md:flex-col md:items-center md:text-center lg:flex-row lg:text-start xl:gap-2"
         >
-          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full">
+          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full shrink-0">
             <statistic.icon className="w-full h-full text-[#4B241A]" />
           </div>
-          <div>
+          <div className="flex flex-col truncate">
             <p className="text-sm">{statistic.title}</p>
-            <p className="text-sm xl:text-base font-semibold">
+            <p className="text-sm xl:text-base font-semibold truncate">
               {statistic.value}
             </p>
           </div>
@@ -91,7 +91,6 @@ const BatchItemStatistics = ({ statistics = [] }) => {
     </div>
   );
 };
-
 
 const BatchItemButton = (props) => {
   const { slug } = props;

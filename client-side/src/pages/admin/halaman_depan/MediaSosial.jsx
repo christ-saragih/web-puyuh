@@ -24,6 +24,7 @@ const MediaSosial = () => {
   const [previewIcon, setPreviewIcon] = useState("");
   const [filteredSocialMedias, setFilteredSocialMedias] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [errors, setErrors] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -34,48 +35,126 @@ const MediaSosial = () => {
     });
   }, []);
 
+  // Input Validation: Start
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formData.icon && modalType === "add_sosial_media") {
+      newErrors.icon = "Ikon media sosial wajib diunggah";
+    }
+    if (!formData.nama.trim()) {
+      newErrors.nama = "Nama media sosial wajib diisi";
+    }
+    if (!formData.url.trim()) {
+      newErrors.url = "URL media sosial wajib diisi";
+    } else if (!isValidUrl(formData.url)) {
+      newErrors.url =
+        "URL tidak valid. Harap masukkan URL yang benar (contoh: https://www.example.com)";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validation: End
+
   // CRUD: Start
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Validasi input setiap kali ada perubahan
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `${
+          name.charAt(0).toUpperCase() + name.slice(1)
+        } media sosial wajib diisi`,
+      }));
+    } else if (name === "url" && !isValidUrl(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]:
+          "URL tidak valid. Harap masukkan URL yang benar (contoh: https://www.example.com)",
+      }));
+    } else {
+      clearError(name);
+    }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, icon: file });
-    setPreviewIcon(URL.createObjectURL(file));
+
+    if (file) {
+      const validTypes = [
+        "image/svg+xml",
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+      ];
+      if (validTypes.includes(file.type)) {
+        setFormData({ ...formData, icon: file });
+        setPreviewIcon(URL.createObjectURL(file));
+        clearError("icon");
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          icon: "Ikon harus berupa SVG, PNG, JPG, atau JPEG",
+        }));
+        // Clear the file input
+        e.target.value = null;
+      }
+    }
   };
 
   const handleAddSocialMedia = () => {
-    const form = new FormData();
-    form.append("nama", formData.nama);
-    form.append("icon", formData.icon);
-    form.append("url", formData.url);
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("nama", formData.nama);
+      form.append("icon", formData.icon);
+      form.append("url", formData.url);
 
-    addSocialMedia(form, (response) => {
-      setSocialMedias([...socialMedias, response]);
-      closeModal();
-      resetForm();
-    });
+      addSocialMedia(form, (response) => {
+        setSocialMedias([...socialMedias, response]);
+        closeModal();
+        resetForm();
+      });
+    }
   };
 
   const handleUpdateSocialMedia = () => {
-    const form = new FormData();
-    form.append("nama", formData.nama);
-    if (formData.icon instanceof File) {
-      form.append("icon", formData.icon);
-    }
-    form.append("url", formData.url);
+    if (validateForm()) {
+      const form = new FormData();
+      form.append("nama", formData.nama);
+      if (formData.icon instanceof File) {
+        form.append("icon", formData.icon);
+      }
+      form.append("url", formData.url);
 
-    updateSocialMedia(selectedSocialMedia.id, form, (updatedData) => {
-      setSocialMedias((prevSocialMedias) =>
-        prevSocialMedias.map((item) =>
-          item.id === updatedData.id ? updatedData : item
-        )
-      );
-      closeModal();
-      resetForm();
-    });
+      updateSocialMedia(selectedSocialMedia.id, form, (updatedData) => {
+        setSocialMedias((prevSocialMedias) =>
+          prevSocialMedias.map((item) =>
+            item.id === updatedData.id ? updatedData : item
+          )
+        );
+        closeModal();
+        resetForm();
+      });
+    }
   };
 
   const handleDeleteSocialMedia = () => {
@@ -137,6 +216,7 @@ const MediaSosial = () => {
     setModalType("");
     setIsModalOpen(false);
     resetForm();
+    setErrors({});
   };
 
   const resetForm = () => {
@@ -213,56 +293,68 @@ const MediaSosial = () => {
                     onClose={closeModal}
                   />
                   <Modal.Body>
-                    <Label htmlFor={"icon"} value={"Icon"} />
-                    <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
-                      {previewIcon && (
-                        <img
-                          src={previewIcon}
-                          alt="Preview"
-                          className="w-28 h-28 mb-4 object-cover rounded-full border-2 border-gray-300"
-                        />
-                      )}
-
-                      <label
-                        htmlFor="icon"
-                        className={`flex flex-col items-center justify-center w-full cursor-pointer ${
-                          !previewIcon && "h-32"
+                    <Label htmlFor={"icon"} value={"Ikon"} />
+                    <div className="mb-4">
+                      <div
+                        className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                          errors.icon ? "border-red-500" : "border-gray-300"
                         }`}
                       >
-                        <div className="flex flex-col items-center justify-center">
-                          <div className="flex items-center gap-2 mb-2">
-                            <svg
-                              className="w-8 h-8 text-gray-500 dark:text-gray-400"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 20 16"
-                            >
-                              <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                              />
-                            </svg>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              <span className="font-semibold">
-                                Unggah gambar di sini
-                              </span>
+                        {previewIcon && (
+                          <img
+                            src={previewIcon}
+                            alt="Preview"
+                            className="w-28 h-28 mb-4 object-cover rounded-full border-2 border-gray-300"
+                          />
+                        )}
+
+                        <label
+                          htmlFor="icon"
+                          className={`flex flex-col items-center justify-center w-full cursor-pointer ${
+                            !previewIcon && "h-32"
+                          }`}
+                        >
+                          <div className="flex flex-col items-center justify-center">
+                            <div className="flex items-center gap-2 mb-2">
+                              <svg
+                                className="w-8 h-8 text-gray-500 dark:text-gray-400"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 16"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                />
+                              </svg>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Unggah ikon di sini
+                                </span>
+                              </p>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              SVG, PNG, JPG atau JPEG
                             </p>
                           </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (MAX. 800x400px)
-                          </p>
-                        </div>
-                        <input
-                          id="icon"
-                          type="file"
-                          className="hidden"
-                          onChange={handleFileChange}
-                        />
-                      </label>
+                          <input
+                            id="icon"
+                            type="file"
+                            className="hidden"
+                            onChange={handleFileChange}
+                            accept=".svg,.png,.jpg,.jpeg"
+                          />
+                        </label>
+                      </div>
+                      {errors.icon && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.icon}
+                        </p>
+                      )}
                     </div>
 
                     <Label htmlFor={"media_sosial"} value={"Media Sosial"} />
@@ -271,19 +363,23 @@ const MediaSosial = () => {
                       name={"nama"}
                       placeholder={"Masukkan nama media sosial.."}
                       variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
                       value={formData.nama}
                       handleChange={handleInputChange}
+                      isError={!!errors.nama}
+                      errorMessage={errors.nama}
+                      clearError={clearError}
                     />
-                    <Label htmlFor={"link"} value={"Link"} />
+                    <Label htmlFor={"url"} value={"URL"} />
                     <Input
                       type={"text"}
                       name={"url"}
-                      placeholder={"Masukkan URL link.."}
+                      placeholder={"Masukkan URL sosial media.."}
                       variant={"primary-outline"}
-                      className={"mt-1 mb-4"}
                       value={formData.url}
                       handleChange={handleInputChange}
+                      isError={!!errors.url}
+                      errorMessage={errors.url}
+                      clearError={clearError}
                     />
                   </Modal.Body>
                   <Modal.Footer
