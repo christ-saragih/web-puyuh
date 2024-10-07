@@ -16,6 +16,10 @@ const InvestorProfil = () => {
     const [confirmPassword, setConfirmPassword] = useState(""); // State untuk konfirmasi password
     const [passwordError, setPasswordError] = useState(""); 
     const [confirmPasswordError, setConfirmPasswordError] = useState(""); // State untuk error konfirmasi password
+    const [showPhotoSaveMessage, setShowPhotoSaveMessage] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPasswordChangeMessage, setShowPasswordChangeMessage] = useState(false);
+    const [isPasswordChanging, setIsPasswordChanging] = useState(false);
     const navigate = useNavigate();
 
     // Fungsi untuk memanggil API dan mengambil data investor
@@ -44,6 +48,7 @@ const InvestorProfil = () => {
     const handleSavePhoto = async () => {
         if (!selectedPhoto) return;
 
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("foto_profil", selectedPhoto);
 
@@ -54,23 +59,30 @@ const InvestorProfil = () => {
                 },
             });
 
-            // Update data investor untuk langsung menampilkan foto baru tanpa refresh
             setInvestor((prevInvestor) => ({
                 ...prevInvestor,
                 investorBiodata: {
                     ...prevInvestor.investorBiodata,
-                    foto_profil: response.data.foto_profil, // Set foto profil baru
+                    foto_profil: response.data.foto_profil,
                 },
             }));
 
-            // Reset selectedPhoto setelah berhasil upload
             setSelectedPhoto(null);
-
-            // Paksa re-render gambar baru dengan mengubah photoKey
             setPhotoKey(Date.now());
+
+            // Show the success message
+            setShowPhotoSaveMessage(true);
+
+            // Refresh the page after a short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500); // 1.5 seconds delay before refresh
 
         } catch (error) {
             console.error("Error updating profile photo:", error);
+            setShowPhotoSaveMessage(false);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -119,15 +131,24 @@ const InvestorProfil = () => {
     };
 
     const handleSavePassword = async () => {
-        if (passwordError || confirmPasswordError) return; // Jangan submit jika ada error
+        if (passwordError || confirmPasswordError) return;
     
+        setIsPasswordChanging(true);
         try {
             await apiInvestor.post(`http://localhost:3000/api/investor/ubah-password`, {
-                newPassword: password, // Mengirim password baru dengan field newPassword
+                newPassword: password,
             });
-            closeModal(); // Tutup modal setelah berhasil update password
+            closeModal();
+            setShowPasswordChangeMessage(true);
+            
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                setShowPasswordChangeMessage(false);
+            }, 3000);
         } catch (error) {
             console.error("Error updating password:", error);
+        } finally {
+            setIsPasswordChanging(false);
         }
     };
 
@@ -139,6 +160,19 @@ const InvestorProfil = () => {
                         isHovered ? "md:ml-60" : "md:ml-28"
                     }`}
                 >
+                    {/* Add the pop-up message */}
+                    {showPhotoSaveMessage && (
+                        <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+                            Foto berhasil disimpan!
+                        </div>
+                    )}
+
+                     {/* Add the password change message */}
+                     {showPasswordChangeMessage && (
+                        <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+                            Password berhasil diubah!
+                        </div>
+                    )}
                     <div className="flex flex-col">
                         <h1 className="font-quicksand text-2xl font-bold md:mt-1 mt-8 mb-5">
                             Profil Investor
@@ -169,16 +203,23 @@ const InvestorProfil = () => {
                                         className="hidden"
                                         onChange={handleChangePhoto}
                                     />
-                                    {selectedPhoto && (
+                                   {selectedPhoto && (
                                         <button
                                             onClick={handleSavePhoto}
                                             className="py-2 px-5 text-sm font-quicksand focus:outline-none bg-[#572618] text-white rounded-full hover:bg-blue-600"
+                                            disabled={isLoading}
                                         >
-                                            Simpan Foto
+                                            {isLoading ? 'Menyimpan...' : 'Simpan Foto'}
                                         </button>
                                     )}
                                 </div>
                             </div>
+                             {/* Add the pop-up message */}
+                                {showPhotoSaveMessage && (
+                                    <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+                                        Foto berhasil disimpan! Halaman akan direfresh...
+                                    </div>
+                                )}
                             <div className="flex flex-col items-center md:items-start ml-0 md:ml-10">
                                 <h2 className="font-quicksand text-xl text-sm md:text-l text-[#000] text-center md:text-left md:mb-10">
                                     {investor?.email}
@@ -239,9 +280,9 @@ const InvestorProfil = () => {
                             <button
                                 className="py-2 px-4 text-sm font-quicksand bg-[#572618] text-white rounded-full hover:bg-blue-600"
                                 onClick={handleSavePassword}
-                                disabled={!!passwordError || !!confirmPasswordError}
+                                disabled={!!passwordError || !!confirmPasswordError || isPasswordChanging}
                             >
-                                Simpan
+                                {isPasswordChanging ? 'Menyimpan...' : 'Simpan'}
                             </button>
                         </div>
                     </div>
