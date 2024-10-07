@@ -184,13 +184,6 @@ const InvestorDashboard = () => {
 
         {/* Header untuk Mobile */}
         <div className="bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-between p-4">
-          <form className="flex items-center w-[70%]">
-            <input
-              type="search"
-              className="block w-full p-2 pl-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
-              placeholder="Cari"
-            />
-          </form>
           <div className="flex items-center space-x-4">
             <MdNotifications className="ml-4 w-8 h-8 text-gray-500" onClick={() => setShowNotificationModal(true)} />
             {investor?.investorBiodata?.foto_profil ? (
@@ -343,41 +336,14 @@ const InvestorDashboard = () => {
 
               {/* Calendar and Notification Section */}
               <div className="md:col-span-1 relative">
-                <div className="hidden md:flex items-center justify-between  mb-4">
-                  <form className="w-full md:w-[63%]">
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                        <svg
-                          className="w-4 h-4 text-gray-500"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                          />
-                        </svg>
-                      </div>
-                      <input
-                        type="search"
-                        className="block w-full p-2 pl-10 text-sm text-gray-900 bg-[#F5F5F7] rounded-xl"
-                        placeholder="Cari"
-                      />
-                    </div>
-                  </form>
-
+                <div className="hidden md:flex items-center justify-end  mb-4">
                   <div className="relative">
                     <MdNotifications 
-                      className="w-8 h-8 text-gray-500 cursor-pointer" 
+                      className="w-8 h-8 text-gray-500 cursor-pointer mr-8" 
                       onClick={handleNotificationClick} 
                     />
                     {unreadNotifications > 0 && (
-                      <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                      <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full mr-8">
                         {unreadNotifications}
                       </span>
                     )}
@@ -403,7 +369,7 @@ const InvestorDashboard = () => {
                     placement="bottom-start"
                     renderTrigger={() => (
                       <span className="cursor-pointer">
-                        <LuChevronDown className="w-5 h-5 -ml-4" />
+                        <LuChevronDown className="w-5 h-5 ml-1" />
                       </span>
                     )}
                   >
