@@ -36,9 +36,22 @@ exports.create = async (req, res) => {
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
         } = req.body;
+
         const adminId = req.user.id;
 
         const gambar = req.file ? req.file.buffer : null;
+
+        const existingInvestasi = await Investasi.findOne({
+            where: { judul },
+        });
+
+        if (existingInvestasi) {
+            return res.status(400).json({
+                message: "Judul investasi sudah ada!",
+            });
+        }
+
+        let gambar_name = null;
 
         if (
             gambar &&
@@ -406,6 +419,19 @@ exports.update = async (req, res) => {
         const adminId = req.user.id;
         if (!investasi) {
             return res.status(404).json({ message: "Data  tidak ada!" });
+        }
+
+        const existingInvestasi = await Investasi.findOne({
+            where: {
+                judul,
+                id: { [Op.ne]: req.params.id },
+            },
+        });
+
+        if (existingInvestasi) {
+            return res.status(400).json({
+                message: "Judul investasi sudah ada!",
+            });
         }
 
         let gambar_name = investasi.gambar;
