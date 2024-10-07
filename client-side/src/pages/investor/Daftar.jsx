@@ -140,6 +140,25 @@ const PasswordValidation = ({ password, confirmPassword }) => {
   );
 };
 
+const ErrorModal = ({ isOpen, onClose, message }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
+      <div className="bg-white p-5 rounded-lg shadow-xl max-w-sm">
+        <h3 className="text-lg font-bold mb-2 text-red-600">Error</h3>
+        <p className="mb-4">{message}</p>
+        <button
+          onClick={onClose}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Daftar = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -148,6 +167,9 @@ const Daftar = () => {
   const [msg, setMsg] = useState("");
   const [registerType, setRegisterType] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegisterType = (type) => {
     setRegisterType(type);
@@ -157,24 +179,28 @@ const Daftar = () => {
     e.preventDefault();
 
     if (!registerType) {
-      setMsg("Pilih kategori investor.");
+      setErrorMessage("Pilih kategori investor.");
+      setShowErrorModal(true);
       return;
     }
 
     if (password !== confirmPassword) {
-      setMsg("Passwords do not match.");
+      setErrorMessage("Passwords do not match.");
+      setShowErrorModal(true);
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const payload = {
-        username: username, // Pastikan field name yang dikirim sesuai dengan yang diharapkan API
+        username: username,
         email: email,
         password: password,
         kategori_investor: registerType,
       };
 
-      console.log("Payload yang dikirim:", payload); // Debugging
+      console.log("Payload yang dikirim:", payload);
 
       await axios.post(
         "http://localhost:3000/api/auth/investor/regis",
@@ -182,11 +208,22 @@ const Daftar = () => {
       );
       navigate("/verifikasi");
     } catch (error) {
-      if (error.response) {
-        console.log("Error Response:", error.response.data); // Debugging
-        setMsg(error.response.data.msg);
+      if (error.response && error.response.data) {
+        console.log("Error Response:", error.response.data);
+        setErrorMessage(error.response.data.message || "Terjadi kesalahan. Silakan coba lagi.");
+        setShowErrorModal(true);
+      } else {
+        setErrorMessage("Terjadi kesalahan jaringan. Silakan coba lagi nanti.");
+        setShowErrorModal(true);
       }
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const closeErrorModal = () => {
+    setShowErrorModal(false);
+    setErrorMessage("");
   };
 
   return (
@@ -313,10 +350,39 @@ const Daftar = () => {
             </div>
             <div className="mb-6">
               <button
-                className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                className={`bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full flex justify-center items-center ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 type="submit"
+                disabled={isLoading}
               >
-                Daftar
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Mengirim...
+                  </>
+                ) : (
+                  "Daftar"
+                )}
               </button>
             </div>
             {msg && <p className="text-red-500 text-xs italic">{msg}</p>}
@@ -328,6 +394,11 @@ const Daftar = () => {
           </div>
         </div>
       </div>
+      <ErrorModal
+        isOpen={showErrorModal}
+        onClose={closeErrorModal}
+        message={errorMessage}
+      />
     </GuestLayout>
   );
 };

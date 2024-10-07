@@ -329,6 +329,10 @@ exports.resetPassword = async (req, res) => {
         investor.resetPasswordTokenExpiry = null;
         await investor.save();
 
+        const judul = "Password Berhasil Diubah";
+
+        await sendNotification(investor.id, judul, investor.updatedAt);
+
         res.status(200).json({ message: "Password successfully updated!" });
     } catch (error) {
         console.error("Error resetting password:", error);
