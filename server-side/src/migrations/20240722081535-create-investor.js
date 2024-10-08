@@ -36,6 +36,10 @@ module.exports = {
                 type: Sequelize.BOOLEAN,
                 defaultValue: false,
             },
+            isVerifiedProfile: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
+            },
             resetPasswordToken: {
                 type: Sequelize.TEXT,
                 allowNull: true,

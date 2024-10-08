@@ -20,5 +20,15 @@ router.post(
     authenticateToken("admin"),
     adminController.ubahPassword
 );
+router.post(
+    "/rejectVerifikasiProfile/:id",
+    authenticateToken("admin"),
+    adminController.rejectVerifiedProfile
+);
+router.post(
+    "/VerifikasiProfile/:id",
+    authenticateToken("admin"),
+    adminController.verifiedProfile
+);
 
 module.exports = router;

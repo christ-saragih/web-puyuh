@@ -89,6 +89,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            isVerifiedProfile: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
             refresh_token: {
                 type: DataTypes.TEXT,
             },

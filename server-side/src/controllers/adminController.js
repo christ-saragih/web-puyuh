@@ -9,6 +9,8 @@ const {
     InvestorAlamat,
 } = require("../models");
 const bcrypt = require("bcrypt");
+const { sendNotification } = require("../services/notifikasiService");
+const { exit } = require("process");
 
 // Read All
 exports.findAdminByAuth = async (req, res) => {
@@ -126,5 +128,76 @@ exports.ubahPassword = async (req, res) => {
                 error: error.message,
             });
         }
+    }
+};
+
+// Reject Verifikasi profile
+exports.rejectVerifiedProfile = async (req, res) => {
+    try {
+        const { pesan } = req.body;
+
+        const investor = await Investor.findByPk(req.params.id);
+
+        await sendNotification(investor.id, pesan, new Date());
+
+        res.status(200).json({
+            message: "Verifikasi Akun Ditolak!",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Verifikasi profile
+exports.verifiedProfile = async (req, res) => {
+    try {
+        const investor = await Investor.findByPk(req.params.id);
+
+        const investorBiodata = await InvestorBiodata.findOne({
+            where: { investorId: investor.id },
+        });
+        const investorAlamat = await InvestorAlamat.findOne({
+            where: { investorId: investor.id },
+        });
+        const investorDataPendukung = await InvestorDataPendukung.findOne({
+            where: { investorId: investor.id },
+        });
+        const investorIdentitas = await InvestorIdentitas.findOne({
+            where: { investorId: investor.id },
+        });
+
+        if (
+            !investorBiodata ||
+            !investorAlamat ||
+            !investorDataPendukung ||
+            !investorIdentitas
+        ) {
+            return res.status(400).json({
+                message: "Data Investor Belum Lengkap!",
+            });
+        }
+        // exit();
+
+        await investor.update({
+            isVerifiedProfile: true,
+        });
+
+        await sendNotification(
+            investor.id,
+            "Akun Anda Telah Diverifikasi!",
+            new Date()
+        );
+
+        res.status(200).json({
+            message: "Akun Telah diverifikasi!",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
     }
 };
