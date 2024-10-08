@@ -9,6 +9,7 @@ const {
     InvestorAlamat,
 } = require("../models");
 const bcrypt = require("bcrypt");
+const { sendNotification } = require("../services/notifikasiService");
 
 // Read All
 exports.findAdminByAuth = async (req, res) => {
@@ -126,5 +127,51 @@ exports.ubahPassword = async (req, res) => {
                 error: error.message,
             });
         }
+    }
+};
+
+// Reject Verifikasi profile
+exports.rejectVerifiedProfile = async (req, res) => {
+    try {
+        const { pesan } = req.body;
+
+        const investor = await Investor.findByPk(req.params.id);
+
+        await sendNotification(investor.id, pesan, new Date());
+
+        res.status(200).json({
+            message: "Verifikasi Akun Ditolak!",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Verifikasi profile
+exports.verifiedProfile = async (req, res) => {
+    try {
+        const investor = await Investor.findByPk(req.params.id);
+
+        await investor.update({
+            isVerifiedProfile: true,
+        });
+
+        await sendNotification(
+            investor.id,
+            "Akun Anda Telah Diverifikasi!",
+            new Date()
+        );
+
+        res.status(200).json({
+            message: "Akun Telah diverifikasi!",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
     }
 };
