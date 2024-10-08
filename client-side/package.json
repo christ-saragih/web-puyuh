@@ -17,6 +17,7 @@
     "chart.js": "^4.4.4",
     "flowbite": "^2.4.1",
     "flowbite-react": "^0.10.1",
+    "formik": "^2.4.6",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "prop-types": "^15.8.1",
@@ -29,7 +30,8 @@
     "react-router-dom": "^6.24.1",
     "react-select": "^5.8.0",
     "rsuite": "^5.68.0",
-    "swiper": "^11.1.5"
+    "swiper": "^11.1.5",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
