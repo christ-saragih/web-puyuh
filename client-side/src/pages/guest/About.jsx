@@ -307,7 +307,6 @@ const About = () => {
                     placeholder={"Masukkan pesan.."}
                     rows={3}
                     variant={"primary-outline"}
-                    className={"-mb-1"}
                     handleChange={handleInputChange}
                     isError={!!formik.errors.pesan}
                   />
