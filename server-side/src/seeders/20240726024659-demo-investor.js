@@ -28,6 +28,7 @@ module.exports = {
                     "organisasi",
                 ]),
                 isVerified: faker.datatype.boolean(1),
+                isVerifiedProfile: faker.datatype.boolean(0),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
