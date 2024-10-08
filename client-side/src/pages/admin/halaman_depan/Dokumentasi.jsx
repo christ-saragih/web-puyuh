@@ -1,5 +1,6 @@
 import Label from "../../../components/common/Label.jsx";
 import Input from "../../../components/common/Input.jsx";
+import InputError from "../../../components/common/InputError.jsx";
 import Modal from "../../../components/common/Modal.jsx";
 import DocumentationList from "../../../components/admin/DocumentationList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
@@ -269,7 +270,7 @@ const Dokumentasi = () => {
                     <Label htmlFor={"image"} value={"Gambar"} />
                     <div className="mb-4">
                       <div
-                        className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                        className={`flex flex-col items-center justify-center w-full py-4 h-full border-2 rounded-2xl bg-gray-50 shadow ${
                           errors.image ? "border-red-500" : "border-gray-300"
                         }`}
                       >
@@ -323,11 +324,7 @@ const Dokumentasi = () => {
                           />
                         </label>
                       </div>
-                      {errors.image && (
-                        <p className="mt-1 text-sm text-red-500">
-                          {errors.image}
-                        </p>
-                      )}
+                      <InputError message={errors.image} />
                     </div>
 
                     <Label htmlFor={"nama"} value={"Nama"} />
@@ -339,8 +336,8 @@ const Dokumentasi = () => {
                       value={formData.nama}
                       handleChange={handleInputChange}
                       isError={!!errors.nama}
-                      errorMessage={errors.nama}
                     />
+                    <InputError message={errors.nama} />
                   </Modal.Body>
                   <Modal.Footer
                     action={

@@ -12,28 +12,22 @@ const Textarea = (props) => {
     handleChange,
     isDisabled,
     isError,
-    errorMessage,
   } = props;
 
   return (
-    <div className="mb-4">
-      <textarea
-        id={name}
-        name={name}
-        value={value}
-        placeholder={placeholder}
-        required={required}
-        rows={rows}
-        className={`w-full px-4 py-2 mt-2 text-sm border-2 rounded-2xl shadow ${
-          isError ? "textarea-error" : `textarea-${variant}`
-        } ${className}`}
-        onChange={(e) => handleChange(e)}
-        disabled={isDisabled}
-      />
-      {isError && errorMessage && (
-        <p className="-mt-1 text-sm text-red-500">{errorMessage}</p>
-      )}
-    </div>
+    <textarea
+      id={name}
+      name={name}
+      value={value}
+      placeholder={placeholder}
+      required={required}
+      rows={rows}
+      className={`w-full px-4 py-2 text-sm border-2 rounded-2xl shadow -mb-[6px] ${
+        isError ? "textarea-error" : `textarea-${variant}`
+      } ${className}`}
+      onChange={(e) => handleChange(e)}
+      disabled={isDisabled}
+    />
   );
 };
 

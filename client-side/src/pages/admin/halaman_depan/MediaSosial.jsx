@@ -1,5 +1,6 @@
-import Input from "../../../components/common/Input.jsx";
 import Label from "../../../components/common/Label.jsx";
+import Input from "../../../components/common/Input.jsx";
+import InputError from "../../../components/common/InputError.jsx";
 import Modal from "../../../components/common/Modal";
 import SocialMediaList from "../../../components/admin/SocialMediaList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
@@ -294,9 +295,9 @@ const MediaSosial = () => {
                   />
                   <Modal.Body>
                     <Label htmlFor={"icon"} value={"Ikon"} />
-                    <div className="mb-4">
+                    <div>
                       <div
-                        className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                        className={`flex flex-col items-center justify-center w-full py-4 h-full border-2 rounded-2xl bg-gray-50 shadow ${
                           errors.icon ? "border-red-500" : "border-gray-300"
                         }`}
                       >
@@ -350,11 +351,7 @@ const MediaSosial = () => {
                           />
                         </label>
                       </div>
-                      {errors.icon && (
-                        <p className="mt-1 text-sm text-red-500">
-                          {errors.icon}
-                        </p>
-                      )}
+                      <InputError message={errors.icon} />
                     </div>
 
                     <Label htmlFor={"media_sosial"} value={"Media Sosial"} />
@@ -366,9 +363,9 @@ const MediaSosial = () => {
                       value={formData.nama}
                       handleChange={handleInputChange}
                       isError={!!errors.nama}
-                      errorMessage={errors.nama}
-                      clearError={clearError}
                     />
+                    <InputError message={errors.nama} />
+
                     <Label htmlFor={"url"} value={"URL"} />
                     <Input
                       type={"text"}
@@ -378,9 +375,8 @@ const MediaSosial = () => {
                       value={formData.url}
                       handleChange={handleInputChange}
                       isError={!!errors.url}
-                      errorMessage={errors.url}
-                      clearError={clearError}
                     />
+                    <InputError message={errors.url} />
                   </Modal.Body>
                   <Modal.Footer
                     action={
