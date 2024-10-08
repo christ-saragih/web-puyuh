@@ -76,7 +76,7 @@ const Header = (props) => {
 
 const Body = (props) => {
   const { children, className } = props;
-  return <div className={`p-4 md:px-5 md:pb-2 ${className}`}>{children}</div>;
+  return <div className={`px-4 pb-4 md:px-5 md:pb-5 ${className}`}>{children}</div>;
 };
 
 const Footer = (props) => {
