@@ -25,7 +25,7 @@ exports.transaction = async (req, res) => {
 
         const investor = await Investor.findOne({
             where: { id: req.user.id },
-            attributes: ["id", "email"],
+            attributes: ["id", "email", "isVerifiedProfile"],
             include: {
                 model: InvestorBiodata,
                 as: "investorBiodata",
@@ -40,7 +40,15 @@ exports.transaction = async (req, res) => {
         // exit();
 
         const investasi = await Investasi.findByPk(req.params.id);
-        console.log(investasi.id);
+        // console.log(investor.isVerifiedProfile == true);
+
+        if (investor.isVerifiedProfile != true) {
+            return res.status(403).json({
+                message: "Akun anda belum terverifikasi!",
+            });
+        }
+
+        // exit();
 
         const transaksi = await Transaksi.create({
             investorId: req.user.id,
