@@ -4,6 +4,8 @@ import InputError from "../../../components/common/InputError.jsx";
 import Textarea from "../../../components/common/Textarea.jsx";
 import Button from "../../../components/common/Button.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { isValidEmail } from "../../../utils/validateEmail.js";
+import { isValidIndonesianPhoneNumber } from "../../../utils/validatePhoneNumber.js";
 import {
   getContactFrontpage,
   saveContactFrontpage,
@@ -46,25 +48,18 @@ const Kontak = () => {
     }
     if (!formData.email.trim()) {
       newErrors.email = "Email wajib diisi";
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email =
+        "Email tidak valid. Harap masukkan email yang benar (contoh: admin@example.test)";
     }
     if (!formData.nomor_telepon.trim()) {
       newErrors.nomor_telepon = "Nomor telepon wajib diisi";
+    } else if (!isValidIndonesianPhoneNumber(formData.nomor_telepon)) {
+      newErrors.nomor_telepon =
+        "Nomor telepon tidak valid. Harap masukkan nomor telepon yang benar (contoh: 08123456789)";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const isValidIndonesianPhoneNumber = (phoneNumber) => {
-    // Regex untuk nomor telepon Indonesia
-    // Menerima format: +628xxxxxxxxxx, 08xxxxxxxxxx, atau 628xxxxxxxxxx
-    // Minimal 10 digit, maksimal 14 digit (termasuk kode negara)
-    const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{8,11}$/;
-    return phoneRegex.test(phoneNumber);
   };
 
   const getErrorMessage = (fieldName) => {
