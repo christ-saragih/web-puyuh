@@ -29,7 +29,14 @@ const BatchItemInvestor = ({
   pembukaan,
   penutupan,
   status,
+  onClick
 }) => {
+
+  const handleClick = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    onClick();
+  };
+
   const daysRemaining =
     status !== "selesai"
       ? `${calculateDaysRemaining(pembukaan, penutupan)} hari lagi`
@@ -59,7 +66,14 @@ const BatchItemInvestor = ({
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden h-[19rem] flex flex-col">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden h-[19rem] flex flex-col" onClick={handleClick}
+    role="button"
+    tabIndex={0}
+    onKeyPress={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        onClick();
+      }
+    }}>
       {/* Tetapkan tinggi tetap dan gunakan flexbox */}
       <BatchItemImage gambar={gambar} className="h-[5rem] w-full object-cover" />
       <BatchItemBody className="flex flex-col justify-between p-4">

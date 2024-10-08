@@ -23,6 +23,8 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthProvider";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
+import ProfileCompletenessIndicator from "../../components/investor/ProfileCompletenessIndicator";
+
 
 const InvestorDashboard = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -42,6 +44,7 @@ const InvestorDashboard = () => {
     urgent: [],
     upcoming: []
   });
+  const [profileCompleteness, setProfileCompleteness] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,6 +88,9 @@ const InvestorDashboard = () => {
         setMarkedDatesInfo(investmentInfo);
 
         checkUpcomingInvestments(investasiResponse.data.data);
+
+        const completeness = calculateProfileCompleteness(investorResponse.data.data);
+        setProfileCompleteness(completeness);
       } catch (error) {
         console.error("Error fetching data:", error);
         if (error.response?.status === 401) {
@@ -104,6 +110,21 @@ const InvestorDashboard = () => {
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
   }, [navigate]);
+
+  const calculateProfileCompleteness = (investorData) => {
+    let completed = 0;
+    const totalFields = 4; // biodata, alamat, identitas, pendukung
+
+    if (investorData.investorBiodata) completed++;
+    if (investorData.investorAlamat) completed++;
+    if (investorData.investorIdentitas) completed++;
+    if (investorData.investorDataPendukung) completed++;
+
+    console.log(investorData.investorIdentitas);
+    
+
+    return Math.round((completed / totalFields) * 100);
+  };
 
   const checkUpcomingInvestments = (investments) => {
     const now = new Date();
@@ -175,6 +196,11 @@ const InvestorDashboard = () => {
     return <p>Loading...</p>;
   }
 
+  const handleBatchClick = (slug) => {
+    console.log(`Navigating to batch ${slug}`);
+    navigate(`/investasi/${slug}`);
+  };
+
 
   return (
     <div className="bg-white w-dvw min-h-screen overflow-y-auto md:py-5 py-14 pe-6 relative">
@@ -184,6 +210,7 @@ const InvestorDashboard = () => {
 
         {/* Header untuk Mobile */}
         <div className="bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-between p-4">
+        <ProfileCompletenessIndicator completeness={profileCompleteness} />
           <div className="flex items-center space-x-4">
             <MdNotifications className="ml-4 w-8 h-8 text-gray-500" onClick={() => setShowNotificationModal(true)} />
             {investor?.investorBiodata?.foto_profil ? (
@@ -327,7 +354,10 @@ const InvestorDashboard = () => {
                     </h1>
                     <div className="relative flex items-center">
                       <div className="flex overflow-x-auto gap-4 md:gap-10 w-full scrollbar-hide">
-                        <BatchListInvestor batchs={batchs} />
+                      <BatchListInvestor batchs={batchs} onBatchClick={(slug) => {
+                        console.log(`BatchListInvestor onClick called with slug: ${slug}`);
+                        handleBatchClick(slug);
+                      }}  />
                       </div>
                     </div>
                   </div>
@@ -335,8 +365,9 @@ const InvestorDashboard = () => {
               </div>
 
               {/* Calendar and Notification Section */}
-              <div className="md:col-span-1 relative">
-                <div className="hidden md:flex items-center justify-end  mb-4">
+              <div className="md:col-span-1 ">
+                <div className="hidden md:flex items-center justify-end mb-1">
+                  <ProfileCompletenessIndicator completeness={profileCompleteness}/>
                   <div className="relative">
                     <MdNotifications 
                       className="w-8 h-8 text-gray-500 cursor-pointer mr-8" 
