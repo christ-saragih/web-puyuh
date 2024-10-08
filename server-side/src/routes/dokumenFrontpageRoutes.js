@@ -23,6 +23,7 @@ router.post(
     validateUploadFile({
         fieldName: "file",
         allowedFileTypes: /pdf/,
+        maxFileSize: 1024 * 1024 * 10,
     }),
     validate(createSchema),
     dokumenFrontpageController.create
@@ -34,6 +35,7 @@ router.put(
     validateUploadFile({
         fieldName: "file",
         allowedFileTypes: /pdf/,
+        maxFileSize: 1024 * 1024 * 10,
         required: false,
     }),
     validate(updateSchema),
