@@ -257,17 +257,17 @@ const InvestorDashboard = () => {
         {/* Konten utama */}
         <div className="md:pt-0">
           <div
-            className={`px-4 pb-5 transition-all duration-300 ease-in-out ${
+            className={`px-4 py-1 transition-all duration-300 ease-in-out ${
               isHovered ? "md:ml-60" : "md:ml-28"
             }`}
           >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              <div className="md:col-span-2 space-y-7">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 h-full">
+              <div className="md:col-span-2 space-y-12 flex flex-col">
                 {/* Welcome Section */}
                 {/* Flash Message */}
                 {/* Urgent Flash Messages */}
                   {flashMessages.urgent.length > 0 && (
-                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 md:ml-4" role="alert">
+                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-1 mb-4 md:ml-3 md:mb-1 md:max-w-[1000px] rounded-lg" role="alert">
                       <p className="font-bold">Pengingat</p>
                       {flashMessages.urgent.map((message, index) => (
                         <p key={index}>{message}</p>
@@ -277,14 +277,14 @@ const InvestorDashboard = () => {
 
                   {/* Upcoming Flash Messages */}
                   {flashMessages.upcoming.length > 0 && (
-                    <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 md:ml-4" role="alert">
+                    <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 md:ml-3 md:mb-1 md:max-w-[1000px] rounded-lg" role="alert">
                       <p className="font-bold">Pengingat</p>
                       {flashMessages.upcoming.map((message, index) => (
                         <p key={index}>{message}</p>
                       ))}
                     </div>
                   )}
-                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center px-4 py-3 md:px-10">
+                <div className="w-[100%] ml-3 md:w-full rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center px-4 py-3 md:px-10 md:mb-3">
                   <div className="w-full md:w-[70%] mb-4 md:mb-0">
                     <h1 className="text-2xl md:text-[2.5rem] font-bold mb-2 md:mb-3 text-[#000] leading-none">
                       Halo, {investor?.username}
@@ -302,7 +302,7 @@ const InvestorDashboard = () => {
                 </div>
 
                 {/* Total Investasi Section */}
-                <div className="w-[100%] ml-3 md:w-full h-[25%] rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8">
+                <div className="w-[100%] ml-3 md:w-full h-[25%] rounded-xl bg-[#F5F5F7] flex flex-col md:flex-row items-center p-4 md:p-8 md:py-7">
                   <div className="flex flex-col w-full">
                     <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
                       Total Investasi
@@ -323,41 +323,56 @@ const InvestorDashboard = () => {
                 {/* Grid for Bagi Hasil and Investasi yang Sedang Berlangsung */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-[150%] ml-3 mt-7">
                   {/* Bagi Hasil Section */}
-                  <div className="w-full rounded-xl bg-[#F5F5F7] flex flex-col p-4 md:p-8">
+                  <div className="w-full rounded-xl bg-[#F5F5F7] flex flex-col p-4 md:p-8 min-h-[400px] max-h-[600px]">
                     <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
                       Bagi Hasil
                     </h1>
-                    <div className="relative">
-                      <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
-                        {investasiByBatch.map((inv, index) => {
-                          const batchInfo = investasi.find(i => i.id === inv.batch_id);
-                          const batchTitle = getBatchTitle(inv.batch_id);
-                          return (
-                            <div key={index} className="flex-shrink-0 w-64">
-                              <CardBagiHasil
-                                batch={batchTitle}
-                                profit={formatRupiah(calculateProfit(inv.total_investasi, batchInfo?.bagi_hasil || 0))}
-                                percentage={`${batchInfo?.bagi_hasil || 0}%`}
-                                status={inv.status}
-                              />
-                            </div>
-                          );
-                        })}
+                    <div className="relative flex-grow flex flex-col justify-center">
+                      <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide h-full">
+                        {investasiByBatch.length > 0 ? (
+                          investasiByBatch.map((inv, index) => {
+                            const batchInfo = investasi.find(i => i.id === inv.batch_id);
+                            const batchTitle = getBatchTitle(inv.batch_id);
+                            return (
+                              <div key={index} className="flex-shrink-0 w-64">
+                                <CardBagiHasil
+                                  batch={batchTitle}
+                                  profit={formatRupiah(calculateProfit(inv.total_investasi, batchInfo?.bagi_hasil || 0))}
+                                  percentage={`${batchInfo?.bagi_hasil || 0}%`}
+                                  status={inv.status}
+                                />
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full">
+                            <p className="text-gray-500">Tidak ada data bagi hasil saat ini.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
 
                   {/* Investasi yang Sedang Berlangsung Section */}
-                  <div className="w-full rounded-xl bg-[#F5F5F7] p-4 md:p-8 relative">
+                  <div className="w-full rounded-xl bg-[#F5F5F7] flex flex-col p-4 md:p-8 min-h-[250px] max-h-[400px]">
                     <h1 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-[#000]">
                       Investasi yang Sedang Berlangsung
                     </h1>
-                    <div className="relative flex items-center">
+                    <div className="relative flex items-center h-full">
                       <div className="flex overflow-x-auto gap-4 md:gap-10 w-full scrollbar-hide">
-                      <BatchListInvestor batchs={batchs} onBatchClick={(slug) => {
-                        console.log(`BatchListInvestor onClick called with slug: ${slug}`);
-                        handleBatchClick(slug);
-                      }}  />
+                        {batchs.length > 0 ? (
+                          <BatchListInvestor 
+                            batchs={batchs} 
+                            onBatchClick={(slug) => {
+                              console.log(`BatchListInvestor onClick called with slug: ${slug}`);
+                              handleBatchClick(slug);
+                            }}  
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full">
+                            <p className="text-gray-500">Tidak ada investasi yang sedang berlangsung.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -365,8 +380,8 @@ const InvestorDashboard = () => {
               </div>
 
               {/* Calendar and Notification Section */}
-              <div className="md:col-span-1 ">
-                <div className="hidden md:flex items-center justify-end mb-1">
+              <div className="md:col-span-1">
+                <div className="hidden md:flex items-center justify-end mb-4">
                   <ProfileCompletenessIndicator completeness={profileCompleteness}/>
                   <div className="relative">
                     <MdNotifications 
@@ -420,7 +435,7 @@ const InvestorDashboard = () => {
                     </Dropdown.Item>
                   </Dropdown>
                 </div>
-                <div className="bg-[#F5F5F7] rounded-xl py-2 px-6 mb-7 shadow-md">
+                <div className="bg-[#F5F5F7] rounded-xl py-2 px-6 mb-7 shadow-md max-h-[600px] overflow-y-auto">
                    <CalendarInvestor 
                    markedDatesInfo={markedDatesInfo} 
                    />  
