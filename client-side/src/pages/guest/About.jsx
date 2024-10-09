@@ -1,6 +1,7 @@
 import DocumentIcon from "../../assets/images/icons/dokumen.svg";
-import Input from "../../components/common/Input";
 import Label from "../../components/common/Label";
+import Input from "../../components/common/Input";
+import Textarea from "../../components/common/Textarea";
 import Button from "../../components/common/Button";
 import JumbotronAbout from "../../components/guest/JumbotronAbout";
 import ImageSlider from "../../components/guest/ImageSlider";
@@ -22,6 +23,9 @@ import {
   PiPhoneCall,
   PiPhoneCallFill,
 } from "react-icons/pi";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import InputError from "../../components/common/InputError";
 
 const About = () => {
   const [abouts, setAbouts] = useState(null);
@@ -52,9 +56,54 @@ const About = () => {
     });
   }, []);
 
+  // Validasi schema menggunakan Yup
+  const validationSchema = Yup.object().shape({
+    nama_depan: Yup.string()
+      .min(2, "Nama depan harus terdiri dari minimal 2 karakter")
+      .required("Nama depan wajib diisi"),
+    nama_belakang: Yup.string().min(
+      2,
+      "Nama belakang harus terdiri dari minimal 2 karakter"
+    ),
+    email: Yup.string()
+      .email("Email tidak valid. Harap masukkan email yang benar (contoh: user@example.test)")
+      .required("Alamat email wajib diisi"),
+    pesan: Yup.string()
+      .min(10, "Pesan harus terdiri dari minimal 10 karakter")
+      .required("Pesan wajib diisi"),
+  });
+
+  const sendToWhatsApp = (values) => {
+    const whatsappNumber = "6282269075325";
+    const message = `Halo, saya ${values.nama_depan} ${values.nama_belakang}.\nEmail: ${values.email}.\n\nPesan: ${values.pesan}`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(url, "_blank");
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      nama_depan: "",
+      nama_belakang: "",
+      email: "",
+      pesan: "",
+    },
+    onSubmit: sendToWhatsApp,
+    validationSchema: validationSchema,
+  });
+
+  const handleInputChange = (event) => {
+    const { target } = event;
+    formik.setFieldValue(target.name, target.value);
+  };
+
   if (!abouts || sejarah.length === 0) {
     return <div>Data tentang kami tidak ditemukan!</div>;
   }
+
+  console.log(formik.errors);
 
   return (
     <GuestLayouts>
@@ -212,7 +261,7 @@ const About = () => {
                 </div>
               </div>
 
-              <div>
+              <form onSubmit={formik.handleSubmit}>
                 <div className="grid grid-cols-2 gap-8 pb-2">
                   <div>
                     <Label htmlFor={"nama_depan"} value={"Nama depan"} />
@@ -221,7 +270,10 @@ const About = () => {
                       name={"nama_depan"}
                       placeholder={"Masukkan nama depan.."}
                       variant={"primary-outline"}
+                      handleChange={handleInputChange}
+                      isError={!!formik.errors.nama_depan}
                     />
+                    <InputError message={formik.errors.nama_depan} />
                   </div>
                   <div>
                     <Label htmlFor={"nama_belakang"} value={"Nama belakang"} />
@@ -230,7 +282,10 @@ const About = () => {
                       name={"nama_belakang"}
                       placeholder={"Masukkan nama belakang.."}
                       variant={"primary-outline"}
+                      handleChange={handleInputChange}
+                      isError={!!formik.errors.nama_belakang}
                     />
+                    <InputError message={formik.errors.nama_belakang} />
                   </div>
                 </div>
                 <div className="pb-2">
@@ -240,22 +295,28 @@ const About = () => {
                     name={"email"}
                     placeholder={"Masukkan alamat email.."}
                     variant={"primary-outline"}
+                    handleChange={handleInputChange}
+                    isError={!!formik.errors.email}
                   />
+                  <InputError message={formik.errors.email} />
                 </div>
                 <div className="pb-2">
-                  <Label htmlFor={"nomor_telepon"} value={"Nomor telepon"} />
-                  <Input
-                    type={"text"}
-                    name={"nomor_telepon"}
-                    placeholder={"Masukkan alamat nomor telepon.."}
+                  <Label htmlFor={"pesan"} value={"Pesan"} />
+                  <Textarea
+                    name={"pesan"}
+                    placeholder={"Masukkan pesan.."}
+                    rows={3}
                     variant={"primary-outline"}
+                    handleChange={handleInputChange}
+                    isError={!!formik.errors.pesan}
                   />
+                  <InputError message={formik.errors.pesan} />
                 </div>
                 <Button
                   value="Kirim pesan"
                   className="w-full mt-6 font-semibold "
                 />
-              </div>
+              </form>
             </div>
 
             <div

@@ -198,7 +198,7 @@ const InvestorTransaksi = () => {
                                         <p className="font-semibold">
                                             ID Transaksi:
                                         </p>
-                                        <p>xxxxxxxx</p>
+                                        <p>{selectedTransaction.id}</p>
                                     </div>
                                     <div>
                                         <p className="font-semibold">

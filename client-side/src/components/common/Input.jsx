@@ -16,7 +16,6 @@ const Input = (props) => {
     placeholder,
     isError,
     isDisabled,
-    errorMessage,
   } = props;
 
   const input = useRef();
@@ -28,27 +27,22 @@ const Input = (props) => {
   }, []);
 
   return (
-    <div className="mb-4">
-      <input
-        type={type}
-        name={name}
-        id={name}
-        value={value}
-        defaultValue={defaultValue}
-        className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl shadow ${
-          isError ? "input-error" : `input-${variant}`
-        }  ${className}`}
-        ref={input}
-        autoComplete={autoComplete}
-        required={required}
-        onChange={(e) => handleChange(e)}
-        placeholder={placeholder}
-        disabled={isDisabled}
-      />
-      {isError && errorMessage && (
-        <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
-      )}
-    </div>
+    <input
+      type={type}
+      name={name}
+      id={name}
+      value={value}
+      defaultValue={defaultValue}
+      className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl shadow ${
+        isError ? "input-error" : `input-${variant}`
+      }  ${className}`}
+      ref={input}
+      autoComplete={autoComplete}
+      required={required}
+      onChange={(e) => handleChange(e)}
+      placeholder={placeholder}
+      disabled={isDisabled}
+    />
   );
 };
 
@@ -67,14 +61,19 @@ Input.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-  variant: PropTypes.oneOf(["primary", "primary-outline", "primary-outline-search", "error", "disabled"]),
+  variant: PropTypes.oneOf([
+    "primary",
+    "primary-outline",
+    "primary-outline-search",
+    "error",
+    "disabled",
+  ]),
   autoComplete: PropTypes.string,
   required: PropTypes.bool,
   isFocused: PropTypes.bool,
   handleChange: PropTypes.func,
   placeholder: PropTypes.string,
   isError: PropTypes.bool,
-  errorMessage: PropTypes.string,
   isDisabled: PropTypes.bool,
 };
 

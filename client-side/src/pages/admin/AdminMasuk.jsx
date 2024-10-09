@@ -52,7 +52,7 @@ const AdminMasuk = () => {
           </div>
           {/* Login Failed */}
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+            <div>
               <Label value={"Username/Email"} htmlFor={"usernameOrEmail"} />
               <Input
                 name="usernameOrEmail"
@@ -63,7 +63,7 @@ const AdminMasuk = () => {
                 handleChange={handleChange}
               />
             </div>
-            <div className="mb-4">
+            <div>
               <Label value={"Password"} htmlFor={"password"} />
               <Input
                 name="password"
@@ -76,13 +76,13 @@ const AdminMasuk = () => {
               <div className="flex justify-end">
                 <Link
                   to={"/admin/lupa-password"}
-                  className="w-fit text-sm block text-red-600 hover:underline -mt-2"
+                  className="w-fit text-sm block text-red-600 hover:underline"
                 >
                   Lupa Password?
                 </Link>
               </div>
             </div>
-            <div>
+            <div className="mt-4">
               <button
                 className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 mb-2 rounded-2xl shadow focus:outline-none focus:shadow-outline w-full"
                 type="submit"

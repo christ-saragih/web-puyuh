@@ -1,6 +1,6 @@
 import BatchItemInvestor from "./BatchItemInvestor";
 
-const BatchListInvestor = ({ batchs }) => {
+const BatchListInvestor = ({ batchs, onBatchClick }) => {
   return (
     <div className="overflow-x-auto w-full md:w-full">
       <div className="flex gap-x-6">
@@ -27,6 +27,7 @@ const BatchListInvestor = ({ batchs }) => {
                 pembukaan={batch.tanggal_pembukaan_penawaran}
                 penutupan={batch.tanggal_berakhir_penawaran}
                 status={batch.status}
+                onClick={() => onBatchClick(batch.slug)}
               />
             </div>
           ))

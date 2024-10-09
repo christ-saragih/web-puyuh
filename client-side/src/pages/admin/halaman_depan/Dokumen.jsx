@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiPlusCircle } from "react-icons/pi";
+import InputError from "../../../components/common/InputError.jsx";
 
 const Dokumen = () => {
   const [documents, setDocuments] = useState([]);
@@ -77,12 +78,21 @@ const Dokumen = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    const maxSizeInBytes = 10 * 1024 * 1024;
 
     if (file) {
       if (file.type === "application/pdf") {
-        setFormData({ ...formData, file: file });
-        setSelectedFile(e.target.files[0].name);
-        clearError("file");
+        if (file.size <= maxSizeInBytes) {
+          setFormData({ ...formData, file: file });
+          setSelectedFile(file.name);
+          clearError("file");
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            file: "Ukuran file tidak boleh melebihi 10MB",
+          }));
+          e.target.value = null;
+        }
       } else {
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -281,8 +291,8 @@ const Dokumen = () => {
                       value={formData.nama}
                       handleChange={handleInputChange}
                       isError={!!errors.nama}
-                      errorMessage={errors.nama}
                     />
+                    <InputError message={errors.nama} />
 
                     <Label htmlFor={"file"} value={"File"} />
                     <FileInput
@@ -290,8 +300,8 @@ const Dokumen = () => {
                       selectedFile={selectedFile}
                       handleChange={handleFileChange}
                       isError={!!errors.file}
-                      errorMessage={errors.file}
                     />
+                    <InputError message={errors.file} />
                   </Modal.Body>
                   <Modal.Footer
                     action={modalType === "add_document" ? "Tambah" : "Ubah"}

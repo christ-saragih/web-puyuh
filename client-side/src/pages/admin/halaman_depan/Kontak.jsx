@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
-import Button from "../../../components/common/Button.jsx";
-import Input from "../../../components/common/Input.jsx";
 import Label from "../../../components/common/Label.jsx";
+import Input from "../../../components/common/Input.jsx";
+import InputError from "../../../components/common/InputError.jsx";
 import Textarea from "../../../components/common/Textarea.jsx";
+import Button from "../../../components/common/Button.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { isValidEmail } from "../../../utils/validateEmail.js";
+import { isValidIndonesianPhoneNumber } from "../../../utils/validatePhoneNumber.js";
 import {
   getContactFrontpage,
   saveContactFrontpage,
 } from "../../../services/contact-frontpage.service.js";
+import { useEffect, useState } from "react";
 
 const Kontak = () => {
   const [contacts, setContacts] = useState([]);
@@ -45,25 +48,18 @@ const Kontak = () => {
     }
     if (!formData.email.trim()) {
       newErrors.email = "Email wajib diisi";
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email =
+        "Email tidak valid. Harap masukkan email yang benar (contoh: admin@example.test)";
     }
     if (!formData.nomor_telepon.trim()) {
       newErrors.nomor_telepon = "Nomor telepon wajib diisi";
+    } else if (!isValidIndonesianPhoneNumber(formData.nomor_telepon)) {
+      newErrors.nomor_telepon =
+        "Nomor telepon tidak valid. Harap masukkan nomor telepon yang benar (contoh: 08123456789)";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const isValidIndonesianPhoneNumber = (phoneNumber) => {
-    // Regex untuk nomor telepon Indonesia
-    // Menerima format: +628xxxxxxxxxx, 08xxxxxxxxxx, atau 628xxxxxxxxxx
-    // Minimal 10 digit, maksimal 14 digit (termasuk kode negara)
-    const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{8,11}$/;
-    return phoneRegex.test(phoneNumber);
   };
 
   const getErrorMessage = (fieldName) => {
@@ -144,8 +140,7 @@ const Kontak = () => {
     <AdminLayout title={"Halaman Depan / Kontak"}>
       <div className="flex flex-col ml-5 md:ml-0">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
-          <div className="w-full flex justify-between mb-5">
-            <h3 className="font-bold text-[#572618] text-xl">Kontak</h3>
+          <div className="flex justify-end">
             <Button
               variant={isDataEmpty || editMode ? "primary" : "update"}
               value={isDataEmpty || editMode ? "Simpan" : "Ubah"}
@@ -165,8 +160,8 @@ const Kontak = () => {
               handleChange={handleChange}
               isDisabled={!isDataEmpty && !editMode}
               isError={!!errors.alamat}
-              errorMessage={errors.alamat}
             />
+            <InputError message={errors.alamat} />
 
             <Label htmlFor={"map"} value={"Map"} />
             <Input
@@ -178,8 +173,8 @@ const Kontak = () => {
               handleChange={handleChange}
               isDisabled={!isDataEmpty && !editMode}
               isError={!!errors.map}
-              errorMessage={errors.map}
             />
+            <InputError message={errors.map} />
 
             <div className="flex items-center justify-center w-full mt-2 mb-4">
               <div
@@ -205,8 +200,8 @@ const Kontak = () => {
               handleChange={handleChange}
               isDisabled={!isDataEmpty && !editMode}
               isError={!!errors.email}
-              errorMessage={errors.email}
             />
+            <InputError message={errors.email} />
 
             <Label htmlFor={"nomor_telepon"} value={"Nomor Telepon"} />
             <Input
@@ -218,8 +213,8 @@ const Kontak = () => {
               handleChange={handleChange}
               isDisabled={!isDataEmpty && !editMode}
               isError={!!errors.nomor_telepon}
-              errorMessage={errors.nomor_telepon}
             />
+            <InputError message={errors.nomor_telepon} />
           </div>
         </div>
       </div>

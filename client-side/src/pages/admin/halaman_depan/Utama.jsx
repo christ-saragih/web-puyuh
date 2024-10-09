@@ -1,5 +1,6 @@
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
+import InputError from "../../../components/common/InputError";
 import Button from "../../../components/common/Button";
 import AdminLayout from "../../../layouts/AdminLayout";
 import {
@@ -7,6 +8,7 @@ import {
   saveDashboardFrontpage,
 } from "../../../services/dashboard-frontpage.service";
 import { useEffect, useState } from "react";
+
 
 const Utama = () => {
   const [dashboardFrontpage, setDasboardFrontpage] = useState([]);
@@ -141,7 +143,7 @@ const Utama = () => {
   return (
     <AdminLayout title={"Halaman Depan / Utama"}>
       <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md ml-3 md:ml-0 py-4 px-6 sm:px-4">
-        <div className="flex justify-end md:justify-end mb-4">
+        <div className="flex justify-end">
           <Button
             variant={isDataEmpty || editMode ? "primary" : "update"}
             value={isDataEmpty || editMode ? "Simpan" : "Ubah"}
@@ -155,7 +157,7 @@ const Utama = () => {
         <Label htmlFor={"gambar_header"} value={"Gambar Header"} />
         <div className="mb-4">
           <div
-            className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+            className={`flex flex-col items-center justify-center w-full py-4 h-full border-2 rounded-2xl bg-gray-50 shadow ${
               !isDataEmpty && !editMode
                 ? "border-gray-50"
                 : errors.gambar
@@ -222,9 +224,7 @@ const Utama = () => {
               ""
             )}
           </div>
-          {errors.gambar && (
-            <p className="mt-1 text-sm text-red-500">{errors.gambar}</p>
-          )}
+          <InputError message={errors.gambar} />
         </div>
 
         <Label htmlFor={"judul"} value={"Judul"} />
@@ -237,8 +237,9 @@ const Utama = () => {
           handleChange={handleTextChange}
           isDisabled={!isDataEmpty && !editMode}
           isError={!!errors.judul}
-          errorMessage={errors.judul}
         />
+        <InputError message={errors.judul} />
+
         <Label htmlFor={"subJudul"} value={"Sub Judul"} />
         <Input
           type={"text"}
@@ -249,8 +250,8 @@ const Utama = () => {
           handleChange={handleTextChange}
           isDisabled={!isDataEmpty && !editMode}
           isError={!!errors.subJudul}
-          errorMessage={errors.subJudul}
         />
+         <InputError message={errors.subJudul} />
       </div>
     </AdminLayout>
   );

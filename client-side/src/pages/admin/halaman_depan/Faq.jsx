@@ -1,5 +1,6 @@
 import Label from "../../../components/common/Label.jsx";
 import Input from "../../../components/common/Input.jsx";
+import InputError from "../../../components/common/InputError.jsx";
 import Modal from "../../../components/common/Modal.jsx";
 import Textarea from "../../../components/common/Textarea.jsx";
 import FaqAdminList from "../../../components/admin/FaqList.jsx";
@@ -245,8 +246,9 @@ const FaqAdmin = () => {
                       value={formData.pertanyaan}
                       handleChange={handleInputChange}
                       isError={!!errors.pertanyaan}
-                      errorMessage={errors.pertanyaan}
                     />
+                    <InputError message={errors.pertanyaan} />
+
                     <Label htmlFor={"jawaban"} value={"Jawaban"} />
                     <Textarea
                       name={"jawaban"}
@@ -256,8 +258,8 @@ const FaqAdmin = () => {
                       value={formData.jawaban}
                       handleChange={handleInputChange}
                       isError={!!errors.jawaban}
-                      errorMessage={errors.jawaban}
                     />
+                    <InputError message={errors.jawaban} />
                   </Modal.Body>
                   <Modal.Footer
                     action={modalType === "add_faq" ? "Tambah" : "Ubah"}
