@@ -123,6 +123,8 @@ const DetailInvestasi = () => {
   };
   // Share Investment: End
 
+  console.log(investasi);
+
   return (
     <GuestLayouts>
       <div className="w-[90%] max-w-3xl mx-auto mt-12 lg:mt-16">
@@ -376,27 +378,32 @@ const DetailInvestasi = () => {
             </h3>
             {investasi.transaksi.length > 0 ? (
               <div className="flex flex-col gap-4">
-                {investasi.transaksi.map((item) => (
-                  <div key={item.id} className="flex gap-3 items-center">
-                    <div className="w-16 h-16 p-1 bg-gray-200 rounded-full p-2">
-                      {/* Sesuaikan icon berdasarkan kategori_investor */}
-                      {item.kategori_investor === "organisasi" ? (
-                        <PiUsersThreeBold className="w-full h-full text-[#4B241A]" />
-                      ) : (
-                        <PiUserBold className="w-full h-full text-[#4B241A]" />
-                      )}
+                {investasi.transaksi
+                  .sort((a, b) => b.total_investasi - a.total_investasi)
+                  .map((item) => (
+                    <div
+                      key={item.investorId}
+                      className="flex gap-3 items-center"
+                    >
+                      <div className="w-16 h-16 bg-gray-200 rounded-full p-2">
+                        {/* Sesuaikan icon berdasarkan kategori_investor */}
+                        {item.kategori_investor === "organisasi" ? (
+                          <PiUsersThreeBold className="w-full h-full text-[#4B241A]" />
+                        ) : (
+                          <PiUserBold className="w-full h-full text-[#4B241A]" />
+                        )}
+                      </div>
+                      <div className="grow">
+                        <p className="text-lg font-medium">
+                          {item.nama_lengkap}
+                        </p>
+                        <p>{item.kategori_investor}</p>
+                      </div>
+                      <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
+                        {formatRupiah(item.total_investasi)}
+                      </div>
                     </div>
-                    <div className="grow">
-                      {/* Mengakses nama_lengkap dari item */}
-                      <p className="text-lg font-medium">{item.nama_lengkap}</p>
-                      <p>{item.kategori_investor}</p>
-                    </div>
-                    <div className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-40 max-w-fit rounded-3xl">
-                      {/* Format total_investasi menggunakan formatRupiah */}
-                      {formatRupiah(item.total_investasi)}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             ) : (
               <p>Belum ada transaksi.</p>
