@@ -122,9 +122,7 @@ const DetailInvestasi = () => {
     window.open(shareUrl, "_blank");
   };
   // Share Investment: End
-
-  console.log(investasi);
-
+  
   return (
     <GuestLayouts>
       <div className="w-[90%] max-w-3xl mx-auto mt-12 lg:mt-16">
