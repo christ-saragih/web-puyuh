@@ -1,13 +1,16 @@
 import Admin from "../../assets/images/admin.svg";
-import Input from "../../components/common/Input";
 import Label from "../../components/common/Label";
+import Input from "../../components/common/Input";
+import InputError from "../../components/common/InputError";
 import Modal from "../../components/common/Modal";
 import AdminLayout from "../../layouts/AdminLayout";
 import { getAdmin, saveProfileAdmin } from "../../services/admin.service";
 import { formatDate } from "../../utils/formatDate";
+import { isValidEmail } from "../../utils/validateEmail";
+import { isValidIndonesianPhoneNumber } from "../../utils/validatePhoneNumber";
 import { useEffect, useState } from "react";
-import Select from "react-select";
 import { PiNotePencil } from "react-icons/pi";
+import Select from "react-select";
 
 const AdminProfil = () => {
   const [admin, setAdmin] = useState([]);
@@ -21,6 +24,7 @@ const AdminProfil = () => {
     tanggal_lahir: "",
   });
   const [previewImage, setPreviewImage] = useState("");
+  const [errors, setErrors] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -47,6 +51,65 @@ const AdminProfil = () => {
     });
   }, []);
 
+  console.log(admin);
+
+  // Input Validations: Start
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formAdmin.email.trim()) {
+      newErrors.email = "Email wajib diisi";
+    } else if (!isValidEmail(formAdmin.email)) {
+      newErrors.email =
+        "Email tidak valid. Harap masukkan email yang benar (contoh: admin@example.test)";
+    }
+    if (!formAdmin.foto_profil) {
+      newErrors.foto_profil = "Foto profil wajib diunggah";
+    }
+    if (!formAdmin.nama_lengkap.trim()) {
+      newErrors.nama_lengkap = "Nama lengkap wajib diisi";
+    }
+    if (!formAdmin.no_hp.trim()) {
+      newErrors.no_hp = "Nomor telepon wajib diisi";
+    } else if (!isValidIndonesianPhoneNumber(formAdmin.no_hp)) {
+      newErrors.no_hp =
+        "Nomor telepon tidak valid. Harap masukkan nomor telepon yang benar (contoh: 08123456789)";
+    }
+    if (formAdmin.jk.length === 0) {
+      newErrors.jk = "Jenis kelamin wajib dipilih";
+    }
+    if (!formAdmin.tempat_lahir.trim()) {
+      newErrors.tempat_lahir = "Tempat lahir wajib diisi";
+    }
+    if (!formAdmin.tanggal_lahir.trim()) {
+      newErrors.tanggal_lahir = "Tanggal lahir wajib diisi";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const getErrorMessage = (fieldName) => {
+    const fieldNames = {
+      email: "Email",
+      nama_lengkap: "Nama lengkap",
+      no_hp: "Nomor telepon",
+      jk: "Jenis kelamin",
+      tempat_lahir: "Tempat lahir",
+      tanggal_lahir: "Tanggal lahir",
+    };
+
+    return `${fieldNames[fieldName] || fieldName} wajib diisi`;
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validations: End
+
   // Update Admin Profile: Start
   const handleTextChange = (e) => {
     const { name, value } = e.target;
@@ -54,16 +117,54 @@ const AdminProfil = () => {
       ...formAdmin,
       [name]: value,
     });
+
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: getErrorMessage(name),
+      }));
+    } else if (name === "email" && !isValidEmail(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]:
+          "Email tidak valid. Harap masukkan email yang benar (contoh: admin@example.test)",
+      }));
+    } else if (name === "no_hp" && !isValidIndonesianPhoneNumber(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]:
+          "Nomor telepon tidak valid. Harap masukkan nomor telepon yang benar (contoh: 08123456789)",
+      }));
+    } else {
+      clearError(name);
+    }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      setFormAdmin({
-        ...formAdmin,
-        foto_profil: file,
-      });
-      setPreviewImage(URL.createObjectURL(file)); // Set preview image dari file yang dipilih
+      const validTypes = [
+        "image/svg+xml",
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+      ];
+      if (validTypes.includes(file.type)) {
+        setFormAdmin({
+          ...formAdmin,
+          foto_profil: file,
+        });
+        setPreviewImage(URL.createObjectURL(file));
+        clearError("foto_profil");
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          foto_profil: "Foto profil harus berupa SVG, PNG, JPG, atau JPEG",
+        }));
+
+        e.target.value = null;
+      }
     }
   };
 
@@ -77,40 +178,51 @@ const AdminProfil = () => {
       ...formAdmin,
       jk: selectedOption.value,
     });
+
+    if (selectedOption.length === 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        tags: "Jenis kelamin wajib dipilih",
+      }));
+    } else {
+      clearError("jk");
+    }
   };
 
   const handleSaveAdminProfile = () => {
-    const dataToSend = new FormData();
-    dataToSend.append("email", formAdmin.email);
-    if (formAdmin.foto_profil) {
-      dataToSend.append("foto_profil", formAdmin.foto_profil);
-    }
-    dataToSend.append("nama_lengkap", formAdmin.nama_lengkap);
-    dataToSend.append("no_hp", formAdmin.no_hp);
-    dataToSend.append("jk", formAdmin.jk);
-    dataToSend.append("tempat_lahir", formAdmin.tempat_lahir);
-    dataToSend.append("tanggal_lahir", formAdmin.tanggal_lahir);
+    if (validateForm()) {
+      const dataToSend = new FormData();
+      dataToSend.append("email", formAdmin.email);
+      if (formAdmin.foto_profil) {
+        dataToSend.append("foto_profil", formAdmin.foto_profil);
+      }
+      dataToSend.append("nama_lengkap", formAdmin.nama_lengkap);
+      dataToSend.append("no_hp", formAdmin.no_hp);
+      dataToSend.append("jk", formAdmin.jk);
+      dataToSend.append("tempat_lahir", formAdmin.tempat_lahir);
+      dataToSend.append("tanggal_lahir", formAdmin.tanggal_lahir);
 
-    saveProfileAdmin(dataToSend, (newData) => {
-      setAdmin({
-        ...admin, // Salin data yang sudah ada
-        email: newData.admin.email, // Update email dari respons
-        adminBiodata: {
-          // Buat objek adminBiodata secara manual
-          foto_profil: newData.foto_profil,
-          nama_lengkap: newData.nama_lengkap,
-          no_hp: newData.no_hp,
-          jk: newData.jk,
-          tempat_lahir: newData.tempat_lahir,
-          tanggal_lahir: newData.tanggal_lahir,
-        },
+      saveProfileAdmin(dataToSend, (newData) => {
+        setAdmin({
+          ...admin, // Salin data yang sudah ada
+          email: newData.admin.email, // Update email dari respons
+          adminBiodata: {
+            // Buat objek adminBiodata secara manual
+            foto_profil: newData.foto_profil,
+            nama_lengkap: newData.nama_lengkap,
+            no_hp: newData.no_hp,
+            jk: newData.jk,
+            tempat_lahir: newData.tempat_lahir,
+            tanggal_lahir: newData.tanggal_lahir,
+          },
+        });
+
+        setPreviewImage(
+          `http://localhost:3000/api/biodata-admin/images/${newData.foto_profil}`
+        );
       });
-
-      setPreviewImage(
-        `http://localhost:3000/api/biodata-admin/images/${newData.foto_profil}`
-      );
-    });
-    closeModal();
+      closeModal();
+    }
   };
   // Update Admin Profile: End
 
@@ -136,6 +248,7 @@ const AdminProfil = () => {
   const closeModal = () => {
     setModalType("");
     setIsModalOpen(false);
+    setErrors({});
   };
   // Modal: End
 
@@ -152,7 +265,6 @@ const AdminProfil = () => {
       },
     }),
   };
-  
 
   return (
     <AdminLayout title={"Halaman Profil Admin"}>
@@ -199,8 +311,14 @@ const AdminProfil = () => {
                         onClose={closeModal}
                       />
                       <Modal.Body>
-                        <Label htmlFor={"gambar"} value={"Gambar"} />
-                        <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
+                        <Label htmlFor={"foto_profil"} value={"Foto Profil"} />
+                        <div
+                          className={`flex flex-col items-center justify-center w-full py-4 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                            errors.foto_profil
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                        >
                           {previewImage && (
                             <img
                               src={previewImage}
@@ -210,7 +328,7 @@ const AdminProfil = () => {
                           )}
 
                           <label
-                            htmlFor="gambar"
+                            htmlFor="foto_profil"
                             className={`flex flex-col items-center justify-center w-full cursor-pointer ${
                               !previewImage && "h-32"
                             }`}
@@ -239,18 +357,21 @@ const AdminProfil = () => {
                                 </p>
                               </div>
                               <p className="text-xs text-gray-500 dark:text-gray-400">
-                                SVG, PNG, JPG or GIF (MAX. 800x400px)
+                                SVG, PNG, JPG atau JPEG
                               </p>
                             </div>
                             <input
-                              id="gambar"
-                              name="gambar"
+                              id="foto_profil"
+                              name="foto_profil"
                               type="file"
                               className="hidden"
                               onChange={handleImageChange}
+                              accept=".svg,.png,.jpg,.jpeg"
                             />
                           </label>
                         </div>
+                        <InputError message={errors.foto_profil} />
+
                         <Label
                           htmlFor={"nama_lengkap"}
                           value={"Nama Lengkap"}
@@ -262,7 +383,10 @@ const AdminProfil = () => {
                           variant={"primary-outline"}
                           value={formAdmin.nama_lengkap}
                           handleChange={handleTextChange}
+                          isError={!!errors.nama_lengkap}
                         />
+                        <InputError message={errors.nama_lengkap} />
+
                         <Label htmlFor={"email"} value={"Email"} />
                         <Input
                           type={"email"}
@@ -271,7 +395,10 @@ const AdminProfil = () => {
                           variant={"primary-outline"}
                           value={formAdmin.email}
                           handleChange={handleTextChange}
+                          isError={!!errors.email}
                         />
+                        <InputError message={errors.email} />
+
                         <Label htmlFor={"no_hp"} value={"Nomor Telepon"} />
                         <Input
                           type={"text"}
@@ -280,20 +407,24 @@ const AdminProfil = () => {
                           variant={"primary-outline"}
                           value={formAdmin.no_hp}
                           handleChange={handleTextChange}
+                          isError={!!errors.no_hp}
                         />
+                        <InputError message={errors.no_hp} />
+
                         <Label htmlFor={"jk"} value={"Jenis Kelamin"} />
                         <Select
                           id="jk"
                           name="jk"
-                          className="mt-2 mb-4"
                           options={genderOptions}
                           value={genderOptions.find(
                             (option) => option.value === formAdmin.jk
                           )} // Set default selected value
                           onChange={handleGenderChange}
+                          className={errors.jk ? "input-error" : "input"}
                           styles={customStyles}
                         />
-                        
+                        <InputError message={errors.jk} />
+
                         <Label
                           htmlFor={"tempat_lahir"}
                           value={"Tempat Lahir"}
@@ -305,7 +436,10 @@ const AdminProfil = () => {
                           variant={"primary-outline"}
                           value={formAdmin.tempat_lahir}
                           handleChange={handleTextChange}
+                          isError={!!errors.tempat_lahir}
                         />
+                        <InputError message={errors.tempat_lahir} />
+
                         <Label
                           htmlFor={"tanggal_lahir"}
                           value={"Tanggal Lahir"}
@@ -317,7 +451,9 @@ const AdminProfil = () => {
                           variant={"primary-outline"}
                           value={formAdmin.tanggal_lahir}
                           handleChange={handleTextChange}
+                          isError={!!errors.tanggal_lahir}
                         />
+                        <InputError message={errors.tanggal_lahir} />
                       </Modal.Body>
                       <Modal.Footer
                         action={"Ubah"}
