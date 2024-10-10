@@ -55,7 +55,7 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
                 setVerificationError(""); // Reset verification error
 
                 const response = await apiInvestor.post(`/transaksi/${investasiId}`, {
-                    total_investasi: totalInvestasi,
+                    total_investasi: parseInt(totalInvestasi),
                 });
 
                 const snapToken = response.data.token;
