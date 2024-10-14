@@ -4,6 +4,7 @@ import InputError from "../../../components/common/InputError.jsx";
 import Modal from "../../../components/common/Modal";
 import SocialMediaList from "../../../components/admin/SocialMediaList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { showToast } from "../../../utils/toast.js";
 import {
   getSocialMedia,
   addSocialMedia,
@@ -13,7 +14,6 @@ import {
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiPlusCircle } from "react-icons/pi";
-import { showToast, ToastContainer } from "../../../utils/toast.js";
 
 const MediaSosial = () => {
   const [socialMedias, setSocialMedias] = useState([]);
@@ -133,7 +133,6 @@ const MediaSosial = () => {
       addSocialMedia(form, (response) => {
         setSocialMedias([...socialMedias, response]);
         closeModal();
-        resetForm();
         showToast("Media sosial berhasil ditambahkan");
       });
     }
@@ -155,7 +154,6 @@ const MediaSosial = () => {
           )
         );
         closeModal();
-        resetForm();
         showToast("Media sosial berhasil diperbarui");
       });
     }
@@ -237,7 +235,6 @@ const MediaSosial = () => {
 
   return (
     <AdminLayout title={"Halaman Depan / Media Sosial"}>
-      <ToastContainer />
       <div className="flex flex-col">
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6">
           <div className="flex mb-6 justify-between">

@@ -4,6 +4,7 @@ import InputError from "../../../components/common/InputError.jsx";
 import Modal from "../../../components/common/Modal.jsx";
 import DocumentationList from "../../../components/admin/DocumentationList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { showToast } from "../../../utils/toast.js";
 import {
   getDocumentation,
   addDocumentation,
@@ -109,6 +110,7 @@ const Dokumentasi = () => {
       addDocumentation(form, (response) => {
         setDocumentations([...documentations, response]);
         closeModal();
+        showToast("Dokumentasi berhasil ditambahkan");
       });
     }
   };
@@ -128,6 +130,7 @@ const Dokumentasi = () => {
           )
         );
         closeModal();
+        showToast("Dokumentasi berhasil diperbarui");
       });
     }
   };
@@ -140,6 +143,7 @@ const Dokumentasi = () => {
         )
       );
       closeModal();
+      showToast("Dokumentasi berhasil dihapus");
     });
   };
   // CRUD: End
