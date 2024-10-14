@@ -17,7 +17,7 @@ const insertSnapScript = () => {
     });
 };
 
-const ModalInvestasi = ({ closeModal, investasiId }) => {
+const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
     const [isChecked, setIsChecked] = useState(false); // State untuk checkbox
     const [showError, setShowError] = useState(false); // State untuk menampilkan pesan error
     const [totalInvestasi, setTotalInvestasi] = useState(""); // State untuk menyimpan total investasi
@@ -52,7 +52,7 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
             try {
                 setShowError(false);
                 setInputError("");
-                setVerificationError(""); // Reset verification error
+                setVerificationError("");
 
                 const response = await apiInvestor.post(`/transaksi/${investasiId}`, {
                     total_investasi: parseInt(totalInvestasi),
@@ -64,17 +64,21 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
                     onSuccess: function (result) {
                         alert("Pembayaran Berhasil!");
                         console.log(result);
+                        onClosePayment();
                     },
                     onPending: function (result) {
                         alert("Menunggu Pembayaran...");
                         console.log(result);
+                        onClosePayment();
                     },
                     onError: function (result) {
                         alert("Pembayaran Gagal.");
                         console.log(result);
+                        onClosePayment();
                     },
                     onClose: function () {
                         alert("Anda menutup pembayaran.");
+                        onClosePayment();
                     },
                 });
             } catch (error) {
