@@ -22,6 +22,7 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
     const [showError, setShowError] = useState(false); // State untuk menampilkan pesan error
     const [totalInvestasi, setTotalInvestasi] = useState(""); // State untuk menyimpan total investasi
     const [inputError, setInputError] = useState(""); // State untuk validasi input investasi
+    const [verificationError, setVerificationError] = useState("");
 
     useEffect(() => {
         insertSnapScript();
@@ -44,33 +45,24 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
 
     const handleConfirmClick = async () => {
         if (!isChecked) {
-            setShowError(true); // Tampilkan pesan error jika checkbox belum dicentang
-        } else if (
-            !totalInvestasi ||
-            isNaN(totalInvestasi) ||
-            totalInvestasi <= 0
-        ) {
+            setShowError(true);
+        } else if (!totalInvestasi || isNaN(totalInvestasi) || totalInvestasi <= 0) {
             setInputError("Masukkan total investasi yang valid.");
         } else {
             try {
-                setShowError(false); // Reset pesan error jika sudah berhasil
-                setInputError(""); // Reset pesan error input
+                setShowError(false);
+                setInputError("");
+                setVerificationError(""); // Reset verification error
 
-                // Panggil backend untuk mendapatkan Snap Token
-                const response = await apiInvestor.post(
-                    `/transaksi/${investasiId}`,
-                    {
-                        total_investasi: totalInvestasi,
-                    }
-                );
+                const response = await apiInvestor.post(`/transaksi/${investasiId}`, {
+                    total_investasi: parseInt(totalInvestasi),
+                });
 
                 const snapToken = response.data.token;
 
-                // Panggil Midtrans Snap untuk proses pembayaran
                 window.snap.pay(snapToken.token, {
                     onSuccess: function (result) {
                         alert("Pembayaran Berhasil!");
-                        // Tambahkan logika untuk menyimpan transaksi atau memberi notifikasi
                         console.log(result);
                     },
                     onPending: function (result) {
@@ -87,7 +79,11 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
                 });
             } catch (error) {
                 console.error("Terjadi kesalahan:", error);
-                setInputError("Terjadi kesalahan saat memproses transaksi.");
+                if (error.response && error.response.data && error.response.data.message) {
+                    setVerificationError(error.response.data.message);
+                } else {
+                    setInputError("Terjadi kesalahan saat memproses transaksi.");
+                }
             }
         }
     };
@@ -179,6 +175,11 @@ const ModalInvestasi = ({ closeModal, investasiId }) => {
 
                     {/* Pesan Konfirmasi */}
                     <p>Apakah Anda yakin ingin melakukan investasi ini?</p>
+
+                    {/* Display verification error */}
+                    {verificationError && (
+                        <p className="text-sm text-red-500">{verificationError}</p>
+                    )}
 
                     <div className="flex justify-end gap-4">
                         <Button

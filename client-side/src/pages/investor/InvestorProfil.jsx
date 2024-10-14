@@ -224,6 +224,13 @@ const InvestorProfil = () => {
                                 <h2 className="font-quicksand text-xl text-sm md:text-l text-[#000] text-center md:text-left md:mb-10">
                                     {investor?.email}
                                 </h2>
+                                <div className={`mb-4 px-3 py-1 rounded-full text-sm ${
+                                    investor?.isVerifiedProfile 
+                                    ? "bg-green-100 text-green-800" 
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}>
+                                    {investor?.isVerifiedProfile ? "Terverifikasi" : "Belum Terverifikasi"}
+                                </div>
                                 <button
                                     onClick={openModal}
                                     className="py-2 px-5 text-sm font-quicksand focus:outline-none bg-[#572618] text-white rounded-full hover:bg-blue-600"
