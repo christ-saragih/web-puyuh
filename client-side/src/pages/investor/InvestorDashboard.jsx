@@ -69,7 +69,7 @@ const InvestorDashboard = () => {
         setInvestasi(investasiResponse.data.data);
         setNotifications(notificationsResponse.data.data);
   
-        const unreadCount = notificationsResponse.data.data.filter(notif => !notif.isRead).length;
+        const unreadCount = notificationsResponse.data.data.filter(notif => notif.status == 0).length;
         setUnreadNotifications(unreadCount);
   
         const dates = investasiResponse.data.data
@@ -148,9 +148,20 @@ const InvestorDashboard = () => {
     });
   };
 
-  const handleNotificationClick = () => {
+  const handleNotificationClick = async () => {
     setShowNotificationModal(true);
     setUnreadNotifications(0);
+  
+    try {
+      // Update notification status
+      await apiInvestor.put("/notifikasi/notifikasiInvestasi/ubahStatus");
+      
+      // Refresh notifications after status update
+      const updatedNotificationsResponse = await apiInvestor.get("/notifikasi/notifikasiInvestasi");
+      setNotifications(updatedNotificationsResponse.data.data);
+    } catch (error) {
+      console.error("Error updating notification status:", error);
+    }
   };
   
   const totalInvestasi = transaksi.reduce((total, item) => {
