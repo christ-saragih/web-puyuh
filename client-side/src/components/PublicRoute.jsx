@@ -2,17 +2,17 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 
-const ProtectedRoute = ({ children, requiredRole, redirectPath }) => {
+const PublicRoute = ({ children, requiredRole, redirectPath }) => {
     const { user, role, loading } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user) {
-            // Jika user tidak ada, arahkan sesuai role yang dibutuhkan
-            if (role === "investor") {
-                navigate("/investor");
-            } else if (role === "admin") {
-                navigate("/admin");
+        if (!loading) {
+            if (user) {
+                // Jika user sudah login dan role tidak sesuai, redirect ke halaman yang tepat
+                if (role == requiredRole) {
+                    navigate(redirectPath || "/");
+                }
             }
         }
     }, [user, role, loading, navigate, requiredRole, redirectPath]);
@@ -21,13 +21,12 @@ const ProtectedRoute = ({ children, requiredRole, redirectPath }) => {
         return <div>Loading...</div>;
     }
 
-    // Hanya render children jika user ada dan role sesuai dengan requiredRole
-    if (user && role === requiredRole) {
+    // Jika user belum login atau role sesuai, render halaman publik
+    if (!user || (user && role === requiredRole)) {
         return children;
     }
 
-    // Jika tidak memenuhi syarat, jangan render apapun
     return null;
 };
 
-export default ProtectedRoute;
+export default PublicRoute;
