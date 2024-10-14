@@ -32,3 +32,16 @@ export const getInvestorById = (id, callback) => {
       console.log(err);
     });
 };
+
+export const verifyInvestorProfile = (id, callback) => {
+  apiAdmin
+    .post(`/admin/verifikasiProfile/${id}`)
+    .then((res) => {
+      callback(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+

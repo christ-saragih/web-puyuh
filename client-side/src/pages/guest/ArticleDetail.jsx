@@ -46,7 +46,7 @@ const ArticleDetail = () => {
             {article.Tags.map((tag) => (
               <div
                 key={tag.id}
-                className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-28 lg:min-w-32 max-w-fit px-2 rounded-3xl"
+                className="bg-[#f8e7d8] font-semibold text-[#B87817] text-lg text-center py-1 min-w-28 lg:min-w-32 max-w-fit px-3 rounded-3xl"
               >
                 #{tag.nama}
               </div>
