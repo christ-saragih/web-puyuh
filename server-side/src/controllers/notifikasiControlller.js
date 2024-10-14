@@ -314,26 +314,26 @@ exports.findAll = async (req, res) => {
 // Update Status
 exports.changeStatus = async (req, res) => {
     try {
-        const notifikasiId = req.params.id;
         const userId = req.user.id;
 
-        const notifikasi = await Notifikasi.findOne({
-            where: { id: notifikasiId, investor_id: userId },
+        const notifikasi = await Notifikasi.findAll({
+            where: { investor_id: userId },
         });
 
-        if (!notifikasi) {
+        if (!notifikasi.length) {
             return res.status(404).json({
                 message: "Notifikasi tidak ditemukan",
             });
         }
 
-        await notifikasi.update({
-            status: true,
-        });
+        // Update status notifikasi secara batch
+        await Notifikasi.update(
+            { status: true },
+            { where: { investor_id: userId, status: false } } // Hanya update jika status belum true
+        );
 
         res.status(200).json({
-            message: "Notifikasi berhasil diambil!",
-            data: notifikasi,
+            message: "Status notifikasi berhasil diperbarui!",
         });
     } catch (error) {
         res.status(500).json({
