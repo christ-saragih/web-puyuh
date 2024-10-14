@@ -11,7 +11,7 @@ router.post(
     notifikasiControlller.sendNotificationInvestasi
 );
 router.put(
-    "/notifikasiInvestasi/:id",
+    "/notifikasiInvestasi/ubahStatus",
     authenticateToken("investor"),
     notifikasiControlller.changeStatus
 );
