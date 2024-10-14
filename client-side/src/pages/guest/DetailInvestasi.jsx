@@ -6,7 +6,7 @@ import { getDetailInvestasiBySlug } from "../../services/batch.service";
 import { formatDate } from "../../utils/formatDate";
 import { formatRupiah } from "../../utils/formatRupiah";
 import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { AuthContext } from "../../contexts/AuthProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -41,18 +41,28 @@ const DetailInvestasi = () => {
   const { user } = useContext(AuthContext);
   const { slug } = useParams();
   const [tab, setTab] = useState(1);
-  const [investasi, setInvestasi] = useState(null);
   const [showModal, setShowModal] = useState(false); // State untuk modal
+  const [investasi, setInvestasi] = useState(null);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
 
-  useEffect(() => {
+  const fetchInvestasiData = useCallback(() => {
     getDetailInvestasiBySlug(slug, (data) => {
       setInvestasi(data);
     });
   }, [slug]);
+
+  useEffect(() => {
+    fetchInvestasiData();
+
+    // Set up an interval to fetch data every 30 seconds
+    const intervalId = setInterval(fetchInvestasiData, 30000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [fetchInvestasiData]);
 
   if (!investasi) {
     return <div>Data artikel tidak ditemukan!</div>;
@@ -122,7 +132,13 @@ const DetailInvestasi = () => {
     window.open(shareUrl, "_blank");
   };
   // Share Investment: End
-  
+
+  const handleClosePayment = () => {
+    setShowModal(false);
+    // Refresh the investment data
+    fetchInvestasiData();
+  };
+
   return (
     <GuestLayouts>
       <div className="w-[90%] max-w-3xl mx-auto mt-12 lg:mt-16">
@@ -430,9 +446,10 @@ const DetailInvestasi = () => {
       {showModal && (
         <ModalInvestasi
           open={showModal}
-          closeModal={() => setShowModal(false)}
+          closeModal={handleClosePayment}
           investasiId={investasi.id}
-        />
+          onClosePayment={handleClosePayment}
+      />
       )}
     </GuestLayouts>
   );
