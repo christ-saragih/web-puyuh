@@ -154,7 +154,7 @@ const MediaSosial = () => {
           )
         );
         closeModal();
-        showToast("Media sosial berhasil diperbarui");
+        showToast("Media sosial berhasil diubah");
       });
     }
   };

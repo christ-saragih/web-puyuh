@@ -130,7 +130,7 @@ const Dokumentasi = () => {
           )
         );
         closeModal();
-        showToast("Dokumentasi berhasil diperbarui");
+        showToast("Dokumentasi berhasil diubah");
       });
     }
   };
