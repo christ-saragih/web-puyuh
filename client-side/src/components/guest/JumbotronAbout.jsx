@@ -7,7 +7,7 @@ const JumbotronAbout = (props) => {
   const imagePath = abouts.image_background;
 
   // Memisahkan kata-kata dalam judul
-  const judulArray = abouts.judul.split(" ");
+  // const judulArray = abouts.judul.split(" ");
 
   return (
     <div className="relative -z-10">
@@ -24,10 +24,14 @@ const JumbotronAbout = (props) => {
       /> */}
 
       <h1 className="absolute top-[1rem] left-3 lg:top-[1.5rem] lg:left-0 font-inter font-bold text-[4rem] md:text-[7rem] text-[#A6513C] lg:px-24">
-        <span className="text-[4rem] lg:text-[6.5rem]">{judulArray[0]}</span>{" "}
+        <span className="text-[4rem] lg:text-[6.5rem]">
+          {/* {judulArray[0]} */}
+          TENTANG
+          </span>{" "}
         <br />
         <span className="text-[5rem] lg:text-[12rem] leading-none">
-          {judulArray[1]}
+          {/* {judulArray[1]} */}
+          KAMI
         </span>
       </h1>
     </div>

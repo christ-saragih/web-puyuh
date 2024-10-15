@@ -117,11 +117,16 @@ const About = () => {
           {/* <!-- Column 1: Text --> */}
           <div className="flex flex-col">
             <h2 className="font-bold text-3xl lg:text-4xl mb-2 lg:mb-4 tracking-wide">
-              SUKAHARJA SMART QUAIL FARM
+              {abouts.judul}
             </h2>
-            <p className="font-quicksand font-medium text-[#000000] md:text-lg">
-              {abouts.deskripsi}
-            </p>
+            <div className="format px-11 min-w-full">
+              <p
+              dangerouslySetInnerHTML={{
+                __html: abouts.deskripsi,
+              }}
+              >
+              </p>
+            </div>
           </div>
           {/* column 2 */}
           <ImageSlider />
