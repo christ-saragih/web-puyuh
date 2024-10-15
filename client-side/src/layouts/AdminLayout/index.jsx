@@ -1,7 +1,8 @@
-import { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import MobileSidebar from "./MobileSidebar"; // Import MobileSidebar component
+import { ToastContainer } from "../../utils/toast";
+import { useState } from "react";
 
 const AdminLayout = (props) => {
     const { title, children } = props;
@@ -9,6 +10,8 @@ const AdminLayout = (props) => {
 
     return (
         <div className="bg-white w-vw h-full overflow-hidden py-5 pe-6">
+            <ToastContainer />
+
             {/* Sidebar for Desktop */}
             <div className="hidden lg:block">
                 <Sidebar isHovered={isHovered} setIsHovered={setIsHovered} />
