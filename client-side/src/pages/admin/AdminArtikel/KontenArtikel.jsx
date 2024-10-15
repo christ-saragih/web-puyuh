@@ -1,8 +1,10 @@
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
+import InputError from "../../../components/common/InputError";
 import Modal from "../../../components/common/Modal";
 import MultiSelect from "../../../components/common/MultiSelect";
 import ArticleList from "../../../components/common/ArticleList";
+import { showToast } from "../../../utils/toast.js";
 import { formatDate } from "../../../utils/formatDate";
 import {
   addArticle,
@@ -90,6 +92,16 @@ const KontenArtikel = (props) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const getErrorMessage = (fieldName) => {
+    const fieldNames = {
+      judul: "Judul artikel",
+      penulis: "Nama penulis",
+      tanggal: "Tanggal",
+    };
+
+    return `${fieldNames[fieldName] || fieldName} wajib diisi`;
+  };
+
   const clearError = (fieldName) => {
     setErrors((prevErrors) => {
       const newErrors = { ...prevErrors };
@@ -136,7 +148,7 @@ const KontenArtikel = (props) => {
     if (!value.trim()) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} wajib diisi`,
+        [name]: getErrorMessage(name),
       }));
     } else {
       clearError(name);
@@ -203,6 +215,7 @@ const KontenArtikel = (props) => {
       addArticle(form, (response) => {
         setArticles([response, ...articles]);
         closeModal();
+        showToast("Artikel berhasil ditambahkan");
       });
     }
   };
@@ -230,6 +243,7 @@ const KontenArtikel = (props) => {
           )
         );
         closeModal();
+        showToast("Artikel berhasil diubah");
       });
     }
   };
@@ -240,6 +254,7 @@ const KontenArtikel = (props) => {
         articles.filter((article) => article.id !== selectedArticle.id)
       );
       closeModal();
+      showToast("Artikel berhasil diubah");
     });
   };
   //   CRUD: End
@@ -381,7 +396,7 @@ const KontenArtikel = (props) => {
             <>
               <Modal.Header onClose={closeModal} />
               <Modal.Body>
-                <div className="-mt-4">
+                <div>
                   <div className="flex flex-col items-center">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-[#F5F5F5] text-slate-800 p-2 rounded-full">
@@ -398,7 +413,7 @@ const KontenArtikel = (props) => {
                     </div>
 
                     <div className="mt-6 mb-5">
-                      <h2 className="font-bold text-3xl">
+                      <h2 className="font-bold text-3xl text-center">
                         {formArticle.judul}
                       </h2>
                     </div>
@@ -456,8 +471,9 @@ const KontenArtikel = (props) => {
                   value={formArticle.judul}
                   handleChange={handleArticleInputChange}
                   isError={!!errors.judul}
-                  errorMessage={errors.judul}
                 />
+                <InputError message={errors.judul} />
+
                 <Label htmlFor={"penulis"} value={"Nama Penulis"} />
                 <Input
                   type={"text"}
@@ -467,50 +483,37 @@ const KontenArtikel = (props) => {
                   value={formArticle.penulis}
                   handleChange={handleArticleInputChange}
                   isError={!!errors.penulis}
-                  errorMessage={errors.penulis}
-                  clearError={clearError}
                 />
+                <InputError message={errors.penulis} />
+
                 <Label htmlFor={"deskripsi"} value={"Isi Artikel"} />
-                <div className="mb-4">
-                  <div
-                    onFocus={() => setIsDescriptionFocused(true)}
-                    onBlur={() => setIsDescriptionFocused(false)}
-                    className={`react-quill-container ${
-                      isDescriptionFocused ? "focus" : ""
-                    } ${
-                      errors.deskripsi ? "border-red-500" : "border-gray-300"
-                    }`}
-                  >
-                    <ReactQuill
-                      theme="snow"
-                      value={formArticle.deskripsi}
-                      onChange={handleArticleDescriptionChange}
-                    />
-                  </div>
-                  {errors.deskripsi && (
-                    <p className="mt-1 text-sm text-red-500 mb-4">
-                      {errors.deskripsi}
-                    </p>
-                  )}
+                <div
+                  onFocus={() => setIsDescriptionFocused(true)}
+                  onBlur={() => setIsDescriptionFocused(false)}
+                  className={`react-quill-container ${
+                    isDescriptionFocused ? "focus" : ""
+                  } ${errors.deskripsi ? "border-red-500" : "border-gray-300"}`}
+                >
+                  <ReactQuill
+                    theme="snow"
+                    value={formArticle.deskripsi}
+                    onChange={handleArticleDescriptionChange}
+                  />
                 </div>
+                <InputError message={errors.deskripsi} />
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor={"tags"} value={"Tag Artikel"} />
-                    <div className="mb-4">
-                      <MultiSelect
-                        name={"tags"}
-                        options={articleTagsOption}
-                        defaultValue={articleTagSelected}
-                        placeholder={"Pilih tag artikel.."}
-                        isError={errors.tags}
-                        handleChange={handleTagChange}
-                      />
-                      {errors.tags && (
-                        <p className="mt-1 text-sm text-red-500">
-                          {errors.tags}
-                        </p>
-                      )}
-                    </div>
+                    <MultiSelect
+                      name={"tags"}
+                      options={articleTagsOption}
+                      defaultValue={articleTagSelected}
+                      placeholder={"Pilih tag artikel.."}
+                      isError={errors.tags}
+                      handleChange={handleTagChange}
+                    />
+                    <InputError message={errors.tags} />
                   </div>
                   <div>
                     <Label htmlFor={"tanggal"} value={"Tanggal"} />
@@ -521,9 +524,8 @@ const KontenArtikel = (props) => {
                       value={formArticle.tanggal}
                       handleChange={handleArticleInputChange}
                       isError={!!errors.tanggal}
-                      errorMessage={errors.tanggal}
-                      clearError={clearError}
                     />
+                    <InputError message={errors.tanggal} />
                   </div>
                 </div>
 
@@ -584,9 +586,7 @@ const KontenArtikel = (props) => {
                       />
                     </label>
                   </div>
-                  {errors.gambar && (
-                    <p className="mt-1 text-sm text-red-500">{errors.gambar}</p>
-                  )}
+                  <InputError message={errors.gambar} />
                 </div>
               </Modal.Body>
               <Modal.Footer
