@@ -52,6 +52,7 @@ import PublicRouteAdmin from "./components/admin/PublicRouteAdmin";
 import ProtectedRoute from "./components/protectedRoute";
 import { AuthProvider } from "./contexts/AuthProvider";
 import ResetPassword from "./pages/investor/ResetPassword";
+import VerifikasiEmail from "./pages/investor/VerifikasiEmail";
 // END: Investor
 
 const router = createBrowserRouter([
@@ -113,6 +114,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPassword />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifikasiEmail />,
   },
   {
     path: "/investor",
