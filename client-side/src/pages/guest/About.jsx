@@ -134,13 +134,18 @@ const About = () => {
       </section>
       <section className="bg-gradient-to-b from-white to-orange-100">
         {/* sejarah */}
-        <div className="w-[90%] mx-auto  lg:px-20 mt-12 lg:mt-32 text-center">
+        <div className="w-[90%] mx-auto  lg:px-20 mt-12 lg:mt-32 text-justify">
           <h1 className="font-bold text-3xl lg:text-4xl text-center tracking-wide mb-2 lg:mb-4">
             {sejarah.judul}
           </h1>
-          <p className="text-lg font-quicksand font-medium text-[#000000]">
-            {sejarah.deskripsi}
-          </p>
+            <div className="format px-11 min-w-full">
+              <p
+              dangerouslySetInnerHTML={{
+                __html: sejarah.deskripsi,
+              }}
+              >
+              </p>
+            </div>
         </div>
         {/* dokumen */}
         <div className="w-[90%] mx-auto mt-12 lg:mt-32 ">
