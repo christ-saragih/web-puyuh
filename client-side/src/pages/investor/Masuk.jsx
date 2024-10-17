@@ -1,27 +1,50 @@
 import Logo from "../../assets/images/logo.svg";
-import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthProvider.jsx";
 import Label from "../../components/common/Label.jsx";
 import Input from "../../components/common/Input.jsx";
+import InputError from "../../components/common/InputError.jsx";
+import { AuthContext } from "../../contexts/AuthProvider.jsx";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Masuk = () => {
   const { login } = useContext(AuthContext);
-  const [usernameOrEmail, setUsernameOrEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     setError("");
     try {
-      await login(usernameOrEmail, password, "investor");
+      await login(
+        formik.values.usernameOrEmail,
+        formik.values.password,
+        "investor"
+      );
       navigate("/investor");
     } catch (error) {
       setError("Username/Email atau password salah");
     }
+  };
+
+  const validationSchema = Yup.object().shape({
+    usernameOrEmail: Yup.string().required("Username atau email wajib diisi"),
+    password: Yup.string().required("Password wajib diisi"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      usernameOrEmail: "",
+      password: "",
+    },
+    onSubmit: handleLogin,
+    validationSchema: validationSchema,
+  });
+
+  const handleInputChange = (event) => {
+    const { target } = event;
+    formik.setFieldValue(target.name, target.value);
   };
 
   return (
@@ -37,7 +60,7 @@ const Masuk = () => {
 
         <div className="w-full lg:w-1/2">
           {/* Form */}
-          <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
+          <form onSubmit={formik.handleSubmit} className="max-w-xl mx-auto">
             <div className="flex items-center justify-center mb-8">
               <img
                 src={Logo}
@@ -61,9 +84,10 @@ const Masuk = () => {
                 type="text"
                 variant="primary-outline"
                 placeholder="Masukkan username atau email.."
-                value={usernameOrEmail}
-                handleChange={(e) => setUsernameOrEmail(e.target.value)}
+                handleChange={handleInputChange}
+                isError={!!formik.errors.usernameOrEmail}
               />
+              <InputError message={formik.errors.usernameOrEmail} />
             </div>
             <div>
               <Label value={"Password"} htmlFor={"password"} />
@@ -72,9 +96,10 @@ const Masuk = () => {
                 type="password"
                 variant="primary-outline"
                 placeholder="Masukkan password.."
-                value={password}
-                handleChange={(e) => setPassword(e.target.value)}
+                handleChange={handleInputChange}
+                isError={!!formik.errors.password}
               />
+              <InputError message={formik.errors.password} />
               <Link
                 to="/lupa-password"
                 className=" text-[#4B241A] hover:text-[#381b13] text-right block font-semibold mt-1"
@@ -91,9 +116,8 @@ const Masuk = () => {
               </button>
             </div>
           </form>
-          
-          {error && <p className="text-red-600 text-center mt-1">{error}</p>}
 
+          {error && <p className="text-red-600 text-center mt-1">{error}</p>}
 
           <div className="text-center">
             <span className="text-gray-600">Belum punya akun? </span>
