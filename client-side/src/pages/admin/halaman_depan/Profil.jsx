@@ -639,91 +639,136 @@ const Section = ({
   imageFieldName,
   textAreaFieldName,
   includeFields = [],
-}) => (
-  <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
-    <div className="flex justify-between mb-5">
-      <h1 className="font-bold text-[#572618] text-xl">{title}</h1>
-      <button
-        onClick={editMode ? handleSave : handleEdit}
-        className={`px-6 py-2 font-bold rounded-2xl transition ${
-          !editMode
-            ? "text-white border-2 border-yellow-400 bg-yellow-400 hover:font-semibold hover:text-yellow-400 hover:bg-white hover:border-yellow-400 ease-in-out duration-300"
-            : "bg-[#572618] text-white hover:bg-brown-700"
-        }`}
-      >
-        {editMode ? "Simpan" : "Ubah"}
-      </button>
-    </div>
+}) => {
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'align': [] }],
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video'],
+      ['clean']
+    ],
+  };
 
-    {["Profil", "Sejarah"].includes(title) && (
-      <InputField
-        label={`Judul ${title}`}
-        name={title === "Profil" ? "judul" : "judul_sejarah"}
-        value={title === "Profil" ? formData.judul : formData.judul_sejarah}
-        onChange={handleChange}
-        isDisabled={!editMode}
-      />
-    )}
+  const formats = [
+    'header',
+    'font',
+    'size',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'color',
+    'background',
+    'script',
+    'list',
+    'bullet',
+    'indent',
+    'direction',
+    'align',
+    'blockquote',
+    'code-block',
+    'link',
+    'image',
+    'video'
+  ];
 
-    {includeFields.includes("nama") && (
-      <InputField
-        label="Nama Founder"
-        name="nama"
-        value={formData.nama || ""}
-        onChange={handleChange}
-        isDisabled={!editMode}
-      />
-    )}
-
-    {includeFields.includes("jabatan") && (
-      <InputField
-        label="Jabatan Founder"
-        name="jabatan"
-        value={formData.jabatan || ""}
-        onChange={handleChange}
-        isDisabled={!editMode}
-      />
-    )}
-
-    {imagePreview && (
-      <div className="w-80 h-56 rounded-md overflow-hidden mb-4">
-        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+  return (
+    <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
+      <div className="flex justify-between mb-5">
+        <h1 className="font-bold text-[#572618] text-xl">{title}</h1>
+        <button
+          onClick={editMode ? handleSave : handleEdit}
+          className={`px-6 py-2 font-bold rounded-2xl transition ${
+            !editMode
+              ? "text-white border-2 border-yellow-400 bg-yellow-400 hover:font-semibold hover:text-yellow-400 hover:bg-white hover:border-yellow-400 ease-in-out duration-300"
+              : "bg-[#572618] text-white hover:bg-brown-700"
+          }`}
+        >
+          {editMode ? "Simpan" : "Ubah"}
+        </button>
       </div>
-    )}
 
-    {editMode && imageFieldName && (
-      <ImageUpload
-        label={`Gambar ${title}`}
-        name={imageFieldName}
-        onChange={handleChange}
-      />
-    )}
-
-    <div className="mb-4">
-      <label htmlFor={textAreaFieldName} className="block text-[#572618] font-semibold mb-2">
-        {`Deskripsi ${title}`}
-      </label>
-      <div className={`
-        border rounded-md overflow-hidden transition-colors duration-300
-        ${editMode 
-          ? 'border-yellow-400 bg-white' 
-          : 'border-gray-300 bg-gray-100'
-        }
-      `}>
-        <ReactQuill
-          id={textAreaFieldName}
-          value={formData[textAreaFieldName] || ""}
-          onChange={(content, delta, source, editor) => 
-            handleChange(textAreaFieldName, null, editor)
-          }
-          readOnly={!editMode}
-          className={`
-            ${!editMode && 'quill-readonly'}
-          `}
+      {["Profil", "Sejarah"].includes(title) && (
+        <InputField
+          label={`Judul ${title}`}
+          name={title === "Profil" ? "judul" : "judul_sejarah"}
+          value={title === "Profil" ? formData.judul : formData.judul_sejarah}
+          onChange={handleChange}
+          isDisabled={!editMode}
         />
+      )}
+
+      {includeFields.includes("nama") && (
+        <InputField
+          label="Nama Founder"
+          name="nama"
+          value={formData.nama || ""}
+          onChange={handleChange}
+          isDisabled={!editMode}
+        />
+      )}
+
+      {includeFields.includes("jabatan") && (
+        <InputField
+          label="Jabatan Founder"
+          name="jabatan"
+          value={formData.jabatan || ""}
+          onChange={handleChange}
+          isDisabled={!editMode}
+        />
+      )}
+
+      {imagePreview && (
+        <div className="w-80 h-56 rounded-md overflow-hidden mb-4">
+          <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+        </div>
+      )}
+
+      {editMode && imageFieldName && (
+        <ImageUpload
+          label={`Gambar ${title}`}
+          name={imageFieldName}
+          onChange={handleChange}
+        />
+      )}
+
+      <div className="mb-4">
+        <label htmlFor={textAreaFieldName} className="block text-[#572618] font-semibold mb-2">
+          {`Deskripsi ${title}`}
+        </label>
+        <div className={`
+          border rounded-md overflow-hidden transition-colors duration-300
+          ${editMode 
+            ? 'border-yellow-400 bg-white' 
+            : 'border-gray-300 bg-gray-100'
+          }
+        `}>
+          <ReactQuill
+            id={textAreaFieldName}
+            value={formData[textAreaFieldName] || ""}
+            onChange={(content, delta, source, editor) => 
+              handleChange(textAreaFieldName, null, editor)
+            }
+            modules={modules}
+            formats={formats}
+            readOnly={!editMode}
+            className={`
+              ${!editMode && 'quill-readonly'}
+            `}
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Profil;
