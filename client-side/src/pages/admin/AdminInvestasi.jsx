@@ -1,5 +1,6 @@
-import Input from "../../components/common/Input.jsx";
 import Label from "../../components/common/Label.jsx";
+import Input from "../../components/common/Input.jsx";
+import InputError from "../../components/common/InputError.jsx";
 import Modal from "../../components/common/Modal.jsx";
 import AdminLayout from "../../layouts/AdminLayout";
 import BatchList from "../../components/admin/BatchList.jsx";
@@ -13,6 +14,7 @@ import {
 import { formatDate } from "../../utils/formatDate.js";
 import { formatRupiah } from "../../utils/formatRupiah.js";
 import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining.js";
+import { showToast } from "../../utils/toast.js";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
@@ -30,7 +32,7 @@ import {
 } from "react-icons/pi";
 import { Dropdown, Tabs } from "flowbite-react";
 import { FaPercent } from "react-icons/fa";
-import InputError from "../../components/common/InputError.jsx";
+
 
 const AdminInvestasi = () => {
   const [investments, setInvestments] = useState([]);
@@ -323,7 +325,7 @@ const AdminInvestasi = () => {
       addInvestment(form, (response) => {
         setInvestments([response, ...investments]);
         closeModal();
-        resetForm();
+        showToast("Investasi berhasil ditambahkan");
       });
     }
   };
@@ -348,7 +350,7 @@ const AdminInvestasi = () => {
         );
 
         closeModal();
-        resetForm();
+        showToast("Investasi berhasil diubah");
       });
     }
   };
@@ -361,6 +363,7 @@ const AdminInvestasi = () => {
         )
       );
       closeModal();
+      showToast("Investasi berhasil dihapus");
     });
   };
   // CRUD: End
