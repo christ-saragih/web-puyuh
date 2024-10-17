@@ -26,6 +26,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import InputError from "../../components/common/InputError";
+import '../../assets/style/quill-content.css';
 
 const About = () => {
   const [abouts, setAbouts] = useState(null);
