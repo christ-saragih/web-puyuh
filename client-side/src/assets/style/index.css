@@ -10,17 +10,17 @@
 .input-primary-outline,
 .input-primary-outline-search,
 .textarea-primary-outline {
-  @apply text-gray-900 bg-gray-50 border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+  @apply text-gray-900 bg-gray-50 border-gray-300 focus:ring-[#d67026] focus:border-[#d67026] focus:outline-none;
 }
 
 .input-disabled,
 .textarea-disabled {
-  @apply text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+  @apply text-gray-900 bg-gray-50 border-gray-50 focus:ring-[#d67026] focus:border-[#d67026] focus:outline-none;
 }
 
 .input-error,
 .textarea-error {
-  @apply text-gray-900 bg-gray-50 border-red-500 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none;
+  @apply text-gray-900 bg-gray-50 border-red-500 focus:ring-[#d67026] focus:border-[#d67026] focus:outline-none;
 }
 
 /* w-8/12 md:w-1/3 xl:w-1/5 */
@@ -31,11 +31,11 @@
 }
 
 .btn-primary {
-  @apply text-white text-base border-2 border-[#572618] bg-[#572618] hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300;
+  @apply text-white text-base border-2 border-[#4B241A] bg-[#4B241A] hover:font-semibold hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A] ease-in-out duration-300;
 }
 
 .btn-primary-outline {
-  @apply text-[#572618] border-2 border-[#572618] bg-white hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300;
+  @apply text-[#4B241A] border-2 border-[#4B241A] bg-white hover:font-semibold hover:text-white hover:bg-[#4B241A] ease-in-out duration-300;
 }
 
 .btn-update {
@@ -61,7 +61,7 @@
 }
 
 .css-t3ipsp-control {
-  @apply text-gray-900 px-2 text-sm rounded-2xl outline-none shadow-none border-2 ring-1 ring-[#B87817] border-[#B87817] !important;
+  @apply text-gray-900 px-2 text-sm rounded-2xl outline-none shadow-none border-2 ring-1 ring-[#d67026] border-[#d67026] !important;
 }
 
 .select__menu {
@@ -85,7 +85,7 @@ div[aria-label="Tabs with underline"] button {
   @apply text-base text-gray-600 focus:ring-0;
 }
 div[aria-label="Tabs with underline"] button[aria-selected="true"] {
-  @apply font-semibold text-[#572618] border-[#572618];
+  @apply font-semibold text-[#4B241A] border-[#4B241A];
 }
 
 div[aria-label="Pills"] {
@@ -201,7 +201,7 @@ div[data-testid="flowbite-dropdown"] {
 }
 
 button[data-testid="flowbite-dropdown-target"] {
-  @apply text-gray-900 bg-gray-100 border border-gray-300 rounded-2xl sm:rounded-e-none hover:bg-gray-200 focus:ring-1 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none w-full shadow sm:shadow-none sm:w-fit   !important;
+  @apply text-gray-900 bg-gray-100 border border-gray-300 rounded-2xl sm:rounded-e-none hover:bg-gray-200 focus:ring-1 focus:ring-[#d67026] focus:border-[#d67026] focus:outline-none w-full shadow sm:shadow-none sm:w-fit   !important;
 }
 
 button[data-testid="flowbite-dropdown-target"] span {
@@ -227,7 +227,7 @@ li[role="menuitem"] a svg {
 }
 
 .react-quill-container.focus {
-  @apply ring-[#B87817] ring-1 border-2 border-[#B87817] outline-none;
+  @apply ring-[#d67026] ring-1 border-2 border-[#d67026] outline-none;
 }
 
 .ql-toolbar {

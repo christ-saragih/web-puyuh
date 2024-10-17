@@ -22,7 +22,7 @@ const MultiSelect = (props) => {
     <Select
       id={name}
       name={name}
-      className={`mt-2 ${isError ? "input-error" : "input"}`}
+      className={`${isError ? "input-error" : "input"}`}
       closeMenuOnSelect={false}
       components={animatedComponents}
       isMulti

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import "../../assets/style/index.css";
 import Logo from "../../assets/images/logo.svg";
-import GuestLayout from "../../layouts/GuestLayout";
+import Label from "../../components/common/Label";
+import Input from "../../components/common/Input";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const PasswordValidation = ({ password, confirmPassword }) => {
   const hasMinLength = password.length >= 8;
@@ -15,10 +15,10 @@ const PasswordValidation = ({ password, confirmPassword }) => {
 
   return (
     showValidation && (
-      <div className="flex flex-wrap justify-start mt-3 ml-4 p-1">
-        <div className="flex items-center mr-2">
+      <div className="flex flex-wrap justify-center space-x-3 mt-2">
+        <div className="flex items-center">
           <div
-            className={`rounded-full p-0.5 fill-current ${
+            className={`rounded-full p-0.5 fill-current mr-1 ${
               passwordsMatch
                 ? "bg-green-200 text-green-700"
                 : "bg-red-200 text-red-700"
@@ -48,16 +48,16 @@ const PasswordValidation = ({ password, confirmPassword }) => {
             </svg>
           </div>
           <span
-            className={`font-medium text-xs ml-1 ${
+            className={`font-medium text-xs ${
               passwordsMatch ? "text-green-700" : "text-red-700"
             }`}
           >
             {passwordsMatch ? "Passwords match" : "Passwords do not match"}
           </span>
         </div>
-        <div className="flex items-center mr-2">
+        <div className="flex items-center">
           <div
-            className={`rounded-full p-0.5 fill-current ${
+            className={`rounded-full p-0.5 fill-current mr-1 ${
               hasMinLength
                 ? "bg-green-200 text-green-700"
                 : "bg-red-200 text-red-700"
@@ -87,7 +87,7 @@ const PasswordValidation = ({ password, confirmPassword }) => {
             </svg>
           </div>
           <span
-            className={`font-medium text-xs ml-1 ${
+            className={`font-medium text-xs ${
               hasMinLength ? "text-green-700" : "text-red-700"
             }`}
           >
@@ -98,7 +98,7 @@ const PasswordValidation = ({ password, confirmPassword }) => {
         </div>
         <div className="flex items-center">
           <div
-            className={`rounded-full p-0.5 fill-current ${
+            className={`rounded-full p-0.5 fill-current mr-1 ${
               hasSymbol
                 ? "bg-green-200 text-green-700"
                 : "bg-red-200 text-red-700"
@@ -128,7 +128,7 @@ const PasswordValidation = ({ password, confirmPassword }) => {
             </svg>
           </div>
           <span
-            className={`font-medium text-xs ml-1 ${
+            className={`font-medium text-xs ${
               hasSymbol ? "text-green-700" : "text-red-700"
             }`}
           >
@@ -164,7 +164,6 @@ const Daftar = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [msg, setMsg] = useState("");
   const [registerType, setRegisterType] = useState("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -210,7 +209,9 @@ const Daftar = () => {
     } catch (error) {
       if (error.response && error.response.data) {
         console.log("Error Response:", error.response.data);
-        setErrorMessage(error.response.data.message || "Terjadi kesalahan. Silakan coba lagi.");
+        setErrorMessage(
+          error.response.data.message || "Terjadi kesalahan. Silakan coba lagi."
+        );
         setShowErrorModal(true);
       } else {
         setErrorMessage("Terjadi kesalahan jaringan. Silakan coba lagi nanti.");
@@ -227,170 +228,158 @@ const Daftar = () => {
   };
 
   return (
-    <GuestLayout className="lg:-mb-2">
+    <>
       <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen w-full">
         {/* Background */}
         <div
-          className="w-full lg:w-1/2 bg-cover bg-center min-h-[300px] lg:min-h-screen lg:-ml-40"
+          className="w-full lg:w-1/2 bg-cover bg-center min-h-[300px] lg:min-h-screen"
           style={{
             backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')`,
           }}
         ></div>
         {/* Form */}
-        <div className="w-full lg:w-1/2 lg:-mt-14 p-8">
-          <div className="flex items-center justify-center mb-8">
-            <img src={Logo} alt="Logo" className="w-20 h-20 mr-4" />
-            <h1 className="text-2xl font-bold text-gray-800">
-              Sukaharja Smart Quail Farm
-            </h1>
-          </div>
-          <div className="font-quicksand font-bold text-[1.5rem] mb-2">
-            <h2>Daftar Akun</h2>
-          </div>
-          <form onSubmit={handleSubmit} className="min-h-[500px]">
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                id="email"
-                type="email"
-                placeholder="Masukkan Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+        <div className="w-full lg:w-1/2 px-8">
+          <div className="max-w-xl mx-auto">
+            <div className="flex items-center justify-center mb-8">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="w-12 h-12 sm:w-14 sm:h-14 mr-4"
               />
+              <h1 className="text-3xl font-bold text-gray-800">
+                Sukaharja Smart Quail Farm
+              </h1>
             </div>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="username"
-              >
-                Username
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                id="username"
-                type="text"
-                placeholder="Buat Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+            <div className="font-bold text-2xl">
+              <h2>Daftar Akun</h2>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <Label value={"Email"} htmlFor={"email"} />
+                <Input
+                  name="email"
+                  type="email"
+                  variant="primary-outline"
+                  placeholder="Masukkan email.."
+                  value={email}
+                  handleChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label value={"Username"} htmlFor={"username"} />
+                <Input
+                  name="username"
+                  type="text"
+                  variant="primary-outline"
+                  placeholder="Masukkan username.."
+                  value={username}
+                  handleChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label value={"Password"} htmlFor={"password"} />
+                <Input
+                  name="password"
+                  type="password"
+                  variant="primary-outline"
+                  placeholder="Masukkan password.."
+                  value={password}
+                  handleChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label
+                  value={"Konfirmasi Password"}
+                  htmlFor={"confirmPassword"}
+                />
+                <Input
+                  name="confirmPassword"
+                  type="password"
+                  variant="primary-outline"
+                  placeholder="Masukkan konfirmasi password.."
+                  value={confirmPassword}
+                  handleChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+              <PasswordValidation
+                password={password}
+                confirmPassword={confirmPassword}
               />
-            </div>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="password"
+              <Label value={"Daftar Sebagai"} htmlFor={"registerType"} />
+              <div className="flex flex-row items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => handleRegisterType("individu")}
+                  className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
+                    registerType === "individu"
+                      ? "bg-slate-300 border-black"
+                      : "hover:bg-slate-300 border-zinc-950"
+                  }`}
+                >
+                  <FiUser className="w-[34px] h-[35px]" />
+                  <p className="font-bold text-[15px]">INDIVIDU</p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRegisterType("organisasi")}
+                  className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
+                    registerType === "organisasi"
+                      ? "bg-slate-300 border-black"
+                      : "hover:bg-slate-300 border-zinc-950"
+                  }`}
+                >
+                  <HiOutlineBuildingOffice2 className="w-[34px] h-[35px]" />
+                  <p className="font-bold text-[15px]">ORGANISASI</p>
+                </button>
+              </div>
+              <div className="mt-6 mb-2">
+                <button
+                  className={`bg-[#4B241A] hover:bg-[#381b13] ease-in-out duration-300 text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline w-full flex justify-center items-center ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Mengirim...
+                    </>
+                  ) : (
+                    "Daftar"
+                  )}
+                </button>
+              </div>
+            </form>
+
+            <div className="text-center">
+              <span className="text-gray-600">Sudah punya akun? </span>
+              <Link
+                to="/masuk"
+                className="text-[#4B241A] hover:text-[#3a1c15] font-semibold"
               >
-                Password
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                id="password"
-                type="password"
-                placeholder="Masukkan Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+                Masuk
+              </Link>
             </div>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="confirmPassword"
-              >
-                Konfirmasi Password
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                id="confirmPassword"
-                type="password"
-                placeholder="Masukkan Kembali Password yang Telah Dibuat"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <PasswordValidation
-              password={password}
-              confirmPassword={confirmPassword}
-            />
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="registerType"
-            >
-              Daftar Sebagai
-            </label>
-            <div className="flex flex-row items-center mb-4 gap-4">
-              <button
-                type="button"
-                onClick={() => handleRegisterType("individu")}
-                className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
-                  registerType === "individu"
-                    ? "bg-slate-300 border-black"
-                    : "hover:bg-slate-300 border-zinc-950"
-                }`}
-              >
-                <FiUser className="w-[34px] h-[35px]" />
-                <p className="font-bold text-[15px]">INDIVIDU</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRegisterType("organisasi")}
-                className={`flex flex-col items-center border-[4px] w-32 py-2 rounded-xl ${
-                  registerType === "organisasi"
-                    ? "bg-slate-300 border-black"
-                    : "hover:bg-slate-300 border-zinc-950"
-                }`}
-              >
-                <HiOutlineBuildingOffice2 className="w-[34px] h-[35px]" />
-                <p className="font-bold text-[15px]">ORGANISASI</p>
-              </button>
-            </div>
-            <div className="mb-6">
-              <button
-                className={`bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full flex justify-center items-center ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                type="submit"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Mengirim...
-                  </>
-                ) : (
-                  "Daftar"
-                )}
-              </button>
-            </div>
-            {msg && <p className="text-red-500 text-xs italic">{msg}</p>}
-          </form>
-          <div className="text-center mt-5">
-            <a href="/masuk" className="font-medium text-orange-300">
-              ← Kembali
-            </a>
           </div>
         </div>
       </div>
@@ -399,7 +388,7 @@ const Daftar = () => {
         onClose={closeErrorModal}
         message={errorMessage}
       />
-    </GuestLayout>
+    </>
   );
 };
 

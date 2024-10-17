@@ -1,8 +1,10 @@
 import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
+import InputError from "../../../components/common/InputError.jsx";
 import Alert from "../../../components/common/Alert";
 import ActionButton from "../../../components/common/ActionButton";
 import Modal from "../../../components/common/Modal";
+import { showToast } from "../../../utils/toast.js";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiNotePencilBold, PiPlusCircle, PiTrashBold } from "react-icons/pi";
@@ -48,6 +50,7 @@ const TagArtikel = (props) => {
     if (validateTag(newTag)) {
       addTag({ nama: newTag }, () => {
         closeModal();
+        showToast("Tag artikel berhasil ditambahkan");
       });
     }
   };
@@ -56,6 +59,7 @@ const TagArtikel = (props) => {
     if (validateTag(newTag)) {
       updateTag(selectedTag.id, { nama: newTag }, () => {
         closeModal();
+        showToast("Tag artikel berhasil diubah");
       });
     }
   };
@@ -65,6 +69,7 @@ const TagArtikel = (props) => {
       selectedTag.id,
       () => {
         closeModal();
+        showToast("Tag artikel berhasil dihapus");
       },
       (error) => {
         setDeleteError(
@@ -192,8 +197,8 @@ const TagArtikel = (props) => {
                   value={newTag}
                   handleChange={handleInputChange}
                   isError={!!errors.nama}
-                  errorMessage={errors.nama}
                 />
+                <InputError message={errors.nama} />
               </Modal.Body>
               <Modal.Footer
                 action={"Tambah"}
@@ -216,8 +221,8 @@ const TagArtikel = (props) => {
                   value={newTag}
                   handleChange={handleInputChange}
                   isError={!!errors.nama}
-                  errorMessage={errors.nama}
                 />
+                <InputError message={errors.nama} />
               </Modal.Body>
               <Modal.Footer
                 action="Ubah"
