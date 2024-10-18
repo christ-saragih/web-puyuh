@@ -10,7 +10,6 @@ const insertSnapScript = () => {
         script.setAttribute(
             "data-client-key",
             "SB-Mid-client-NNnpK_GkF7c5LAHP"
-            // import.meta.env.VITE_CLIENT_MIDTRANS
         );
         script.onload = () => resolve();
         document.body.appendChild(script);
@@ -18,28 +17,39 @@ const insertSnapScript = () => {
 };
 
 const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
-    const [isChecked, setIsChecked] = useState(false); // State untuk checkbox
-    const [showError, setShowError] = useState(false); // State untuk menampilkan pesan error
-    const [totalInvestasi, setTotalInvestasi] = useState(""); // State untuk menyimpan total investasi
-    const [inputError, setInputError] = useState(""); // State untuk validasi input investasi
+    const [isChecked, setIsChecked] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [totalInvestasi, setTotalInvestasi] = useState("");
+    const [inputError, setInputError] = useState("");
     const [verificationError, setVerificationError] = useState("");
+    const [formattedInvestasi, setFormattedInvestasi] = useState("");
 
     useEffect(() => {
         insertSnapScript();
-        // console.log("Investasi ID:", investasiId);
     }, []);
+
+    const formatNumber = (num) => {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    const handleTotalInvestasiChange = (e) => {
+        const value = e.target.value.replace(/\./g, ""); // Hapus semua titik yang ada
+        
+        if (value === "" || /^\d+$/.test(value)) { // Cek apakah input kosong atau hanya berisi angka
+            setTotalInvestasi(value);
+            if (value) {
+                setFormattedInvestasi(formatNumber(value));
+            } else {
+                setFormattedInvestasi("");
+            }
+            setInputError("");
+        }
+    };
 
     const handleCheckboxChange = (e) => {
         setIsChecked(e.target.checked);
         if (e.target.checked) {
-            setShowError(false); // Sembunyikan pesan error jika checkbox dicentang
-        }
-    };
-
-    const handleTotalInvestasiChange = (e) => {
-        setTotalInvestasi(e.target.value);
-        if (e.target.value) {
-            setInputError(""); // Reset error ketika ada input yang valid
+            setShowError(false);
         }
     };
 
@@ -102,7 +112,6 @@ const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
             <Modal.Header title="Investasi Sekarang" onClose={closeModal} />
             <Modal.Body>
                 <div className="flex flex-col gap-4">
-                    {/* Teks Syarat dan Ketentuan */}
                     <div className="overflow-y-auto max-h-40 border-t border-b border-gray-300 py-2">
                         <h3 className="font-semibold">KONTRAK PERJANJIAN:</h3>
                         <p className="text-sm text-gray-600">
@@ -129,7 +138,6 @@ const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
                         </ul>
                     </div>
 
-                    {/* Input untuk Total Investasi */}
                     <div className="flex flex-col">
                         <label
                             htmlFor="totalInvestasi"
@@ -138,20 +146,18 @@ const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
                             Total Investasi
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="totalInvestasi"
-                            value={totalInvestasi}
+                            value={formattedInvestasi}
                             onChange={handleTotalInvestasiChange}
                             placeholder="Masukkan total investasi"
                             className="border border-gray-300 px-3 py-2 rounded-md"
                         />
-                        {/* Pesan error untuk total investasi */}
                         {inputError && (
                             <p className="text-sm text-red-500">{inputError}</p>
                         )}
                     </div>
 
-                    {/* Checkbox untuk validasi */}
                     <div className="flex items-center gap-2">
                         <input
                             type="checkbox"
@@ -169,7 +175,6 @@ const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
                         </label>
                     </div>
 
-                    {/* Pesan error jika checkbox belum dicentang */}
                     {showError && (
                         <p className="text-sm text-red-500">
                             Anda harus mencentang kotak persetujuan sebelum
@@ -177,10 +182,8 @@ const ModalInvestasi = ({ closeModal, investasiId, onClosePayment }) => {
                         </p>
                     )}
 
-                    {/* Pesan Konfirmasi */}
                     <p>Apakah Anda yakin ingin melakukan investasi ini?</p>
 
-                    {/* Display verification error */}
                     {verificationError && (
                         <p className="text-sm text-red-500">{verificationError}</p>
                     )}
