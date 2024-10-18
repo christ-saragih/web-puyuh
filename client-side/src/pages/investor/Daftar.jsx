@@ -205,16 +205,16 @@ const Daftar = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row items-center justify-end min-h-screen w-full">
+      <div className="flex flex-col lg:flex-row items-center lg:justify-end min-h-screen w-full">
         {/* Background */}
         <div
-          className="fixed top-0 left-0 w-1/2 h-screen bg-cover bg-center"
+          className="lg:fixed top-0 left-0 w-full lg:w-1/2 h-[300px] md:h-[450px] lg:h-screen bg-cover bg-center"
           style={{
             backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')`,
           }}
         ></div>
         {/* Form */}
-        <div className="w-full lg:w-1/2 py-8">
+        <div className="w-full lg:w-1/2 p-8">
           <div className="max-w-xl mx-auto">
             <div className="flex items-center justify-center mb-8">
               <img
@@ -222,7 +222,7 @@ const Daftar = () => {
                 alt="Logo"
                 className="w-12 h-12 sm:w-14 sm:h-14 mr-4"
               />
-              <h1 className="text-3xl font-bold text-gray-800">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
                 Sukaharja Smart Quail Farm
               </h1>
             </div>
