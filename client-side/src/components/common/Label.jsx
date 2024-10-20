@@ -13,10 +13,10 @@ const Label = (props) => {
   );
 };
 
-export default Label;
-
 Label.propTypes = {
   htmlFor: PropTypes.string,
   value: PropTypes.string.isRequired,
   className: PropTypes.string,
 };
+
+export default Label;
