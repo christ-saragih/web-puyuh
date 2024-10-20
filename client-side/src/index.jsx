@@ -5,6 +5,7 @@ import "./assets/style/index.css";
 
 import { AuthAdminProvider } from "./contexts/AuthAdminProvider";
 import { AuthInvestorProvider } from "./contexts/AuthInvestorProvider";
+import AdminDataContextProvider from "./contexts/AdminData";
 
 // START: Guest
 import Dashboard from "./pages/guest/Dashboard";
@@ -58,41 +59,41 @@ import ProtectedRoute from "./components/protectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
 const router = createBrowserRouter([
-    //guess start
-    {
-        path: "/",
-        element: <Dashboard />,
-        errorElement: <ErrorPage />,
-    },
-    {
-        path: "/investasi",
-        element: <Investasi />,
-    },
-    {
-        path: "/investasi/:slug",
-        element: (
-            <AuthProvider>
-                <DetailInvestasi />
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/artikel",
-        element: <Article />,
-    },
-    {
-        path: "/artikel/:slug",
-        element: <ArticleDetail />,
-    },
-    {
-        path: "/tentang-kami",
-        element: <About />,
-    },
-    {
-        path: "/faq",
-        element: <Faq />,
-    },
-    // guest end
+  //guess start
+  {
+    path: "/",
+    element: <Dashboard />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/investasi",
+    element: <Investasi />,
+  },
+  {
+    path: "/investasi/:slug",
+    element: (
+      <AuthProvider>
+        <DetailInvestasi />
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/artikel",
+    element: <Article />,
+  },
+  {
+    path: "/artikel/:slug",
+    element: <ArticleDetail />,
+  },
+  {
+    path: "/tentang-kami",
+    element: <About />,
+  },
+  {
+    path: "/faq",
+    element: <Faq />,
+  },
+  // guest end
 
   // investor start
   {
@@ -171,197 +172,184 @@ const router = createBrowserRouter([
   },
   // investor end
 
-    // admin start
-    {
-        path: "/admin/masuk",
-        element: (
-            <AuthProvider>
-                <PublicRoute requiredRole="admin" redirectPath="/admin">
-                    <AdminMasuk />
-                </PublicRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/lupa-password",
-        element: <AdminLupaPassword />,
-    },
-    {
-        path: "/admin",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <AdminDashboard />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/profil",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <AdminProfil />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/utama",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <Utama />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/profil",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <Profil />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/kontak",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <Kontak />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/media-sosial",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <MediaSosial />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/dokumentasi",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <Dokumentasi />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/dokumen",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <Dokumen />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/faq",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <FaqAdmin />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
+  // admin start
+  {
+    path: "/admin/masuk",
+    element: (
+      <AuthProvider>
+        <PublicRoute requiredRole="admin" redirectPath="/admin">
+          <AdminMasuk />
+        </PublicRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/lupa-password",
+    element: <AdminLupaPassword />,
+  },
+  {
+    path: "/admin",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <AdminDashboard />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/profil",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <AdminProfil />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/utama",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <Utama />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/profil",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <Profil />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/kontak",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <Kontak />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/media-sosial",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <MediaSosial />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/dokumentasi",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <Dokumentasi />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/dokumen",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <Dokumen />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/faq",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <FaqAdmin />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
 
-    {
-        path: "/admin/artikel",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <AdminArtikel />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
+  {
+    path: "/admin/artikel",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <AdminArtikel />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
 
-    {
-        path: "/admin/investasi",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <AdminInvestasi />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/investor",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <AdminInvestor />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/admin/halaman-depan/profil",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute
-                    requiredRole="admin"
-                    redirectPath="/admin/masuk"
-                >
-                    <Profil />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    // admin end
+  {
+    path: "/admin/investasi",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <AdminInvestasi />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/investor",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <AdminInvestor />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/admin/halaman-depan/profil",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="admin" redirectPath="/admin/masuk">
+          <AdminDataContextProvider>
+            <Profil />
+          </AdminDataContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  // admin end
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
 );
