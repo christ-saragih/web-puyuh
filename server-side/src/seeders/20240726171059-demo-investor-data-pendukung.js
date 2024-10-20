@@ -31,7 +31,7 @@ module.exports = {
         }));
 
         await queryInterface.bulkInsert(
-            "InvestorDataPendukung",
+            "InvestorDataPendukungs",
             investorDataPendukung,
             {}
         );
@@ -44,6 +44,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete("InvestorDataPendukung", null, {});
+        await queryInterface.bulkDelete("InvestorDataPendukungs", null, {});
     },
 };

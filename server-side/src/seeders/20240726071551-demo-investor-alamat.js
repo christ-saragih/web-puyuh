@@ -29,7 +29,7 @@ module.exports = {
             updatedAt: new Date(),
         }));
 
-        await queryInterface.bulkInsert("InvestorAlamat", investorAlamat, {});
+        await queryInterface.bulkInsert("InvestorAlamats", investorAlamat, {});
     },
 
     async down(queryInterface, Sequelize) {
@@ -39,6 +39,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete("InvestorAlamat", null, {});
+        await queryInterface.bulkDelete("InvestorAlamats", null, {});
     },
 };
