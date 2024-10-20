@@ -26,6 +26,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import InputError from "../../components/common/InputError";
+import '../../assets/style/quill-content.css';
 
 const About = () => {
   const [abouts, setAbouts] = useState(null);
@@ -56,23 +57,6 @@ const About = () => {
     });
   }, []);
 
-  // Validasi schema menggunakan Yup
-  const validationSchema = Yup.object().shape({
-    nama_depan: Yup.string()
-      .min(2, "Nama depan harus terdiri dari minimal 2 karakter")
-      .required("Nama depan wajib diisi"),
-    nama_belakang: Yup.string().min(
-      2,
-      "Nama belakang harus terdiri dari minimal 2 karakter"
-    ),
-    email: Yup.string()
-      .email("Email tidak valid. Harap masukkan email yang benar (contoh: user@example.test)")
-      .required("Alamat email wajib diisi"),
-    pesan: Yup.string()
-      .min(10, "Pesan harus terdiri dari minimal 10 karakter")
-      .required("Pesan wajib diisi"),
-  });
-
   const sendToWhatsApp = (values) => {
     const whatsappNumber = "6282269075325";
     const message = `Halo, saya ${values.nama_depan} ${values.nama_belakang}.\nEmail: ${values.email}.\n\nPesan: ${values.pesan}`;
@@ -82,6 +66,24 @@ const About = () => {
 
     window.open(url, "_blank");
   };
+
+  const validationSchema = Yup.object().shape({
+    nama_depan: Yup.string()
+      .min(2, "Nama depan harus terdiri dari minimal 2 karakter")
+      .required("Nama depan wajib diisi"),
+    nama_belakang: Yup.string().min(
+      2,
+      "Nama belakang harus terdiri dari minimal 2 karakter"
+    ),
+    email: Yup.string()
+      .email(
+        "Email tidak valid. Harap masukkan email yang benar (contoh: user@example.test)"
+      )
+      .required("Alamat email wajib diisi"),
+    pesan: Yup.string()
+      .min(10, "Pesan harus terdiri dari minimal 10 karakter")
+      .required("Pesan wajib diisi"),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -117,11 +119,15 @@ const About = () => {
           {/* <!-- Column 1: Text --> */}
           <div className="flex flex-col">
             <h2 className="font-bold text-3xl lg:text-4xl mb-2 lg:mb-4 tracking-wide">
-              SUKAHARJA SMART QUAIL FARM
+              {abouts.judul}
             </h2>
-            <p className="font-quicksand font-medium text-[#000000] md:text-lg">
-              {abouts.deskripsi}
-            </p>
+            <div className="format px-11 min-w-full">
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: abouts.deskripsi,
+                }}
+              ></p>
+            </div>
           </div>
           {/* column 2 */}
           <ImageSlider />
@@ -129,13 +135,17 @@ const About = () => {
       </section>
       <section className="bg-gradient-to-b from-white to-orange-100">
         {/* sejarah */}
-        <div className="w-[90%] mx-auto  lg:px-20 mt-12 lg:mt-32 text-center">
+        <div className="w-[90%] mx-auto  lg:px-20 mt-12 lg:mt-32 text-justify">
           <h1 className="font-bold text-3xl lg:text-4xl text-center tracking-wide mb-2 lg:mb-4">
             {sejarah.judul}
           </h1>
-          <p className="text-lg font-quicksand font-medium text-[#000000]">
-            {sejarah.deskripsi}
-          </p>
+          <div className="format px-11 min-w-full">
+            <p
+              dangerouslySetInnerHTML={{
+                __html: sejarah.deskripsi,
+              }}
+            ></p>
+          </div>
         </div>
         {/* dokumen */}
         <div className="w-[90%] mx-auto mt-12 lg:mt-32 ">

@@ -6,6 +6,7 @@ import AdminLayout from "../../layouts/AdminLayout";
 import {
   getInvestors,
   getInvestorById,
+  verifyInvestorProfile,
 } from "../../services/investor.service.js";
 import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
 import { formatDate } from "../../utils/formatDate.js";
@@ -22,6 +23,7 @@ const AdminInvestor = () => {
     username: "",
     email: "",
     kategori_investor: "",
+    isVerifiedProfile: false,
     investorBiodata: {
       jk: "",
       tempat_lahir: "",
@@ -57,6 +59,7 @@ const AdminInvestor = () => {
   const [transactions, setTransactions] = useState([]);
   const [filteredInvestors, setFilteredInvestors] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -66,6 +69,32 @@ const AdminInvestor = () => {
       setInvestors(data);
     });
   }, []);
+
+  const handleVerifyInvestor = () => {
+    if (selectedInvestor) {
+      setIsVerifying(true);
+
+      setTimeout(() => {
+        verifyInvestorProfile(selectedInvestor.id, () => {
+          setIsVerifying(false);
+          // Update the local state to reflect the change
+          setFormInvestor((prevState) => ({
+            ...prevState,
+            isVerifiedProfile: true,
+          }));
+
+          // Update the investors list
+          setInvestors((prevInvestors) =>
+            prevInvestors.map((investor) =>
+              investor.id === selectedInvestor.id
+                ? { ...investor, isVerifiedProfile: true }
+                : investor
+            )
+          );
+        });
+      }, 1500);
+    }
+  };
 
   // Search: Start
   const searchQuery = searchParams.get("search") || "";
@@ -98,15 +127,9 @@ const AdminInvestor = () => {
     if (type === "detail_investor" && investor) {
       setSelectedInvestor(investor);
 
-      getInvestorById(investor.id, (investor) => {
+      getInvestorById(investor.id, (investorData) => {
         setFormInvestor({
-          username: investor.username,
-          email: investor.email,
-          kategori_investor: investor.kategori_investor,
-          investorBiodata: investor.investorBiodata,
-          investorAlamat: investor.investorAlamat,
-          investorIdentitas: investor.investorIdentitas,
-          investorDataPendukung: investor.investorDataPendukung,
+          ...investorData,
         });
       });
     }
@@ -156,7 +179,7 @@ const AdminInvestor = () => {
                   className="block p-2.5 w-full z-20 ps-11 text-gray-900 bg-gray-50 rounded-2xl  border border-gray-300 focus:ring-[#B87817] focus:border-[#B87817] focus:outline-none"
                   placeholder="Masukkan username investor ..."
                   value={searchQuery}
-                   onChange={(e) => handleSearchChange(e)}
+                  onChange={(e) => handleSearchChange(e)}
                   required
                 />
               </div>
@@ -177,35 +200,54 @@ const AdminInvestor = () => {
           {modalType === "detail_investor" && (
             <>
               <Modal.Header onClose={closeModal}>
-                <div className="flex items-center mx-auto mt-2 gap-4">
-                  {formInvestor.investorBiodata?.foto_profil ? (
-                    <img
-                      src={formInvestor.investorBiodata.foto_profil}
-                      alt={formInvestor.investorBiodata.foto_profil}
-                      className="w-24 h-24 rounded-full"
-                    />
-                  ) : (
-                    <div>
-                      <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 p-3">
-                        {formInvestor.kategori_investor === "organisasi" ? (
-                          <PiUsersThreeBold className="w-full h-full" />
-                        ) : (
-                          <PiUserBold className="w-full h-full" />
-                        )}
+                <div className="flex items-center justify-between w-9/12 mx-auto">
+                  <div className="flex items-center mt-2 gap-4">
+                    {formInvestor.investorBiodata?.foto_profil ? (
+                      <img
+                        src={formInvestor.investorBiodata.foto_profil}
+                        alt={formInvestor.investorBiodata.foto_profil}
+                        className="w-24 h-24 rounded-full"
+                      />
+                    ) : (
+                      <div>
+                        <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 p-3">
+                          {formInvestor.kategori_investor === "organisasi" ? (
+                            <PiUsersThreeBold className="w-full h-full" />
+                          ) : (
+                            <PiUserBold className="w-full h-full" />
+                          )}
+                        </div>
                       </div>
+                    )}
+                    <div>
+                      <h3 className="text-2xl font-semibold text-[#572618]">
+                        {formInvestor.investorBiodata?.nama_lengkap}
+                      </h3>
+                      <p>{formInvestor.kategori_investor}</p>
                     </div>
-                  )}
+                  </div>
 
                   <div>
-                    <h3 className="text-2xl font-semibold text-[#572618]">
-                      {formInvestor.investorBiodata?.nama_lengkap}
-                    </h3>
-                    <p>{formInvestor.kategori_investor}</p>
+                    <button
+                      className={`py-2 px-3 rounded-2xl font-medium text-white text-sm border-2 ${
+                        formInvestor.isVerifiedProfile
+                          ? "bg-green-500 border-green-500"
+                          : "border-[#572618] bg-[#572618] hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A]"
+                      } ease-in-out duration-300`}
+                      onClick={handleVerifyInvestor}
+                      disabled={formInvestor.isVerifiedProfile || isVerifying}
+                    >
+                      {formInvestor.isVerifiedProfile
+                        ? "Terverifikasi"
+                        : isVerifying
+                        ? "Memverifikasi..."
+                        : "Verifikasi Investor"}
+                    </button>
                   </div>
                 </div>
               </Modal.Header>
 
-              <Modal.Body className="md:pb-5">
+              <Modal.Body className="md:pb-5 mt-2">
                 <Tabs aria-label="Pills" variant="pills">
                   <Tabs.Item active title="Biodata">
                     <Label value={"Username"} />

@@ -51,6 +51,7 @@ import Verifikasi from "./pages/investor/Verifikasi";
 import PublicRouteAdmin from "./components/admin/PublicRouteAdmin";
 import { AuthProvider } from "./contexts/AuthProvider";
 import ResetPassword from "./pages/investor/ResetPassword";
+import VerifikasiEmail from "./pages/investor/VerifikasiEmail";
 // END: Investor
 
 import ProtectedRoute from "./components/protectedRoute";
@@ -93,78 +94,82 @@ const router = createBrowserRouter([
     },
     // guest end
 
-    // investor start
-    {
-        path: "/masuk",
-        element: (
-            <AuthProvider>
-                <PublicRoute requiredRole="investor" redirectPath="/investor">
-                    <Masuk />
-                </PublicRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/daftar",
-        element: <Daftar />,
-    },
-    {
-        path: "/lupa-password",
-        element: <LupaPassword />,
-    },
-    {
-        path: "/reset-password",
-        element: <ResetPassword />,
-    },
-    {
-        path: "/investor",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
-                    <InvestorDashboard />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/investor/profil",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
-                    <InvestorProfil />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/investor/investasi",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
-                    <InvestorInvestasi />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/investor/investasi/detail/:id",
-        element: <InvestorInvestasiDetail />,
-    },
-    {
-        path: "/investor/transaksi",
-        element: (
-            <AuthProvider>
-                <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
-                    <InvestorTransaksi />
-                </ProtectedRoute>
-            </AuthProvider>
-        ),
-    },
-    {
-        path: "/verifikasi",
-        element: <Verifikasi />,
-    },
-    // investor end
+  // investor start
+  {
+    path: "/masuk",
+    element: (
+      <AuthProvider>
+        {/* <PublicRouteInvestor> */}
+        <Masuk />
+        {/* </PublicRouteInvestor> */}
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/daftar",
+    element: <Daftar />,
+  },
+  {
+    path: "/lupa-password",
+    element: <LupaPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifikasiEmail />,
+  },
+  {
+    path: "/investor",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
+          <InvestorDashboard />
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/investor/profil",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
+          <InvestorProfil />
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/investor/investasi",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
+          <InvestorInvestasi />
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/investor/investasi/detail/:id",
+    element: <InvestorInvestasiDetail />,
+  },
+  {
+    path: "/investor/transaksi",
+    element: (
+      <AuthProvider>
+        <ProtectedRoute requiredRole="investor" redirectPath="/masuk">
+          <InvestorTransaksi />
+        </ProtectedRoute>
+      </AuthProvider>
+    ),
+  },
+  {
+    path: "/verifikasi",
+    element: <Verifikasi />,
+  },
+  // investor end
 
     // admin start
     {

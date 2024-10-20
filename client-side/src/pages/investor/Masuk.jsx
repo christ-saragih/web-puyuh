@@ -1,112 +1,137 @@
-import { useState, useContext } from "react";
-import GuestLayout from "../../layouts/GuestLayout.jsx";
-import { useNavigate } from "react-router-dom";
-import "../../assets/style/index.css";
 import Logo from "../../assets/images/logo.svg";
+import Label from "../../components/common/Label.jsx";
+import Input from "../../components/common/Input.jsx";
+import InputError from "../../components/common/InputError.jsx";
 import { AuthContext } from "../../contexts/AuthProvider.jsx";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Masuk = () => {
-    const { login } = useContext(AuthContext);
-    const [usernameOrEmail, setUsernameOrEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+  const { login } = useContext(AuthContext);
+  const [error, setError] = useState("");
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        try {
-            await login(usernameOrEmail, password, "investor");
-            navigate("/investor");
-        } catch (error) {
-            setError("Username/Email atau password salah");
-        }
-    };
+  const handleLogin = async () => {
+    setError("");
+    try {
+      await login(
+        formik.values.usernameOrEmail,
+        formik.values.password,
+        "investor"
+      );
+      navigate("/investor");
+    } catch (error) {
+      setError("Username/Email atau password salah");
+    }
+  };
 
-    return (
-        <GuestLayout className="lg:-mb-2">
-            <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen w-full">
-                {/* Background */}
-                <div
-                    className="w-full lg:w-1/2 bg-cover bg-center min-h-[300px] lg:min-h-screen lg:-ml-40"
-                    style={{
-                        backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')`,
-                    }}
-                ></div>
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="w-full lg:w-1/2 p-8">
-                    <div className="flex items-center justify-center mb-8">
-                        <img src={Logo} alt="Logo" className="w-20 h-20 mr-4" />
-                        <h1 className="text-2xl font-bold text-gray-800">
-                            Sukaharja Smart Quail Farm
-                        </h1>
-                    </div>
-                    <div className="font-quicksand font-bold text-[1.5rem] mb-2">
-                        <h2>Selamat Datang</h2>
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="usernameOrEmail"
-                        >
-                            Username or Email
-                        </label>
-                        <input
-                            type="text"
-                            id="usernameOrEmail"
-                            name="usernameOrEmail"
-                            placeholder="Masukkan Username atau Email"
-                            value={usernameOrEmail}
-                            onChange={(e) => setUsernameOrEmail(e.target.value)}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="password"
-                        >
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Masukkan Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
-                        <a
-                            href="/lupa-password"
-                            className="text-sm text-right block text-orange-600 mt-1"
-                        >
-                            Lupa Password?
-                        </a>
-                    </div>
-                    <div className="mb-6">
-                        <button
-                            type="submit"
-                            className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                            // onClick={handleSubmit}
-                        >
-                            Masuk
-                        </button>
-                    </div>
-                    <div className="text-center">
-                        <span className="text-gray-700">
-                            Belum Punya Akun?{" "}
-                        </span>
-                        <a href="/daftar" className="text-orange-600 font-bold">
-                            Daftar
-                        </a>
-                    </div>
-                    {/* {msg && <div className="mt-4 text-red-600">{msg}</div>} */}
-                </form>
+  const validationSchema = Yup.object().shape({
+    usernameOrEmail: Yup.string().required("Username atau email wajib diisi"),
+    password: Yup.string().required("Password wajib diisi"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      usernameOrEmail: "",
+      password: "",
+    },
+    onSubmit: handleLogin,
+    validationSchema: validationSchema,
+  });
+
+  const handleInputChange = (event) => {
+    const { target } = event;
+    formik.setFieldValue(target.name, target.value);
+  };
+
+  return (
+    <>
+      <div className="flex flex-col lg:flex-row items-center lg:justify-end min-h-screen w-full">
+        {/* Background */}
+        <div
+          className="lg:fixed top-0 left-0 w-full lg:w-1/2 h-[300px] md:h-[450px] lg:h-screen bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/src/assets/images/farm-bg-masuk.jpg')`,
+          }}
+        ></div>
+
+        {/* Form Section */}
+        <div className="w-full lg:w-1/2 p-8">
+          <form onSubmit={formik.handleSubmit} className="max-w-xl mx-auto">
+            <div className="flex items-center justify-center mb-8">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="w-12 h-12 sm:w-14 sm:h-14 mr-4"
+              />
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+                Sukaharja Smart Quail Farm
+              </h1>
             </div>
-        </GuestLayout>
-    );
+            <div className="font-quicksand font-bold text-2xl">
+              <h2>Selamat Datang 👋</h2>
+            </div>
+            <div>
+              <Label
+                value={"Username atau Email"}
+                htmlFor={"usernameOrEmail"}
+              />
+              <Input
+                name="usernameOrEmail"
+                type="text"
+                variant="primary-outline"
+                placeholder="Masukkan username atau email.."
+                handleChange={handleInputChange}
+                isError={!!formik.errors.usernameOrEmail}
+              />
+              <InputError message={formik.errors.usernameOrEmail} />
+            </div>
+            <div>
+              <Label value={"Password"} htmlFor={"password"} />
+              <Input
+                name="password"
+                type="password"
+                variant="primary-outline"
+                placeholder="Masukkan password.."
+                handleChange={handleInputChange}
+                isError={!!formik.errors.password}
+              />
+              <InputError message={formik.errors.password} />
+              <Link
+                to="/lupa-password"
+                className=" text-[#4B241A] hover:text-[#381b13] text-right block font-semibold mt-1"
+              >
+                Lupa password?
+              </Link>
+            </div>
+            <div className="mt-6 mb-2">
+              <button
+                type="submit"
+                className="bg-[#4B241A] hover:bg-[#381b13] ease-in-out duration-300 text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline w-full"
+              >
+                Masuk
+              </button>
+            </div>
+          </form>
+
+          {error && <p className="text-red-600 text-center mt-1">{error}</p>}
+
+          <div className="text-center">
+            <span className="text-gray-600">Belum punya akun? </span>
+            <Link
+              to="/daftar"
+              className="text-[#4B241A] hover:text-[#381b13] font-semibold"
+            >
+              Daftar
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Masuk;

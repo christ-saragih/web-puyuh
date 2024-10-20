@@ -4,6 +4,7 @@ import InputError from "../../../components/common/InputError.jsx";
 import Modal from "../../../components/common/Modal";
 import SocialMediaList from "../../../components/admin/SocialMediaList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { showToast } from "../../../utils/toast.js";
 import {
   getSocialMedia,
   addSocialMedia,
@@ -132,7 +133,7 @@ const MediaSosial = () => {
       addSocialMedia(form, (response) => {
         setSocialMedias([...socialMedias, response]);
         closeModal();
-        resetForm();
+        showToast("Media sosial berhasil ditambahkan");
       });
     }
   };
@@ -153,7 +154,7 @@ const MediaSosial = () => {
           )
         );
         closeModal();
-        resetForm();
+        showToast("Media sosial berhasil diubah");
       });
     }
   };
@@ -166,6 +167,7 @@ const MediaSosial = () => {
         )
       );
       closeModal();
+      showToast("Media sosial berhasil dihapus");
     });
   };
   // CRUD: End

@@ -69,27 +69,30 @@ const BatchItem = (props) => {
           <p className="font-medium text-gray-700 mb-3">{penerbit}</p>
           <div className="flex -space-x-2">
             {/* 3 investor dengan investasi tertinggi */}
-            {transaksi.map((investor) => (
-              <Tooltip
-                key={investor.investorId}
-                content={investor.nama_lengkap}
-                placement="bottom"
-              >
-                <div className="h-10 w-10 bg-gray-200 rounded-full overflow-hidden border-[3px] border-white p-1">
-                  {investor.foto_profil ? (
-                    <img
-                      src={investor.foto_profil}
-                      alt={investor.nama_lengkap}
-                      className="w-full h-full"
-                    />
-                  ) : investor.kategori_investor === "organisasi" ? (
-                    <PiUsersThreeBold className="w-full h-full" />
-                  ) : (
-                    <PiUserBold className="w-full h-full" />
-                  )}
-                </div>
-              </Tooltip>
-            ))}
+            {transaksi
+              .sort((a, b) => b.total_investasi - a.total_investasi)
+              .slice(0, 3)
+              .map((investor) => (
+                <Tooltip
+                  key={investor.investorId}
+                  content={investor.nama_lengkap}
+                  placement="bottom"
+                >
+                  <div className="h-10 w-10 bg-gray-200 rounded-full overflow-hidden border-[3px] border-white p-1">
+                    {investor.foto_profil ? (
+                      <img
+                        src={investor.foto_profil}
+                        alt={investor.nama_lengkap}
+                        className="w-full h-full"
+                      />
+                    ) : investor.kategori_investor === "organisasi" ? (
+                      <PiUsersThreeBold className="w-full h-full" />
+                    ) : (
+                      <PiUserBold className="w-full h-full" />
+                    )}
+                  </div>
+                </Tooltip>
+              ))}
           </div>
 
           <div className="absolute top-[2px] right-0 cursor-pointer">
