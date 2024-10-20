@@ -30,7 +30,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             status: {
-                type: Sequelize.ENUM("segera", "proses", "selesai"),
+                type: Sequelize.ENUM("gagal", "proses", "berhasil"),
             },
             createdAt: {
                 allowNull: false,

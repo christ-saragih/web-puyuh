@@ -18,9 +18,9 @@ module.exports = {
         const transaksi = [];
         for (let i = 0; i < 3; i++) {
             const status = faker.helpers.arrayElement([
-                "segera",
+                "gagal",
                 "proses",
-                "selesai",
+                "berhasil",
             ]);
 
             const data = {

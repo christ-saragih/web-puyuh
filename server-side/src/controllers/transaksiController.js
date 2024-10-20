@@ -58,13 +58,13 @@ exports.transaction = async (req, res) => {
             status: "proses",
         });
 
-        console.log(total_investasi);
-        const total_pendanaan = investasi.total_pendanaan + total_investasi;
-        console.log(total_pendanaan);
+        // console.log(total_investasi);
+        // const total_pendanaan = investasi.total_pendanaan + total_investasi;
+        // console.log(total_pendanaan);
 
-        await investasi.update({
-            total_pendanaan: total_pendanaan,
-        });
+        // await investasi.update({
+        //     total_pendanaan: total_pendanaan,
+        // });
 
         let itemName =
             investasi.judul.length > 50
@@ -135,23 +135,21 @@ exports.callbackPayment = async (req, res) => {
         if (fraudStatus == "accept") {
             // TODO set transaction status on your database to 'success'
             // and response with 200 OK
-            const transaksiInvestasi = transaksiData.itemsDetail;
 
-            for (const itemTransaksi of transaksiInvestasi) {
-                const investasiData = await Investasi.findByPk(
-                    itemTransaksi.investasi
-                );
+            const investasiData = await Investasi.findByPk(
+                transaksiData.investasiId
+            );
 
-                if (!investasiData) {
-                    res.status(404);
-                    throw new Error("Transaksi tidak ditemukan");
-                }
-
-                transaksiData.total_pendanaan =
-                    transaksiData.total_pendanaan + itemTransaksi.price;
-
-                await transaksiData.save();
+            if (!investasiData) {
+                res.status(404);
+                throw new Error("Transaksi tidak ditemukan");
             }
+
+            investasiData.total_pendanaan =
+                investasiData.total_pendanaan + transaksiData.total_investasi;
+
+            await investasiData.save();
+            await transaksiData.save();
 
             transaksiData.status = "berhasil";
         }
