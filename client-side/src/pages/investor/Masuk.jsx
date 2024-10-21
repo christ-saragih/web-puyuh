@@ -14,7 +14,7 @@ const Masuk = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const loginUser = async () => {
     setError("");
     try {
       await login(
@@ -38,7 +38,7 @@ const Masuk = () => {
       usernameOrEmail: "",
       password: "",
     },
-    onSubmit: handleLogin,
+    onSubmit: loginUser,
     validationSchema: validationSchema,
   });
 
@@ -86,6 +86,7 @@ const Masuk = () => {
                 placeholder="Masukkan username atau email.."
                 handleChange={handleInputChange}
                 isError={!!formik.errors.usernameOrEmail}
+                isFocused
               />
               <InputError message={formik.errors.usernameOrEmail} />
             </div>
@@ -116,9 +117,7 @@ const Masuk = () => {
               </button>
             </div>
           </form>
-
-          {error && <p className="text-red-600 text-center mt-1">{error}</p>}
-
+          <InputError message={error} className={"text-center"} />
           <div className="text-center">
             <span className="text-gray-600">Belum punya akun? </span>
             <Link
