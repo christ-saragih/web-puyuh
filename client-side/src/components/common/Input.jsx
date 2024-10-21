@@ -18,13 +18,13 @@ const Input = (props) => {
     isDisabled,
   } = props;
 
-  const input = useRef();
+  const inputRef = useRef();
 
   useEffect(() => {
     if (isFocused) {
-      input.current.focus();
+      inputRef.current.focus();
     }
-  }, []);
+  }, [isFocused]);
 
   return (
     <input
@@ -36,7 +36,7 @@ const Input = (props) => {
       className={`block w-full px-4 py-2 text-sm border-2 rounded-2xl shadow ${
         isError ? "input-error" : `input-${variant}`
       }  ${className}`}
-      ref={input}
+      ref={inputRef}
       autoComplete={autoComplete}
       required={required}
       onChange={(e) => handleChange(e)}
