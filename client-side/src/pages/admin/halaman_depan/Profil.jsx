@@ -435,142 +435,163 @@ const handleSaveSejarah = async () => {
         {/* Founder */}
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
           <div className="flex flex-col md:flex-row md:justify-between mb-5">
-            <h1 className="font-bold text-[#572618] text-xl mb-2 md:mb-0">Founder</h1>
-            <button
-              onClick={handleToggleFormFounder}
-              className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
-            >
-              {showFormFounder ? "Tutup Form" : "Tambah Founder"}
-            </button>
+              <h1 className="font-bold text-[#572618] text-xl mb-2 md:mb-0">Founder</h1>
+              <button
+                  onClick={handleToggleFormFounder}
+                  className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
+              >
+                  {showFormFounder ? "Tutup Form" : "Tambah Founder"}
+              </button>
           </div>
-  
-          {showFormFounder && (
-            <div className="mb-6">
-              <Label htmlFor={"nama"} value={"Nama Founder"} />
-              <Input
-                type={"text"}
-                name={"nama"}
-                placeholder={"Masukkan nama founder.."}
-                variant={"primary-outline"}
-                handleChange={handleFounderInputChange}
-              />
-  
-              <Label htmlFor={"jabatan"} value={"Jabatan Founder"} />
-              <Input
-                type={"text"}
-                name={"jabatan"}
-                placeholder={"Masukkan jabatan founder.."}
-                variant={"primary-outline"}
-                handleChange={handleFounderInputChange}
-              />
-  
-              <Label htmlFor={"deskripsi"} value={"Deskripsi Founder"} />
-              <TextAreaField
-                type={"text"}
-                name={"deskripsi"}
-                placeholder={"Masukkan deskripsi.."}
-                variant={"primary-outline"}
-                onChange={handleFounderInputChange}
-              />
-  
-              <Label htmlFor={"gambar"} value={"Gambar Founder"} />
-              <Input
-                type={"file"}
-                name={"gambar"}
-                placeholder={"Masukkan gambar founder.."}
-                variant={"primary-outline"}
-                handleChange={handleFounderInputChange}
-              />
-  
-              {/* Display image preview */}
-              {imagePreviewForm && (
-                <div className="mt-3 mb-5">
-                  <p>Preview Gambar:</p>
-                  <img
-                    src={imagePreviewForm}
-                    alt="Preview Founder"
-                    className="h-32 w-32 object-cover rounded-lg"
-                  />
-                </div>
-              )}
-  
-              <Button value={"Simpan"} onClick={handleAddFounder} />
-            </div>
-          )}
-  
-          <div className="mt-10 mb-8">
-            {founders.map((founder) => (
-              <div key={founder.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
-                <Label htmlFor={"nama"} value={"Nama Founder"} />
-                <Input
-                  type={"text"}
-                  name={"nama"}
-                  variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                  value={selectedFounder === founder.id ? formFounder.nama : founder.nama}
-                  isDisabled={selectedFounder !== founder.id}
-                  handleChange={(e) =>
-                    setFormFounder({ ...formFounder, nama: e.target.value })
-                  }
-                />
-  
-                <Label htmlFor={"jabatan"} value={"Jabatan Founder"} />
-                <Input
-                  type={"text"}
-                  name={"jabatan"}
-                  variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                  value={selectedFounder === founder.id ? formFounder.jabatan : founder.jabatan}
-                  isDisabled={selectedFounder !== founder.id}
-                  handleChange={(e) =>
-                    setFormFounder({ ...formFounder, jabatan: e.target.value })
-                  }
-                />
-  
-                <Label htmlFor={"deskripsi"} value={"Deskripsi Founder"} />
-                <TextAreaField
-                  type={"text"}
-                  name={"deskripsi"}
-                  variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                  value={selectedFounder === founder.id ? formFounder.deskripsi : founder.deskripsi}
-                  isDisabled={selectedFounder !== founder.id}
-                  onChange={(e) =>
-                    setFormFounder({ ...formFounder, deskripsi: e.target.value })
-                  }
-                />
-  
-                <Label htmlFor={"gambar"} value={"Gambar Founder"} />
-                <Input
-                  type={"file"}
-                  name={"gambar"}
-                  variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                  isDisabled={selectedFounder !== founder.id}
-                  handleChange={(e) => {
-                    const file = e.target.files[0];
-                    setFormFounder({ ...formFounder, gambar: file });
-                    setImagePreview(URL.createObjectURL(file)); // Set image preview URL
-                  }}
-                />
-  
-                {/* Display image preview */}
-                {imagePreviewFounder[founder.id] && (
-                  <div className="mt-3 mb-5">
-                    <p>Preview Gambar:</p>
-                    <img
-                      src={imagePreviewFounder[founder.id]}
-                      alt="Preview Founder"
-                      className="h-32 w-32 object-cover rounded-lg"
+
+            {showFormFounder && (
+                <div className="mb-6">
+                    <Label htmlFor={"nama"} value={"Nama Founder"} />
+                    <Input
+                        type={"text"}
+                        name={"nama"}
+                        placeholder={"Masukkan nama founder.."}
+                        variant={"primary-outline"}
+                        handleChange={handleFounderInputChange}
                     />
+
+                    <Label htmlFor={"jabatan"} value={"Jabatan Founder"} />
+                    <Input
+                        type={"text"}
+                        name={"jabatan"}
+                        placeholder={"Masukkan jabatan founder.."}
+                        variant={"primary-outline"}
+                        handleChange={handleFounderInputChange}
+                    />
+
+                    <Label htmlFor={"deskripsi"} value={"Deskripsi Founder"} />
+                    <TextAreaField
+                        type={"text"}
+                        name={"deskripsi"}
+                        placeholder={"Masukkan deskripsi.."}
+                        variant={"primary-outline"}
+                        onChange={handleFounderInputChange}
+                    />
+
+                    <Label htmlFor={"gambar"} value={"Gambar Founder"} />
+                    <Input
+                        type={"file"}
+                        name={"gambar"}
+                        placeholder={"Masukkan gambar founder.."}
+                        variant={"primary-outline"}
+                        handleChange={handleFounderInputChange}
+                    />
+
+                    {imagePreviewForm && (
+                        <div className="mt-3 mb-5">
+                            <p>Preview Gambar:</p>
+                            <img
+                                src={imagePreviewForm}
+                                alt="Preview Founder"
+                                className="h-32 w-32 object-cover rounded-lg"
+                            />
+                        </div>
+                    )}
+
+                    <Button value={"Simpan"} onClick={handleAddFounder} />
+                </div>
+            )}
+
+          <div className="mt-10 mb-8">
+              {founders.map((founder) => (
+                  <div key={founder.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
+                      <Label htmlFor={"nama"} value={"Nama Founder"} />
+                      <Input
+                          type={"text"}
+                          name={"nama"}
+                          variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
+                          value={selectedFounder === founder.id ? formFounder.nama : founder.nama}
+                          isDisabled={selectedFounder !== founder.id}
+                          handleChange={(e) =>
+                              setFormFounder({ ...formFounder, nama: e.target.value })
+                          }
+                      />
+
+                      <Label htmlFor={"jabatan"} value={"Jabatan Founder"} />
+                      <Input
+                          type={"text"}
+                          name={"jabatan"}
+                          variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
+                          value={selectedFounder === founder.id ? formFounder.jabatan : founder.jabatan}
+                          isDisabled={selectedFounder !== founder.id}
+                          handleChange={(e) =>
+                              setFormFounder({ ...formFounder, jabatan: e.target.value })
+                          }
+                      />
+
+                      <Label htmlFor={"deskripsi"} value={"Deskripsi Founder"} />
+                      <TextAreaField
+                          type={"text"}
+                          name={"deskripsi"}
+                          variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
+                          value={selectedFounder === founder.id ? formFounder.deskripsi : founder.deskripsi}
+                          isDisabled={selectedFounder !== founder.id}
+                          onChange={(e) =>
+                              setFormFounder({ ...formFounder, deskripsi: e.target.value })
+                          }
+                      />
+
+                      {/* Mode Edit */}
+                      {selectedFounder === founder.id ? (
+                          <>
+                              <Label htmlFor={"gambar"} value={"Gambar Founder"} />
+                              <Input
+                                  type={"file"}
+                                  name={"gambar"}
+                                  variant={"primary-outline"}
+                                  handleChange={(e) => {
+                                      const file = e.target.files[0];
+                                      if (file) {
+                                          setFormFounder({ ...formFounder, gambar: file });
+                                          setImagePreviewFounder({
+                                              ...imagePreviewFounder,
+                                              [founder.id]: URL.createObjectURL(file)
+                                          });
+                                      }
+                                  }}
+                              />
+                              {/* Preview gambar dalam mode edit */}
+                              {imagePreviewFounder[founder.id] && (
+                                  <div className="mt-3 mb-5">
+                                      <p>Preview Gambar:</p>
+                                      <img
+                                          src={imagePreviewFounder[founder.id]}
+                                          alt="Preview Founder"
+                                          className="h-32 w-32 object-cover rounded-lg"
+                                      />
+                                  </div>
+                              )}
+                          </>
+                      ) : (
+                          /* Mode Non-Edit - Tampilkan gambar yang tersimpan */
+                          <div className="mt-3 mb-5">
+                              <p>Gambar Founder:</p>
+                              <img
+                                  src={imagePreviewFounder[founder.id] || founder.gambar} // Menggunakan imagePreviewFounder jika ada, atau gambar yang tersimpan
+                                  alt={`Founder ${founder.nama}`}
+                                  className="h-32 w-32 object-cover rounded-lg"
+                                  onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = '/placeholder-image.jpg';
+                                  }}
+                              />
+                          </div>
+                      )}
+
+                      <Button className={"mr-5"} value={"Hapus"} variant={"delete"} onClick={() => handleDeleteFounder(founder.id)} />
+
+                      {selectedFounder === founder.id && isEditing ? (
+                          <Button value={"Simpan"} onClick={() => handleUpdateFounders(founder.id)} />
+                      ) : (
+                          <Button variant={"update"} value={"Ubah"} onClick={() => handleEditFounder(founder)} />
+                      )}
                   </div>
-                )}
-  
-                <Button className={"mr-5"} value={"Hapus"} variant={"delete"} onClick={() => handleDeleteFounder(founder.id)} />
-  
-                {selectedFounder === founder.id && isEditing ? (
-                  <Button value={"Simpan"} onClick={() => handleUpdateFounders(founder.id)} />
-                ) : (
-                  <Button variant={"update"} value={"Ubah"} onClick={() => handleEditFounder(founder)} />
-                )}
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
