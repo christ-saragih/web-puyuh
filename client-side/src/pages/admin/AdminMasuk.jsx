@@ -1,36 +1,49 @@
 import Logo from "../../assets/images/logo.svg";
-import Input from "../../components/common/Input";
 import Label from "../../components/common/Label";
+import Input from "../../components/common/Input";
+import InputError from "../../components/common/InputError";
 import { AuthContext } from "../../contexts/AuthProvider";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const AdminMasuk = () => {
   const { login } = useContext(AuthContext);
-  const [formLogin, setFormLogin] = useState({
-    usernameOrEmail: "",
-    password: "",
-  });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormLogin({
-      ...formLogin,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const loginAdmin = async () => {
     setError("");
     try {
-      await login(formLogin.usernameOrEmail, formLogin.password, "admin");
+      await login(
+        formik.values.usernameOrEmail,
+        formik.values.password,
+        "admin"
+      );
       navigate("/admin");
     } catch (error) {
       setError("Username/Email atau password salah");
     }
+  };
+
+  const validationSchema = Yup.object().shape({
+    usernameOrEmail: Yup.string().required("Username atau email wajib diisi"),
+    password: Yup.string().required("Password wajib diisi"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      usernameOrEmail: "",
+      password: "",
+    },
+    onSubmit: loginAdmin,
+    validationSchema: validationSchema,
+  });
+
+  const handleInputChange = (event) => {
+    const { target } = event;
+    formik.setFieldValue(target.name, target.value);
   };
 
   return (
@@ -50,8 +63,8 @@ const AdminMasuk = () => {
           <div className="font-quicksand font-bold text-xl sm:text-[1.5rem] mb-4">
             <h2>Selamat Datang, Admin 👋</h2>
           </div>
-          {/* Login Failed */}
-          <form onSubmit={handleSubmit}>
+
+          <form onSubmit={formik.handleSubmit}>
             <div>
               <Label value={"Username/Email"} htmlFor={"usernameOrEmail"} />
               <Input
@@ -59,9 +72,11 @@ const AdminMasuk = () => {
                 type="text"
                 variant="primary-outline"
                 placeholder="Masukkan username/email.."
-                value={formLogin.usernameOrEmail}
-                handleChange={handleChange}
+                handleChange={handleInputChange}
+                isError={!!formik.errors.usernameOrEmail}
+                isFocused
               />
+              <InputError message={formik.errors.usernameOrEmail} />
             </div>
             <div>
               <Label value={"Password"} htmlFor={"password"} />
@@ -70,27 +85,28 @@ const AdminMasuk = () => {
                 type="password"
                 variant="primary-outline"
                 placeholder="Masukkan password.."
-                value={formLogin.password}
-                handleChange={handleChange}
+                handleChange={handleInputChange}
+                isError={!!formik.errors.password}
               />
+              <InputError message={formik.errors.password} />
               <div className="flex justify-end">
                 <Link
                   to={"/admin/lupa-password"}
-                  className="w-fit text-sm block text-red-600 hover:underline"
+                  className=" text-[#4B241A] hover:text-[#381b13] text-right block font-semibold mt-1"
                 >
-                  Lupa Password?
+                  Lupa password?
                 </Link>
               </div>
             </div>
             <div className="mt-4">
               <button
-                className="bg-[#4B241A] hover:bg-[#381f19] text-white font-bold py-2 px-4 mb-2 rounded-2xl shadow focus:outline-none focus:shadow-outline w-full"
                 type="submit"
+                className="bg-[#4B241A] hover:bg-[#381b13] ease-in-out duration-300 text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline w-full"
               >
                 Masuk
               </button>
             </div>
-            {error && <p className="text-red-600 text-sm">{error}</p>}
+            <InputError message={error} className={"text-center"} />
           </form>
         </div>
       </div>

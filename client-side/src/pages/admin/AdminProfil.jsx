@@ -4,16 +4,17 @@ import Input from "../../components/common/Input";
 import InputError from "../../components/common/InputError";
 import Modal from "../../components/common/Modal";
 import AdminLayout from "../../layouts/AdminLayout";
-import { getAdmin, saveProfileAdmin } from "../../services/admin.service";
+import { saveProfileAdmin } from "../../services/admin.service";
 import { formatDate } from "../../utils/formatDate";
 import { isValidEmail } from "../../utils/validateEmail";
 import { isValidIndonesianPhoneNumber } from "../../utils/validatePhoneNumber";
-import { useEffect, useState } from "react";
+import { AdminData } from "../../contexts/AdminData";
+import { useContext, useState } from "react";
 import { PiNotePencil } from "react-icons/pi";
 import Select from "react-select";
 
 const AdminProfil = () => {
-  const [admin, setAdmin] = useState([]);
+  const { admin, setAdmin } = useContext(AdminData);
   const [formAdmin, setFormAdmin] = useState({
     email: "",
     foto_profil: null,
@@ -28,30 +29,6 @@ const AdminProfil = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
-
-  useEffect(() => {
-    getAdmin((data) => {
-      setAdmin(data);
-
-      if (data) {
-        setFormAdmin({
-          email: data.email || "",
-          foto_profil: data.adminBiodata.foto_profil || "",
-          nama_lengkap: data.adminBiodata.nama_lengkap || "",
-          no_hp: data.adminBiodata.no_hp || "",
-          jk: data.adminBiodata.jk || "",
-          tempat_lahir: data.adminBiodata.tempat_lahir || "",
-          tanggal_lahir: data.adminBiodata.tanggal_lahir || "",
-        });
-        // Set preview image dari data yang ada
-        setPreviewImage(
-          `http://localhost:3000/api/biodata-admin/images/${data.adminBiodata.foto_profil}`
-        );
-      }
-    });
-  }, []);
-
-  console.log(admin);
 
   // Input Validations: Start
   const validateForm = () => {

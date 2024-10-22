@@ -6,6 +6,7 @@ import Button from "../../../components/common/Button.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { isValidEmail } from "../../../utils/validateEmail.js";
 import { isValidIndonesianPhoneNumber } from "../../../utils/validatePhoneNumber.js";
+import { showToast } from "../../../utils/toast.js";
 import {
   getContactFrontpage,
   saveContactFrontpage,
@@ -126,6 +127,12 @@ const Kontak = () => {
       saveContactFrontpage(dataToSend, (newData) => {
         setContacts([newData]);
         setEditMode(false);
+
+        if (isDataEmpty) {
+          showToast("Data berhasil dibuat");
+        } else {
+          showToast("Data berhasil diubah");
+        }
       });
     }
   };

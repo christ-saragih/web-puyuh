@@ -133,9 +133,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
 
             // Set preview images if available
             setPreviews({
-                foto_ktp: foto_ktp ? `http://localhost:3000/api/identitas-investor/image/${foto_ktp}` : null,
-                foto_npwp: foto_npwp ? `http://localhost:3000/api/identitas-investor/image/${foto_npwp}` : null,
-                selfie_ktp: selfie_ktp ? `http://localhost:3000/api/identitas-investor/image/${selfie_ktp}` : null,
+                foto_ktp: foto_ktp ? `https://api1.dev-puyuh.my.id/api/identitas-investor/image/${foto_ktp}` : null,
+                foto_npwp: foto_npwp ? `https://api1.dev-puyuh.my.id/api/identitas-investor/image/${foto_npwp}` : null,
+                selfie_ktp: selfie_ktp ? `https://api1.dev-puyuh.my.id/api/identitas-investor/image/${selfie_ktp}` : null,
             });
         }
     }, [investors]);
@@ -222,7 +222,10 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
     };
 
     const handleNoHpChange = (e) => {
-        setNoHp(e.target.value);
+        // Only allow digits, spaces, and plus symbol
+        const inputValue = e.target.value;
+        const filteredValue = inputValue.replace(/[^\d\s+]/g, '');
+        setNoHp(filteredValue);
     };
 
     const handleChangeIdentitas = (e) => {
@@ -269,11 +272,55 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         if (!jk) newErrors.jk = "Jenis Kelamin harus dipilih";
         if (!tempatLahir.trim()) newErrors.tempatLahir = "Tempat Lahir harus diisi";
         if (!tanggalLahir) newErrors.tanggalLahir = "Tanggal Lahir harus diisi";
-        if (!noHp.trim()) newErrors.noHp = "Nomor Handphone harus diisi";
+        
+        // Phone validation
+        const phoneValidation = validateIndonesianPhone(noHp);
+        if (!phoneValidation.isValid) {
+            newErrors.noHp = phoneValidation.message;
+        }
+        
         if (selectedCategory === "Pilih Kategori") newErrors.kategoriInvestor = "Kategori Investor harus dipilih";
         
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+    
+
+    const validateIndonesianPhone = (phone) => {
+        // Remove any spaces or special characters
+        const cleanPhone = phone.replace(/[^\d]/g, '');
+        
+        // Check if empty
+        if (!cleanPhone) {
+            return { isValid: false, message: 'Nomor handphone wajib diisi' };
+        }
+    
+        // Check if starts with valid Indonesian prefix
+        if (!cleanPhone.startsWith('0') && !cleanPhone.startsWith('62')) {
+            return { 
+                isValid: false, 
+                message: 'Nomor handphone harus dimulai dengan 0 atau 62' 
+            };
+        }
+    
+        // Standardize format: convert 0 prefix to 62
+        const standardizedPhone = cleanPhone.startsWith('0') 
+            ? '62' + cleanPhone.slice(1) 
+            : cleanPhone;
+    
+        // Check length (Indonesian numbers are typically 10-13 digits after 62)
+        const lengthWithoutPrefix = standardizedPhone.slice(2).length;
+        if (lengthWithoutPrefix < 10 || lengthWithoutPrefix > 13) {
+            return { 
+                isValid: false, 
+                message: 'Nomor handphone harus terdiri dari 10-13 angka' 
+            };
+        }
+    
+        return { 
+            isValid: true, 
+            standardizedNumber: standardizedPhone 
+        };
     };
 
     const validateAlamat = () => {
@@ -356,17 +403,20 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
         e.preventDefault();
         if (validateBiodata()) {
             try {
+                // Standardize phone number format before sending
+                const phoneValidation = validateIndonesianPhone(noHp);
+                const standardizedPhone = phoneValidation.standardizedNumber;
+    
                 const dataBiodataToSend = {
                     nama_lengkap: namaLengkap,
                     jk: jk,
                     tempat_lahir: tempatLahir,
                     tanggal_lahir: tanggalLahir,
-                    no_hp: noHp,
-                    // kategori_investor: kategoriInvestor,
+                    no_hp: standardizedPhone, // Using standardized phone number
                     kategori_investor: selectedCategory,
                 };
                 console.log(dataBiodataToSend);
-
+    
                 const response = await apiInvestor.post(
                     `/biodata-investor`,
                     dataBiodataToSend

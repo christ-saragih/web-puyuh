@@ -1,39 +1,19 @@
 import Admin from "../../assets/images/admin.svg";
-import { useEffect, useState, useContext, useRef } from "react";
-import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
-import { Link, useNavigate } from "react-router-dom";
-import { apiAdmin } from "../../hooks/useAxiosConfig";
 import { AuthContext } from "../../contexts/AuthProvider";
+import { AdminData } from "../../contexts/AdminData";
+import { useEffect, useState, useContext, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { PiBackspaceBold, PiUserBold } from "react-icons/pi";
+import PropTypes from "prop-types";
 import { Dropdown } from "flowbite-react";
 
 const Navbar = (props) => {
-  const { logout } = useContext(AuthContext);
   const { title } = props;
-  const [admin, setAdmin] = useState(null); // State untuk menyimpan data admin
-  const [loading, setLoading] = useState(true); // State untuk loading
+  const { admin } = useContext(AdminData);
+  const { logout } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State untuk toggle menu pop-up
   const navigate = useNavigate();
   const menuRef = useRef(null); // Ref untuk elemen modal pop-up
-
-  // Fungsi untuk memanggil API dan mengambil data admin
-  useEffect(() => {
-    const fetchAdminData = async () => {
-      try {
-        const response = await apiAdmin.get("/admin"); // Gunakan instance axios
-
-        setAdmin(response.data.data); // Simpan data admin ke state
-      } catch (error) {
-        console.error("Error fetching admin data:", error);
-        if (error.response?.status === 401) {
-          navigate("/login"); // Redirect jika tidak otentikasi
-        }
-      } finally {
-        setLoading(false); // Selesai loading
-      }
-    };
-
-    fetchAdminData();
-  }, [navigate]);
 
   const HandleLogout = async () => {
     try {
@@ -63,13 +43,8 @@ const Navbar = (props) => {
     return () => document.removeEventListener("mousedown", handleClickOutside); // Cleanup saat komponen di-unmount
   }, [isMenuOpen]);
 
-  if (loading) {
-    return <p>Loading...</p>; // Tampilkan pesan loading saat data sedang diambil
-  }
-
   return (
     <>
-      {/* Navbar */}
       <nav className="bg-[#F5F5F7] ml-6 md:ml-0 rounded-2xl shadow-md md:mt-0 mt-16">
         <div className="w-full flex justify-between items-center py-4 px-6">
           <h1 className="text-xl md:text-3xl font-semibold">{title}</h1>
@@ -101,7 +76,21 @@ const Navbar = (props) => {
 
           {/* Konten untuk desktop */}
           <div className="hidden md:flex md:items-center md:gap-4">
-            <img src={Admin} alt="Admin" className="w-12 h-12" />
+            <div className="w-12 h-12 rounded-full shadow-sm overflow-hidden">
+              <img
+                src={
+                  admin.adminBiodata?.foto_profil
+                    ? `http://localhost:3000/api/biodata-admin/images/${admin.adminBiodata.foto_profil}`
+                    : Admin
+                }
+                alt={
+                  admin.adminBiodata?.foto_profil
+                    ? admin.adminBiodata.foto_profil
+                    : "default admin"
+                }
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div>
               <p className="font-poppins font-medium text-lg text-black">
                 {admin?.username}
@@ -179,6 +168,10 @@ const Navbar = (props) => {
       </nav>
     </>
   );
+};
+
+Navbar.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default Navbar;

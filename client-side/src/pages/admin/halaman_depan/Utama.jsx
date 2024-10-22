@@ -3,12 +3,12 @@ import Input from "../../../components/common/Input";
 import InputError from "../../../components/common/InputError";
 import Button from "../../../components/common/Button";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { showToast } from "../../../utils/toast";
 import {
   getDashboardFrontpage,
   saveDashboardFrontpage,
 } from "../../../services/dashboard-frontpage.service";
 import { useEffect, useState } from "react";
-
 
 const Utama = () => {
   const [dashboardFrontpage, setDasboardFrontpage] = useState([]);
@@ -129,6 +129,12 @@ const Utama = () => {
         setPreviewImage(
           `http://localhost:3000/api/beranda/image/${newData.gambar}`
         );
+
+        if (isDataEmpty) {
+          showToast("Data berhasil dibuat");
+        } else {
+          showToast("Data berhasil diubah");
+        }
       });
     }
   };
@@ -150,7 +156,6 @@ const Utama = () => {
             onClick={
               isDataEmpty || editMode ? handleInputSave : handleInputEdit
             }
-            className="w-full md:w-auto"
           />
         </div>
 
@@ -251,7 +256,7 @@ const Utama = () => {
           isDisabled={!isDataEmpty && !editMode}
           isError={!!errors.subJudul}
         />
-         <InputError message={errors.subJudul} />
+        <InputError message={errors.subJudul} />
       </div>
     </AdminLayout>
   );
