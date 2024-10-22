@@ -106,9 +106,7 @@ const AdminMasuk = () => {
                 Masuk
               </button>
             </div>
-            <div className="flex justify-center"> 
-              <InputError message={error} />
-            </div>
+            <InputError message={error} className={"text-center"} />
           </form>
         </div>
       </div>
