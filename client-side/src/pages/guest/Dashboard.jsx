@@ -42,8 +42,8 @@ const Dashboard = () => {
 
   // Memodifikasi string untuk menambahkan span dengan style berbeda
   const modifiedHeaderText = headerText
-    .replace("Besar", '<span class="text-[#B87817]">Besar</span>')
-    .replace("Kecil", '<span class="text-[#B87817]">Kecil</span>');
+    .replace("Besar", '<span class="text-[#d67026]">Besar</span>')
+    .replace("Kecil", '<span class="text-[#d67026]">Kecil</span>');
 
   return (
     <GuestLayouts>
@@ -109,7 +109,7 @@ const Dashboard = () => {
         <div className="bg-[#FAEFE4]">
           <div className="w-[90%] mx-auto pb-12 lg:pb-16">
             <h2 className="font-bold text-center text-3xl lg:text-4xl mb-1 tracking-wide">
-              <span className="text-[#B87817]">Nilai-Nilai </span> PT SQI
+              <span className="text-[#d67026]">Nilai-Nilai </span> PT SQI
             </h2>
             <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-4 mt-14">
               {companyValues.map((companyValue, index) => (
@@ -126,7 +126,7 @@ const Dashboard = () => {
       <div className="w-[90%] mx-auto mt-12 lg:mt-16">
         <div className="mb-6 ">
           <h2 className="font-bold text-3xl lg:text-4xl mb-1 tracking-wide">
-            Penawaran <span className="text-[#B87817]">Saat Ini</span>
+            Penawaran <span className="text-[#d67026]">Saat Ini</span>
           </h2>
           <p className="font-medium text-lg text-[#6E6565]">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit.
@@ -161,7 +161,7 @@ const Dashboard = () => {
         <div className="bg-[#FAEFE4] pb-3">
           <div className="mb-3 text-center">
             <h2 className="font-bold text-3xl lg:text-4xl mb-1 tracking-wide">
-              Cara <span className="text-[#B87817]">Berinvestasi</span>
+              Cara <span className="text-[#d67026]">Berinvestasi</span>
             </h2>
             <p className="font-medium text-lg  text-[#6E6565]">
               Pelajari cara berinvestasi di
@@ -178,7 +178,7 @@ const Dashboard = () => {
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-2xl lg:text-3xl">
-                  Pelajari <span className="text-[#B87817]">Keuntungannya</span>
+                  Pelajari <span className="text-[#d67026]">Keuntungannya</span>
                 </h3>
                 <p className="text-lg">
                   Telusuri keuntungan yang bisa didapat dari berinvestasi di PT
@@ -196,7 +196,7 @@ const Dashboard = () => {
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-2xl lg:text-3xl">
-                  Pilih <span className="text-[#B87817]">Kloter</span>
+                  Pilih <span className="text-[#d67026]">Kloter</span>
                 </h3>
                 <p className="text-lg">
                   Pilih kloter yang terbuka untuk investasi dan masukan jumlah
@@ -214,7 +214,7 @@ const Dashboard = () => {
 
               <div className="w-[80%] text-center sm:text-left sm:w-fit flex flex-col gap-3">
                 <h3 className="font-semibold text-2xl lg:text-3xl">
-                  Lengkapi <span className="text-[#B87817]">Dokumen</span>
+                  Lengkapi <span className="text-[#d67026]">Dokumen</span>
                 </h3>
                 <p className="text-lg">
                   Unggah dokumen yang dibutuhkan untuk memulai proses investasi.
@@ -232,7 +232,7 @@ const Dashboard = () => {
               </div>
               <div className="flex flex-col item-center text-center gap-3">
                 <h3 className="font-semibold text-2xl lg:text-3xl">
-                  Dapatkan <span className="text-[#B87817]">Bagi Hasil</span>
+                  Dapatkan <span className="text-[#d67026]">Bagi Hasil</span>
                 </h3>
                 <p className="text-lg mx-auto">
                   Nikmati bagi hasil yang diberikan tiap bulannya
@@ -268,7 +268,7 @@ const Dashboard = () => {
       <div className="w-[90%] mx-auto mb-12 lg:mb-16">
         <div className="mb-6">
           <h2 className="font-bold text-3xl lg:text-4xl mb-1 tracking-wide">
-            Baca Artikel Terbaru <span className="text-[#B87817]">Kami</span>
+            Baca Artikel Terbaru <span className="text-[#d67026]">Kami</span>
           </h2>
           <p className="font-medium text-lg text-[#6E6565]">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit.

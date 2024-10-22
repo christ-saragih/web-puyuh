@@ -8,6 +8,8 @@ import Label from "../../../components/common/Label";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
 import { apiAdmin } from "../../../hooks/useAxiosConfig";
+import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
 
 const Profil = () => {
   const [formData, setFormData] = useState({
@@ -167,37 +169,59 @@ const Profil = () => {
   };
 
  
-  const handleChange = (e, index = null) => {
-    const { name, value, files } = e.target;
+  const handleChange = (name, index = null, editor = null) => {
+    // Handling ReactQuill input
+    if (editor) {
+      const value = editor.getHTML();
+      
+      if (["deskripsi_tentang_kami", "deskripsi_sejarah"].includes(name)) {
+        if (name === "deskripsi_tentang_kami") {
+          setFormData(prevData => ({ ...prevData, [name]: value }));
+        } else {
+          setSejarahData(prevData => ({ ...prevData, [name]: value }));
+        }
+      } else if (name === "deskripsi_founder" && index !== null) {
+        const updatedFounderData = [...founderData];
+        updatedFounderData[index] = {
+          ...updatedFounderData[index],
+          [name]: value,
+        };
+        setFounderData(updatedFounderData);
+      }
+      return;
+    }
+  
+    // Handling standard HTML input
+    const { value, files } = name.target;
+    const inputName = name.target.name;
   
     if (files && files[0]) {
       const file = files[0];
-      if (name === "image_background") {
-        setFormData({ ...formData, [name]: file });
+      if (inputName === "image_background") {
+        setFormData(prevData => ({ ...prevData, [inputName]: file }));
         handleImagePreview(file, setImagePreview);
-      } else if (name === "gambar" && index !== null) {
+      } else if (inputName === "gambar" && index !== null) {
         const updatedFounderData = [...founderData];
         updatedFounderData[index] = {
           ...updatedFounderData[index],
           gambar: file,
-          gambarPreview: URL.createObjectURL(file), // Update image preview
+          gambarPreview: URL.createObjectURL(file),
         };
         setFounderData(updatedFounderData);
       }
     } else {
-      // Ini bagian untuk mengupdate text fields
-      if (["judul", "deskripsi_tentang_kami"].includes(name)) {
-        setFormData({ ...formData, [name]: value });
-      } else if (["judul_sejarah", "deskripsi_sejarah"].includes(name)) {
-        setSejarahData({ ...sejarahData, [name]: value });
-      } else if (name === "nama" || name === "jabatan" || name === "deskripsi_founder") {
+      if (["judul", "deskripsi_tentang_kami"].includes(inputName)) {
+        setFormData(prevData => ({ ...prevData, [inputName]: value }));
+      } else if (["judul_sejarah", "deskripsi_sejarah"].includes(inputName)) {
+        setSejarahData(prevData => ({ ...prevData, [inputName]: value }));
+      } else if (inputName === "nama" || inputName === "jabatan" || inputName === "deskripsi_founder") {
         if (index === null) {
-          setFounderData((prevData) => [
+          setFounderData(prevData => [
             ...prevData,
             {
-              nama: name === "nama" ? value : "",
-              jabatan: name === "jabatan" ? value : "",
-              deskripsi_founder: name === "deskripsi_founder" ? value : "",
+              nama: inputName === "nama" ? value : "",
+              jabatan: inputName === "jabatan" ? value : "",
+              deskripsi_founder: inputName === "deskripsi_founder" ? value : "",
               gambar: null,
               gambarPreview: null,
             },
@@ -206,7 +230,7 @@ const Profil = () => {
           const updatedFounderData = [...founderData];
           updatedFounderData[index] = {
             ...updatedFounderData[index],
-            [name]: value,
+            [inputName]: value,
           };
           setFounderData(updatedFounderData);
         }
@@ -387,7 +411,7 @@ const handleSaveSejarah = async () => {
       <div className="flex flex-col -mt-10 md:ml-0 ml-7 p-4 md:p-6 lg:p-8">
         {/* Tentang Kami */}
         <Section
-          title="Tentang Kami"
+          title="Profil"
           formData={formData}
           editMode={editMode.tentangKami}
           handleEdit={() => handleEdit("tentangKami")}
@@ -615,74 +639,136 @@ const Section = ({
   imageFieldName,
   textAreaFieldName,
   includeFields = [],
-}) => (
-  <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
-    <div className="flex justify-between mb-5">
-      <h1 className="font-bold text-[#572618] text-xl">{title}</h1>
-      <button
-        onClick={editMode ? handleSave : handleEdit}
-        className={`px-6 py-2 font-bold rounded-2xl transition ${
-          !editMode
-            ? "text-white border-2 border-yellow-400 bg-yellow-400 hover:font-semibold hover:text-yellow-400 hover:bg-white hover:border-yellow-400 ease-in-out duration-300"
-            : "bg-[#572618] text-white hover:bg-brown-700"
-        }`}
-      >
-        {editMode ? "Simpan" : "Ubah"}
-      </button>
-    </div>
+}) => {
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'align': [] }],
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video'],
+      ['clean']
+    ],
+  };
 
-    {["Tentang Kami", "Sejarah"].includes(title) && (
-      <InputField
-        label={`Judul ${title}`}
-        name={title === "Tentang Kami" ? "judul" : "judul_sejarah"}
-        value={title === "Tentang Kami" ? formData.judul : formData.judul_sejarah}
-        onChange={handleChange}
-        isDisabled={!editMode}
-      />
-    )}
+  const formats = [
+    'header',
+    'font',
+    'size',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'color',
+    'background',
+    'script',
+    'list',
+    'bullet',
+    'indent',
+    'direction',
+    'align',
+    'blockquote',
+    'code-block',
+    'link',
+    'image',
+    'video'
+  ];
 
-    {includeFields.includes("nama") && (
-      <InputField
-        label="Nama Founder"
-        name="nama"
-        value={formData.nama || ""}
-        onChange={handleChange}
-        isDisabled={!editMode}
-      />
-    )}
-
-    {includeFields.includes("jabatan") && (
-      <InputField
-        label="Jabatan Founder"
-        name="jabatan"
-        value={formData.jabatan || ""}
-        onChange={handleChange}
-        isDisabled={!editMode}
-      />
-    )}
-
-    {imagePreview && (
-      <div className="w-80 h-56 rounded-md overflow-hidden mb-4">
-        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+  return (
+    <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
+      <div className="flex justify-between mb-5">
+        <h1 className="font-bold text-[#572618] text-xl">{title}</h1>
+        <button
+          onClick={editMode ? handleSave : handleEdit}
+          className={`px-6 py-2 font-bold rounded-2xl transition ${
+            !editMode
+              ? "text-white border-2 border-yellow-400 bg-yellow-400 hover:font-semibold hover:text-yellow-400 hover:bg-white hover:border-yellow-400 ease-in-out duration-300"
+              : "bg-[#572618] text-white hover:bg-brown-700"
+          }`}
+        >
+          {editMode ? "Simpan" : "Ubah"}
+        </button>
       </div>
-    )}
 
-    {editMode && imageFieldName && (
-      <ImageUpload
-        label={`Gambar ${title}`}
-        name={imageFieldName}
-        onChange={handleChange}
-      />
-    )}
+      {["Profil", "Sejarah"].includes(title) && (
+        <InputField
+          label={`Judul ${title}`}
+          name={title === "Profil" ? "judul" : "judul_sejarah"}
+          value={title === "Profil" ? formData.judul : formData.judul_sejarah}
+          onChange={handleChange}
+          isDisabled={!editMode}
+        />
+      )}
 
-    <TextAreaField
-      label="Deskripsi"
-      name={textAreaFieldName}
-      value={formData[textAreaFieldName] || ""}
-      onChange={handleChange}
-      isDisabled={!editMode}
-    />
-  </div>
-);
+      {includeFields.includes("nama") && (
+        <InputField
+          label="Nama Founder"
+          name="nama"
+          value={formData.nama || ""}
+          onChange={handleChange}
+          isDisabled={!editMode}
+        />
+      )}
+
+      {includeFields.includes("jabatan") && (
+        <InputField
+          label="Jabatan Founder"
+          name="jabatan"
+          value={formData.jabatan || ""}
+          onChange={handleChange}
+          isDisabled={!editMode}
+        />
+      )}
+
+      {imagePreview && (
+        <div className="w-80 h-56 rounded-md overflow-hidden mb-4">
+          <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+        </div>
+      )}
+
+      {editMode && imageFieldName && (
+        <ImageUpload
+          label={`Gambar ${title}`}
+          name={imageFieldName}
+          onChange={handleChange}
+        />
+      )}
+
+      <div className="mb-4">
+        <label htmlFor={textAreaFieldName} className="block text-[#572618] font-semibold mb-2">
+          {`Deskripsi ${title}`}
+        </label>
+        <div className={`
+          border rounded-md overflow-hidden transition-colors duration-300
+          ${editMode 
+            ? 'border-yellow-400 bg-white' 
+            : 'border-gray-300 bg-gray-100'
+          }
+        `}>
+          <ReactQuill
+            id={textAreaFieldName}
+            value={formData[textAreaFieldName] || ""}
+            onChange={(content, delta, source, editor) => 
+              handleChange(textAreaFieldName, null, editor)
+            }
+            modules={modules}
+            formats={formats}
+            readOnly={!editMode}
+            className={`
+              ${!editMode && 'quill-readonly'}
+            `}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Profil;

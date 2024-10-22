@@ -1,5 +1,6 @@
-import Input from "../../components/common/Input.jsx";
 import Label from "../../components/common/Label.jsx";
+import Input from "../../components/common/Input.jsx";
+import InputError from "../../components/common/InputError.jsx";
 import Modal from "../../components/common/Modal.jsx";
 import AdminLayout from "../../layouts/AdminLayout";
 import BatchList from "../../components/admin/BatchList.jsx";
@@ -13,6 +14,7 @@ import {
 import { formatDate } from "../../utils/formatDate.js";
 import { formatRupiah } from "../../utils/formatRupiah.js";
 import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining.js";
+import { showToast } from "../../utils/toast.js";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
@@ -30,6 +32,7 @@ import {
 } from "react-icons/pi";
 import { Dropdown, Tabs } from "flowbite-react";
 import { FaPercent } from "react-icons/fa";
+
 
 const AdminInvestasi = () => {
   const [investments, setInvestments] = useState([]);
@@ -57,6 +60,8 @@ const AdminInvestasi = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedInvestment, setSelectedInvestment] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
+  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+  const [errors, setErrors] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -68,11 +73,144 @@ const AdminInvestasi = () => {
     });
   }, []);
 
+  console.log(investments);
+
+  // Input Validations: Start
+  const formatNumber = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  const formatDecimal = (number) => {
+    return number.toString().replace(".", ",");
+  };
+
+  // Fungsi untuk memformat data sebelum ditampilkan di form
+  const formatDataForDisplay = (data) => {
+    return {
+      ...data,
+      target_pendanaan: data.target_pendanaan
+        ? formatNumber(data.target_pendanaan)
+        : "",
+      minimum_investasi: data.minimum_investasi
+        ? formatNumber(data.minimum_investasi)
+        : "",
+      maksimum_investasi: data.maksimum_investasi
+        ? formatNumber(data.maksimum_investasi)
+        : "",
+      bagi_hasil: data.bagi_hasil ? formatDecimal(data.bagi_hasil) : "",
+    };
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formInvestment.judul.trim()) {
+      newErrors.judul = "Judul investasi wajib diisi";
+    }
+    if (!formInvestment.gambar && modalType === "add_investment") {
+      newErrors.gambar = "Gambar wajib diisi";
+    }
+    if (
+      !formInvestment.deskripsi.trim() ||
+      formInvestment.deskripsi.replace(/<[^>]*>/g, "").trim() === ""
+    ) {
+      newErrors.deskripsi = "Deskripsi wajib diisi";
+    }
+    if (!formInvestment.penerbit.trim()) {
+      newErrors.penerbit = "Penerbit wajib diisi";
+    }
+    if (!formInvestment.penggunaan_dana.trim()) {
+      newErrors.penggunaan_dana = "Penggunaan dana wajib diisi";
+    }
+    if (!formInvestment.tanggal_pembukaan_penawaran.trim()) {
+      newErrors.tanggal_pembukaan_penawaran =
+        "Tanggal pembukaan penawaran wajib diisi";
+    }
+    if (!formInvestment.tanggal_berakhir_penawaran.trim()) {
+      newErrors.tanggal_berakhir_penawaran =
+        "Tanggal berakhir penawaran wajib diisi";
+    }
+    if (!formInvestment.target_pendanaan.trim()) {
+      newErrors.target_pendanaan = "Target pendanaan wajib diisi";
+    }
+    if (!formInvestment.tenor.trim()) {
+      newErrors.tenor = "Tenor wajib diisi";
+    }
+    if (!formInvestment.pembayaran_bagi_hasil.trim()) {
+      newErrors.pembayaran_bagi_hasil = "Pembayaran bagi hasil wajib diisi";
+    }
+    if (!formInvestment.bagi_hasil.trim()) {
+      newErrors.bagi_hasil = "Bagi hasil wajib diisi";
+    }
+    if (!formInvestment.minimum_investasi.trim()) {
+      newErrors.minimum_investasi = "Minimum investasi wajib diisi";
+    }
+    if (!formInvestment.maksimum_investasi.trim()) {
+      newErrors.maksimum_investasi = "Maksimum investasi wajib diisi";
+    }
+    if (!formInvestment.alamat.trim()) {
+      newErrors.alamat = "Alamat wajib diisi";
+    }
+    if (!formInvestment.url_map.trim()) {
+      newErrors.url_map = "URL map wajib diisi";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const getErrorMessage = (fieldName) => {
+    const fieldNames = {
+      judul: "Judul investasi",
+      penerbit: "Penerbit",
+      penggunaan_dana: "Penggunaan dana",
+      tanggal_pembukaan_penawaran: "Tanggal pembukaan penawaran",
+      tanggal_berakhir_penawaran: "Tanggal berakhir penawaran",
+      target_pendanaan: "Target pendanaan",
+      tenor: "Tenor",
+      pembayaran_bagi_hasil: "Pembayaran bagi hasil",
+      bagi_hasil: "Bagi hasil",
+      minimum_investasi: "Minimum investasi",
+      maksimum_investasi: "Maksimum investasi",
+      alamat: "Alamat",
+      url_map: "URL map",
+    };
+
+    return `${fieldNames[fieldName] || fieldName} wajib diisi`;
+  };
+
+  const clearError = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  };
+  // Input Validations: End
+
   // CRUD: Start
   const handleInvestmentImageChange = (e) => {
     const file = e.target.files[0];
-    setFormInvestment({ ...formInvestment, gambar: file });
-    setPreviewImage(URL.createObjectURL(file));
+
+    if (file) {
+      const validTypes = [
+        "image/svg+xml",
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+      ];
+      if (validTypes.includes(file.type)) {
+        setFormInvestment({ ...formInvestment, gambar: file });
+        setPreviewImage(URL.createObjectURL(file));
+        clearError("gambar");
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          gambar: "File harus berupa SVG, PNG, JPG, atau JPEG",
+        }));
+        // Clear the file input
+        e.target.value = null;
+      }
+    }
   };
 
   const handleInvestmentDescriptionChange = (value) => {
@@ -80,83 +218,141 @@ const AdminInvestasi = () => {
       ...formInvestment,
       deskripsi: value,
     });
+
+    if (!value.trim() || value.replace(/<[^>]*>/g, "").trim() === "") {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        deskripsi: "Deskripsi wajib diisi",
+      }));
+    } else {
+      clearError("deskripsi");
+    }
   };
 
   const handleInvestmentTextChange = (e) => {
     const { name, value } = e.target;
+
+    let formattedValue = value;
+    let isValid = true;
+
+    if (
+      ["target_pendanaan", "minimum_investasi", "maksimum_investasi"].includes(
+        name
+      )
+    ) {
+      // Remove existing dots and non-numeric characters
+      const numericValue = value.replace(/\./g, "").replace(/\D/g, "");
+
+      // Check if the input is valid (contains only digits after removing dots)
+      isValid = numericValue === value.replace(/\./g, "");
+
+      // Format the number with dots as thousand separators
+      formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    } else if (name === "bagi_hasil") {
+      // Allow only numbers and one comma
+      formattedValue = value.replace(/[^\d,]/g, "");
+      const parts = formattedValue.split(",");
+      if (parts[1] && parts[1].length > 2) {
+        parts[1] = parts[1].slice(0, 2);
+        formattedValue = parts.join(",");
+      }
+    }
+
     setFormInvestment({
       ...formInvestment,
-      [name]: value,
+      [name]: formattedValue,
     });
+
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: getErrorMessage(name),
+      }));
+    } else if (!isValid) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: `${
+          name.charAt(0).toUpperCase() + name.slice(1).replace(/_/g, " ")
+        } harus berupa angka`,
+      }));
+    } else if (
+      name === "bagi_hasil" &&
+      !/^\d{1,2}(,\d{1,2})?$/.test(formattedValue)
+    ) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "Format bagi hasil tidak valid. Gunakan format: XX,XX",
+      }));
+    } else {
+      clearError(name);
+    }
+  };
+
+  const prepareFormData = () => {
+    const preparedData = { ...formInvestment };
+    ["target_pendanaan", "minimum_investasi", "maksimum_investasi"].forEach(
+      (field) => {
+        if (preparedData[field]) {
+          preparedData[field] = parseInt(
+            preparedData[field].replace(/\./g, ""),
+            10
+          );
+        }
+      }
+    );
+    if (preparedData.bagi_hasil) {
+      preparedData.bagi_hasil = parseFloat(
+        preparedData.bagi_hasil.replace(",", ".")
+      );
+    }
+    return preparedData;
   };
 
   const handleAddInvestment = () => {
-    const form = new FormData();
-    form.append("judul", formInvestment.judul);
-    form.append("gambar", formInvestment.gambar);
-    form.append("deskripsi", formInvestment.deskripsi);
-    form.append("penerbit", formInvestment.penerbit);
-    form.append("penggunaan_dana", formInvestment.penggunaan_dana);
-    form.append(
-      "tanggal_pembukaan_penawaran",
-      formInvestment.tanggal_pembukaan_penawaran
-    );
-    form.append(
-      "tanggal_berakhir_penawaran",
-      formInvestment.tanggal_berakhir_penawaran
-    );
-    form.append("target_pendanaan", formInvestment.target_pendanaan);
-    form.append("tenor", formInvestment.tenor);
-    form.append("pembayaran_bagi_hasil", formInvestment.pembayaran_bagi_hasil);
-    form.append("bagi_hasil", formInvestment.bagi_hasil);
-    form.append("minimum_investasi", formInvestment.minimum_investasi);
-    form.append("maksimum_investasi", formInvestment.maksimum_investasi);
-    form.append("alamat", formInvestment.alamat);
-    form.append("url_map", formInvestment.url_map);
+    setIsDescriptionFocused(false);
 
-    addInvestment(form, (response) => {
-      setInvestments([response, ...investments]);
-      closeModal();
-      resetForm();
-    });
+    if (validateForm()) {
+      const preparedData = prepareFormData();
+      const form = new FormData();
+      for (const key in preparedData) {
+        if (key === "gambar" && preparedData[key] instanceof File) {
+          form.append(key, preparedData[key]);
+        } else {
+          form.append(key, preparedData[key]);
+        }
+      }
+
+      addInvestment(form, (response) => {
+        setInvestments([response, ...investments]);
+        closeModal();
+        showToast("Investasi berhasil ditambahkan");
+      });
+    }
   };
 
   const handleUpdateInvestment = () => {
-    const form = new FormData();
-    form.append("judul", formInvestment.judul);
-    if (formInvestment.gambar instanceof File) {
-      form.append("gambar", formInvestment.gambar);
+    if (validateForm()) {
+      const preparedData = prepareFormData();
+      const form = new FormData();
+      for (const key in preparedData) {
+        if (key === "gambar" && preparedData[key] instanceof File) {
+          form.append(key, preparedData[key]);
+        } else {
+          form.append(key, preparedData[key]);
+        }
+      }
+
+      updateInvestment(selectedInvestment.id, form, (updateData) => {
+        setInvestments((prevInvestment) =>
+          prevInvestment.map((item) =>
+            item.id === updateData.id ? updateData : item
+          )
+        );
+
+        closeModal();
+        showToast("Investasi berhasil diubah");
+      });
     }
-    form.append("deskripsi", formInvestment.deskripsi);
-    form.append("penerbit", formInvestment.penerbit);
-    form.append("penggunaan_dana", formInvestment.penggunaan_dana);
-    form.append(
-      "tanggal_pembukaan_penawaran",
-      formInvestment.tanggal_pembukaan_penawaran
-    );
-    form.append(
-      "tanggal_berakhir_penawaran",
-      formInvestment.tanggal_berakhir_penawaran
-    );
-    form.append("target_pendanaan", formInvestment.target_pendanaan);
-    form.append("tenor", formInvestment.tenor);
-    form.append("pembayaran_bagi_hasil", formInvestment.pembayaran_bagi_hasil);
-    form.append("bagi_hasil", formInvestment.bagi_hasil);
-    form.append("minimum_investasi", formInvestment.minimum_investasi);
-    form.append("maksimum_investasi", formInvestment.maksimum_investasi);
-    form.append("alamat", formInvestment.alamat);
-    form.append("url_map", formInvestment.url_map);
-
-    updateInvestment(selectedInvestment.id, form, (updateData) => {
-      setInvestments((prevInvestment) =>
-        prevInvestment.map((item) =>
-          item.id === updateData.id ? updateData : item
-        )
-      );
-
-      closeModal();
-      resetForm();
-    });
   };
 
   const handleDeleteInvestment = () => {
@@ -167,6 +363,7 @@ const AdminInvestasi = () => {
         )
       );
       closeModal();
+      showToast("Investasi berhasil dihapus");
     });
   };
   // CRUD: End
@@ -232,50 +429,14 @@ const AdminInvestasi = () => {
 
     if (type === "detail_investment" && investment) {
       setSelectedInvestment(investment);
-
       getDetailInvestasiBySlug(investment.slug, (investment) => {
-        setFormInvestment({
-          judul: investment.judul,
-          deskripsi: investment.deskripsi,
-          gambar: investment.gambar,
-          alamat: investment.alamat,
-          url_map: investment.url_map,
-          penerbit: investment.penerbit,
-          penggunaan_dana: investment.penggunaan_dana,
-          bagi_hasil: investment.bagi_hasil,
-          minimum_investasi: investment.minimum_investasi,
-          maksimum_investasi: investment.maksimum_investasi,
-          total_pendanaan: investment.total_pendanaan,
-          target_pendanaan: investment.target_pendanaan,
-          tenor: investment.tenor,
-          pembayaran_bagi_hasil: investment.pembayaran_bagi_hasil,
-          tanggal_pembukaan_penawaran: investment.tanggal_pembukaan_penawaran,
-          tanggal_berakhir_penawaran: investment.tanggal_berakhir_penawaran,
-          status: investment.status,
-          transaksi: investment.transaksi,
-        });
+        setFormInvestment(investment);
       });
     }
 
     if (type === "update_investment" && investment) {
       setSelectedInvestment(investment);
-      setFormInvestment({
-        judul: investment.judul,
-        deskripsi: investment.deskripsi,
-        gambar: investment.gambar,
-        alamat: investment.alamat,
-        url_map: investment.url_map,
-        penerbit: investment.penerbit,
-        penggunaan_dana: investment.penggunaan_dana,
-        bagi_hasil: investment.bagi_hasil,
-        minimum_investasi: investment.minimum_investasi,
-        maksimum_investasi: investment.maksimum_investasi,
-        target_pendanaan: investment.target_pendanaan,
-        tenor: investment.tenor,
-        pembayaran_bagi_hasil: investment.pembayaran_bagi_hasil,
-        tanggal_pembukaan_penawaran: investment.tanggal_pembukaan_penawaran,
-        tanggal_berakhir_penawaran: investment.tanggal_berakhir_penawaran,
-      });
+      setFormInvestment(formatDataForDisplay(investment));
       setPreviewImage(
         `http://localhost:3000/api/investasi/image/${investment.gambar}`
       );
@@ -408,66 +569,90 @@ const AdminInvestasi = () => {
                       variant={"primary-outline"}
                       value={formInvestment.judul}
                       handleChange={handleInvestmentTextChange}
+                      isError={!!errors.judul}
                     />
-                    <Label htmlFor={"gambar"} value={"Gambar"} />
-                    <div className="flex flex-col items-center justify-center w-full py-4 mt-2 mb-4 h-full border-2 rounded-2xl bg-gray-50 shadow border-gray-300">
-                      {previewImage && (
-                        <img
-                          src={previewImage}
-                          alt="Preview"
-                          className="object-top w-56 h-52 mb-4 object-cover rounded-xl border-2 border-gray-300"
-                        />
-                      )}
+                    <InputError message={errors.judul} />
 
-                      <label
-                        htmlFor="gambar"
-                        className={`flex flex-col items-center justify-center w-full cursor-pointer ${
-                          !previewImage && "h-32"
+                    <Label htmlFor={"gambar"} value={"Gambar"} />
+                    <div className="mb-4">
+                      <div
+                        className={`flex flex-col items-center justify-center w-full py-4 mt-2 h-full border-2 rounded-2xl bg-gray-50 shadow ${
+                          errors.gambar ? "border-red-500" : "border-gray-300"
                         }`}
                       >
-                        <div className="flex flex-col items-center justify-center">
-                          <div className="flex items-center gap-2 mb-2">
-                            <svg
-                              className="w-8 h-8 text-gray-500 dark:text-gray-400"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 20 16"
-                            >
-                              <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                              />
-                            </svg>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              <span className="font-semibold">
-                                Unggah gambar di sini
-                              </span>
+                        {previewImage && (
+                          <img
+                            src={previewImage}
+                            alt="Preview"
+                            className="object-top w-56 h-52 mb-4 object-cover rounded-xl border-2 border-gray-300"
+                          />
+                        )}
+
+                        <label
+                          htmlFor="gambar"
+                          className={`flex flex-col items-center justify-center w-full cursor-pointer ${
+                            !previewImage && "h-32"
+                          }`}
+                        >
+                          <div className="flex flex-col items-center justify-center">
+                            <div className="flex items-center gap-2 mb-2">
+                              <svg
+                                className="w-8 h-8 text-gray-500 dark:text-gray-400"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 16"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                />
+                              </svg>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Unggah gambar di sini
+                                </span>
+                              </p>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              SVG, PNG, JPG atau JPEG
                             </p>
                           </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (MAX. 800x400px)
-                          </p>
-                        </div>
-                        <input
-                          id="gambar"
-                          name="gambar"
-                          type="file"
-                          className="hidden"
-                          onChange={handleInvestmentImageChange}
-                        />
-                      </label>
+                          <input
+                            id="gambar"
+                            name="gambar"
+                            type="file"
+                            className="hidden"
+                            onChange={handleInvestmentImageChange}
+                            accept=".svg,.png,.jpg,.jpeg"
+                          />
+                        </label>
+                      </div>
+                      <InputError message={errors.gambar} />
                     </div>
 
                     <Label htmlFor={"deskripsi"} value={"Deskripsi"} />
-                    <ReactQuill
-                      theme="snow"
-                      value={formInvestment.deskripsi}
-                      onChange={handleInvestmentDescriptionChange}
-                    />
+
+                    <div
+                      onFocus={() => setIsDescriptionFocused(true)}
+                      onBlur={() => setIsDescriptionFocused(false)}
+                      className={`react-quill-container ${
+                        isDescriptionFocused ? "focus" : ""
+                      } ${
+                        errors.deskripsi ? "border-red-500" : "border-gray-300"
+                      }`}
+                    >
+                      <ReactQuill
+                        theme="snow"
+                        value={formInvestment.deskripsi}
+                        onChange={handleInvestmentDescriptionChange}
+                      />
+                    </div>
+                    <InputError message={errors.deskripsi} />
+
                     {/* Profil Bisnis */}
                     <div className="grid grid-cols-2 gap-x-4 ">
                       <div>
@@ -479,7 +664,9 @@ const AdminInvestasi = () => {
                           variant={"primary-outline"}
                           value={formInvestment.penerbit}
                           handleChange={handleInvestmentTextChange}
+                          isError={!!errors.penerbit}
                         />
+                        <InputError message={errors.penerbit} />
                       </div>
                       <div>
                         <Label
@@ -493,7 +680,9 @@ const AdminInvestasi = () => {
                           variant={"primary-outline"}
                           value={formInvestment.penggunaan_dana}
                           handleChange={handleInvestmentTextChange}
+                          isError={!!errors.penggunaan_dana}
                         />
+                        <InputError message={errors.penggunaan_dana} />
                       </div>
                       <div>
                         <Label
@@ -506,6 +695,10 @@ const AdminInvestasi = () => {
                           variant={"primary-outline"}
                           value={formInvestment.tanggal_pembukaan_penawaran}
                           handleChange={handleInvestmentTextChange}
+                          isError={!!errors.tanggal_pembukaan_penawaran}
+                        />
+                        <InputError
+                          message={errors.tanggal_pembukaan_penawaran}
                         />
                       </div>
                       <div>
@@ -519,6 +712,10 @@ const AdminInvestasi = () => {
                           variant={"primary-outline"}
                           value={formInvestment.tanggal_berakhir_penawaran}
                           handleChange={handleInvestmentTextChange}
+                          isError={!!errors.tanggal_berakhir_penawaran}
+                        />
+                        <InputError
+                          message={errors.tanggal_berakhir_penawaran}
                         />
                       </div>
                       <div>
@@ -526,14 +723,23 @@ const AdminInvestasi = () => {
                           htmlFor={"target_pendanaan"}
                           value={"Target Pendanaan"}
                         />
-                        <Input
-                          type={"text"}
-                          name={"target_pendanaan"}
-                          placeholder={"Masukkan target pendanaan.."}
-                          variant={"primary-outline"}
-                          value={formInvestment.target_pendanaan}
-                          handleChange={handleInvestmentTextChange}
-                        />
+                        <div className="flex">
+                          <span className="inline-flex items-center px-3 text-sm text-gray-900 font-medium bg-gray-200 border-2 rounded-e-0 border-gray-300 border-e-0 rounded-s-2xl shadow">
+                            Rp
+                          </span>
+                          <Input
+                            type={"text"}
+                            name={"target_pendanaan"}
+                            placeholder={"Masukkan target pendanaan.."}
+                            variant={"primary-outline"}
+                            value={formInvestment.target_pendanaan}
+                            handleChange={handleInvestmentTextChange}
+                            isError={!!errors.target_pendanaan}
+                            className={"rounded-s-none border-s-[1px]"}
+                          />
+                        </div>
+
+                        <InputError message={errors.target_pendanaan} />
                       </div>
                       <div>
                         <Label htmlFor={"tenor"} value={"Tenor"} />
@@ -544,7 +750,9 @@ const AdminInvestasi = () => {
                           variant={"primary-outline"}
                           value={formInvestment.tenor}
                           handleChange={handleInvestmentTextChange}
+                          isError={!!errors.tenor}
                         />
+                        <InputError message={errors.tenor} />
                       </div>
                       <div>
                         <Label
@@ -558,22 +766,28 @@ const AdminInvestasi = () => {
                           variant={"primary-outline"}
                           value={formInvestment.pembayaran_bagi_hasil}
                           handleChange={handleInvestmentTextChange}
+                          isError={!!errors.pembayaran_bagi_hasil}
                         />
+                        <InputError message={errors.pembayaran_bagi_hasil} />
                       </div>
                       <div>
-                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil (masukkan angka saja)"} />
-                        <div className="relative">
-                          <Input
-                            type={"text"}
-                            name={"bagi_hasil"}
-                            placeholder={"Masukkan bagi hasil.."}
-                            variant={"primary-outline"}
-                            value={formInvestment.bagi_hasil}
-                            handleChange={handleInvestmentTextChange}
-                          />
-                          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                            <FaPercent className="text-gray-400 w-3 h-3" />
+                        <Label htmlFor={"bagi_hasil"} value={"Bagi Hasil"} />
+                        <div className="">
+                          <div className="relative">
+                            <Input
+                              type={"text"}
+                              name={"bagi_hasil"}
+                              placeholder={"Masukkan bagi hasil.."}
+                              variant={"primary-outline"}
+                              value={formInvestment.bagi_hasil}
+                              handleChange={handleInvestmentTextChange}
+                              isError={!!errors.bagi_hasil}
+                            />
+                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                              <FaPercent className="text-gray-400 w-3 h-3" />
+                            </div>
                           </div>
+                          <InputError message={errors.bagi_hasil} />
                         </div>
                       </div>
                       <div>
@@ -581,28 +795,44 @@ const AdminInvestasi = () => {
                           htmlFor={"minimum_investasi"}
                           value={"Minimum Investasi"}
                         />
-                        <Input
-                          type={"text"}
-                          name={"minimum_investasi"}
-                          placeholder={"Masukkan minimum investasi.."}
-                          variant={"primary-outline"}
-                          value={formInvestment.minimum_investasi}
-                          handleChange={handleInvestmentTextChange}
-                        />
+                        <div className="flex">
+                          <span className="inline-flex items-center px-3 text-sm text-gray-900 font-medium bg-gray-200 border-2 rounded-e-0 border-gray-300 border-e-0 rounded-s-2xl shadow">
+                            Rp
+                          </span>
+                          <Input
+                            type={"text"}
+                            name={"minimum_investasi"}
+                            placeholder={"Masukkan minimum investasi.."}
+                            variant={"primary-outline"}
+                            value={formInvestment.minimum_investasi}
+                            handleChange={handleInvestmentTextChange}
+                            isError={!!errors.minimum_investasi}
+                            className={"rounded-s-none border-s-[1px]"}
+                          />
+                        </div>
+                        <InputError message={errors.minimum_investasi} />
                       </div>
                       <div>
                         <Label
                           htmlFor={"maksimum_investasi"}
                           value={"Maksimum Investasi"}
                         />
-                        <Input
-                          type={"text"}
-                          name={"maksimum_investasi"}
-                          placeholder={"Masukkan maksimum investasi.."}
-                          variant={"primary-outline"}
-                          value={formInvestment.maksimum_investasi}
-                          handleChange={handleInvestmentTextChange}
-                        />
+                        <div className="flex">
+                          <span className="inline-flex items-center px-3 text-sm text-gray-900 font-medium bg-gray-200 border-2 rounded-e-0 border-gray-300 border-e-0 rounded-s-2xl shadow">
+                            Rp
+                          </span>
+                          <Input
+                            type={"text"}
+                            name={"maksimum_investasi"}
+                            placeholder={"Masukkan maksimum investasi.."}
+                            variant={"primary-outline"}
+                            value={formInvestment.maksimum_investasi}
+                            handleChange={handleInvestmentTextChange}
+                            isError={!!errors.maksimum_investasi}
+                            className={"rounded-s-none border-s-[1px]"}
+                          />
+                        </div>
+                        <InputError message={errors.maksimum_investasi} />
                       </div>
                     </div>
 
@@ -614,7 +844,10 @@ const AdminInvestasi = () => {
                       variant={"primary-outline"}
                       value={formInvestment.alamat}
                       handleChange={handleInvestmentTextChange}
+                      isError={!!errors.alamat}
                     />
+                    <InputError message={errors.alamat} />
+
                     <Label htmlFor={"url_map"} value={"URL Map"} />
                     <Input
                       type={"text"}
@@ -623,7 +856,9 @@ const AdminInvestasi = () => {
                       variant={"primary-outline"}
                       value={formInvestment.url_map}
                       handleChange={handleInvestmentTextChange}
+                      isError={!!errors.url_map}
                     />
+                    <InputError message={errors.url_map} />
                   </Modal.Body>
                   <Modal.Footer
                     action={modalType === "add_investment" ? "Tambah" : "Ubah"}
@@ -868,12 +1103,12 @@ const AdminInvestasi = () => {
                         <Tabs.Item title="Lokasi">
                           <div className="mt-2">
                             <div
+                              className="w-full h-[400px] mb-3"
                               dangerouslySetInnerHTML={{
                                 __html: formInvestment.url_map,
                               }}
-                              style={{ width: "100%" }}
                             />
-                            <p className="mt-2">{formInvestment.alamat}</p>
+                            <p>{formInvestment.alamat}</p>
                           </div>
                         </Tabs.Item>
                         <Tabs.Item title="Investor">

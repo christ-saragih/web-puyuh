@@ -4,6 +4,7 @@ import FileInput from "../../../components/common/FileInput.jsx";
 import Modal from "../../../components/common/Modal.jsx";
 import DocumentList from "../../../components/admin/DocumentList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { showToast } from "../../../utils/toast.js";
 import {
   getDocument,
   addDocument,
@@ -14,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiPlusCircle } from "react-icons/pi";
 import InputError from "../../../components/common/InputError.jsx";
+
 
 const Dokumen = () => {
   const [documents, setDocuments] = useState([]);
@@ -113,7 +115,7 @@ const Dokumen = () => {
       addDocument(form, (response) => {
         setDocuments([...documents, response]);
         closeModal();
-        resetForm();
+        showToast("Dokumen berhasil ditambahkan");
       });
     }
   };
@@ -133,7 +135,7 @@ const Dokumen = () => {
           )
         );
         closeModal();
-        resetForm();
+        showToast("Dokumen berhasil diubah");
       });
     }
   };
@@ -144,6 +146,7 @@ const Dokumen = () => {
         documents.filter((document) => document.id !== selectedDocument.id)
       );
       closeModal();
+      showToast("Dokumen berhasil dihapus");
     });
   };
 

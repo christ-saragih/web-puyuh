@@ -5,6 +5,7 @@ import Modal from "../../../components/common/Modal.jsx";
 import Textarea from "../../../components/common/Textarea.jsx";
 import FaqAdminList from "../../../components/admin/FaqList.jsx";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { showToast } from "../../../utils/toast.js";
 import {
   getFaqs,
   addFaq,
@@ -84,6 +85,7 @@ const FaqAdmin = () => {
       addFaq(dataToSend, (newData) => {
         setFaqs([...faqs, newData]);
         closeModal();
+        showToast("FAQ berhasil ditambahkan");
       });
     }
   };
@@ -99,6 +101,7 @@ const FaqAdmin = () => {
         prevFaqs.map((item) => (item.id === updateData.id ? updateData : item))
       );
       closeModal();
+      showToast("Dokumen berhasil diubah");
     });
   };
 
@@ -106,6 +109,7 @@ const FaqAdmin = () => {
     deleteFaq(selectedFaq.id, () => {
       setFaqs(faqs.filter((faq) => faq.id !== selectedFaq.id));
       closeModal();
+      showToast("Dokumen berhasil dihapus");
     });
   };
 

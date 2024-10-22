@@ -1,0 +1,101 @@
+.format {
+    /* Text indentation */
+    .ql-indent-1 {
+      padding-left: 3em;
+    }
+    .ql-indent-2 {
+      padding-left: 6em;
+    }
+    .ql-indent-3 {
+      padding-left: 9em;
+    }
+    .ql-indent-4 {
+      padding-left: 12em;
+    }
+    .ql-indent-5 {
+      padding-left: 15em;
+    }
+    .ql-indent-6 {
+      padding-left: 18em;
+    }
+    .ql-indent-7 {
+      padding-left: 21em;
+    }
+    .ql-indent-8 {
+      padding-left: 24em;
+    }
+    .ql-indent-9 {
+      padding-left: 27em;
+    }
+  
+    /* Lists */
+    .ql-bullet {
+      list-style-type: disc;
+      padding-left: 1.5em;
+    }
+  
+    /* Alignment */
+    .ql-align-center {
+      text-align: center;
+    }
+    .ql-align-right {
+      text-align: right;
+    }
+    .ql-align-justify {
+      text-align: justify;
+    }
+  
+    /* Text styling */
+    strong {
+      font-weight: bold;
+    }
+    em {
+      font-style: italic;
+    }
+    u {
+      text-decoration: underline;
+    }
+    s {
+      text-decoration: line-through;
+    }
+  
+    /* Headers */
+    h1 {
+      font-size: 2em;
+      margin: 0.67em 0;
+    }
+    h2 {
+      font-size: 1.5em;
+      margin: 0.75em 0;
+    }
+    h3 {
+      font-size: 1.17em;
+      margin: 0.83em 0;
+    }
+  
+    /* Spacing */
+    p {
+      margin: 1em 0;
+    }
+  
+    /* Links */
+    a {
+      color: #06c;
+      text-decoration: underline;
+    }
+  
+    /* Code blocks */
+    pre {
+      background-color: #f0f0f0;
+      border-radius: 3px;
+      padding: 0.5em;
+      white-space: pre-wrap;
+    }
+  
+    /* Blockquotes */
+    blockquote {
+      border-left: 4px solid #ccc;
+      margin: 0;
+      padding-left: 1em;
+    }
+  }
