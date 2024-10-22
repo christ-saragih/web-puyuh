@@ -48,6 +48,9 @@ const Profil = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [imagePreviewFounder, setImagePreviewFounder] = useState({});
   const [imagePreviewForm, setImagePreviewForm] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [founderToDelete, setFounderToDelete] = useState(null);
 
 
   useEffect(() => {
@@ -127,9 +130,27 @@ const Profil = () => {
     form.append("deskripsi", formFounder.deskripsi);
     form.append("gambar", formFounder.gambar);
     
-
     addFounder(form, (response) => {
+      // Perbarui daftar founders
       setFounders([response, ...founders]);
+      
+      // Perbarui imagePreviewFounder dengan URL gambar yang baru
+      setImagePreviewFounder(prev => ({
+        ...prev,
+        [response.id]: `http://localhost:3000/api/founder/image/${response.gambar}`
+      }));
+  
+      // Reset form
+      setFormFounder({
+        nama: "",
+        jabatan: "",
+        deskripsi: "",
+        gambar: null,
+      });
+      setImagePreviewForm(null);
+      
+      // Tutup form
+      setShowFormFounder(false);
     });
   };
 
@@ -315,25 +336,36 @@ const Profil = () => {
   };
   
 
-  const handleDeleteFounder = async (id) => {
+  const handleDeleteClick = (founder) => {
+    setFounderToDelete(founder);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!founderToDelete) return;
+
     try {
-      await deleteFounder(id); // Tunggu hingga operasi penghapusan selesai
-  
-      // Langsung memperbarui state founders
+      setIsDeleting(true);
+      await deleteFounder(founderToDelete.id);
+
       setFounders((prevData) => {
-        const updatedData = prevData.filter((founder) => founder.id !== id);
-        console.log("Updated Founder Data:", updatedData); // Debugging log
+        const updatedData = prevData.filter((founder) => founder.id !== founderToDelete.id);
         return updatedData;
       });
-      
     } catch (error) {
-      console.error("Error deleting founder:", error); // Menangani error jika ada
+      console.error("Error deleting founder:", error);
+    } finally {
+      setIsDeleting(false);
+      setShowConfirmDialog(false);
+      setFounderToDelete(null);
     }
   };
-  
-  
 
-
+  const handleCancelDelete = () => {
+    setShowConfirmDialog(false);
+    setFounderToDelete(null);
+  };
+  
   const handleEdit = (section, index = null) => {
     if (section === "founder") {
       if (index === null) {
@@ -435,164 +467,236 @@ const handleSaveSejarah = async () => {
         {/* Founder */}
         <div className="bg-[#F5F5F7] w-full rounded-2xl shadow-md py-4 px-6 mt-8">
           <div className="flex flex-col md:flex-row md:justify-between mb-5">
-              <h1 className="font-bold text-[#572618] text-xl mb-2 md:mb-0">Founder</h1>
-              <button
-                  onClick={handleToggleFormFounder}
-                  className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
-              >
-                  {showFormFounder ? "Tutup Form" : "Tambah Founder"}
-              </button>
+            <h1 className="font-bold text-[#572618] text-xl mb-2 md:mb-0">Founder</h1>
+            <button
+              onClick={handleToggleFormFounder}
+              className="px-6 py-2 bg-[#572618] text-white font-bold rounded-2xl hover:bg-brown-700 transition"
+            >
+              {showFormFounder ? "Tutup Form" : "Tambah Founder"}
+            </button>
           </div>
 
-            {showFormFounder && (
-                <div className="mb-6">
-                    <Label htmlFor={"nama"} value={"Nama Founder"} />
-                    <Input
-                        type={"text"}
-                        name={"nama"}
-                        placeholder={"Masukkan nama founder.."}
-                        variant={"primary-outline"}
-                        handleChange={handleFounderInputChange}
-                    />
+          {showFormFounder && (
+            <div className="mb-6">
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Nama Founder
+                </label>
+                <input
+                  type="text"
+                  name="nama"
+                  placeholder="Masukkan nama founder.."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618]"
+                  onChange={handleFounderInputChange}
+                />
+              </div>
 
-                    <Label htmlFor={"jabatan"} value={"Jabatan Founder"} />
-                    <Input
-                        type={"text"}
-                        name={"jabatan"}
-                        placeholder={"Masukkan jabatan founder.."}
-                        variant={"primary-outline"}
-                        handleChange={handleFounderInputChange}
-                    />
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Jabatan Founder
+                </label>
+                <input
+                  type="text"
+                  name="jabatan"
+                  placeholder="Masukkan jabatan founder.."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618]"
+                  onChange={handleFounderInputChange}
+                />
+              </div>
 
-                    <Label htmlFor={"deskripsi"} value={"Deskripsi Founder"} />
-                    <TextAreaField
-                        type={"text"}
-                        name={"deskripsi"}
-                        placeholder={"Masukkan deskripsi.."}
-                        variant={"primary-outline"}
-                        onChange={handleFounderInputChange}
-                    />
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Deskripsi Founder
+                </label>
+                <textarea
+                  name="deskripsi"
+                  placeholder="Masukkan deskripsi.."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618]"
+                  rows="4"
+                  onChange={handleFounderInputChange}
+                />
+              </div>
 
-                    <Label htmlFor={"gambar"} value={"Gambar Founder"} />
-                    <Input
-                        type={"file"}
-                        name={"gambar"}
-                        placeholder={"Masukkan gambar founder.."}
-                        variant={"primary-outline"}
-                        handleChange={handleFounderInputChange}
-                    />
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Gambar Founder
+                </label>
+                <input
+                  type="file"
+                  name="gambar"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618]"
+                  onChange={handleFounderInputChange}
+                />
+              </div>
 
-                    {imagePreviewForm && (
-                        <div className="mt-3 mb-5">
-                            <p>Preview Gambar:</p>
-                            <img
-                                src={imagePreviewForm}
-                                alt="Preview Founder"
-                                className="h-32 w-32 object-cover rounded-lg"
-                            />
-                        </div>
-                    )}
-
-                    <Button value={"Simpan"} onClick={handleAddFounder} />
+              {imagePreviewForm && (
+                <div className="mt-3 mb-5">
+                  <p>Preview Gambar:</p>
+                  <img
+                    src={imagePreviewForm}
+                    alt="Preview Founder"
+                    className="h-32 w-32 object-cover rounded-lg"
+                  />
                 </div>
-            )}
+              )}
+
+              <button
+                onClick={handleAddFounder}
+                className="px-6 py-2 bg-[#572618] text-white font-bold rounded-lg hover:bg-brown-700 transition"
+              >
+                Simpan
+              </button>
+            </div>
+          )}
 
           <div className="mt-10 mb-8">
-              {founders.map((founder) => (
-                  <div key={founder.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
-                      <Label htmlFor={"nama"} value={"Nama Founder"} />
-                      <Input
-                          type={"text"}
-                          name={"nama"}
-                          variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                          value={selectedFounder === founder.id ? formFounder.nama : founder.nama}
-                          isDisabled={selectedFounder !== founder.id}
-                          handleChange={(e) =>
-                              setFormFounder({ ...formFounder, nama: e.target.value })
-                          }
-                      />
+            {founders.map((founder) => (
+              <div key={founder.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Nama Founder
+                  </label>
+                  <input
+                    type="text"
+                    name="nama"
+                    value={selectedFounder === founder.id ? formFounder.nama : founder.nama}
+                    disabled={selectedFounder !== founder.id}
+                    onChange={(e) => setFormFounder({ ...formFounder, nama: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618] disabled:bg-gray-100"
+                  />
+                </div>
 
-                      <Label htmlFor={"jabatan"} value={"Jabatan Founder"} />
-                      <Input
-                          type={"text"}
-                          name={"jabatan"}
-                          variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                          value={selectedFounder === founder.id ? formFounder.jabatan : founder.jabatan}
-                          isDisabled={selectedFounder !== founder.id}
-                          handleChange={(e) =>
-                              setFormFounder({ ...formFounder, jabatan: e.target.value })
-                          }
-                      />
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Jabatan Founder
+                  </label>
+                  <input
+                    type="text"
+                    name="jabatan"
+                    value={selectedFounder === founder.id ? formFounder.jabatan : founder.jabatan}
+                    disabled={selectedFounder !== founder.id}
+                    onChange={(e) => setFormFounder({ ...formFounder, jabatan: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618] disabled:bg-gray-100"
+                  />
+                </div>
 
-                      <Label htmlFor={"deskripsi"} value={"Deskripsi Founder"} />
-                      <TextAreaField
-                          type={"text"}
-                          name={"deskripsi"}
-                          variant={selectedFounder === founder.id ? "primary-outline" : "disabled"}
-                          value={selectedFounder === founder.id ? formFounder.deskripsi : founder.deskripsi}
-                          isDisabled={selectedFounder !== founder.id}
-                          onChange={(e) =>
-                              setFormFounder({ ...formFounder, deskripsi: e.target.value })
-                          }
-                      />
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Deskripsi Founder
+                  </label>
+                  <textarea
+                    name="deskripsi"
+                    value={selectedFounder === founder.id ? formFounder.deskripsi : founder.deskripsi}
+                    disabled={selectedFounder !== founder.id}
+                    onChange={(e) => setFormFounder({ ...formFounder, deskripsi: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618] disabled:bg-gray-100"
+                    rows="4"
+                  />
+                </div>
 
-                      {/* Mode Edit */}
-                      {selectedFounder === founder.id ? (
-                          <>
-                              <Label htmlFor={"gambar"} value={"Gambar Founder"} />
-                              <Input
-                                  type={"file"}
-                                  name={"gambar"}
-                                  variant={"primary-outline"}
-                                  handleChange={(e) => {
-                                      const file = e.target.files[0];
-                                      if (file) {
-                                          setFormFounder({ ...formFounder, gambar: file });
-                                          setImagePreviewFounder({
-                                              ...imagePreviewFounder,
-                                              [founder.id]: URL.createObjectURL(file)
-                                          });
-                                      }
-                                  }}
-                              />
-                              {/* Preview gambar dalam mode edit */}
-                              {imagePreviewFounder[founder.id] && (
-                                  <div className="mt-3 mb-5">
-                                      <p>Preview Gambar:</p>
-                                      <img
-                                          src={imagePreviewFounder[founder.id]}
-                                          alt="Preview Founder"
-                                          className="h-32 w-32 object-cover rounded-lg"
-                                      />
-                                  </div>
-                              )}
-                          </>
-                      ) : (
-                          /* Mode Non-Edit - Tampilkan gambar yang tersimpan */
-                          <div className="mt-3 mb-5">
-                              <p>Gambar Founder:</p>
-                              <img
-                                  src={imagePreviewFounder[founder.id] || founder.gambar} // Menggunakan imagePreviewFounder jika ada, atau gambar yang tersimpan
-                                  alt={`Founder ${founder.nama}`}
-                                  className="h-32 w-32 object-cover rounded-lg"
-                                  onError={(e) => {
-                                      e.target.onerror = null;
-                                      e.target.src = '/placeholder-image.jpg';
-                                  }}
-                              />
-                          </div>
-                      )}
-
-                      <Button className={"mr-5"} value={"Hapus"} variant={"delete"} onClick={() => handleDeleteFounder(founder.id)} />
-
-                      {selectedFounder === founder.id && isEditing ? (
-                          <Button value={"Simpan"} onClick={() => handleUpdateFounders(founder.id)} />
-                      ) : (
-                          <Button variant={"update"} value={"Ubah"} onClick={() => handleEditFounder(founder)} />
-                      )}
+                {selectedFounder === founder.id ? (
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      Gambar Founder
+                    </label>
+                    <input
+                      type="file"
+                      name="gambar"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setFormFounder({ ...formFounder, gambar: file });
+                          setImagePreviewFounder({
+                            ...imagePreviewFounder,
+                            [founder.id]: URL.createObjectURL(file)
+                          });
+                        }
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#572618]"
+                    />
+                    {imagePreviewFounder[founder.id] && (
+                      <div className="mt-3 mb-5">
+                        <p>Preview Gambar:</p>
+                        <img
+                          src={imagePreviewFounder[founder.id]}
+                          alt="Preview Founder"
+                          className="h-32 w-32 object-cover rounded-lg"
+                        />
+                      </div>
+                    )}
                   </div>
-              ))}
+                ) : (
+                  <div className="mt-3 mb-5">
+                    <p>Gambar Founder:</p>
+                    <img
+                      src={imagePreviewFounder[founder.id] || founder.gambar}
+                      alt={`Founder ${founder.nama}`}
+                      className="h-32 w-32 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/placeholder-image.jpg';
+                      }}
+                    />
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleDeleteClick(founder)}
+                    disabled={isDeleting}
+                    className="px-6 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+                  >
+                    Hapus
+                  </button>
+
+                  {selectedFounder === founder.id && isEditing ? (
+                    <button
+                      onClick={() => handleUpdateFounders(founder.id)}
+                      className="px-6 py-2 bg-[#572618] text-white font-bold rounded-lg hover:bg-brown-700 transition"
+                    >
+                      Simpan
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleEditFounder(founder)}
+                      className="px-6 py-2 rounded-lg text-white font-bold border-2 border-yellow-400 bg-yellow-400 hover:font-semibold hover:text-yellow-400 hover:bg-white hover:border-yellow-400 ease-in-out duration-300"
+                    >
+                      Ubah
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
+
+          {/* Custom Confirmation Dialog */}
+          {showConfirmDialog && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+                <h2 className="text-xl font-bold mb-4">Konfirmasi Hapus</h2>
+                <p className="text-gray-600 mb-6">
+                  Apakah Anda yakin ingin menghapus data founder {founderToDelete?.nama}? 
+                  Tindakan ini tidak dapat dibatalkan.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={handleCancelDelete}
+                    disabled={isDeleting}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition disabled:opacity-50"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleConfirmDelete}
+                    disabled={isDeleting}
+                    className="px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+                  >
+                    {isDeleting ? "Menghapus..." : "Hapus"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </AdminLayout>
