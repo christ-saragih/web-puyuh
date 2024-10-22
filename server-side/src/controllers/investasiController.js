@@ -35,6 +35,7 @@ exports.create = async (req, res) => {
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
+            is_active,
         } = req.body;
 
         const adminId = req.user.id;
@@ -110,6 +111,7 @@ exports.create = async (req, res) => {
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
             status: statusPenawaran,
+            is_active,
         });
 
         // await sendNotification(judul, tanggal_pembukaan_penawaran);
@@ -394,6 +396,7 @@ exports.update = async (req, res) => {
             pembayaran_bagi_hasil,
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
+            is_active,
         } = req.body;
 
         // Cari investasi berdasarkan slug
@@ -482,6 +485,7 @@ exports.update = async (req, res) => {
             tanggal_pembukaan_penawaran,
             tanggal_berakhir_penawaran,
             status: statusPenawaran,
+            is_active,
         });
 
         // Proses data transaksi
