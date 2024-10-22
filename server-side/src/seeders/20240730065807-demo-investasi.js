@@ -35,6 +35,7 @@ module.exports = {
                     "proses",
                     "selesai",
                 ]),
+                is_active: faker.datatype.boolean(1),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
