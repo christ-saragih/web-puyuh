@@ -355,6 +355,14 @@ const AdminInvestasi = () => {
     }
   };
 
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
+  const handleSendProfitSharingNotification = () => {
+    // Implement your notification sending logic here
+    console.log('Sending profit sharing notification');
+    // Additional logic for sending the notification
+  };
+
   const handleDeleteInvestment = () => {
     deleteInvestment(selectedInvestment.id, () => {
       setInvestments(
@@ -925,6 +933,58 @@ const AdminInvestasi = () => {
                           </div>
                         )}
                       </div>
+
+                      {/* Profit Sharing Notification Button & Form */}
+                      {formInvestment.status === "proses" && (
+                        <>
+                          <div className="mb-8">
+                            <button
+                              onClick={() => setShowConfirmationModal(true)}
+                              className="bg-[#5766CE] hover:bg-[#4555BD] text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                            >
+                              Kirim Notifikasi Bagi Hasil
+                            </button>
+                          </div>
+
+                          {/* Confirmation Modal */}
+                          {showConfirmationModal && (
+                            <div className="fixed inset-0 z-50 overflow-y-auto">
+                              <div className="flex min-h-full items-center justify-center p-4">
+                                {/* Modal Content */}
+                                <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 z-10">
+                                  <div className="mb-6 text-center">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                      Konfirmasi Pengiriman Notifikasi
+                                    </h3>
+                                    <p className="text-sm text-gray-600">
+                                      Apakah Anda yakin ingin mengirim notifikasi bagi hasil kepada investor?
+                                    </p>
+                                  </div>
+
+                                  {/* Action Buttons */}
+                                  <div className="flex justify-center gap-3">
+                                    <button
+                                      onClick={() => setShowConfirmationModal(false)}
+                                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5766CE]"
+                                    >
+                                      Batal
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        handleSendProfitSharingNotification();
+                                        setShowConfirmationModal(false);
+                                      }}
+                                      className="px-4 py-2 text-sm font-medium text-white bg-[#5766CE] border border-transparent rounded-md hover:bg-[#4555BD] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5766CE]"
+                                    >
+                                      Ya, Kirim Notifikasi
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
 
                       <div className="flex items-center justify-between mb-2">
                         <div>
