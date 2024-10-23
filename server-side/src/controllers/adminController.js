@@ -145,6 +145,10 @@ exports.rejectVerifiedProfile = async (req, res) => {
 
         await sendNotification(investor.id, pesan, new Date());
 
+        await investor.update({
+            isVerifiedProfile: false,
+        });
+
         res.status(200).json({
             message: "Verifikasi Akun Ditolak!",
         });
