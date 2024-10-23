@@ -38,7 +38,12 @@ exports.findAdminByAuth = async (req, res) => {
 exports.getAllDataInvestor = async (req, res) => {
     try {
         const investors = await Investor.findAll({
-            attributes: ["id", "username", "kategori_investor"],
+            attributes: [
+                "id",
+                "username",
+                "kategori_investor",
+                "isVerifiedProfile",
+            ],
             include: [
                 {
                     model: InvestorBiodata,
