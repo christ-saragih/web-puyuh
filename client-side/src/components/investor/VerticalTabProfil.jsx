@@ -133,9 +133,9 @@ const VerticalTabProfil = ({ getInvestors, investors }) => {
 
             // Set preview images if available
             setPreviews({
-                foto_ktp: foto_ktp ? `https://api1.dev-puyuh.my.id/api/identitas-investor/image/${foto_ktp}` : null,
-                foto_npwp: foto_npwp ? `https://api1.dev-puyuh.my.id/api/identitas-investor/image/${foto_npwp}` : null,
-                selfie_ktp: selfie_ktp ? `https://api1.dev-puyuh.my.id/api/identitas-investor/image/${selfie_ktp}` : null,
+                foto_ktp: foto_ktp ? `http://localhost:3000/api/identitas-investor/image/${foto_ktp}` : null,
+                foto_npwp: foto_npwp ? `http://localhost:3000/api/identitas-investor/image/${foto_npwp}` : null,
+                selfie_ktp: selfie_ktp ? `http://localhost:3000/api/identitas-investor/image/${selfie_ktp}` : null,
             });
         }
     }, [investors]);

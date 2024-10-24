@@ -32,6 +32,7 @@ import {
 } from "react-icons/pi";
 import { Dropdown, Tabs } from "flowbite-react";
 import { FaPercent } from "react-icons/fa";
+import axios from 'axios';
 
 
 const AdminInvestasi = () => {
@@ -356,12 +357,69 @@ const AdminInvestasi = () => {
   };
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
 
-  const handleSendProfitSharingNotification = () => {
-    // Implement your notification sending logic here
-    console.log('Sending profit sharing notification');
-    // Additional logic for sending the notification
+  const handleSelectInvestment = (investment) => {
+    setSelectedInvestment(investment);
   };
+  
+  // Modifikasi handleSendProfitSharingNotification untuk menambahkan logging
+  const handleSendProfitSharingNotification = async () => {
+    console.log('Selected Investment:', selectedInvestment); // Tambahkan logging untuk debug
+    
+    if (!selectedInvestment?.id) {
+      setNotification({
+        show: true,
+        message: 'ID Investasi tidak ditemukan',
+        type: 'error'
+      });
+      return;
+    }
+  
+    try {
+      setIsLoading(true);
+      
+      await axios.post(
+        `http://localhost:3000/api/notifikasi/notifikasiBagiHasil/${selectedInvestment.id}`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+  
+      setNotification({
+        show: true,
+        message: 'Notifikasi bagi hasil berhasil dikirim',
+        type: 'success'
+      });
+  
+      setInvestments(prevInvestments => 
+        prevInvestments.map((investment) => 
+          investment.id === selectedInvestment.id 
+            ? { ...investment, notificationSent: true }
+            : investment
+        )
+      );
+  
+    } catch (error) {
+      console.error('Error sending profit sharing notification:', error);
+      setNotification({
+        show: true,
+        message: error.response?.data?.message || 'Gagal mengirim notifikasi bagi hasil. Silakan coba lagi.',
+        type: 'error'
+      });
+    } finally {
+      setIsLoading(false);
+      setShowConfirmationModal(false);
+      setTimeout(() => {
+        setNotification({ show: false, message: '', type: '' });
+      }, 3000);
+    }
+  };
+  
 
   const handleDeleteInvestment = () => {
     deleteInvestment(selectedInvestment.id, () => {
@@ -484,6 +542,7 @@ const AdminInvestasi = () => {
     setSelectedInvestment(null);
   };
   // Modal: End
+
 
   return (
     <AdminLayout title={"Halaman Managemen Investasi"}>
@@ -939,18 +998,36 @@ const AdminInvestasi = () => {
                         <>
                           <div className="mb-8">
                             <button
-                              onClick={() => setShowConfirmationModal(true)}
-                              className="bg-[#5766CE] hover:bg-[#4555BD] text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                              onClick={() => {
+                                // Set selectedInvestment terlebih dahulu sebelum membuka modal
+                                setSelectedInvestment(formInvestment);
+                                setShowConfirmationModal(true);
+                              }}
+                              className="bg-[#5766CE] hover:bg-[#4555BD] text-white font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              disabled={isLoading}
                             >
-                              Kirim Notifikasi Bagi Hasil
+                              {isLoading ? 'Mengirim...' : 'Kirim Notifikasi Bagi Hasil'}
                             </button>
                           </div>
+
+                          {/* Notification Alert */}
+                          {notification.show && (
+                            <div
+                              className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg ${
+                                notification.type === 'success' 
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {notification.message}
+                            </div>
+                          )}
 
                           {/* Confirmation Modal */}
                           {showConfirmationModal && (
                             <div className="fixed inset-0 z-50 overflow-y-auto">
                               <div className="flex min-h-full items-center justify-center p-4">
-                                {/* Modal Content */}
+                                <div className="fixed inset-0 bg-black bg-opacity-25" onClick={() => setShowConfirmationModal(false)} />
                                 <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 z-10">
                                   <div className="mb-6 text-center">
                                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -964,19 +1041,21 @@ const AdminInvestasi = () => {
                                   {/* Action Buttons */}
                                   <div className="flex justify-center gap-3">
                                     <button
-                                      onClick={() => setShowConfirmationModal(false)}
+                                      onClick={() => {
+                                        setShowConfirmationModal(false);
+                                        setSelectedInvestment(null); // Reset selectedInvestment saat membatalkan
+                                      }}
                                       className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5766CE]"
+                                      disabled={isLoading}
                                     >
                                       Batal
                                     </button>
                                     <button
-                                      onClick={() => {
-                                        handleSendProfitSharingNotification();
-                                        setShowConfirmationModal(false);
-                                      }}
+                                      onClick={handleSendProfitSharingNotification}
                                       className="px-4 py-2 text-sm font-medium text-white bg-[#5766CE] border border-transparent rounded-md hover:bg-[#4555BD] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5766CE]"
+                                      disabled={isLoading}
                                     >
-                                      Ya, Kirim Notifikasi
+                                      {isLoading ? 'Mengirim...' : 'Ya, Kirim Notifikasi'}
                                     </button>
                                   </div>
                                 </div>
