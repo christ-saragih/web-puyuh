@@ -23,7 +23,7 @@ router.get(
 
 router.post(
     "/notifikasiBagiHasil/:investasiId",
-    // authenticateToken("investor"),
+    authenticateToken("admin"),
     notifikasiControlller.sendNotificationProfitSharing
 );
 module.exports = router;
