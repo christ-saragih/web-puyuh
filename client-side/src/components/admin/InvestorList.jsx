@@ -2,7 +2,8 @@ import Alert from "../common/Alert";
 import InvestorItem from "./InvestorItem";
 
 const InvestorList = (props) => {
-  const { investors, openModal } = props;
+  const { investors, openModal, handleToggleStatus } = props;
+
   return (
     <>
       {Array.isArray(investors) && investors.length > 0 ? (
@@ -12,6 +13,7 @@ const InvestorList = (props) => {
               key={investor.id}
               {...investor}
               openModal={openModal}
+              handleToggleStatus={handleToggleStatus}
             />
           ))}
         </div>

@@ -44,4 +44,13 @@ export const verifyInvestorProfile = (id, callback) => {
     });
 };
 
-
+export const rejectInvestorProfile = (id, pesan, callback) => {
+  apiAdmin
+    .post(`/admin/rejectVerifikasiProfile/${id}`, { pesan })
+    .then((res) => {
+      callback(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

@@ -1,5 +1,7 @@
 import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
+import InputError from "../../components/common/InputError.jsx";
+import Textarea from "../../components/common/Textarea.jsx";
 import Modal from "../../components/common/Modal";
 import InvestorList from "../../components/admin/InvestorList.jsx";
 import AdminLayout from "../../layouts/AdminLayout";
@@ -7,6 +9,7 @@ import {
   getInvestors,
   getInvestorById,
   verifyInvestorProfile,
+  rejectInvestorProfile,
 } from "../../services/investor.service.js";
 import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
 import { formatDate } from "../../utils/formatDate.js";
@@ -16,6 +19,7 @@ import { useSearchParams } from "react-router-dom";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
 import { LuCheck, LuX } from "react-icons/lu";
 import { Tabs } from "flowbite-react";
+
 
 const AdminInvestor = () => {
   const [investors, setInvestors] = useState([]);
@@ -59,7 +63,8 @@ const AdminInvestor = () => {
   const [transactions, setTransactions] = useState([]);
   const [filteredInvestors, setFilteredInvestors] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [rejectMessage, setRejectMessage] = useState("");
+  const [errors, setErrors] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -69,32 +74,6 @@ const AdminInvestor = () => {
       setInvestors(data);
     });
   }, []);
-
-  const handleVerifyInvestor = () => {
-    if (selectedInvestor) {
-      setIsVerifying(true);
-
-      setTimeout(() => {
-        verifyInvestorProfile(selectedInvestor.id, () => {
-          setIsVerifying(false);
-          // Update the local state to reflect the change
-          setFormInvestor((prevState) => ({
-            ...prevState,
-            isVerifiedProfile: true,
-          }));
-
-          // Update the investors list
-          setInvestors((prevInvestors) =>
-            prevInvestors.map((investor) =>
-              investor.id === selectedInvestor.id
-                ? { ...investor, isVerifiedProfile: true }
-                : investor
-            )
-          );
-        });
-      }, 1500);
-    }
-  };
 
   // Search: Start
   const searchQuery = searchParams.get("search") || "";
@@ -120,25 +99,76 @@ const AdminInvestor = () => {
   };
   // Search: End
 
+  // Verif or Reject Investor: Start
+  const validateRejectMessage = () => {
+    if (!rejectMessage.trim()) {
+      setErrors({ pesan: "Pesan pembatalan verifikasi wajib diisi" });
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    setRejectMessage(value);
+    if (!value.trim()) {
+      setErrors({ pesan: "Pesan pembatalan verifikasi wajib diisi" });
+    } else {
+      setErrors({});
+    }
+  };
+
+  const handleToggleStatus = (id, currentStatus) => {
+    if (!currentStatus) {
+      // Verify investor
+      verifyInvestorProfile(id, () => {
+        getInvestors((updatedData) => {
+          setInvestors(updatedData);
+        });
+      });
+    } else {
+      // Open reject modal when trying to cancel verification
+      setSelectedInvestor(id);
+      openModal("reject_investor", id);
+    }
+  };
+
+  const handleRejectInvestor = () => {
+    if (validateRejectMessage()) {
+      rejectInvestorProfile(selectedInvestor, rejectMessage, () => {
+        getInvestors((updatedData) => {
+          setInvestors(updatedData);
+        });
+        closeModal();
+      });
+    }
+  };
+  // Verif or Reject Investor: End
+
   // Modal: Start
-  const openModal = (type, investor = null) => {
+  const openModal = (type, investorId) => {
     setModalType(type);
     setIsModalOpen(true);
-    if (type === "detail_investor" && investor) {
-      setSelectedInvestor(investor);
-
-      getInvestorById(investor.id, (investorData) => {
+    if (type === "detail_investor" && investorId) {
+      getInvestorById(investorId, (investorData) => {
         setFormInvestor({
           ...investorData,
         });
       });
     }
 
-    if (type === "view_transactions" && investor) {
-      setSelectedInvestor(investor);
-
-      getTransactionsByInvestor(investor.id, (transaction) => {
+    if (type === "view_transactions" && investorId) {
+      getTransactionsByInvestor(investorId, (transaction) => {
         setTransactions(transaction);
+      });
+    }
+
+    if (type === "reject_investor" && investorId) {
+      getInvestorById(investorId, (investorData) => {
+        setFormInvestor({
+          ...investorData,
+        });
       });
     }
   };
@@ -146,6 +176,12 @@ const AdminInvestor = () => {
   const closeModal = () => {
     setModalType("");
     setIsModalOpen(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setRejectMessage("");
+    setErrors({});
   };
   // Modal: End
 
@@ -188,7 +224,11 @@ const AdminInvestor = () => {
         </div>
 
         <div className="flex flex-col gap-8">
-          <InvestorList investors={filteredInvestors} openModal={openModal} />
+          <InvestorList
+            investors={filteredInvestors}
+            openModal={openModal}
+            handleToggleStatus={handleToggleStatus}
+          />
         </div>
 
         {/* START: Modal detail profil investor */}
@@ -227,23 +267,7 @@ const AdminInvestor = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <button
-                      className={`py-2 px-3 rounded-2xl font-medium text-white text-sm border-2 ${
-                        formInvestor.isVerifiedProfile
-                          ? "bg-green-500 border-green-500"
-                          : "border-[#572618] bg-[#572618] hover:text-[#4B241A] hover:bg-white hover:border-[#4B241A]"
-                      } ease-in-out duration-300`}
-                      onClick={handleVerifyInvestor}
-                      disabled={formInvestor.isVerifiedProfile || isVerifying}
-                    >
-                      {formInvestor.isVerifiedProfile
-                        ? "Terverifikasi"
-                        : isVerifying
-                        ? "Memverifikasi..."
-                        : "Verifikasi Investor"}
-                    </button>
-                  </div>
+                  <div></div>
                 </div>
               </Modal.Header>
 
@@ -503,6 +527,41 @@ const AdminInvestor = () => {
               </Modal.Body>
 
               <Modal.Footer buttonLabel={"Kembali"} onClose={closeModal} />
+            </>
+          )}
+
+          {modalType === "reject_investor" && (
+            <>
+              <Modal.Header
+                title={`Batalkan verifikasi ${
+                  formInvestor.investorBiodata?.nama_lengkap
+                    ? formInvestor.investorBiodata?.nama_lengkap
+                    : ""
+                }`}
+                onClose={closeModal}
+              />
+              <Modal.Body>
+                <Label
+                  htmlFor={"reject_message"}
+                  value={"Pesan Pembatalan Verifikasi"}
+                />
+                <Textarea
+                  name={"reject_message"}
+                  placeholder={"Masukkan pesan pembatalan verifikasi.."}
+                  rows={3}
+                  variant={"primary-outline"}
+                  value={rejectMessage}
+                  handleChange={handleInputChange}
+                  isError={!!errors.pesan}
+                />
+                <InputError message={errors.pesan} />
+              </Modal.Body>
+              <Modal.Footer
+                buttonLabel={"Kembali"}
+                action={"Batalkan"}
+                onAction={handleRejectInvestor}
+                onClose={closeModal}
+              />
             </>
           )}
         </Modal>
