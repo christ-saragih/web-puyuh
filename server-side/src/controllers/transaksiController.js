@@ -32,15 +32,7 @@ exports.transaction = async (req, res) => {
                 attributes: ["id", "nama_lengkap", "no_hp"],
             },
         });
-        // console.log(
-        //     `name: ${investor.investorBiodata.nama_lengkap}`,
-        //     `email: ${investor.email}`,
-        //     `phone: ${investor.investorBiodata.no_hp}`
-        // );
-        // exit();
-
         const investasi = await Investasi.findByPk(req.params.id);
-        // console.log(investor.isVerifiedProfile == true);
 
         if (investor.isVerifiedProfile != true) {
             return res.status(403).json({
@@ -51,20 +43,14 @@ exports.transaction = async (req, res) => {
         // exit();
 
         const transaksi = await Transaksi.create({
+            id: Math.floor(Math.random() * 90) + 10,
             investorId: req.user.id,
             investasiId: investasi.id,
             tanggal_transaksi: new Date(),
+            // nama_rekening: "BCA",
             total_investasi,
             status: "proses",
         });
-
-        // console.log(total_investasi);
-        // const total_pendanaan = investasi.total_pendanaan + total_investasi;
-        // console.log(total_pendanaan);
-
-        // await investasi.update({
-        //     total_pendanaan: total_pendanaan,
-        // });
 
         let itemName =
             investasi.judul.length > 50
@@ -88,7 +74,7 @@ exports.transaction = async (req, res) => {
                 },
             ],
             customer_details: {
-                name: investor.investorBiodata.nama_lengkap,
+                first_name: investor.investorBiodata.nama_lengkap,
                 email: investor.email,
                 phone: investor.investorBiodata.no_hp,
             },
@@ -102,23 +88,16 @@ exports.transaction = async (req, res) => {
             token,
         });
     } catch (error) {
-        if (error.name === "SequelizeValidationError") {
-            const messages = error.errors.map((err) => err.message);
-            res.status(400).json({
-                message: "Validation error",
-                errors: messages,
-            });
-        } else {
-            res.status(500).json({
-                message: "Internal server error",
-                error: error.message,
-            });
-        }
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
     }
 };
 
 exports.callbackPayment = async (req, res) => {
     const statusResponse = await snap.transaction.notification(req.body);
+    console.log(statusResponse);
     let orderId = statusResponse.order_id;
     let transactionStatus = statusResponse.transaction_status;
     let fraudStatus = statusResponse.fraud_status;
@@ -151,6 +130,8 @@ exports.callbackPayment = async (req, res) => {
             await investasiData.save();
             await transaksiData.save();
 
+            transaksiData.nama_rekening = statusResponse.va_numbers.bank;
+            transaksiData.no_rekening = statusResponse.va_numbers.va_number;
             transaksiData.status = "berhasil";
         }
     } else if (
