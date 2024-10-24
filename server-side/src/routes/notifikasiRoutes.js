@@ -21,4 +21,9 @@ router.get(
     notifikasiControlller.findAll
 );
 
+router.post(
+    "/notifikasiBagiHasil/:investasiId",
+    // authenticateToken("investor"),
+    notifikasiControlller.sendNotificationProfitSharing
+);
 module.exports = router;
