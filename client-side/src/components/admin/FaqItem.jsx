@@ -1,6 +1,7 @@
-import { PiNotePencilBold, PiTrashBold } from "react-icons/pi";
 import ActionButton from "../common/ActionButton";
 import ToggleButton from "../common/ToggleButton";
+import { PiNotePencilBold, PiTrashBold } from "react-icons/pi";
+import { Tooltip } from "flowbite-react";
 
 const FaqAdminItem = (props) => {
   const { id, pertanyaan, jawaban, status, openModal, handleToggleStatus } =
@@ -24,15 +25,21 @@ const FaqAdminItem = (props) => {
             tooltip={"Hapus"}
             onClick={() => openModal("delete_faq", { id })}
           />
-          <ToggleButton
-            isChecked={status === "aktif"}
-            handleToggleStatus={() =>
-              handleToggleStatus(
-                id,
-                status === "aktif" ? "tidak-aktif" : "aktif"
-              )
-            }
-          />
+
+          <Tooltip
+            content={status === "aktif" ? "Sembunyikan FAQ" : "Tampilkan FAQ"}
+            placement="top"
+          >
+            <ToggleButton
+              isChecked={status === "aktif"}
+              handleToggleStatus={() =>
+                handleToggleStatus(
+                  id,
+                  status === "aktif" ? "tidak-aktif" : "aktif"
+                )
+              }
+            />
+          </Tooltip>
         </div>
       </div>
       <p>{jawaban}</p>

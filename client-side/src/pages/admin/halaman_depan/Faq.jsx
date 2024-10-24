@@ -124,6 +124,12 @@ const FaqAdmin = () => {
         )
       );
     });
+
+    if (newStatus === "aktif") {
+      showToast("FAQ berhasil ditampilkan");
+    } else {
+      showToast("FAQ berhasil disembunyikan");
+    }
   };
   // CRUD: End
 

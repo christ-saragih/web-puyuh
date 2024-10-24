@@ -16,12 +16,20 @@ const DocumentItem = (props) => {
         >
           <PiFolderFill className="-ms-1 w-11 h-11 text-[#FFA000]" />
         </NavLink>
-        <ToggleButton
-          isChecked={status === "aktif"}
-          handleToggleStatus={() =>
-            handleToggleStatus(id, status === "aktif" ? "tidak-aktif" : "aktif")
-          }
-        />
+        <Tooltip
+          content={status === "aktif" ? "Sembunyikan Dokumen" : "Tampilkan Dokumen"}
+          placement="top"
+        >
+          <ToggleButton
+            isChecked={status === "aktif"}
+            handleToggleStatus={() =>
+              handleToggleStatus(
+                id,
+                status === "aktif" ? "tidak-aktif" : "aktif"
+              )
+            }
+          />
+        </Tooltip>
       </div>
       <div className="mb-3 grow">
         <h3 className="text-2xl mb-1 font-bold tracking-tight text-gray-900">

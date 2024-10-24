@@ -111,8 +111,12 @@ div[data-testid="flowbite-tooltip-arrow"] {
   @apply bg-gray-600;
 }
 
+div[data-testid="flowbite-tooltip-target"] {
+  @apply flex items-center !important;
+}
+
 .card-investor div[data-testid="flowbite-tooltip-target"] {
-  @apply absolute left-5 top-5
+  @apply absolute left-5 top-5;
 }
 /* Tooltip: End */
 
