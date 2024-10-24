@@ -28,6 +28,8 @@ module.exports = {
                 investasiId: faker.helpers.arrayElement(investasis[0]).id,
                 tanggal_transaksi: faker.date.past(),
                 total_investasi: faker.number.bigInt(),
+                nama_rekening: faker.lorem.word(),
+                no_rekening: faker.number.bigInt(),
                 status: status,
                 createdAt: new Date(),
                 updatedAt: new Date(),

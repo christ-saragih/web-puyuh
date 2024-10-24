@@ -29,6 +29,12 @@ module.exports = {
             total_investasi: {
                 type: Sequelize.INTEGER,
             },
+            nama_rekening: {
+                type: Sequelize.STRING,
+            },
+            no_rekening: {
+                type: Sequelize.BIGINT,
+            },
             status: {
                 type: Sequelize.ENUM("gagal", "proses", "berhasil"),
             },
