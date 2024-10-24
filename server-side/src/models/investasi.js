@@ -121,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             tenor: {
-                type: DataTypes.STRING,
+                type: DataTypes.BIGINT,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Tenor tidak boleh null!" },
@@ -129,7 +129,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             pembayaran_bagi_hasil: {
-                type: DataTypes.STRING,
+                type: DataTypes.BIGINT,
                 allowNull: false,
                 validate: {
                     notNull: { msg: "Pembayaran Bagi Hasil tidak boleh null!" },

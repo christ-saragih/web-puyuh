@@ -1,8 +1,7 @@
-const { Investasi, Investor, Notifikasi } = require("../models");
+const { Investasi, Investor, Notifikasi, Transaksi } = require("../models");
 
 const { exit } = require("process");
 const { sendNotification } = require("../services/notifikasiService");
-const cron = require("node-cron");
 
 const sendNotificationIfNotExists = async (
     user,
@@ -46,8 +45,7 @@ exports.sendNotificationInvestasi = async (req, res) => {
                 await sendNotificationIfNotExists(
                     user,
                     `Selamat Datang ${investor.username} , Selamat Berinvestasi!`,
-                    investor.createdAt,
-                    notifikasis
+                    investor.createdAt
                 );
             }
         }
@@ -334,6 +332,61 @@ exports.changeStatus = async (req, res) => {
 
         res.status(200).json({
             message: "Status notifikasi berhasil diperbarui!",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+exports.sendNotificationProfitSharing = async (req, res) => {
+    try {
+        const investasi = await Investasi.findByPk(req.params.investasiId);
+
+        const transaksis = await Transaksi.findAll({
+            where: { investasiId: investasi.id },
+            include: {
+                model: Investor,
+                as: "investor", // pastikan alias ini sama dengan yang digunakan dalam relasi
+                attributes: ["id", "username"], // Ambil field username
+            },
+        });
+
+        const notifikasis = await Notifikasi.findAll();
+
+        const bagiHasil = investasi.tenor / investasi.pembayaran_bagi_hasil;
+
+        const tanggalSekarang = new Date();
+
+        const tanggalBuka = new Date(investasi.tanggal_pembukaan_penawaran);
+
+        const bulanKe =
+            (tanggalSekarang.getFullYear() - tanggalBuka.getFullYear()) * 12 +
+            (tanggalSekarang.getMonth() - tanggalBuka.getMonth());
+
+        if (bulanKe > bagiHasil) {
+            return res.status(400).json({
+                message: "Pembayaran Bagi Hasil Melebihi Bulan Yang Ditentukan",
+            });
+        }
+
+        for (const transaksi of transaksis) {
+            let pesan = `Selamat ${transaksi.investor.username}! Bagi hasil ke-${bulanKe} dari investasi ${investasi.judul} telah masuk rekening Anda!`;
+
+            await sendNotificationIfNotExists(
+                transaksi.investorId,
+                pesan,
+                tanggalSekarang,
+                notifikasis
+            );
+            console.log(pesan);
+        }
+
+        res.status(200).json({
+            message: `Notifikasi Bagi Hasil ke-${bulanKe} Telah Terkirim!`,
+            data: { investasi, bulanKe },
         });
     } catch (error) {
         res.status(500).json({

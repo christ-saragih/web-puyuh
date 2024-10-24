@@ -56,10 +56,10 @@ module.exports = {
                 type: Sequelize.BIGINT,
             },
             tenor: {
-                type: Sequelize.STRING,
+                type: Sequelize.BIGINT,
             },
             pembayaran_bagi_hasil: {
-                type: Sequelize.STRING,
+                type: Sequelize.BIGINT,
             },
             tanggal_pembukaan_penawaran: {
                 type: Sequelize.DATEONLY,
