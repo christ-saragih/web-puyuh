@@ -7,6 +7,8 @@ const {
     InvestorIdentitas,
     InvestorDataPendukung,
     InvestorAlamat,
+    Investasi,
+    Transaksi,
 } = require("../models");
 const bcrypt = require("bcrypt");
 const { sendNotification } = require("../services/notifikasiService");
@@ -208,5 +210,66 @@ exports.verifiedProfile = async (req, res) => {
             message: "Internal server error",
             error: error.message,
         });
+    }
+};
+
+// Membuat Transaksi Investor
+exports.createTransaction = async (req, res) => {
+    try {
+        const {
+            investorId,
+            investasiId,
+            tanggal_transaksi,
+            total_investasi,
+            nama_rekening,
+            no_rekening,
+            status,
+        } = req.body;
+
+        const investor = await Investor.findByPk(investorId);
+
+        if (!investor) {
+            return res.status(404).json({ message: "Investor tidak ada!" });
+        }
+
+        if (investor.isVerifiedProfile != true) {
+            return res.status(403).json({
+                message: "Akun Investor Belum Terverifikasi!",
+            });
+        }
+
+        const investasi = await Investasi.findByPk(investasiId);
+
+        if (!investasi) {
+            return res.status(404).json({ message: "Investasi tidak ada!" });
+        }
+
+        const transaksi = await Transaksi.create({
+            investorId,
+            investasiId,
+            tanggal_transaksi,
+            total_investasi,
+            nama_rekening,
+            no_rekening,
+            status,
+        });
+
+        res.status(201).json({
+            message: "Transaksi Berhasil Ditambahkan!",
+            data: transaksi,
+        });
+    } catch (error) {
+        if (error.name === "SequelizeValidationError") {
+            const messages = error.errors.map((err) => err.message);
+            res.status(400).json({
+                message: "Validation error",
+                errors: messages,
+            });
+        } else {
+            res.status(500).json({
+                message: "Internal server error",
+                error: error.message,
+            });
+        }
     }
 };

@@ -4,6 +4,13 @@ const adminController = require("../controllers/adminController");
 
 const { authenticateToken } = require("../middleware/authenticateToken");
 
+const validate = require("../middleware/validationMiddleware");
+
+const {
+    createSchema,
+    updateSchema,
+} = require("../validators/transaksiValidation");
+
 router.get("/", authenticateToken("admin"), adminController.findAdminByAuth);
 router.get(
     "/investor",
@@ -29,6 +36,13 @@ router.post(
     "/VerifikasiProfile/:id",
     authenticateToken("admin"),
     adminController.verifiedProfile
+);
+
+router.post(
+    "/create-transaction/",
+    authenticateToken("admin"),
+    validate(createSchema),
+    adminController.createTransaction
 );
 
 module.exports = router;

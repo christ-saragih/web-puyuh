@@ -50,6 +50,30 @@ module.exports = (sequelize, DataTypes) => {
                 },
             },
             total_investasi: DataTypes.BIGINT,
+            nama_rekening: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: {
+                        msg: "Nama Rekening tidak boleh null!",
+                    },
+                    notEmpty: {
+                        msg: "Nama Rekening tidak boleh kosong!",
+                    },
+                },
+            },
+            no_rekening: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: {
+                        msg: "No Rekening tidak boleh null!",
+                    },
+                    notEmpty: {
+                        msg: "No Rekening tidak boleh kosong!",
+                    },
+                },
+            },
             status: {
                 type: DataTypes.ENUM("gagal", "proses", "berhasil"),
                 allowNull: false,
