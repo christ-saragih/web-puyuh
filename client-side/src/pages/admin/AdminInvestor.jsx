@@ -14,6 +14,7 @@ import {
 import { getTransactionsByInvestor } from "../../services/transaksi.service.js";
 import { formatDate } from "../../utils/formatDate.js";
 import { formatRupiah } from "../../utils/formatRupiah.js";
+import { showToast } from "../../utils/toast.js";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PiUserBold, PiUsersThreeBold } from "react-icons/pi";
@@ -126,6 +127,7 @@ const AdminInvestor = () => {
         getInvestors((updatedData) => {
           setInvestors(updatedData);
         });
+        showToast("Berhasil memverifikasi investor")
       });
     } else {
       // Open reject modal when trying to cancel verification
@@ -141,6 +143,7 @@ const AdminInvestor = () => {
           setInvestors(updatedData);
         });
         closeModal();
+        showToast("Berhasil membatalkan verifikasi investor")
       });
     }
   };

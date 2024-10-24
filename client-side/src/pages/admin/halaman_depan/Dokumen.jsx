@@ -160,6 +160,12 @@ const Dokumen = () => {
         )
       );
     });
+
+    if (newStatus === "aktif") {
+      showToast("Dokumen berhasil ditampilkan");
+    } else {
+      showToast("Dokumen berhasil disembunyikan");
+    }
   };
   // CRUD: End
 
